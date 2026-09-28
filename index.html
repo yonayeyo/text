@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1, viewport-fit=cover">
+<title>이번 달 한눈에</title>
+<style>
+  :root {
+    --bg: #F4F5F7;
+    --card: #FFFFFF;
+    --ink: #16181D;
+    --ink-2: #4A4F5A;
+    --ink-3: #8A909C;
+    --line: #E8EAEE;
+    --track: #EDEFF2;
+    --accent: #2F5BEA;      /* 예산·진행 */
+    --accent-soft: #E9EFFE;
+    --note: #B26A00;        /* 변화 표시 (경고 아닌 주목) */
+    --note-soft: #FFF4E0;
+    --cat-1: #2F5BEA;
+    --cat-2: #6C8CF5;
+    --cat-3: #A3B6F8;
+    --cat-4: #CDD7FB;
+    --cat-etc: #DADDE3;
+    --asset-1: #3D4452;
+    --asset-2: #7A8394;
+    --asset-3: #B9BFCA;
+    --radius: 20px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #D9DCE1; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    word-break: keep-all;
+    letter-spacing: -0.01em;
+  }
+  .num { font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+
+  /* ---------- 디바이스 프레임 (390 x 844) ---------- */
+  .phone {
+    width: 390px;
+    height: 844px;
+    margin: 0 auto;
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+  .statusbar {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 47px;
+    padding: 14px 28px 0 34px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    font-size: 16px; font-weight: 600;
+    background: var(--bg);
+    z-index: 5;
+  }
+  .statusbar .icons { display: flex; gap: 6px; align-items: center; padding-top: 2px; }
+  .scroll {
+    position: absolute; top: 47px; bottom: 83px; left: 0; right: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .scroll::-webkit-scrollbar { display: none; }
+
+  /* ---------- 헤더 ---------- */
+  .header {
+    height: 52px;
+    padding: 0 20px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .month-switch {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 20px; font-weight: 700;
+    background: none; border: 0; color: var(--ink);
+    height: 44px; font-family: inherit;
+  }
+  .month-switch svg { color: var(--ink-3); }
+  .icon-btn {
+    width: 44px; height: 44px; border-radius: 22px;
+    display: grid; place-items: center;
+    background: none; border: 0; color: var(--ink-2);
+  }
+
+  section { padding: 0 16px; margin-bottom: 12px; }
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .sec-title {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 14px;
+  }
+  .sec-title h2 { font-size: 17px; font-weight: 700; }
+  .sec-title .meta { font-size: 13px; color: var(--ink-3); }
+
+  /* ---------- 1순위: 남은 예산 ---------- */
+  .hero { padding: 22px 20px 20px; }
+  .hero .label { font-size: 15px; color: var(--ink-2); font-weight: 500; }
+  .hero .remain {
+    font-size: 44px; font-weight: 800; line-height: 1.15;
+    margin-top: 6px;
+  }
+  .hero .remain small { font-size: 26px; font-weight: 700; margin-left: 2px; }
+  .hero .daily {
+    margin-top: 10px;
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-soft); color: var(--accent);
+    font-size: 14px; font-weight: 600;
+    padding: 7px 12px; border-radius: 999px;
+  }
+  .hero .daily b { font-weight: 800; }
+
+  .meter { margin-top: 22px; position: relative; }
+  .meter .track {
+    height: 12px; border-radius: 6px; background: var(--track); overflow: hidden;
+  }
+  .meter .fill {
+    height: 100%; width: 68.9%;
+    background: var(--accent); border-radius: 6px 0 0 6px;
+  }
+  .meter .today {
+    position: absolute; top: -5px; left: 60%;
+    width: 2px; height: 22px; background: var(--ink);
+    border-radius: 1px;
+  }
+  .meter .today-tag {
+    position: absolute; top: -26px; left: 60%;
+    transform: translateX(-50%);
+    font-size: 11px; font-weight: 600; color: var(--ink-2);
+    white-space: nowrap;
+  }
+  .meter-legend {
+    display: flex; justify-content: space-between;
+    margin-top: 10px; font-size: 13px; color: var(--ink-3);
+  }
+  .meter-legend b { color: var(--ink); font-weight: 600; }
+
+  .pace {
+    margin-top: 16px; padding-top: 16px;
+    border-top: 1px solid var(--line);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .pace .k { font-size: 12px; color: var(--ink-3); }
+  .pace .v { font-size: 16px; font-weight: 700; margin-top: 3px; }
+  .pace .v span { font-size: 12px; font-weight: 500; color: var(--ink-3); margin-left: 2px; }
+
+  /* ---------- 2순위: 지출 상위 ---------- */
+  .stack {
+    display: flex; height: 10px; border-radius: 5px; overflow: hidden; gap: 2px;
+    margin-bottom: 6px;
+  }
+  .stack i { display: block; height: 100%; }
+  .stack-cap { font-size: 12px; color: var(--ink-3); margin-bottom: 8px; }
+
+  .cat-list { list-style: none; }
+  .cat {
+    display: grid;
+    grid-template-columns: 10px 1fr auto;
+    align-items: center; column-gap: 10px;
+    min-height: 52px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .cat:last-child { border-bottom: 0; }
+  .cat .dot { width: 10px; height: 10px; border-radius: 3px; }
+  .cat .name { font-size: 15px; font-weight: 600; }
+  .cat .sub { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+  .cat .sub.change { color: var(--note); font-weight: 600; }
+  .cat .amt { font-size: 15px; font-weight: 700; text-align: right; }
+  .cat .amt span { display: block; font-size: 12px; font-weight: 500; color: var(--ink-3); margin-top: 2px; }
+
+  /* ---------- 2순위: 조정 여지 ---------- */
+  .intro { font-size: 13px; color: var(--ink-2); line-height: 1.5; margin: -6px 0 14px; }
+  .sugg {
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 10px;
+    transition: border-color .15s, background .15s;
+  }
+  .sugg.on { border-color: var(--accent); background: #FAFBFF; }
+  .sugg-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .sugg .tag {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    padding: 3px 7px; border-radius: 6px; margin-bottom: 6px;
+    background: var(--note-soft); color: var(--note);
+  }
+  .sugg .tag.neutral { background: var(--track); color: var(--ink-2); }
+  .sugg h3 { font-size: 15px; font-weight: 700; line-height: 1.4; }
+  .sugg p { font-size: 13px; color: var(--ink-2); line-height: 1.55; margin-top: 6px; }
+  .sugg p b { color: var(--ink); font-weight: 700; }
+  .sugg .effect {
+    margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; color: var(--ink-3);
+  }
+  .sugg .effect b { font-size: 15px; color: var(--accent); font-weight: 700; }
+
+  /* 토글 (44px 터치 영역) */
+  .toggle {
+    flex: none; position: relative;
+    width: 51px; height: 44px;
+    display: grid; place-items: center;
+    background: none; border: 0; cursor: pointer;
+    margin: -8px -4px 0 0;
+  }
+  .toggle .t {
+    width: 51px; height: 31px; border-radius: 16px;
+    background: #D5D8DE; position: relative; transition: background .2s;
+  }
+  .toggle .t::after {
+    content: ""; position: absolute; top: 2px; left: 2px;
+    width: 27px; height: 27px; border-radius: 50%;
+    background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,.18);
+    transition: transform .2s;
+  }
+  .toggle[aria-checked="true"] .t { background: var(--accent); }
+  .toggle[aria-checked="true"] .t::after { transform: translateX(20px); }
+
+  .sim {
+    margin-top: 4px;
+    background: var(--ink); color: #fff;
+    border-radius: 16px; padding: 16px;
+  }
+  .sim .row { display: flex; justify-content: space-between; align-items: baseline; }
+  .sim .k { font-size: 13px; color: #B8BDC7; }
+  .sim .v { font-size: 20px; font-weight: 800; }
+  .sim .bar { margin-top: 12px; height: 6px; background: #3A3F4A; border-radius: 3px; position: relative; }
+  .sim .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: #8FA8FF; border-radius: 3px; transition: width .3s; }
+  .sim .bar .budget-mark { position: absolute; top: -4px; width: 2px; height: 14px; background: #fff; }
+  .sim .foot { margin-top: 8px; display: flex; justify-content: space-between; font-size: 12px; color: #B8BDC7; }
+  .sim .diff { color: #fff; font-weight: 600; }
+
+  /* ---------- 3순위: 총자산 (맥락) ---------- */
+  .asset .top { display: flex; justify-content: space-between; align-items: center; }
+  .asset .k { font-size: 14px; color: var(--ink-2); font-weight: 600; }
+  .asset .v { font-size: 17px; font-weight: 700; }
+  .asset .bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; gap: 2px; margin: 14px 0 12px; }
+  .asset .bar i { height: 100%; }
+  .asset .legend { display: flex; justify-content: space-between; }
+  .asset .legend div { font-size: 12px; color: var(--ink-3); }
+  .asset .legend b { display: block; font-size: 13px; color: var(--ink); font-weight: 600; margin-top: 2px; }
+  .asset .legend i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: 0; }
+  .asset .note { margin-top: 14px; font-size: 12px; color: var(--ink-3); line-height: 1.5; }
+
+  .spacer { height: 12px; }
+
+  /* ---------- 탭바 ---------- */
+  .tabbar {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    height: 83px; padding-bottom: 34px;
+    background: rgba(255,255,255,.94);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--line);
+    display: grid; grid-template-columns: repeat(4, 1fr);
+  }
+  .tabbar button {
+    background: none; border: 0; font-family: inherit;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+    font-size: 10px; font-weight: 600; color: var(--ink-3);
+  }
+  .tabbar button.active { color: var(--ink); }
+  .home-ind {
+    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+    width: 134px; height: 5px; border-radius: 3px; background: var(--ink);
+  }
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- 상태바 -->
+  <div class="statusbar">
+    <span class="num">9:41</span>
+    <span class="icons" aria-hidden="true">
+      <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" fill="#16181D"/><rect x="5" y="5.5" width="3" height="6.5" rx="1" fill="#16181D"/><rect x="10" y="3" width="3" height="9" rx="1" fill="#16181D"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#16181D"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 11.5 5.6 9a3.4 3.4 0 0 1 4.8 0L8 11.5Zm-4.2-4.3L2.3 5.7a8 8 0 0 1 11.4 0l-1.5 1.5a5.9 5.9 0 0 0-8.4 0ZM.8 4.2-.6 2.8a12.2 12.2 0 0 1 17.2 0l-1.4 1.4a10.2 10.2 0 0 0-14.4 0Z" fill="#16181D"/></svg>
+      <svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="#16181D" opacity=".4" fill="none"/><rect x="2" y="2" width="20" height="9" rx="2" fill="#16181D"/><path d="M25 4.5v4a2 2 0 0 0 0-4Z" fill="#16181D" opacity=".4"/></svg>
+    </span>
+  </div>
+
+  <main class="scroll">
+
+    <header class="header">
+      <button class="month-switch" aria-label="월 선택">
+        9월
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <button class="icon-btn" aria-label="예산 설정">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+      </button>
+    </header>
+
+    <!-- 1순위: 이번 달 남은 예산 -->
+    <section>
+      <div class="card hero" aria-labelledby="remain-label">
+        <div class="label" id="remain-label">9월 예산에서 남은 금액</div>
+        <div class="remain num">280,000<small>원</small></div>
+        <div class="daily">
+          12일 남음 · 하루 <b class="num">23,300원</b> 꼴
+        </div>
+
+        <div class="meter" style="margin-top:38px" role="img" aria-label="예산 900,000원 중 620,000원 사용, 69%. 오늘은 한 달의 60% 지점">
+          <span class="today-tag">오늘 18일</span>
+          <div class="track"><div class="fill"></div></div>
+          <span class="today"></span>
+        </div>
+        <div class="meter-legend num">
+          <span><b>620,000원</b> 사용 (69%)</span>
+          <span>예산 900,000원</span>
+        </div>
+
+        <div class="pace">
+          <div>
+            <div class="k">지금까지 하루 평균</div>
+            <div class="v num">34,400<span>원</span></div>
+          </div>
+          <div>
+            <div class="k">이 속도로 월말까지 가면</div>
+            <div class="v num">약 1,033,300<span>원</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2순위: 어디로 나갔나 -->
+    <section>
+      <div class="card">
+        <div class="sec-title">
+          <h2>어디로 나갔나</h2>
+          <span class="meta">9월 1일 – 18일</span>
+        </div>
+
+        <div class="stack" aria-hidden="true">
+          <i style="flex:180;background:var(--cat-1)"></i>
+          <i style="flex:90;background:var(--cat-2)"></i>
+          <i style="flex:62;background:var(--cat-3)"></i>
+          <i style="flex:45;background:var(--cat-4)"></i>
+          <i style="flex:243;background:var(--cat-etc)"></i>
+        </div>
+        <div class="stack-cap num">상위 4개 항목이 사용액의 61%</div>
+
+        <ul class="cat-list">
+          <li class="cat">
+            <span class="dot" style="background:var(--cat-1)"></span>
+            <div>
+              <div class="name">배달</div>
+              <div class="sub change num">지난달 같은 기간보다 +40,000원</div>
+            </div>
+            <div class="amt num">180,000원<span>29%</span></div>
+          </li>
+          <li class="cat">
+            <span class="dot" style="background:var(--cat-2)"></span>
+            <div>
+              <div class="name">카페·간식</div>
+              <div class="sub num">하루 평균 5,000원</div>
+            </div>
+            <div class="amt num">90,000원<span>15%</span></div>
+          </li>
+          <li class="cat">
+            <span class="dot" style="background:var(--cat-3)"></span>
+            <div>
+              <div class="name">교통</div>
+              <div class="sub">매일 필요한 지출</div>
+            </div>
+            <div class="amt num">62,000원<span>10%</span></div>
+          </li>
+          <li class="cat">
+            <span class="dot" style="background:var(--cat-4)"></span>
+            <div>
+              <div class="name">구독 서비스</div>
+              <div class="sub">매달 고정으로 나감</div>
+            </div>
+            <div class="amt num">45,000원<span>7%</span></div>
+          </li>
+          <li class="cat">
+            <span class="dot" style="background:var(--cat-etc)"></span>
+            <div>
+              <div class="name" style="font-weight:500;color:var(--ink-2)">그 외</div>
+            </div>
+            <div class="amt num" style="font-weight:500;color:var(--ink-2)">243,000원<span>39%</span></div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 2순위: 조정해 볼 수 있는 지점 -->
+    <section>
+      <div class="card">
+        <div class="sec-title">
+          <h2>조정해 볼 수 있는 지점</h2>
+        </div>
+        <p class="intro">켜 보면 월말 예상 지출이 어떻게 바뀌는지 아래에서 볼 수 있어요.</p>
+
+        <div class="sugg" id="s-delivery">
+          <div class="sugg-top">
+            <div>
+              <span class="tag">지난달보다 늘어남</span>
+              <h3>배달을 지난달 수준으로</h3>
+            </div>
+            <button class="toggle" role="switch" aria-checked="false" data-save="26700" aria-label="배달을 지난달 수준으로 반영">
+              <span class="t"></span>
+            </button>
+          </div>
+          <p>지난달 같은 기간엔 <b class="num">140,000원</b>, 이번 달은 <b class="num">180,000원</b>이에요. 남은 12일을 지난달 속도(하루 약 7,800원)로 쓰면</p>
+          <div class="effect"><span>월말 지출 변화</span><b class="num">−26,700원</b></div>
+        </div>
+
+        <div class="sugg" id="s-cafe">
+          <div class="sugg-top">
+            <div>
+              <span class="tag neutral">자주 나가는 항목</span>
+              <h3>카페·간식을 절반으로</h3>
+            </div>
+            <button class="toggle" role="switch" aria-checked="false" data-save="30000" aria-label="카페·간식을 절반으로 반영">
+              <span class="t"></span>
+            </button>
+          </div>
+          <p>하루 평균 <b class="num">5,000원</b>씩 나가고 있어요. 남은 12일 동안 하루 <b class="num">2,500원</b>으로 맞추면</p>
+          <div class="effect"><span>월말 지출 변화</span><b class="num">−30,000원</b></div>
+        </div>
+
+        <div class="sugg">
+          <div class="sugg-top">
+            <div>
+              <span class="tag neutral">다음 달부터 반영</span>
+              <h3>구독 서비스 한 번 훑어보기</h3>
+            </div>
+          </div>
+          <p>매달 <b class="num">45,000원</b>, 1년이면 <b class="num">540,000원</b>이에요. 이번 달은 이미 결제됐고, 다음 결제일 전에 정리하면 다음 달 예산에 반영돼요.</p>
+        </div>
+
+        <div class="sim" aria-live="polite">
+          <div class="row">
+            <span class="k">월말 예상 지출</span>
+            <span class="v num" id="proj">1,033,300원</span>
+          </div>
+          <div class="bar">
+            <i id="projBar" style="width:100%"></i>
+            <span class="budget-mark" style="left:87.1%"></span>
+          </div>
+          <div class="foot num">
+            <span>예산 900,000원 기준</span>
+            <span class="diff" id="gap">+133,300원</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3순위: 전체 자산 (맥락) -->
+    <section>
+      <div class="card asset">
+        <div class="top">
+          <span class="k">연결된 계좌 전체</span>
+          <span class="v num">12,400,000원</span>
+        </div>
+        <div class="bar" aria-hidden="true">
+          <i style="flex:3200;background:var(--asset-1)"></i>
+          <i style="flex:8100;background:var(--asset-2)"></i>
+          <i style="flex:1100;background:var(--asset-3)"></i>
+        </div>
+        <div class="legend num">
+          <div><i style="background:var(--asset-1)"></i>입출금<b>3,200,000원</b></div>
+          <div><i style="background:var(--asset-2)"></i>예적금<b>8,100,000원</b></div>
+          <div><i style="background:var(--asset-3)"></i>투자<b>1,100,000원</b></div>
+        </div>
+        <p class="note">용도별로 나눠 둔 계좌를 그대로 두고 합쳐서 보여드려요.</p>
+      </div>
+    </section>
+
+    <div class="spacer"></div>
+  </main>
+
+  <!-- 탭바 -->
+  <nav class="tabbar">
+    <button class="active" aria-current="page">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20h-5v-6H9v6H4z"/></svg>
+      홈
+    </button>
+    <button>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 6h14M5 12h14M5 18h9"/></svg>
+      지출 내역
+    </button>
+    <button>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4v8l5.5 5.5" stroke-linecap="round"/></svg>
+      예산
+    </button>
+    <button>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M16 12.5h2"/><path d="M6 6V5a1 1 0 0 1 1-1h10" stroke-linecap="round"/></svg>
+      자산
+    </button>
+    <span class="home-ind"></span>
+  </nav>
+</div>
+
+<script>
+  // 데이터: 예산 900,000 / 사용 620,000 / 18일 경과 / 12일 남음
+  const BUDGET = 900000;
+  const BASE_PROJ = 620000 + (620000 / 18) * 12; // ≈ 1,033,333
+  const fmt = n => Math.round(n / 100) * 100;
+  const won = n => n.toLocaleString('ko-KR') + '원';
+
+  function update() {
+    let save = 0;
+    document.querySelectorAll('.toggle').forEach(t => {
+      if (t.getAttribute('aria-checked') === 'true') save += Number(t.dataset.save);
+    });
+    const proj = fmt(BASE_PROJ) - save;
+    const gap = proj - BUDGET;
+    document.getElementById('proj').textContent = won(proj);
+    document.getElementById('gap').textContent = (gap >= 0 ? '+' : '−') + won(Math.abs(gap));
+    // 막대 최대치 = 기본 예상 지출
+    document.getElementById('projBar').style.width = (proj / fmt(BASE_PROJ) * 100) + '%';
+  }
+
+  document.querySelectorAll('.toggle').forEach(t => {
+    t.addEventListener('click', () => {
+      const on = t.getAttribute('aria-checked') !== 'true';
+      t.setAttribute('aria-checked', on);
+      t.closest('.sugg').classList.toggle('on', on);
+      update();
+    });
+  });
+  update();
+</script>
+</body>
+</html>
