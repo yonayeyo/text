@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=402, initial-scale=1, viewport-fit=cover">
-<title>OVERLAY · 9월</title>
+<title>오버레이 · 9월</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -18,22 +18,23 @@
     --b5: #DCEAF6;
     --ink: #15200F;
     --ink-2: rgba(21, 32, 15, .58);
-    --ink-3: rgba(21, 32, 15, .38);
+    --ink-3: rgba(21, 32, 15, .40);
     --line: rgba(21, 32, 15, .10);
     --bg: #F6F7F3;
+    --w-2: rgba(255, 255, 255, .78);   /* 그라디언트 위 보조 텍스트 */
     /* 서체 */
     --head: "Inter Tight", "Pretendard", "Helvetica Neue", Helvetica, sans-serif;   /* 얇은 네오 그로테스크 */
-    --mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, "Pretendard", monospace; /* 라벨·데이터 */
+    --mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, "Pretendard", monospace; /* 라벨·데이터 (한글은 Pretendard로 대체) */
     --sans: "Pretendard", "Inter", "Helvetica Neue", Helvetica, -apple-system, sans-serif; /* 본문·캡션 */
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { background: var(--bg); }
   body { font-family: var(--sans); font-weight: 400; color: var(--ink); -webkit-font-smoothing: antialiased; word-break: keep-all; display: flex; justify-content: center; }
-  button, input, select { font-family: inherit; color: inherit; border: 0; background: none; }
+  button, input { font-family: inherit; color: inherit; border: 0; background: none; }
   button { cursor: pointer; }
 
   /* 텍스트 역할 */
-  .mono { font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: .12em; text-transform: uppercase; }
+  .mono { font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: .04em; }
   .data { font-family: var(--mono); font-weight: 500; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
   .thin { font-family: var(--head); font-weight: 300; letter-spacing: -.035em; font-variant-numeric: tabular-nums; }
   .cap  { font-family: var(--sans); font-size: 13px; font-weight: 400; color: var(--ink-2); line-height: 1.5; }
@@ -43,15 +44,17 @@
   .statusbar {
     position: absolute; top: 0; left: 0; right: 0; height: 54px; z-index: 40;
     display: flex; align-items: center; justify-content: space-between; padding: 6px 32px 0 40px;
-    font-family: var(--sans); font-size: 17px; font-weight: 600;
+    font-family: var(--sans); font-size: 17px; font-weight: 600; color: var(--ink);
     background: linear-gradient(180deg, rgba(246,247,243,.95) 50%, rgba(246,247,243,0));
+    transition: color .25s, background .25s;
   }
+  .phone.sb-light .statusbar { color: #fff; background: transparent; }
   .island { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 124px; height: 36px; border-radius: 20px; background: #000; z-index: 41; }
   .statusbar .icons { display: flex; gap: 6px; align-items: center; }
   .home-ind { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 140px; height: 5px; border-radius: 3px; background: var(--ink); z-index: 50; }
 
   .screen {
-    position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; padding: 62px 24px 132px;
+    position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; padding: 62px 24px 124px;
     opacity: 0; visibility: hidden; transform: translateY(10px);
     transition: opacity .35s ease, transform .35s ease, visibility .35s; scrollbar-width: none;
   }
@@ -59,39 +62,55 @@
   .screen.active { opacity: 1; visibility: visible; transform: none; }
   .screen > * { position: relative; z-index: 1; }
 
-  /* 배경 그라디언트 형태 (레퍼런스의 선명한 블루 볼륨) */
-  .screen > .blob { position: absolute; z-index: 0; pointer-events: none; border-radius: 50%; }
-  .blob.orb {
-    background: radial-gradient(circle at 38% 36%, rgba(220,234,246,.0) 0 22%, var(--b3) 34%, var(--b1) 52%, var(--b2) 62%, var(--b4) 72%, rgba(173,208,236,0) 80%);
-    filter: blur(10px);
+  /* ---------- 배경 그라디언트 섹션 (화면의 1/3 ~ 2/3) ---------- */
+  .screen > .band {
+    position: absolute; left: 0; right: 0; top: 0; z-index: 0; pointer-events: none; overflow: hidden;
+    background:
+      radial-gradient(90% 55% at 88% 8%, rgba(173,208,236,.55), rgba(173,208,236,0) 60%),
+      linear-gradient(180deg, var(--b1) 0%, var(--b1) 22%, var(--b2) 50%, var(--b3) 72%, var(--b4) 87%, var(--bg) 100%);
   }
-  .blob.soft { background: radial-gradient(circle, rgba(173,208,236,.9), rgba(173,208,236,0) 70%); filter: blur(20px); }
-  .blob.deep { background: radial-gradient(circle at 50% 50%, var(--b1) 0 30%, var(--b2) 45%, var(--b4) 65%, rgba(173,208,236,0) 78%); filter: blur(14px); }
+  .band::before, .band-sec::before { /* 세로 빛줄기 */
+    content: ""; position: absolute; inset: 0; pointer-events: none; filter: blur(10px);
+    background: linear-gradient(90deg, transparent 0 14%, rgba(255,255,255,.16) 21%, transparent 30%, transparent 58%, rgba(173,208,236,.3) 68%, transparent 78%, transparent 88%, rgba(255,255,255,.12) 94%, transparent);
+    -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent); mask-image: linear-gradient(180deg, #000 55%, transparent);
+  }
+  .band-sec {
+    margin: 18px -24px 0; padding: 52px 24px 76px;
+    background: linear-gradient(180deg, var(--bg) 0%, var(--b3) 9%, var(--b2) 20%, var(--b1) 44%, var(--b1) 62%, var(--b2) 80%, var(--b3) 91%, var(--bg) 100%);
+    color: #fff;
+  }
+  .band-sec::before { -webkit-mask-image: linear-gradient(180deg, transparent, #000 20%, #000 75%, transparent); mask-image: linear-gradient(180deg, transparent, #000 20%, #000 75%, transparent); }
+  .band-sec > * { position: relative; }
 
-  .vtext { position: absolute !important; z-index: 1; writing-mode: vertical-rl; color: var(--ink-3); font-size: 9.5px; letter-spacing: .32em; }
+  /* 그라디언트 위 텍스트는 화이트 */
+  .on-band { color: #fff; }
+  .on-band .mono, .on-band .cap, .on-band .lab, .on-band .meta { color: var(--w-2) !important; }
 
-  /* ---------- 상단 바 ---------- */
-  .topbar { display: flex; align-items: center; justify-content: space-between; height: 44px; margin-bottom: 18px; }
-  .brand { font-family: var(--mono); font-size: 11px; letter-spacing: .5em; font-weight: 500; }
-  .brand sup { font-size: 7px; letter-spacing: .1em; margin-left: -2px; }
+  /* ---------- 상단 바 + 알약형 페이지 인디케이터 ---------- */
+  .topbar { position: relative; display: flex; align-items: center; justify-content: space-between; height: 44px; margin-bottom: 18px; }
+  .brand { font-family: var(--sans); font-size: 12px; font-weight: 500; letter-spacing: .42em; }
+  .pager { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; gap: 5px; align-items: center; }
+  .pager i { width: 6px; height: 6px; border-radius: 3px; background: currentColor; opacity: .3; transition: width .3s, opacity .3s; }
+  .pager i.on { width: 22px; opacity: 1; }
   .menu {
     width: 44px; height: 28px; border-radius: 14px; display: grid; place-items: center;
-    background: var(--b1); box-shadow: 0 6px 16px -4px rgba(17,49,162,.55);
+    background: var(--b1); color: #fff; box-shadow: 0 6px 16px -4px rgba(17,49,162,.55);
   }
-  .back { height: 26px; padding: 0 12px; border: 1px solid var(--ink); border-radius: 13px; display: inline-flex; align-items: center; gap: 6px; }
+  .on-band .menu { background: #fff; color: var(--b1); box-shadow: 0 6px 18px -6px rgba(0,10,60,.5); }
+  .back { height: 28px; padding: 0 12px; border: 1px solid currentColor; border-radius: 14px; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
 
-  /* ---------- 페이지 헤더: 회색=11px 모노 / 검정=40px 씬 으로 통일 ---------- */
+  /* ---------- 페이지 헤더: 보조=11px / 메인=40px 로 통일 ---------- */
   .page-head { margin: 4px 0 22px; }
-  .page-head .lab, .page-head .meta { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
-  .page-head .val { font-family: var(--head); font-weight: 300; font-size: 40px; line-height: 1.1; letter-spacing: -.035em; color: var(--ink); margin: 8px 0 6px; font-variant-numeric: tabular-nums; }
+  .page-head .lab, .page-head .meta { font-family: var(--mono); font-size: 11px; letter-spacing: .04em; color: var(--ink-3); }
+  .page-head .val { font-family: var(--head); font-weight: 300; font-size: 40px; line-height: 1.1; letter-spacing: -.035em; margin: 8px 0 6px; font-variant-numeric: tabular-nums; }
 
-  /* ---------- 패널 ---------- */
+  /* ---------- 패널 (컨테이너 내부 색은 그대로) ---------- */
   .panel {
-    border-radius: 26px; padding: 20px; margin-top: 14px; position: relative;
-    background: linear-gradient(145deg, rgba(255,255,255,.78), rgba(255,255,255,.5));
+    border-radius: 26px; padding: 20px; margin-top: 14px; position: relative; color: var(--ink);
+    background: linear-gradient(145deg, rgba(255,255,255,.84), rgba(255,255,255,.6));
     backdrop-filter: blur(24px) saturate(170%); -webkit-backdrop-filter: blur(24px) saturate(170%);
     border: 1px solid rgba(255,255,255,.9);
-    box-shadow: 0 1px 0 #fff inset, 0 18px 36px -22px rgba(17,49,162,.35);
+    box-shadow: 0 1px 0 #fff inset, 0 18px 36px -22px rgba(17,49,162,.4);
   }
   .panel.solid { background: #fff; }
   .panel.deep {
@@ -100,40 +119,33 @@
     box-shadow: 0 1px 0 rgba(255,255,255,.25) inset, 0 24px 40px -22px rgba(17,49,162,.8);
   }
   .p-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-  .p-head .mono { color: var(--ink-2); }
-  .p-head .mono.r { color: var(--ink-3); }
-  .panel.deep .p-head .mono { color: rgba(255,255,255,.85); }
-  .panel.deep .p-head .mono.r { color: rgba(255,255,255,.55); }
+  .p-head .mono { color: var(--ink-2); font-size: 12px; }
+  .p-head .mono.r { color: var(--ink-3); font-size: 11px; }
+  .panel.deep .p-head .mono { color: rgba(255,255,255,.88); }
+  .panel.deep .p-head .mono.r { color: rgba(255,255,255,.6); }
 
-  /* 선택 박스 (bounding box) */
-  .bbox { position: relative; display: inline-block; padding: 4px 12px 8px 10px; border: 1px solid rgba(58,91,191,.75); }
-  .bbox > i { position: absolute; width: 7px; height: 7px; background: #fff; border: 1px solid var(--b2); }
-  .bbox > i:nth-child(1) { left: -4px; top: -4px; } .bbox > i:nth-child(2) { right: -4px; top: -4px; }
-  .bbox > i:nth-child(3) { left: -4px; bottom: -4px; } .bbox > i:nth-child(4) { right: -4px; bottom: -4px; }
-
-  button.mono, .seg button { text-transform: uppercase; letter-spacing: .12em; }
   .cta {
-    height: 30px; padding: 0 14px; border-radius: 15px; background: var(--b1); color: #fff;
+    height: 32px; padding: 0 14px; border-radius: 16px; font-size: 12px; font-weight: 500;
     display: inline-flex; align-items: center; gap: 8px;
-    box-shadow: 0 8px 20px -6px rgba(17,49,162,.6), 0 0 28px rgba(173,208,236,.9);
+    background: #fff; color: var(--b1); box-shadow: 0 8px 20px -8px rgba(0,10,60,.6), 0 0 26px rgba(173,208,236,.55);
   }
+  .cta.blue { background: var(--b1); color: #fff; box-shadow: 0 8px 20px -6px rgba(17,49,162,.6), 0 0 26px rgba(173,208,236,.9); }
 
   /* ---------- 홈 ---------- */
   .greet { display: flex; align-items: center; gap: 14px; }
-  .avatar { width: 52px; height: 52px; border-radius: 50%; flex: none; position: relative; padding: 2px; background: conic-gradient(from 200deg, var(--b1), var(--b4), var(--b1)); }
+  .avatar { width: 52px; height: 52px; border-radius: 50%; flex: none; position: relative; padding: 2px; background: conic-gradient(from 200deg, #fff, var(--b4), #fff); }
   .avatar svg { display: block; border-radius: 50%; }
-  .avatar::after { content: ""; position: absolute; right: 0; bottom: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--b4); border: 2px solid var(--bg); }
-  .greet .hi { font-family: var(--head); font-weight: 300; font-size: 24px; letter-spacing: -.02em; line-height: 1.15; }
-  .greet .mono { color: var(--ink-3); margin-top: 4px; }
+  .avatar::after { content: ""; position: absolute; right: 0; bottom: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--b4); border: 2px solid var(--b1); }
+  .greet .hi { font-family: var(--head); font-weight: 300; font-size: 22px; letter-spacing: -.02em; line-height: 1.2; }
+  .greet .mono { margin-top: 4px; }
   .greet .d { margin-left: auto; text-align: right; }
-  .greet .d .data { font-size: 13px; display: block; }
+  .greet .d .data { font-size: 13px; display: block; font-family: var(--sans); font-weight: 500; }
 
-  .hero { margin-top: 34px; }
-  .hero > .mono { color: var(--ink-3); margin-bottom: 14px; }
-  .hero .bbox { margin-left: 4px; }
-  .hero .big { font-family: var(--head); font-weight: 200; font-size: 72px; line-height: 1; letter-spacing: -.05em; font-variant-numeric: tabular-nums; }
+  .hero { margin-top: 36px; }
+  .hero > .mono { margin-bottom: 10px; font-size: 12px; }
+  .hero .big { font-family: var(--head); font-weight: 200; font-size: 76px; line-height: 1; letter-spacing: -.05em; font-variant-numeric: tabular-nums; margin-left: -4px; }
   .hero .big small { font-family: var(--sans); font-size: 22px; font-weight: 300; letter-spacing: 0; margin-left: 6px; }
-  .hero .row { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; }
+  .hero .row { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; }
 
   .ring-wrap { display: flex; align-items: center; gap: 18px; }
   .dial {
@@ -148,11 +160,11 @@
     box-shadow: inset 3px 3px 7px rgba(17,49,162,.13), inset -3px -3px 7px rgba(255,255,255,.95);
   }
   .dial .core .thin { font-size: 24px; line-height: 1; }
-  .dial .core .mono { font-size: 8.5px; color: var(--ink-3); margin-top: 4px; }
+  .dial .core .mono { font-size: 10px; color: var(--ink-3); margin-top: 4px; }
   .legend { flex: 1; display: grid; gap: 14px; }
   .legend .row { display: grid; grid-template-columns: 8px 1fr auto; gap: 8px; align-items: center; }
   .legend .dot { width: 8px; height: 8px; border-radius: 50%; }
-  .legend .mono { color: var(--ink-2); font-size: 10px; }
+  .legend .mono { color: var(--ink-2); font-size: 12px; }
   .legend .data { font-size: 14px; }
   .legend .sep { height: 1px; background: var(--line); }
   .legend .amt { font-size: 12px; color: var(--ink-3); }
@@ -165,7 +177,7 @@
   .days i.left { background: rgba(173,208,236,.5); height: 50%; box-shadow: inset 0 0 0 1px rgba(17,49,162,.14); }
   .days-ax { display: flex; justify-content: space-between; margin-top: 8px; color: var(--ink-3); font-size: 10px; }
   .pace { display: grid; grid-template-columns: 1fr 28px 1fr; align-items: end; margin-top: 18px; padding-top: 18px; border-top: 1px dashed rgba(21,32,15,.14); }
-  .pace .mono { color: var(--ink-3); font-size: 10px; }
+  .pace .mono { color: var(--ink-3); }
   .pace .thin { font-size: 28px; display: block; margin-top: 6px; }
   .pace .arrow { color: var(--b3); text-align: center; padding-bottom: 8px; }
   .pace > div:last-child { text-align: right; }
@@ -173,10 +185,12 @@
 
   .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
   .tile { margin-top: 0; padding: 18px; text-align: left; border-radius: 24px; }
-  .tile .mono { font-size: 10px; color: var(--ink-3); }
-  .tile.deep .mono { color: rgba(255,255,255,.65); }
-  .tile .thin { font-size: 26px; display: block; margin-top: 30px; }
-  .tile .mini { display: flex; height: 4px; border-radius: 2px; overflow: hidden; margin-top: 14px; gap: 2px; }
+  .tile .mono { color: var(--ink-3); }
+  .tile.deep .mono { color: rgba(255,255,255,.7); }
+  .tile .thin { font-size: 26px; display: block; margin-top: 26px; }
+  .tile .sub { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+  .tile.deep .sub { color: rgba(255,255,255,.6); }
+  .tile .mini { display: flex; height: 4px; border-radius: 2px; overflow: hidden; margin-top: 12px; gap: 2px; }
 
   /* ---------- 흐름 ---------- */
   #sankey { width: 100%; display: block; overflow: visible; }
@@ -185,7 +199,7 @@
   .flow-detail {
     display: flex; align-items: center; justify-content: space-between; margin-top: 16px;
     padding: 14px 16px; border-radius: 16px; background: var(--bg);
-    box-shadow: inset 2px 2px 6px rgba(21,32,15,.06), inset -2px -2px 6px rgba(255,255,255,.9); min-height: 60px;
+    box-shadow: inset 2px 2px 6px rgba(21,32,15,.06), inset -2px -2px 6px rgba(255,255,255,.9); min-height: 62px;
   }
   .flow-detail .n { font-size: 14px; font-weight: 500; }
   .flow-detail .s { font-size: 12px; color: var(--ink-3); margin-top: 3px; }
@@ -199,17 +213,16 @@
   .dumb .pt.a { background: #fff; border: 1.5px solid var(--b3); }
   .dumb .pt.b { background: radial-gradient(circle at 35% 30%, var(--b4), var(--b2) 45%, var(--b1) 80%); box-shadow: 0 0 0 5px rgba(173,208,236,.5), 0 6px 14px rgba(17,49,162,.45); }
   .dumb .lab { position: absolute; top: 72px; transform: translateX(-50%); text-align: center; white-space: nowrap; }
-  .dumb .lab .mono { font-size: 9.5px; color: var(--ink-3); }
+  .dumb .lab .mono { font-size: 10px; color: var(--ink-3); }
   .dumb .lab .data { font-size: 12px; display: block; margin-top: 2px; }
-  .dumb .delta { position: absolute; top: 0; transform: translateX(-50%); }
-  .dumb .delta .bbox { padding: 3px 8px; font-size: 12px; background: rgba(255,255,255,.7); color: var(--b1); }
+  .dumb .delta { position: absolute; top: 2px; transform: translateX(-50%); height: 26px; padding: 0 10px; border-radius: 13px; display: grid; place-items: center; font-size: 12px; background: var(--b1); color: #fff; box-shadow: 0 6px 14px -4px rgba(17,49,162,.6); }
 
   /* ---------- 조정 ---------- */
   #pace { width: 100%; display: block; overflow: visible; }
   .slider { margin-top: 22px; }
   .slider .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
   .slider .n { font-size: 14px; font-weight: 500; }
-  .slider .n .mono { font-size: 9.5px; color: var(--ink-3); margin-left: 6px; }
+  .slider .n .mono { font-size: 11px; color: var(--ink-3); margin-left: 6px; font-weight: 400; }
   .slider .data { font-size: 14px; }
   .rng { position: relative; height: 28px; }
   .rng input { -webkit-appearance: none; appearance: none; width: 100%; height: 28px; background: transparent; position: relative; z-index: 2; cursor: pointer; }
@@ -229,7 +242,7 @@
   .rng .ticks i { width: 1px; height: 10px; background: var(--ink-3); opacity: .5; }
   .rng .fill { position: absolute; left: 0; top: 12px; height: 4px; border-radius: 2px; background: linear-gradient(90deg, var(--b4), var(--b1)); }
   .rng .mark { position: absolute; top: 2px; width: 1px; height: 24px; background: var(--b2); }
-  .rng .mark span { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 9px; color: var(--b2); white-space: nowrap; }
+  .rng .mark span { position: absolute; top: -17px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--b2); white-space: nowrap; }
 
   .ideas { display: grid; gap: 12px; margin-top: 14px; }
   .idea { display: grid; grid-template-columns: 40px 1fr auto; gap: 14px; align-items: center; margin-top: 0; padding: 18px; border-radius: 24px; }
@@ -238,48 +251,69 @@
   .idea .d { font-size: 12px; color: var(--ink-3); margin-top: 3px; }
   .idea .gain { text-align: right; }
   .idea .gain .data { font-size: 14px; color: var(--b1); display: block; }
-  .idea .gain button { margin-top: 8px; height: 24px; padding: 0 10px; border-radius: 12px; font-size: 9.5px; background: var(--b1); color: #fff; box-shadow: 0 4px 12px -4px rgba(17,49,162,.7); }
+  .idea .gain button { margin-top: 8px; height: 26px; padding: 0 12px; border-radius: 13px; font-size: 11px; background: var(--b1); color: #fff; box-shadow: 0 4px 12px -4px rgba(17,49,162,.7); }
   .idea .gain button.on { background: transparent; color: var(--b1); box-shadow: inset 0 0 0 1px var(--b1); }
   .months { display: grid; grid-template-columns: repeat(12, 1fr); gap: 3px; margin-top: 8px; grid-column: 1 / -1; }
   .months i { height: 16px; border-radius: 4px; background: var(--b5); box-shadow: inset 0 0 0 1px rgba(17,49,162,.1); }
   .months i:nth-child(9) { background: var(--b1); }
 
   /* ---------- 자산 ---------- */
-  .seg { display: inline-flex; padding: 3px; border-radius: 15px; border: 1px solid var(--line); background: rgba(255,255,255,.6); }
-  .seg button { height: 26px; padding: 0 12px; border-radius: 12px; font-size: 10px; color: var(--ink-2); transition: all .25s; }
+  .seg { display: inline-flex; padding: 3px; border-radius: 16px; border: 1px solid var(--line); background: rgba(255,255,255,.7); }
+  .seg button { height: 28px; padding: 0 14px; border-radius: 13px; font-size: 12px; color: var(--ink-2); transition: all .25s; }
   .seg button.on { background: var(--b1); color: #fff; box-shadow: 0 4px 12px -4px rgba(17,49,162,.7); }
-  .asset-stage { display: grid; grid-template-columns: 164px 1fr; gap: 14px; align-items: end; margin-top: 14px; }
+  .asset-stage { display: grid; grid-template-columns: 164px 1fr; gap: 16px; }
+
+  /* 유리병: 바깥 곡률 − 벽 두께 = 안쪽 곡률 (동심) */
   .jar {
-    position: relative; width: 164px; height: 320px; border-radius: 82px 82px 40px 40px;
-    background: linear-gradient(100deg, rgba(255,255,255,.6), rgba(255,255,255,.18) 40%, rgba(255,255,255,.5));
-    border: 1.5px solid rgba(255,255,255,.95);
-    box-shadow: inset 0 0 0 1px rgba(17,49,162,.1), inset 8px 0 18px rgba(255,255,255,.7), 0 30px 40px -24px rgba(17,49,162,.5);
-    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); overflow: hidden;
+    --wall: 8px; --bd: 1.5px; --r-top: 82px; --r-bot: 44px;
+    position: relative; width: 164px; height: 320px;
+    border-radius: var(--r-top) var(--r-top) var(--r-bot) var(--r-bot);
+    border: var(--bd) solid rgba(255,255,255,.75);
+    background: linear-gradient(100deg, rgba(255,255,255,.32), rgba(255,255,255,.06) 45%, rgba(255,255,255,.22));
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.18), inset 6px 0 14px rgba(255,255,255,.22), 0 34px 40px -22px rgba(0,10,60,.6);
   }
-  .jar::before { content: ""; position: absolute; top: 40px; left: 14px; width: 10px; bottom: 30px; border-radius: 8px; z-index: 5; background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,0)); }
-  .jar .lay { position: absolute; left: 8px; right: 8px; border-radius: 8px; transition: bottom .6s cubic-bezier(.3,1.3,.5,1), height .6s, border-radius .4s; box-shadow: inset 0 2px 0 rgba(255,255,255,.35), inset 0 -8px 16px rgba(0,0,0,.08); }
-  .jar .l1 { background: linear-gradient(180deg, var(--b2), var(--b1)); border-radius: 8px 8px 32px 32px; }
-  .jar .l2 { background: linear-gradient(180deg, var(--b4), var(--b3)); }
-  .jar .l3 { background: linear-gradient(180deg, #F2F7FC, var(--b5)); }
-  .jar.split .lay { border-radius: 14px; }
+  .jar .inner {
+    position: absolute; inset: var(--wall); overflow: hidden;
+    border-radius: calc(var(--r-top) - var(--wall) - var(--bd)) calc(var(--r-top) - var(--wall) - var(--bd)) calc(var(--r-bot) - var(--wall) - var(--bd)) calc(var(--r-bot) - var(--wall) - var(--bd));
+    background: linear-gradient(180deg, rgba(0,10,60,.28), rgba(0,10,60,.12));
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.5), inset 0 10px 18px rgba(0,10,60,.3);
+  }
+  .jar::before { /* 유리 하이라이트 (벽을 따라) */
+    content: ""; position: absolute; z-index: 3; top: 58px; bottom: 40px; left: 13px; width: 7px; border-radius: 4px; pointer-events: none;
+    background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,0));
+  }
+  .jar::after { /* 바깥 곡률과 동심인 림 하이라이트 */
+    content: ""; position: absolute; z-index: 3; inset: 3px; pointer-events: none;
+    border-radius: calc(var(--r-top) - var(--bd) - 3px) calc(var(--r-top) - var(--bd) - 3px) calc(var(--r-bot) - var(--bd) - 3px) calc(var(--r-bot) - var(--bd) - 3px);
+    border: 1.5px solid transparent; border-top-color: rgba(255,255,255,.75);
+  }
+  .jar .lay { position: absolute; left: 0; right: 0; border-radius: 0; transition: bottom .6s cubic-bezier(.3,1.3,.5,1), height .6s, border-radius .4s;
+    box-shadow: inset 0 1.5px 0 rgba(255,255,255,.7), inset 0 -10px 18px rgba(0,10,60,.1); }
+  .jar .l1 { background: linear-gradient(180deg, #FFFFFF, var(--b5)); }
+  .jar .l2 { background: var(--b4); }
+  .jar .l3 { background: var(--b3); box-shadow: inset 0 1.5px 0 rgba(255,255,255,.9), 0 -4px 12px rgba(173,208,236,.45); }
+  .jar.split .lay { border-radius: 10px; }
+  .jar.split .l1 { border-radius: 10px 10px 0 0; }
+
   .tags { position: relative; height: 320px; }
   .tag { position: absolute; left: 0; right: 0; padding-left: 14px; transition: top .6s cubic-bezier(.3,1.3,.5,1); }
-  .tag::before { content: ""; position: absolute; left: -20px; top: 7px; width: 28px; height: 1px; background: var(--ink-3); }
-  .tag::after { content: ""; position: absolute; left: 6px; top: 4px; width: 7px; height: 7px; background: #fff; border: 1px solid var(--b2); }
-  .tag .mono { font-size: 10px; color: var(--ink-2); padding-left: 6px; }
-  .tag .thin { font-size: 22px; display: block; padding-left: 6px; margin-top: 4px; }
-  .tag .pct { font-size: 11px; color: var(--b2); padding-left: 6px; }
+  .tag::before { content: ""; position: absolute; left: -22px; top: 8px; width: 30px; height: 1px; background: rgba(255,255,255,.6); }
+  .tag::after { content: ""; position: absolute; left: 6px; top: 5px; width: 7px; height: 7px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px rgba(173,208,236,.9); }
+  .tag .mono { font-size: 12px; padding-left: 6px; }
+  .tag .thin { font-size: 24px; font-weight: 300; display: block; padding-left: 6px; margin-top: 4px; color: #fff; }
+  .tag .pct { font-size: 11px; color: var(--b4); padding-left: 6px; }
 
   .blocks { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
   .blocks i {
-    height: 50px; border-radius: 14px; font-style: normal; display: grid; place-items: center; font-size: 10px; color: rgba(255,255,255,.9);
+    height: 50px; border-radius: 14px; font-style: normal; display: grid; place-items: center; font-size: 12px; color: rgba(255,255,255,.92);
     background: linear-gradient(160deg, rgba(255,255,255,.26), rgba(255,255,255,.06)); border: 1px solid rgba(255,255,255,.35);
   }
 
   .heat-wk, .heat { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-  .heat-wk span { text-align: center; font-size: 9.5px; color: var(--ink-3); padding-bottom: 4px; }
+  .heat-wk span { text-align: center; font-size: 11px; color: var(--ink-3); padding-bottom: 4px; }
   .heat button {
-    aspect-ratio: 1; border-radius: 10px; position: relative; font-family: var(--mono); font-size: 9.5px; color: var(--ink-2);
+    aspect-ratio: 1; border-radius: 10px; position: relative; font-family: var(--mono); font-size: 10px; color: var(--ink-2);
     display: flex; align-items: flex-start; justify-content: flex-start; padding: 5px 6px; transition: transform .15s;
   }
   .heat button.f { box-shadow: inset 0 0 0 1px rgba(17,49,162,.16); background: repeating-linear-gradient(135deg, transparent 0 4px, rgba(173,208,236,.35) 4px 5px); color: var(--ink-3); cursor: default; }
@@ -288,25 +322,26 @@
   .heat button.l3 { background: var(--b3); color: #fff; }
   .heat button.l4 { background: var(--b2); color: #fff; }
   .heat button.l5 { background: var(--b1); color: #fff; }
-  .heat button.today { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--b1); }
-  .heat button.sel { transform: scale(1.12); z-index: 2; box-shadow: 0 6px 14px rgba(17,49,162,.35); }
+  .heat button.today::after { content: ""; position: absolute; inset: -3px; border-radius: 12px; border: 1.5px solid var(--b1); }
+  .heat button.sel { transform: scale(1.1); z-index: 2; box-shadow: 0 6px 14px rgba(17,49,162,.35); }
   .heat-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; }
-  .scale { display: flex; align-items: center; gap: 4px; font-size: 9.5px; color: var(--ink-3); }
+  .scale { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--ink-3); }
   .scale i { width: 12px; height: 12px; border-radius: 3px; }
   .heat-sel { font-size: 12px; }
   .sub-note { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; margin-top: 16px; padding-top: 14px; border-top: 1px dashed rgba(21,32,15,.14); }
-  .sub-note .mono { font-size: 9.5px; color: var(--ink-3); }
+  .sub-note .mono { color: var(--ink-3); }
   .sub-note .bar { height: 4px; border-radius: 2px; background: var(--b5); position: relative; overflow: hidden; }
   .sub-note .bar i { position: absolute; left: 0; top: 0; bottom: 0; width: 4.2%; background: var(--b1); }
   .sub-note .data { font-size: 12px; color: var(--b1); }
 
   /* ---------- 설정 ---------- */
   .profile { display: flex; align-items: center; gap: 16px; }
-  .profile .avatar { width: 64px; height: 64px; }
+  .profile .avatar { width: 64px; height: 64px; background: conic-gradient(from 200deg, var(--b1), var(--b4), var(--b1)); }
+  .profile .avatar::after { border-color: #fff; }
   .profile .nm { font-family: var(--head); font-weight: 300; font-size: 24px; letter-spacing: -.02em; }
   .profile .cap { font-size: 12px; margin-top: 2px; }
   .profile .edit { margin-left: auto; }
-  .group-lab { margin: 28px 4px 10px; color: var(--ink-3); }
+  .group-lab { margin: 28px 4px 10px; color: var(--ink-3); font-size: 12px; }
   .list { margin-top: 0; padding: 4px 18px; }
   .item { display: flex; align-items: center; justify-content: space-between; min-height: 56px; gap: 12px; border-top: 1px solid var(--line); }
   .item:first-child { border-top: 0; }
@@ -319,56 +354,58 @@
   .item input:focus { border-bottom-color: var(--b1); }
   .field-num { display: flex; align-items: center; gap: 6px; }
   .field-num input[type=text] { width: 96px; text-align: right; font-family: var(--mono); font-size: 14px; font-weight: 500; outline: none; padding: 6px 0; border-bottom: 1px solid var(--line); }
-  .field-num input:focus { border-bottom-color: var(--b1); }
   .step { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(145deg, #fff, #E4EBF3); box-shadow: 2px 2px 6px rgba(17,49,162,.14), -2px -2px 5px #fff; font-size: 15px; color: var(--b1); flex: none; }
   .sw { width: 50px; height: 30px; border-radius: 15px; position: relative; background: rgba(21,32,15,.12); box-shadow: inset 0 1px 3px rgba(21,32,15,.15); transition: background .25s; flex: none; }
   .sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(180deg, #fff, #EEF1F4); box-shadow: 0 2px 5px rgba(21,32,15,.25); transition: transform .3s cubic-bezier(.3,1.3,.5,1); }
   .sw.on { background: var(--b1); box-shadow: inset 0 1px 3px rgba(0,0,0,.2), 0 0 16px rgba(173,208,236,.9); }
   .sw.on::after { transform: translateX(20px); }
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px 0; border-top: 1px solid var(--line); }
-  .chip { height: 28px; padding: 0 12px; border-radius: 14px; font-size: 12px; display: inline-flex; align-items: center; border: 1px solid var(--line); background: rgba(255,255,255,.7); }
-  .chip.add { border-style: dashed; color: var(--b1); border-color: var(--b3); }
+  .cats { padding: 6px 0 14px; border-top: 1px solid var(--line); }
+  .cat-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; font-size: 14px; }
+  .cat-row i { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  .cat-row small { margin-left: auto; font-size: 11.5px; color: var(--ink-3); }
   .chev { color: var(--ink-3); }
   .danger { color: var(--b1); font-size: 14px; }
-  .version { text-align: center; margin-top: 22px; color: var(--ink-3); font-size: 9.5px; }
-  .saved { position: absolute; top: 64px; left: 50%; transform: translate(-50%, -12px); opacity: 0; z-index: 60; transition: all .3s; pointer-events: none; }
+  .version { text-align: center; margin-top: 22px; color: var(--ink-3); font-size: 10px; }
+  .saved { position: absolute; top: 60px; left: 50%; transform: translate(-50%, -12px); opacity: 0; z-index: 60; transition: all .3s; pointer-events: none; }
   .saved.show { opacity: 1; transform: translate(-50%, 0); }
 
   /* 금액 가리기 */
   .m { transition: filter .3s; }
   .phone.masked .m { filter: blur(7px); }
 
-  /* ---------- 탭바 ---------- */
+  /* ---------- 떠 있는 알약형 내비게이션 (아이콘만) ---------- */
   .tabbar {
-    position: absolute; left: 20px; right: 20px; bottom: 30px; height: 64px; z-index: 45;
+    position: absolute; left: 50%; bottom: 28px; width: 256px; height: 64px; z-index: 45; transform: translateX(-50%);
     display: grid; grid-template-columns: repeat(4, 1fr); padding: 7px; border-radius: 32px;
-    background: linear-gradient(140deg, rgba(255,255,255,.78), rgba(255,255,255,.5));
+    background: linear-gradient(140deg, rgba(255,255,255,.82), rgba(255,255,255,.55));
     backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid rgba(255,255,255,.95); box-shadow: 0 1px 0 #fff inset, 0 18px 40px -16px rgba(17,49,162,.45);
+    border: 1px solid rgba(255,255,255,.95); box-shadow: 0 1px 0 #fff inset, 0 18px 40px -14px rgba(17,49,162,.5);
     transition: transform .45s cubic-bezier(.3,1.1,.5,1), opacity .3s;
   }
-  .phone.in-set .tabbar { transform: translateY(130px); opacity: 0; }
-  .tabbar .glow { position: absolute; top: 7px; bottom: 7px; left: 7px; width: calc((100% - 14px) / 4); border-radius: 25px;
-    background: linear-gradient(160deg, var(--b2), var(--b1)); box-shadow: 0 8px 18px -6px rgba(17,49,162,.6), 0 0 24px rgba(173,208,236,.8), inset 0 1px 0 rgba(255,255,255,.3);
-    transition: transform .45s cubic-bezier(.3,1.25,.5,1); }
-  .tab { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--ink-2); transition: color .3s; }
-  .tab .mono { font-size: 8.5px; letter-spacing: .14em; }
+  .phone.in-set .tabbar { transform: translate(-50%, 130px); opacity: 0; }
+  .tabbar .glow { position: absolute; top: 7px; bottom: 7px; left: 7px; width: calc((100% - 14px) / 4); transition: transform .45s cubic-bezier(.3,1.25,.5,1); }
+  .tabbar .glow::after {
+    content: ""; position: absolute; left: 50%; top: 50%; width: 50px; height: 50px; margin: -25px 0 0 -25px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--b2), var(--b1) 70%);
+    box-shadow: 0 8px 18px -6px rgba(17,49,162,.7), 0 0 22px rgba(173,208,236,.9), inset 0 1px 0 rgba(255,255,255,.3);
+  }
+  .tab { position: relative; z-index: 1; display: grid; place-items: center; color: var(--ink-2); transition: color .3s; }
   .tab.on { color: #fff; }
 </style>
 </head>
 <body>
-<div class="phone" id="phone">
+<div class="phone sb-light" id="phone">
   <div class="island"></div>
   <div class="statusbar">
     <span>9:41</span>
     <span class="icons">
-      <svg width="19" height="12" viewBox="0 0 19 12" fill="#15200F"><rect x="0" y="8" width="3.4" height="4" rx="1"/><rect x="5" y="5.5" width="3.4" height="6.5" rx="1"/><rect x="10" y="3" width="3.4" height="9" rx="1"/><rect x="15" y="0" width="3.4" height="12" rx="1"/></svg>
-      <svg width="17" height="12" viewBox="0 0 17 12" fill="#15200F"><path d="M8.5 2.4c2.3 0 4.4.9 6 2.4l1.2-1.2A10.2 10.2 0 0 0 8.5.7 10.2 10.2 0 0 0 1.3 3.6l1.2 1.2a8.5 8.5 0 0 1 6-2.4Zm0 3.4c1.4 0 2.6.5 3.6 1.4l1.2-1.2a6.8 6.8 0 0 0-9.6 0l1.2 1.2c1-.9 2.2-1.4 3.6-1.4Zm0 3.4c-.5 0-1 .2-1.3.5L8.5 11l1.3-1.3c-.3-.3-.8-.5-1.3-.5Z"/></svg>
-      <svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="#15200F" opacity=".4"/><rect x="2" y="2" width="18" height="9" rx="2" fill="#15200F"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2Z" fill="#15200F" opacity=".45"/></svg>
+      <svg width="19" height="12" viewBox="0 0 19 12" fill="currentColor"><rect x="0" y="8" width="3.4" height="4" rx="1"/><rect x="5" y="5.5" width="3.4" height="6.5" rx="1"/><rect x="10" y="3" width="3.4" height="9" rx="1"/><rect x="15" y="0" width="3.4" height="12" rx="1"/></svg>
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><path d="M8.5 2.4c2.3 0 4.4.9 6 2.4l1.2-1.2A10.2 10.2 0 0 0 8.5.7 10.2 10.2 0 0 0 1.3 3.6l1.2 1.2a8.5 8.5 0 0 1 6-2.4Zm0 3.4c1.4 0 2.6.5 3.6 1.4l1.2-1.2a6.8 6.8 0 0 0-9.6 0l1.2 1.2c1-.9 2.2-1.4 3.6-1.4Zm0 3.4c-.5 0-1 .2-1.3.5L8.5 11l1.3-1.3c-.3-.3-.8-.5-1.3-.5Z"/></svg>
+      <svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="18" height="9" rx="2" fill="currentColor"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2Z" fill="currentColor" opacity=".45"/></svg>
     </span>
   </div>
 
-  <!-- 프로필 아바타 (재사용 심볼, 외부 이미지 없이 SVG로 그림) -->
+  <!-- 프로필 아바타 (외부 이미지 없이 SVG) -->
   <svg width="0" height="0" style="position:absolute">
     <defs>
       <radialGradient id="avBg" cx="30%" cy="25%" r="90%"><stop offset="0" stop-color="#ADD0EC"/><stop offset=".55" stop-color="#6F93D4"/><stop offset="1" stop-color="#1131A2"/></radialGradient>
@@ -380,50 +417,48 @@
         <path d="M22 26c3-7 14-9 20-1-6-2-13-2-20 1Z" fill="#15200F" opacity=".85"/>
         <path d="M12 64c1-12 9-20 20-20s19 8 20 20Z" fill="url(#avBody)"/>
       </symbol>
+      <symbol id="ic-menu" viewBox="0 0 16 10"><path d="M1 2h14M1 8h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
     </defs>
   </svg>
 
-  <div class="saved" id="saved"><span class="cta mono">Saved</span></div>
+  <div class="saved" id="saved"><span class="cta blue">저장했어요</span></div>
 
   <!-- ================= 홈 ================= -->
   <section class="screen active" id="s-home">
-    <div class="blob orb" style="width:380px;height:380px;right:-190px;top:250px"></div>
-    <div class="blob soft" style="width:260px;height:260px;left:-120px;top:720px"></div>
-    <div class="vtext mono" style="right:9px;top:128px">BUDGET STATE — DAY 18 / 30</div>
+    <div class="band" style="height:500px"></div>
 
-    <div class="topbar">
-      <span class="brand">OVERLAY<sup>TM</sup></span>
-      <button class="menu" data-open="set" aria-label="설정">
-        <svg width="16" height="10" viewBox="0 0 16 10" stroke="#fff" stroke-width="1.4" stroke-linecap="round"><path d="M1 2h14M1 8h14"/></svg>
-      </button>
-    </div>
-
-    <div class="greet">
-      <div class="avatar"><svg width="48" height="48"><use href="#avatar"/></svg></div>
-      <div>
-        <div class="hi">Hello, <span class="js-name">지혜</span></div>
-        <div class="mono">Good morning</div>
+    <div class="on-band">
+      <div class="topbar">
+        <span class="brand">오버레이</span>
+        <div class="pager"><i class="on"></i><i></i><i></i><i></i></div>
+        <button class="menu" data-open="set" aria-label="설정"><svg width="16" height="10"><use href="#ic-menu"/></svg></button>
       </div>
-      <div class="d" style="margin-right:14px">
-        <span class="data">SEP 18</span>
-        <span class="mono">D-12</span>
-      </div>
-    </div>
 
-    <div class="hero">
-      <div class="mono">Daily allowance · KRW</div>
-      <div class="bbox"><i></i><i></i><i></i><i></i>
+      <div class="greet">
+        <div class="avatar"><svg width="48" height="48"><use href="#avatar"/></svg></div>
+        <div>
+          <div class="hi">안녕하세요, <span class="js-name">지혜</span>님</div>
+          <div class="mono">좋은 아침이에요</div>
+        </div>
+        <div class="d">
+          <span class="data">9월 18일</span>
+          <span class="mono">남은 12일</span>
+        </div>
+      </div>
+
+      <div class="hero">
+        <div class="mono">오늘부터 하루에 쓸 수 있는 금액</div>
         <div class="big m"><span id="heroDaily">23,333</span><small>원</small></div>
-      </div>
-      <div class="row">
-        <div class="cap">남은 예산 <span class="data m" id="heroLeft" style="color:var(--ink)">280,000</span> ÷ 12일</div>
-        <button class="cta mono" data-go="1">Flow
-          <svg width="12" height="8" viewBox="0 0 12 8" fill="none" stroke="#fff" stroke-width="1.3"><path d="M0 4h11M8 1l3 3-3 3"/></svg>
-        </button>
+        <div class="row">
+          <div class="cap">남은 예산 <span class="data m" id="heroLeft" style="color:#fff">280,000</span>원 ÷ 12일</div>
+          <button class="cta" data-go="1">지출 흐름
+            <svg width="12" height="8" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M0 4h11M8 1l3 3-3 3"/></svg>
+          </button>
+        </div>
       </div>
     </div>
 
-    <div class="panel" style="margin-top:34px">
+    <div class="panel" style="margin-top:40px">
       <div class="ring-wrap">
         <div class="dial">
           <svg viewBox="0 0 140 140" width="140" height="140">
@@ -435,11 +470,11 @@
             <circle id="ringTime" cx="70" cy="70" r="45" fill="none" stroke="#ADD0EC" stroke-width="6" stroke-linecap="round"
                     stroke-dasharray="282.74" stroke-dashoffset="282.74" transform="rotate(-90 70 70)" style="transition:stroke-dashoffset 1.4s .15s cubic-bezier(.3,.9,.3,1)"/>
           </svg>
-          <div class="core"><div><div class="thin" id="ringPct">65%</div><div class="mono">Used</div></div></div>
+          <div class="core"><div><div class="thin" id="ringPct">65%</div><div class="mono">사용</div></div></div>
         </div>
         <div class="legend">
-          <div class="row"><i class="dot" style="background:var(--b1)"></i><span class="mono">Budget</span><span class="data" id="legBudget">65%</span></div>
-          <div class="row"><i class="dot" style="background:var(--b4)"></i><span class="mono">Time</span><span class="data">60%</span></div>
+          <div class="row"><i class="dot" style="background:var(--b1)"></i><span class="mono">예산 사용</span><span class="data" id="legBudget">65%</span></div>
+          <div class="row"><i class="dot" style="background:var(--b4)"></i><span class="mono">기간 경과</span><span class="data">60%</span></div>
           <div class="sep"></div>
           <div class="amt data"><b class="m">520,000</b> / <span id="legTotal" class="m">800,000</span></div>
         </div>
@@ -447,25 +482,27 @@
     </div>
 
     <div class="panel">
-      <div class="p-head"><span class="mono">September · 30 days</span><span class="mono r">Today 18</span></div>
+      <div class="p-head"><span class="mono">9월 · 30일</span><span class="mono r">오늘 18일</span></div>
       <div class="days" id="days"></div>
-      <div class="days-ax data"><span>01</span><span>18</span><span>30</span></div>
+      <div class="days-ax data"><span>1일</span><span>18일</span><span>30일</span></div>
       <div class="pace">
-        <div><div class="mono">Past 18d / day</div><span class="thin m">28,889</span></div>
+        <div><div class="mono">지난 18일 · 하루 평균</div><span class="thin m">28,889</span></div>
         <div class="arrow"><svg width="22" height="10" viewBox="0 0 22 10" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M0 5h20M16 1l4 4-4 4"/></svg></div>
-        <div><div class="mono">Next 12d / day</div><span class="thin m" id="paceNext">23,333</span></div>
+        <div><div class="mono">남은 12일 · 하루</div><span class="thin m" id="paceNext">23,333</span></div>
       </div>
     </div>
 
     <div class="tiles">
       <button class="panel tile" data-go="1">
-        <div class="mono">Top · 배달</div>
-        <span class="thin m">180,000</span>
-        <div class="mini"><i style="flex:180;background:var(--b1)"></i><i style="flex:90;background:var(--b2)"></i><i style="flex:62;background:var(--b3)"></i><i style="flex:45;background:var(--b4)"></i><i style="flex:143;background:var(--b5)"></i></div>
+        <div class="mono">지출 1위 · 식비</div>
+        <span class="thin m">228,000</span>
+        <div class="sub">배달 180,000 포함</div>
+        <div class="mini"><i style="flex:228;background:var(--b1)"></i><i style="flex:90;background:var(--b2)"></i><i style="flex:62;background:var(--b3)"></i><i style="flex:62;background:var(--b4)"></i><i style="flex:38;background:var(--b5)"></i><i style="flex:40;background:#D5D8D2"></i></div>
       </button>
       <button class="panel deep tile" data-go="3">
-        <div class="mono">Total assets</div>
+        <div class="mono">총자산</div>
         <span class="thin m">12,400,000</span>
+        <div class="sub">3개 묶음 합계</div>
         <div class="mini"><i style="flex:81;background:#fff"></i><i style="flex:32;background:var(--b4)"></i><i style="flex:11;background:rgba(255,255,255,.35)"></i></div>
       </button>
     </div>
@@ -473,69 +510,72 @@
 
   <!-- ================= 흐름 ================= -->
   <section class="screen" id="s-flow">
-    <div class="blob deep" style="width:300px;height:300px;right:-170px;top:30px"></div>
-    <div class="blob soft" style="width:300px;height:300px;left:-150px;top:520px"></div>
-    <div class="topbar">
-      <span class="brand">OVERLAY<sup>TM</sup></span>
-      <button class="menu" data-open="set" aria-label="설정"><svg width="16" height="10" viewBox="0 0 16 10" stroke="#fff" stroke-width="1.4" stroke-linecap="round"><path d="M1 2h14M1 8h14"/></svg></button>
-    </div>
-    <div class="page-head">
-      <div class="lab">Sep spending · KRW</div>
-      <div class="val m">520,000</div>
-      <div class="meta">Of 800,000 · 65% used</div>
+    <div class="band" style="height:340px"></div>
+    <div class="on-band">
+      <div class="topbar">
+        <span class="brand">오버레이</span>
+        <div class="pager"><i></i><i class="on"></i><i></i><i></i></div>
+        <button class="menu" data-open="set" aria-label="설정"><svg width="16" height="10"><use href="#ic-menu"/></svg></button>
+      </div>
+      <div class="page-head">
+        <div class="lab">9월 지출 · 원</div>
+        <div class="val m">520,000</div>
+        <div class="meta">예산 800,000원 중 65% 사용</div>
+      </div>
     </div>
 
     <div class="panel">
-      <div class="p-head"><span class="mono">Budget → category</span><span class="mono r">Tap</span></div>
+      <div class="p-head"><span class="mono">예산이 나간 곳</span><span class="mono r">눌러서 보기</span></div>
       <svg id="sankey" viewBox="0 0 314 390"></svg>
       <div class="flow-detail" id="flowDetail"></div>
     </div>
 
     <div class="panel">
-      <div class="p-head"><span class="mono">배달 · same period</span><span class="mono r">01—18</span></div>
+      <div class="p-head"><span class="mono">식비 › 배달 · 같은 기간 비교</span><span class="mono r">1–18일</span></div>
       <div class="dumb">
         <div class="track"></div>
         <div class="tick" style="left:0"></div><div class="tick" style="left:25%"></div><div class="tick" style="left:50%"></div><div class="tick" style="left:75%"></div><div class="tick" style="left:100%"></div>
         <div class="span" style="left:70%;width:20%"></div>
         <div class="pt a" style="left:70%"></div>
         <div class="pt b" style="left:90%"></div>
-        <div class="delta" style="left:80%"><span class="bbox data"><i></i><i></i><i></i><i></i>+40,000</span></div>
-        <div class="lab" style="left:70%"><span class="mono">Aug</span><span class="data">140,000</span></div>
-        <div class="lab" style="left:90%"><span class="mono">Sep</span><span class="data">180,000</span></div>
+        <div class="delta data" style="left:80%">+40,000</div>
+        <div class="lab" style="left:70%"><span class="mono">8월</span><span class="data">140,000</span></div>
+        <div class="lab" style="left:90%"><span class="mono">9월</span><span class="data">180,000</span></div>
       </div>
     </div>
   </section>
 
   <!-- ================= 조정 ================= -->
   <section class="screen" id="s-plan">
-    <div class="blob orb" style="width:360px;height:360px;right:-210px;top:520px"></div>
-    <div class="blob soft" style="width:260px;height:260px;left:-150px;top:760px"></div>
-    <div class="vtext mono" style="right:9px;top:128px">SIMULATION — NOT A TARGET</div>
-    <div class="topbar">
-      <span class="brand">OVERLAY<sup>TM</sup></span>
-      <button class="menu" data-open="set" aria-label="설정"><svg width="16" height="10" viewBox="0 0 16 10" stroke="#fff" stroke-width="1.4" stroke-linecap="round"><path d="M1 2h14M1 8h14"/></svg></button>
-    </div>
-    <div class="page-head">
-      <div class="lab">Month-end forecast · KRW</div>
-      <div class="val m" id="projV">836,667</div>
-      <div class="meta" id="projD">Budget +36,667</div>
+    <div class="band" style="height:340px"></div>
+    <div class="on-band">
+      <div class="topbar">
+        <span class="brand">오버레이</span>
+        <div class="pager"><i></i><i></i><i class="on"></i><i></i></div>
+        <button class="menu" data-open="set" aria-label="설정"><svg width="16" height="10"><use href="#ic-menu"/></svg></button>
+      </div>
+      <div class="page-head">
+        <div class="lab">지금 속도라면 월말 · 원</div>
+        <div class="val m" id="projV">836,667</div>
+        <div class="meta" id="projD">예산보다 36,667원 많아요</div>
+      </div>
     </div>
 
     <div class="panel">
-      <div class="p-head"><span class="mono">Cumulative · 01—30</span><span class="mono r">Pace</span></div>
+      <div class="p-head"><span class="mono">누적 지출 · 1–30일</span><span class="mono r">하루 평균 기준</span></div>
       <svg id="pace" viewBox="0 0 314 170"></svg>
 
       <div class="slider">
-        <div class="row"><span class="n">배달<span class="mono">Next 12d / day</span></span><span class="data" id="vDel">10,000</span></div>
+        <div class="row"><span class="n">배달<span class="mono">식비 · 남은 12일 하루</span></span><span class="data" id="vDel">10,000</span></div>
         <div class="rng">
           <div class="bed"></div><div class="ticks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
           <div class="fill" id="fDel"></div>
-          <div class="mark mono" style="left:52%"><span>Aug pace</span></div>
+          <div class="mark mono" style="left:52%"><span>8월 속도</span></div>
           <input type="range" id="rDel" min="0" max="15000" step="100" value="10000" aria-label="배달 하루 금액">
         </div>
       </div>
       <div class="slider">
-        <div class="row"><span class="n">카페·간식<span class="mono">Next 12d / day</span></span><span class="data" id="vCafe">5,000</span></div>
+        <div class="row"><span class="n">카페·간식<span class="mono">남은 12일 하루</span></span><span class="data" id="vCafe">5,000</span></div>
         <div class="rng">
           <div class="bed"></div><div class="ticks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
           <div class="fill" id="fCafe"></div>
@@ -547,17 +587,17 @@
     <div class="ideas">
       <div class="panel idea">
         <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1131A2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16l-1.5 8.5a2 2 0 0 1-2 1.5h-9a2 2 0 0 1-2-1.5L4 11Z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
-        <div><div class="n">배달, 8월 속도로</div><div class="d">하루 10,000 → 7,800</div></div>
-        <div class="gain"><span class="data">−26,400</span><button class="mono" data-preset="del">Try</button></div>
+        <div><div class="n">배달을 8월 속도로</div><div class="d">식비 · 하루 10,000 → 7,800</div></div>
+        <div class="gain"><span class="data">−26,400</span><button data-preset="del">적용</button></div>
       </div>
       <div class="panel idea">
         <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1131A2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13v5a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6V8Z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2v3M12 2v3"/></svg></div>
-        <div><div class="n">카페·간식, 하루 2,000 덜</div><div class="d">하루 5,000 → 3,000</div></div>
-        <div class="gain"><span class="data">−24,000</span><button class="mono" data-preset="cafe">Try</button></div>
+        <div><div class="n">카페·간식 하루 2,000원 덜</div><div class="d">하루 5,000 → 3,000</div></div>
+        <div class="gain"><span class="data">−24,000</span><button data-preset="cafe">적용</button></div>
       </div>
       <div class="panel idea">
         <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1131A2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>
-        <div><div class="n">구독, 1년으로 보면</div><div class="d">매달 45,000</div></div>
+        <div><div class="n">구독을 1년으로 보면</div><div class="d">문화·여가 · 매달 45,000</div></div>
         <div class="gain"><span class="data">540,000</span></div>
         <div class="months"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       </div>
@@ -566,81 +606,83 @@
 
   <!-- ================= 자산 ================= -->
   <section class="screen" id="s-asset">
-    <div class="blob deep" style="width:360px;height:360px;right:-230px;top:150px"></div>
-    <div class="blob soft" style="width:280px;height:280px;left:-160px;top:760px"></div>
     <div class="topbar">
-      <span class="brand">OVERLAY<sup>TM</sup></span>
-      <button class="menu" data-open="set" aria-label="설정"><svg width="16" height="10" viewBox="0 0 16 10" stroke="#fff" stroke-width="1.4" stroke-linecap="round"><path d="M1 2h14M1 8h14"/></svg></button>
+      <span class="brand">오버레이</span>
+      <div class="pager"><i></i><i></i><i></i><i class="on"></i></div>
+      <button class="menu" data-open="set" aria-label="설정"><svg width="16" height="10"><use href="#ic-menu"/></svg></button>
     </div>
     <div class="page-head">
-      <div class="lab">Total assets · KRW</div>
+      <div class="lab">총자산 · 원</div>
       <div class="val m">12,400,000</div>
-      <div class="meta">3 groups · overlaid</div>
+      <div class="meta">3개 묶음을 하나로 겹쳐 보기</div>
+    </div>
+    <div class="seg"><button class="on" data-mode="merge">겹쳐 보기</button><button data-mode="split">나눠 보기</button></div>
+
+    <div class="band-sec">
+      <div class="asset-stage">
+        <div class="jar" id="jar">
+          <div class="inner"><div class="lay l1"></div><div class="lay l2"></div><div class="lay l3"></div></div>
+        </div>
+        <div class="tags on-band">
+          <div class="tag" data-i="2"><span class="mono">투자</span><span class="thin m">1,100,000</span><span class="pct data">8.9%</span></div>
+          <div class="tag" data-i="1"><span class="mono">입출금</span><span class="thin m">3,200,000</span><span class="pct data">25.8%</span></div>
+          <div class="tag" data-i="0"><span class="mono">예적금</span><span class="thin m">8,100,000</span><span class="pct data">65.3%</span></div>
+        </div>
+      </div>
     </div>
 
-    <div class="seg mono"><button class="on" data-mode="merge">Overlay</button><button data-mode="split">Split</button></div>
-
-    <div class="asset-stage">
-      <div class="jar" id="jar">
-        <div class="lay l1"></div><div class="lay l2"></div><div class="lay l3"></div>
-      </div>
-      <div class="tags">
-        <div class="tag" data-i="2"><span class="mono">투자</span><span class="thin m">1,100,000</span><span class="pct data">8.9%</span></div>
-        <div class="tag" data-i="1"><span class="mono">입출금</span><span class="thin m">3,200,000</span><span class="pct data">25.8%</span></div>
-        <div class="tag" data-i="0"><span class="mono">예적금</span><span class="thin m">8,100,000</span><span class="pct data">65.3%</span></div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="p-head"><span class="mono">Sep spending · daily</span><span class="mono r">01—18</span></div>
-      <div class="heat-wk mono"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+    <div class="panel" style="margin-top:-44px">
+      <div class="p-head"><span class="mono">9월 일별 지출</span><span class="mono r">1–18일</span></div>
+      <div class="heat-wk"><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span><span>일</span></div>
       <div class="heat" id="heat"></div>
       <div class="heat-foot">
-        <div class="scale mono">Low<i style="background:var(--b5)"></i><i style="background:var(--b4)"></i><i style="background:var(--b3)"></i><i style="background:var(--b2)"></i><i style="background:var(--b1)"></i>High</div>
+        <div class="scale">적음<i style="background:var(--b5)"></i><i style="background:var(--b4)"></i><i style="background:var(--b3)"></i><i style="background:var(--b2)"></i><i style="background:var(--b1)"></i>많음</div>
         <div class="heat-sel data m" id="heatSel"></div>
       </div>
       <div class="sub-note">
-        <span class="mono">vs total assets</span>
+        <span class="mono">총자산 대비 9월 지출</span>
         <div class="bar"><i></i></div>
         <span class="data">4.2%</span>
       </div>
     </div>
 
     <div class="panel deep">
-      <div class="p-head"><span class="mono">입출금 = budget × 4</span><span class="mono r">800,000 / mo</span></div>
-      <div class="blocks mono"><i>Oct</i><i>Nov</i><i>Dec</i><i>Jan</i></div>
+      <div class="p-head"><span class="mono">입출금 = 예산 4개월</span><span class="mono r">월 800,000</span></div>
+      <div class="blocks"><i>10월</i><i>11월</i><i>12월</i><i>1월</i></div>
     </div>
   </section>
 
   <!-- ================= 설정 ================= -->
   <section class="screen" id="s-set">
-    <div class="blob orb" style="width:320px;height:320px;right:-190px;top:-40px"></div>
-    <div class="topbar">
-      <button class="back mono" id="backBtn"><svg width="10" height="8" viewBox="0 0 10 8" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M10 4H1M4 1 1 4l3 3"/></svg>Back</button>
-      <span class="brand">OVERLAY<sup>TM</sup></span>
-    </div>
-    <div class="page-head">
-      <div class="lab">Settings</div>
-      <div class="val">설정</div>
-      <div class="meta">Profile · budget · privacy</div>
+    <div class="band" style="height:330px"></div>
+    <div class="on-band">
+      <div class="topbar">
+        <button class="back" id="backBtn"><svg width="10" height="8" viewBox="0 0 10 8" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M10 4H1M4 1 1 4l3 3"/></svg>뒤로</button>
+        <span class="brand">오버레이</span>
+      </div>
+      <div class="page-head">
+        <div class="lab">계정 관리</div>
+        <div class="val">설정</div>
+        <div class="meta">프로필 · 예산 · 개인정보</div>
+      </div>
     </div>
 
     <div class="panel solid">
       <div class="profile">
         <div class="avatar"><svg width="60" height="60"><use href="#avatar"/></svg></div>
-        <div><div class="nm js-name">지혜</div><div class="cap">프로필 사진 변경</div></div>
-        <button class="mono cta edit" style="height:26px;font-size:9.5px">Photo</button>
+        <div><div class="nm"><span class="js-name">지혜</span>님</div><div class="cap">청년 · 9월 예산 사용 중</div></div>
+        <button class="cta blue edit" style="height:28px;font-size:11px">사진 변경</button>
       </div>
     </div>
 
-    <div class="group-lab mono">Profile</div>
+    <div class="group-lab">프로필</div>
     <div class="panel list">
       <label class="item"><span class="k">이름</span><input type="text" id="inName" value="지혜" maxlength="10"></label>
       <label class="item"><span class="k">이메일</span><input type="email" value="jihye@example.com"></label>
       <label class="item"><span class="k">휴대폰</span><input type="tel" value="010-1234-5678"></label>
     </div>
 
-    <div class="group-lab mono">Budget</div>
+    <div class="group-lab">예산</div>
     <div class="panel list">
       <div class="item">
         <span class="k">월 예산<small>홈의 하루 금액에 반영</small></span>
@@ -650,13 +692,18 @@
           <button class="step" data-step="50000" aria-label="증가">+</button>
         </div>
       </div>
-      <div class="item"><span class="k">예산 시작일</span><span class="v data">매월 01 <span class="chev">›</span></span></div>
-      <div class="chips">
-        <span class="chip">배달</span><span class="chip">카페·간식</span><span class="chip">교통</span><span class="chip">구독</span><span class="chip">기타</span><span class="chip add mono" style="font-size:10px">+ Add</span>
+      <div class="item"><span class="k">예산 시작일</span><span class="v">매월 1일 <span class="chev">›</span></span></div>
+      <div class="cats">
+        <div class="cat-row"><i style="background:var(--b1)"></i>식비<small>배달 · 식사</small></div>
+        <div class="cat-row"><i style="background:var(--b2)"></i>카페·간식<small>커피 · 디저트</small></div>
+        <div class="cat-row"><i style="background:var(--b3)"></i>교통<small>대중교통 · 택시</small></div>
+        <div class="cat-row"><i style="background:var(--b4)"></i>문화·여가<small>구독 · 공연 · 취미</small></div>
+        <div class="cat-row"><i style="background:var(--b5);box-shadow:inset 0 0 0 1px rgba(17,49,162,.2)"></i>쇼핑<small>의류 · 온라인</small></div>
+        <div class="cat-row"><i style="background:#D5D8D2"></i>기타<small>생활 · 의료 · 경조사</small></div>
       </div>
     </div>
 
-    <div class="group-lab mono">Accounts · overlay</div>
+    <div class="group-lab">계좌 묶음</div>
     <div class="panel list">
       <div class="item"><span class="k">입출금<small>통합 보기에 포함</small></span><button class="sw on" aria-label="입출금 포함"></button></div>
       <div class="item"><span class="k">예적금<small>통합 보기에 포함</small></span><button class="sw on" aria-label="예적금 포함"></button></div>
@@ -664,7 +711,7 @@
       <div class="item"><span class="k">계좌 연결 추가</span><span class="chev">›</span></div>
     </div>
 
-    <div class="group-lab mono">Display · alerts</div>
+    <div class="group-lab">표시 · 알림</div>
     <div class="panel list">
       <div class="item"><span class="k">금액 가리기<small>화면의 금액을 흐리게 표시</small></span><button class="sw" id="swMask" aria-label="금액 가리기"></button></div>
       <div class="item"><span class="k">잔액 대신 하루 금액<small>홈 메인에 남은 예산 ÷ 남은 날</small></span><button class="sw on" aria-label="하루 금액 표시"></button></div>
@@ -672,7 +719,7 @@
       <div class="item"><span class="k">예산 속도 알림<small>기간보다 사용률이 앞설 때</small></span><button class="sw" aria-label="속도 알림"></button></div>
     </div>
 
-    <div class="group-lab mono">Privacy · security</div>
+    <div class="group-lab">개인정보 · 보안</div>
     <div class="panel list">
       <div class="item"><span class="k">Face ID 잠금</span><button class="sw on" aria-label="Face ID"></button></div>
       <div class="item"><span class="k">비밀번호 변경</span><span class="chev">›</span></div>
@@ -680,16 +727,16 @@
       <div class="item"><span class="k">개인정보 처리방침</span><span class="chev">›</span></div>
       <div class="item"><button class="danger">로그아웃</button></div>
     </div>
-    <div class="version mono">Overlay v1.0.0 · build 0918</div>
+    <div class="version mono">오버레이 v1.0.0</div>
   </section>
 
-  <!-- 탭바 -->
+  <!-- 떠 있는 알약형 내비게이션 -->
   <nav class="tabbar" id="tabbar">
     <div class="glow" id="glow"></div>
-    <button class="tab on" data-tab="0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/></svg><span class="mono">Today</span></button>
-    <button class="tab" data-tab="1"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 6h5c4 0 4 12 8 12h5"/><path d="M3 12h18"/><path d="M3 18h5c4 0 4-12 8-12h5"/></svg><span class="mono">Flow</span></button>
-    <button class="tab" data-tab="2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg><span class="mono">Adjust</span></button>
-    <button class="tab" data-tab="3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 13 9 5 9-5"/></svg><span class="mono">Assets</span></button>
+    <button class="tab on" data-tab="0" aria-label="오늘"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/></svg></button>
+    <button class="tab" data-tab="1" aria-label="지출 흐름"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 6h5c4 0 4 12 8 12h5"/><path d="M3 12h18"/><path d="M3 18h5c4 0 4-12 8-12h5"/></svg></button>
+    <button class="tab" data-tab="2" aria-label="조정"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
+    <button class="tab" data-tab="3" aria-label="자산"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 13 9 5 9-5"/></svg></button>
   </nav>
   <div class="home-ind"></div>
 </div>
@@ -710,12 +757,14 @@ const SANS = 'Pretendard, "Helvetica Neue", sans-serif';
 /* ---------- 데이터 ---------- */
 let BUDGET = 800000;
 const USED = 520000, DAY = 18, DAYS = 30, LEFT = 12;
+// 상위 5개 카테고리 + 기타. 배달은 식비의 세부 항목, 구독은 문화·여가의 세부 항목.
 const CATS = [
-  { k: '배달',      v: 180000, c: '#1131A2' },
+  { k: '식비',      v: 228000, c: '#1131A2', sub: '배달 180,000 · 식사 48,000', hint: '배달 180,000 포함' },
   { k: '카페·간식', v: 90000,  c: '#3A5BBF' },
   { k: '교통',      v: 62000,  c: '#6F93D4' },
-  { k: '구독',      v: 45000,  c: '#ADD0EC', fixed: true },
-  { k: '기타',      v: 143000, c: '#DCEAF6' },
+  { k: '문화·여가', v: 62000,  c: '#ADD0EC', sub: '구독 45,000 · 여가 17,000' },
+  { k: '쇼핑',      v: 38000,  c: '#DCEAF6' },
+  { k: '기타',      v: 40000,  c: '#D5D8D2', sub: '생활 · 의료 · 경조사 등' },
 ];
 
 /* ---------- 화면 전환 ---------- */
@@ -724,6 +773,20 @@ const screens = [...document.querySelectorAll('.screen')];   // 0 홈 · 1 흐�
 const tabs = [...document.querySelectorAll('.tab')];
 const glow = document.getElementById('glow');
 let current = 0, lastTab = 0;
+
+// 상태바 아래가 그라디언트 섹션이면 흰색 상태바
+function syncStatus() {
+  const s = screens[current], y = s.scrollTop + 30;
+  let dark = false;
+  s.querySelectorAll('.band, .band-sec').forEach(b => {
+    const top = b.offsetTop, h = b.offsetHeight;
+    const from = b.classList.contains('band') ? -1 : top + h * .14;
+    if (y > from && y < top + h * (b.classList.contains('band') ? .5 : .8)) dark = true;
+  });
+  phone.classList.toggle('sb-light', dark);
+}
+screens.forEach(s => s.addEventListener('scroll', () => { if (s.classList.contains('active')) syncStatus(); }, { passive: true }));
+
 function go(i) {
   current = i;
   if (i < 4) lastTab = i;
@@ -732,6 +795,7 @@ function go(i) {
   if (i < 4) glow.style.transform = `translateX(${i * 100}%)`;
   phone.classList.toggle('in-set', i === 4);
   screens[i].scrollTop = 0;
+  syncStatus();
   if (i === 0) animateRings();
 }
 tabs.forEach(t => t.addEventListener('click', () => go(+t.dataset.tab)));
@@ -766,10 +830,10 @@ for (let d = 1; d <= DAYS; d++) {
   days.appendChild(i);
 }
 
-/* ---------- 흐름: 예산 → 항목 산키 ---------- */
+/* ---------- 흐름: 예산 → 카테고리 산키 ---------- */
 (function sankey() {
   const svg = document.getElementById('sankey');
-  const W = 314, H = 390, GAP = 9, top = 4;
+  const W = 314, H = 390, GAP = 8, top = 4;
   const nodes = [...CATS, { k: '남은 예산', v: 800000 - USED, rest: true }];
   const scale = (H - top * 2 - GAP * (nodes.length - 1)) / 800000;
   const x0 = 18, x1 = 126, nw = 10;
@@ -784,8 +848,8 @@ for (let d = 1; d <= DAYS; d++) {
   el('stop', { offset: 1, 'stop-color': '#1131A2' }, lg);
 
   el('rect', { x: x0 - nw, y: leftTop, width: nw, height: leftH, rx: 5, fill: 'url(#lb)' }, svg);
-  el('text', { x: x0 - nw / 2, y: H / 2, 'font-size': 8, fill: '#fff', 'letter-spacing': '.18em', 'font-family': MONO,
-    transform: `rotate(-90 ${x0 - nw / 2} ${H / 2})`, 'text-anchor': 'middle', 'dominant-baseline': 'middle' }, svg, 'BUDGET 800,000');
+  el('text', { x: x0 - nw / 2, y: H / 2, 'font-size': 9, fill: '#fff', 'letter-spacing': '.1em', 'font-family': SANS,
+    transform: `rotate(-90 ${x0 - nw / 2} ${H / 2})`, 'text-anchor': 'middle', 'dominant-baseline': 'middle' }, svg, '예산 800,000');
 
   let ly = leftTop, ry = top;
   const items = [];
@@ -793,15 +857,16 @@ for (let d = 1; d <= DAYS; d++) {
     const h = n.v * scale, mx = (x0 + x1) / 2;
     const g = el('g', {}, svg);
     const d = `M${x0},${ly} C${mx},${ly} ${mx},${ry} ${x1},${ry} L${x1},${ry + h} C${mx},${ry + h} ${mx},${ly + h} ${x0},${ly + h} Z`;
-    const lk = el('path', { d, class: 'lk', fill: n.rest ? 'url(#hatch)' : n.c, opacity: n.rest ? .9 : .34 }, g);
+    const lk = el('path', { d, class: 'lk', fill: n.rest ? 'url(#hatch)' : n.c, opacity: n.rest ? .9 : .36 }, g);
     const nd = el('rect', { x: x1, y: ry, width: nw, height: h, rx: Math.min(4, h / 2), class: 'nd',
       fill: n.rest ? '#fff' : n.c, stroke: n.rest ? '#6F93D4' : 'none', 'stroke-width': 1, 'stroke-dasharray': n.rest ? '2 2' : '' }, g);
     const cy = ry + h / 2, big = h > 36, tx = x1 + nw + 12;
     const tg = el('g', { class: 'nd' }, g);
-    el('text', { x: tx, y: big ? cy - 4 : cy + 4, 'font-size': 12, fill: 'rgba(21,32,15,.58)', 'font-family': SANS }, tg, n.k);
-    el('text', { x: big ? tx : W - (n.rest ? 0 : 42), y: big ? cy + 14 : cy + 4, 'font-size': 13, 'font-weight': 500,
+    el('text', { x: tx, y: big ? cy - (n.hint ? 10 : 4) : cy + 4, 'font-size': 12, fill: 'rgba(21,32,15,.62)', 'font-family': SANS }, tg, n.k);
+    el('text', { x: big ? tx : W - (n.rest ? 0 : 42), y: big ? cy + (n.hint ? 8 : 14) : cy + 4, 'font-size': 13, 'font-weight': 500,
       fill: n.rest ? '#1131A2' : '#15200F', 'font-family': MONO, 'text-anchor': big ? 'start' : 'end', class: 'm' }, tg, fmt(n.v));
-    if (!n.rest) el('text', { x: W, y: big ? cy + 14 : cy + 4, 'font-size': 10, fill: 'rgba(21,32,15,.38)', 'text-anchor': 'end', 'font-family': MONO }, tg, (n.v / USED * 100).toFixed(1) + '%');
+    if (n.hint) el('text', { x: tx, y: cy + 24, 'font-size': 10.5, fill: '#3A5BBF', 'font-family': SANS }, tg, n.hint);
+    if (!n.rest) el('text', { x: W, y: big ? cy + (n.hint ? 8 : 14) : cy + 4, 'font-size': 10, fill: 'rgba(21,32,15,.4)', 'text-anchor': 'end', 'font-family': MONO }, tg, (n.v / USED * 100).toFixed(1) + '%');
     items.push([lk, nd, tg]);
     g.addEventListener('click', () => focus(idx));
     ly += h; ry += h + GAP;
@@ -817,11 +882,11 @@ for (let d = 1; d <= DAYS; d++) {
   }
   function render() {
     if (cur < 0) {
-      detail.innerHTML = `<div><div class="n">항목을 눌러 보세요</div><div class="s">사용 520,000 · 남은 280,000</div></div><span class="thin">65%</span>`;
+      detail.innerHTML = `<div><div class="n">카테고리를 눌러 보세요</div><div class="s">사용 520,000 · 남은 280,000</div></div><span class="thin">65%</span>`;
       return;
     }
     const n = nodes[cur];
-    const sub = n.rest ? `남은 ${LEFT}일 · 하루 ${fmt(n.v / LEFT)}` : n.fixed ? '매달 고정 결제' : `1–18일 하루 평균 ${fmt(n.v / DAY)}`;
+    const sub = n.rest ? `남은 ${LEFT}일 · 하루 ${fmt(n.v / LEFT)}원` : n.sub ? n.sub : `1–18일 하루 평균 ${fmt(n.v / DAY)}원`;
     const pct = n.rest ? (n.v / 800000 * 100).toFixed(0) + '%' : (n.v / USED * 100).toFixed(1) + '%';
     detail.innerHTML = `<div><div class="n">${n.k}</div><div class="s">${sub}</div></div><span class="thin">${pct}</span>`;
   }
@@ -830,7 +895,8 @@ for (let d = 1; d <= DAYS; d++) {
 
 /* ---------- 조정: 누적 페이스 + 슬라이더 ---------- */
 (function plan() {
-  const other = (62000 + 143000) / DAY;       // 교통 + 기타: 지금까지 하루 평균 유지, 구독은 월 고정
+  // 배달·카페·구독을 뺀 나머지(식사·교통·여가·쇼핑·기타)는 지금까지의 하루 평균 유지, 구독은 월 고정
+  const other = (USED - 180000 - 90000 - 45000) / DAY;
   const B = 800000;
   const rDel = document.getElementById('rDel'), rCafe = document.getElementById('rCafe');
   const svg = document.getElementById('pace');
@@ -846,17 +912,17 @@ for (let d = 1; d <= DAYS; d++) {
   el('stop', { offset: 0, 'stop-color': '#ADD0EC', 'stop-opacity': .6 }, pg);
   el('stop', { offset: 1, 'stop-color': '#ADD0EC', 'stop-opacity': 0 }, pg);
 
-  el('rect', { x: X(DAY), y: pt, width: X(DAYS) - X(DAY), height: H - pt - pb, fill: 'rgba(220,234,246,.4)', rx: 8 }, svg);
+  el('rect', { x: X(DAY), y: pt, width: X(DAYS) - X(DAY), height: H - pt - pb, fill: 'rgba(220,234,246,.45)', rx: 8 }, svg);
   el('line', { x1: 0, x2: W, y1: Y(B), y2: Y(B), stroke: '#15200F', 'stroke-opacity': .45, 'stroke-width': 1, 'stroke-dasharray': '2 4' }, svg);
-  el('text', { x: 0, y: Y(B) - 7, 'font-size': 9, 'letter-spacing': '.12em', fill: 'rgba(21,32,15,.5)', 'font-family': MONO }, svg, 'BUDGET 800,000');
+  el('text', { x: 0, y: Y(B) - 7, 'font-size': 10, fill: 'rgba(21,32,15,.55)', 'font-family': SANS }, svg, '예산 800,000');
   el('path', { d: `M${X(0)},${Y(0)} L${X(DAY)},${Y(USED)} L${X(DAY)},${Y(0)} Z`, fill: 'url(#ag)' }, svg);
   el('path', { d: `M${X(0)},${Y(0)} L${X(DAY)},${Y(USED)}`, stroke: '#1131A2', 'stroke-width': 2, fill: 'none' }, svg);
   const projArea = el('path', { fill: 'url(#pg)' }, svg);
   const projLine = el('path', { stroke: '#3A5BBF', 'stroke-width': 1.5, 'stroke-dasharray': '4 4', fill: 'none' }, svg);
-  const endBox = el('rect', { width: 10, height: 10, fill: '#fff', stroke: '#3A5BBF', 'stroke-width': 1 }, svg);
+  const endDot = el('circle', { r: 5, fill: '#fff', stroke: '#3A5BBF', 'stroke-width': 1.5 }, svg);
   el('circle', { cx: X(DAY), cy: Y(USED), r: 5, fill: '#1131A2', stroke: '#fff', 'stroke-width': 2.5 }, svg);
-  [[0, '01', 'start'], [DAY, 'TODAY', 'middle'], [DAYS, '30', 'end']].forEach(([d, t, a]) =>
-    el('text', { x: X(d), y: H - 4, 'font-size': 9, 'letter-spacing': '.1em', fill: d === DAY ? '#1131A2' : 'rgba(21,32,15,.38)', 'text-anchor': a, 'font-family': MONO }, svg, t));
+  [[0, '1일', 'start'], [DAY, '오늘', 'middle'], [DAYS, '30일', 'end']].forEach(([d, t, a]) =>
+    el('text', { x: X(d), y: H - 4, 'font-size': 10, fill: d === DAY ? '#1131A2' : 'rgba(21,32,15,.4)', 'text-anchor': a, 'font-family': SANS }, svg, t));
 
   const projV = document.getElementById('projV'), projD = document.getElementById('projD');
   const presets = { del: [rDel, 7800, 10000], cafe: [rCafe, 3000, 5000] };
@@ -871,15 +937,15 @@ for (let d = 1; d <= DAYS; d++) {
     const end = USED + LEFT * (+rDel.value + +rCafe.value + other);
     projArea.setAttribute('d', `M${X(DAY)},${Y(USED)} L${X(DAYS)},${Y(end)} L${X(DAYS)},${Y(0)} L${X(DAY)},${Y(0)} Z`);
     projLine.setAttribute('d', `M${X(DAY)},${Y(USED)} L${X(DAYS)},${Y(end)}`);
-    endBox.setAttribute('x', X(DAYS) - 5); endBox.setAttribute('y', Y(end) - 5);
+    endDot.setAttribute('cx', X(DAYS) - 5); endDot.setAttribute('cy', Y(end));
     projV.textContent = fmt(end);
     const diff = end - B;
-    projD.textContent = Math.abs(diff) < 500 ? 'Equal to budget' : `Budget ${diff > 0 ? '+' : '−'}${fmt(Math.abs(diff))}`;
+    projD.textContent = Math.abs(diff) < 500 ? '예산과 같아요' : `예산보다 ${fmt(Math.abs(diff))}원 ${diff > 0 ? '많아요' : '적어요'}`;
     btns.forEach(b => {
       const [inp, v] = presets[b.dataset.preset];
       const on = +inp.value === v;
       b.classList.toggle('on', on);
-      b.textContent = on ? 'Undo' : 'Try';
+      b.textContent = on ? '되돌리기' : '적용';
     });
   }
   rDel.addEventListener('input', update); rCafe.addEventListener('input', update);
@@ -894,22 +960,26 @@ for (let d = 1; d <= DAYS; d++) {
 /* ---------- 자산: 유리병 레이어 + 9월 히트맵 ---------- */
 (function assets() {
   const jar = document.getElementById('jar');
+  const inner = jar.querySelector('.inner');
   const vals = [8100000, 3200000, 1100000];           // 예적금(바닥) · 입출금 · 투자
-  const TOTAL = 12400000, JH = 320, pad = 8;
+  const TOTAL = 12400000;
   const lays = [...jar.querySelectorAll('.lay')];
   const tags = [...document.querySelectorAll('.tag')];
-  const heights = vals.map(v => (JH - 40) * v / TOTAL);
+  const OFF = 8 + 1.5;                                 // 벽 두께 + 테두리
+  const IH = 320 - OFF * 2, IW = 164 - OFF * 2;
+  const LIQ = IH - IW / 2 - 4;                        // 액체는 윗면 돔(안쪽 반지름) 아래까지만: 수면이 곧은 벽과 만남
+  const heights = vals.map(v => LIQ * v / TOTAL);
   function layout(split) {
-    const gap = split ? 12 : 0;
-    let b = pad; const centers = [];
+    const gap = split ? 10 : 0;
+    let b = 0; const centers = [];
     lays.forEach((l, i) => {
       const h = split ? heights[i] - gap * 2 / 3 : heights[i];
       l.style.height = h + 'px'; l.style.bottom = b + 'px';
-      centers[i] = JH - (b + h / 2); b += h + gap;
+      centers[i] = OFF + IH - (b + h / 2); b += h + gap;
     });
     jar.classList.toggle('split', split);
-    const pos = [centers[2], centers[1], centers[0]].map(c => c - 10);
-    pos[0] = Math.min(pos[0], pos[1] - 70);
+    const pos = [centers[2], centers[1], centers[0]].map(c => c - 12);
+    pos[0] = Math.min(pos[0], pos[1] - 72);
     tags.forEach(t => { t.style.top = pos[[2, 1, 0].indexOf(+t.dataset.i)] + 'px'; });
   }
   layout(false);
@@ -922,18 +992,19 @@ for (let d = 1; d <= DAYS; d++) {
   const DAILY = [38000, 21500, 17000, 44000, 52000, 31000, 12500, 24000, 19000, 58000, 36500, 41000, 27000, 9500, 22000, 18000, 26000, 23000];
   const heat = document.getElementById('heat'), sel = document.getElementById('heatSel');
   const level = v => v < 15000 ? 1 : v < 25000 ? 2 : v < 35000 ? 3 : v < 45000 ? 4 : 5;
-  const WD = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+  const WD = ['월', '화', '수', '목', '금', '토', '일'];
   const offset = 1;
   for (let i = 0; i < offset; i++) heat.appendChild(document.createElement('span'));
   let selBtn = null;
   const show = (d, btn) => {
     if (selBtn) selBtn.classList.remove('sel');
     selBtn = btn; btn.classList.add('sel');
-    sel.textContent = `${WD[(d - 1 + offset) % 7]} ${String(d).padStart(2, '0')} · ${fmt(DAILY[d - 1])}`;
+    sel.textContent = `${d}일 ${WD[(d - 1 + offset) % 7]} · ${fmt(DAILY[d - 1])}원`;
   };
   for (let d = 1; d <= DAYS; d++) {
     const b = document.createElement('button');
-    b.textContent = String(d).padStart(2, '0');
+    b.textContent = d;
+    b.setAttribute('aria-label', `9월 ${d}일`);
     if (d <= DAY) {
       b.className = 'l' + level(DAILY[d - 1]) + (d === DAY ? ' today' : '');
       b.addEventListener('click', () => show(d, b));
@@ -964,6 +1035,7 @@ for (let d = 1; d <= DAYS; d++) {
   document.querySelectorAll('.sw').forEach(s => s.addEventListener('click', () => { s.classList.toggle('on'); toast(); }));
   document.getElementById('swMask').addEventListener('click', e => phone.classList.toggle('masked', e.currentTarget.classList.contains('on')));
 })();
+syncStatus();
 </script>
 </body>
 </html>
