@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Lime Ledger</title>
+<title>라임 가계부</title>
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
 <link href="https://api.fontshare.com/v2/css?f[]=general-sans@300,400,500,600&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
@@ -126,6 +126,7 @@
   .chips::-webkit-scrollbar { display: none; }
   .chip { height: 40px; padding: 0 16px; border-radius: 999px; background: var(--white); font-size: 14px; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; transition: background .25s, color .25s; flex: none; }
   .chip .sw { width: 8px; height: 8px; border-radius: 50%; }
+  #wfChips .chip { padding: 0 13px; }
   .chip.on { background: var(--black); color: #fff; }
   .chip.on-l { background: var(--lime); color: var(--black); }
 
@@ -180,7 +181,7 @@
   .nav button { height: 48px; min-width: 48px; border-radius: 999px; color: #fff; display: flex; align-items: center; justify-content: center; padding: 0 13px; transition: background .35s var(--ease), color .35s, padding .35s var(--ease); }
   .nav button span { max-width: 0; overflow: hidden; white-space: nowrap; font-size: 14px; font-weight: 500; transition: max-width .4s var(--ease), margin .4s var(--ease); }
   .nav button.on { background: var(--lime); color: var(--black); padding: 0 18px 0 14px; }
-  .nav button.on span { max-width: 80px; margin-left: 8px; }
+  .nav button.on span { max-width: 60px; margin-left: 8px; }
 
   /* ================= Flow ================= */
   .big-line { display: flex; align-items: baseline; gap: 10px; margin: 18px 20px 0; }
@@ -245,7 +246,8 @@
   .tile.sm .in b { font-size: 19px; }
   .tile.sm .in { padding: 11px 10px; }
   .tile.sm .in small { font-size: 11px; white-space: nowrap; letter-spacing: -.02em; }
-  .tile.sel { box-shadow: inset 0 0 0 2px var(--black); }
+  .tile::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 0 var(--black); transition: box-shadow .25s var(--ease); pointer-events: none; z-index: 2; }
+  .tile.sel::after { box-shadow: inset 0 0 0 2.5px var(--black); }
   .tm-detail { display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 6px 6px 6px 18px; background: var(--black); color: #fff; border-radius: 999px; min-height: 60px; }
   .tm-detail .t { flex: 1; font-size: 13px; line-height: 1.4; }
   .tm-detail .t .m2 { color: var(--mute-d); }
@@ -260,15 +262,12 @@
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px 4px; }
   .cal-grid .wd { text-align: center; font-size: 11px; opacity: .55; padding-bottom: 4px; }
   .day { height: 50px; border-radius: 999px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 15px; position: relative; transition: background .25s, color .25s; }
-  .day .sp { border-radius: 50%; background: var(--black); }
-  .day .zero { width: 7px; height: 7px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--black); }
-  .day .plan { width: 7px; height: 7px; border-radius: 50%; background: var(--lav); }
+  .day.zero { box-shadow: inset 0 0 0 1.5px rgba(13,13,13,.45); }
+  .day .cap { font-size: 9px; opacity: .6; letter-spacing: -.02em; }
   .day.fut { opacity: .38; }
-  .day.fut.hasplan { opacity: 1; }
-  .day.fut.hasplan .n { opacity: .38; }
-  .day.today:not(.sel) { box-shadow: inset 0 0 0 1.5px var(--black); }
-  .day.sel { background: var(--black); color: #fff; }
-  .day.sel .sp, .day.sel .zero { display: none; }
+  .day.today:not(.sel) { box-shadow: inset 0 0 0 2px var(--black); }
+  .day.sel { background: var(--black) !important; color: #fff; }
+  .day.sel .cap { display: none; }
   .day .ck { display: none; color: var(--lime); }
   .day.sel .ck { display: block; }
   .day .ck svg { width: 14px; height: 14px; stroke-width: 2; }
@@ -277,27 +276,46 @@
   .cal-foot .t span { color: var(--mute-d); display: block; font-size: 12px; margin-top: 2px; }
   .cal-foot .v { height: 48px; border-radius: 999px; background: var(--lime); color: var(--black); padding: 0 18px; display: flex; align-items: center; font-size: 17px; font-weight: 500; }
   .cal-leg { display: flex; gap: 14px; font-size: 11px; margin: 12px 4px 0; opacity: .7; align-items: center; }
-  .cal-leg i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; vertical-align: 0; }
+  .cal-leg i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 5px; vertical-align: -2px; }
+  .cal-leg .grad { display: inline-block; width: 64px; height: 12px; border-radius: 999px; margin: 0 6px; vertical-align: -2px; background: linear-gradient(90deg, rgba(255,255,255,.2), #fff); box-shadow: inset 0 0 0 1px rgba(13,13,13,.08); }
 
   /* ================= Assets ================= */
   .asset-hero { display: flex; align-items: center; gap: 12px; margin: 18px 20px 0; }
   .asset-hero .n { font-size: 44px; font-weight: 300; letter-spacing: -.05em; line-height: 1; flex: 1; }
   .asset-hero .n .cur { font-size: 18px; }
-  .layers { position: relative; height: 236px; margin-top: 16px; overflow: hidden; }
+  .layers { position: relative; height: 250px; margin-top: 12px; overflow: hidden; }
+  .deck-scroll { position: absolute; inset: 0; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; z-index: 200; scrollbar-width: none; cursor: grab; }
+  .deck-scroll::-webkit-scrollbar { display: none; }
+  .deck-scroll span { flex: 0 0 100%; scroll-snap-align: center; }
+  .layers.split .deck-scroll { display: none; }
+  .deck-nav { display: flex; align-items: center; gap: 10px; margin-top: 6px; font-size: 12px; color: var(--mute-d); transition: opacity .3s; }
+  .deck-nav .dots { display: flex; gap: 6px; }
+  .deck-nav .dots button { width: 8px; height: 8px; border-radius: 999px; background: rgba(255,255,255,.25); transition: width .3s var(--ease), background .3s; }
+  .deck-nav .dots button.on { width: 22px; background: var(--lime); }
+  .deck-nav .hint { margin-left: auto; }
+  .deck-nav.off { opacity: 0; pointer-events: none; }
   .lay {
-    position: absolute; left: 50%; top: 50%; width: 176px; height: 108px; border-radius: 26px; padding: 14px 16px;
-    display: flex; flex-direction: column; justify-content: space-between; color: #fff;
-    border: 1px solid rgba(255,255,255,.22);
-    backdrop-filter: blur(10px) saturate(1.4); -webkit-backdrop-filter: blur(10px) saturate(1.4);
-    transition: transform .7s var(--ease), opacity .5s;
+    position: absolute; left: 50%; top: 50%; width: 272px; height: 158px; border-radius: 28px; padding: 16px 18px;
+    display: flex; flex-direction: column; color: #fff; overflow: hidden;
+    border: 1px solid rgba(255,255,255,.2);
+    backdrop-filter: blur(14px) saturate(1.4); -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    transition: transform .6s var(--ease), opacity .4s, width .5s var(--ease), height .5s var(--ease);
   }
-  .lay small { font-size: 11px; opacity: .75; }
-  .lay b { font-size: 15px; font-weight: 500; }
-  .lay .ty { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  .layers.scrolling .lay { transition: width .5s, height .5s; }
+  .layers.split .lay { width: 148px; height: 96px; }
+  .lay .ty { display: flex; align-items: center; gap: 6px; font-size: 12px; opacity: .85; }
   .lay .ty i { width: 8px; height: 8px; border-radius: 50%; }
-  .lay.total { background: var(--lime); color: var(--black); border: 0; opacity: 0; width: 214px; height: 120px; z-index: 9; }
-  .lay.total b { font-size: 22px; font-weight: 400; letter-spacing: -.03em; }
-  .layers.merged .lay.total { opacity: 1; }
+  .lay > b { font-size: 15px; font-weight: 500; margin-top: 4px; }
+  .lay .det { margin-top: auto; transition: opacity .3s; }
+  .layers.split .lay .det { opacity: 0; }
+  .lay .bal { font-size: 28px; font-weight: 300; letter-spacing: -.045em; line-height: 1; }
+  .lay .bal .cur { font-size: 13px; }
+  .lay .row { display: flex; justify-content: space-between; font-size: 11px; opacity: .75; margin-top: 8px; }
+  .lay .mbar { height: 6px; border-radius: 999px; background: rgba(255,255,255,.14); margin-top: 8px; overflow: hidden; display: flex; gap: 2px; }
+  .lay .mbar span { border-radius: 999px; }
+  .lay.total { background: var(--lime); color: var(--black); border: 0; }
+  .lay.total .mbar { background: rgba(13,13,13,.1); }
+  .layers.split .lay.total { opacity: 0 !important; }
   .seg { display: flex; padding: 4px; border-radius: 999px; background: rgba(255,255,255,.08); gap: 4px; }
   .seg button { height: 40px; padding: 0 16px; border-radius: 999px; font-size: 13px; color: #fff; transition: background .3s, color .3s; }
   .seg button.on { background: var(--lime); color: var(--black); }
@@ -402,18 +420,18 @@
   <section class="screen ink on" id="home" data-dark="1">
     <div class="hdr">
       <div class="avatar">J</div>
-      <span class="pill glass" style="color:#fff">Sun, Sep 20</span>
+      <span class="pill glass" style="color:#fff">9월 20일 일요일</span>
       <span class="sp"></span>
       <button class="ibtn glass" style="color:#fff" data-act="mask" aria-label="금액 가리기"><svg class="i"><use href="#i-eye"/></svg></button>
       <button class="ibtn glass" style="color:#fff" aria-label="알림"><svg class="i"><use href="#i-bell"/></svg><span class="dot"></span></button>
     </div>
 
-    <h1 class="title">September<br><span class="dim">10 days to go</span></h1>
+    <h1 class="title">9월,<br><span class="dim">열흘 남았어요</span></h1>
 
     <div class="hero-wrap">
       <div class="hero">
         <div class="notch tr"><button class="ibtn l" data-go="budget" aria-label="예산 보기"><svg class="i"><use href="#i-arrow"/></svg></button></div>
-        <span class="tag b">Per day · D-10</span>
+        <span class="tag b">하루 · D-10</span>
         <div class="hero-num num money"><span id="heroNum">26,000</span><span class="cur">₩</span></div>
         <div class="hero-cap"><span>남은 예산 <span class="money">260,000 ₩</span> ÷ 10일</span><span>9.21 — 9.30</span></div>
         <div class="pace">
@@ -427,7 +445,7 @@
     </div>
 
     <div class="sheet">
-      <div class="sec-h"><h2>Top spend</h2><small>9.1 — 9.20</small></div>
+      <div class="sec-h"><h2>많이 쓴 곳</h2><small>9.1 — 9.20</small></div>
       <div class="card c-white bubble-card">
         <svg class="bub" id="bub" viewBox="0 0 334 240"></svg>
         <div class="bub-foot">
@@ -439,15 +457,15 @@
       <div class="bento">
         <div class="card c-black" data-go="assets">
           <div class="notch tr"><button class="ibtn w" aria-label="자산 보기"><svg class="i"><use href="#i-arrow"/></svg></button></div>
-          <span class="lbl" style="opacity:.6">Assets</span>
-          <div class="mini-big num money">12.4M<span class="cur">₩</span></div>
+          <span class="lbl" style="opacity:.6">총자산</span>
+          <div class="mini-big num money">1,240<span class="cur">만₩</span></div>
           <div class="segbar"><span style="flex:25.8;background:#fff"></span><span style="flex:65.3;background:var(--lime)"></span><span style="flex:8.9;background:var(--lav)"></span></div>
-          <div class="mini-cap">5 accounts, one view</div>
+          <div class="mini-cap">계좌 5개를 하나로</div>
         </div>
         <div class="card c-lav" data-go="coach">
           <span class="ibtn b" style="width:40px;height:40px"><svg class="i" style="width:20px;height:20px"><use href="#i-spark"/></svg></span>
           <div class="mini-big num" style="font-size:34px">+45,000<span class="cur">₩</span></div>
-          <div class="mini-cap" style="opacity:.8">3 ideas · last 10 days</div>
+          <div class="mini-cap" style="opacity:.8">남은 10일 · 제안 3가지</div>
         </div>
       </div>
     </div>
@@ -456,8 +474,8 @@
   <!-- ============================ FLOW ============================ -->
   <section class="screen" id="flow">
     <div class="hdr">
-      <h1 class="title" style="margin:10px 4px 0;flex:1">Where it<br><span class="dim">all went</span></h1>
-      <span class="pill c-white" style="background:#fff;align-self:flex-start;margin-top:14px">Sep <svg class="i" style="width:16px;height:16px"><use href="#i-down"/></svg></span>
+      <h1 class="title" style="margin:10px 4px 0;flex:1">돈이 흘러간<br><span class="dim">길</span></h1>
+      <span class="pill c-white" style="background:#fff;align-self:flex-start;margin-top:14px">9월 <svg class="i" style="width:16px;height:16px"><use href="#i-down"/></svg></span>
     </div>
     <div class="big-line"><span class="n num money">540,000<span class="cur">₩</span></span><small>3개 계좌 → 6개 항목</small></div>
     <p class="sub" style="margin-top:6px">나눠 쓰는 계좌는 그대로, 흐름만 한 장에 겹쳐 봤어요.</p>
@@ -469,7 +487,7 @@
       <div class="sk-note"><span id="skNote">계좌를 눌러 흐름을 따라가 보세요</span><span>단위 1,000 ₩</span></div>
     </div>
 
-    <div class="sec-h"><h2>This week</h2><small>하루 평균 27,000 ₩</small></div>
+    <div class="sec-h"><h2>이번 주</h2><small>하루 평균 27,000 ₩</small></div>
     <div class="card c-white week">
       <div class="bars" id="bars"></div>
       <div class="dchips" id="dchips"></div>
@@ -479,13 +497,13 @@
 
   <!-- ============================ BUDGET ============================ -->
   <section class="screen ink" id="budget" data-dark="1">
-    <h1 class="title" style="margin-top:14px">Budget,<br><span class="dim">September</span></h1>
+    <h1 class="title" style="margin-top:14px">9월<br><span class="dim">예산</span></h1>
     <div class="budget-top">
-      <div><div class="n num money">260,000<span class="cur">₩</span></div><small>left of 800,000 ₩ · 변동 지출 기준</small></div>
-      <div class="dball glass"><div>10<small>days</small></div></div>
+      <div><div class="n num money">260,000<span class="cur">₩</span></div><small>800,000 ₩ 중 남은 금액 · 변동 지출 기준</small></div>
+      <div class="dball glass"><div>10<small>일 남음</small></div></div>
     </div>
 
-    <div class="sec-h"><h2>By category</h2><small>채워진 만큼 사용</small></div>
+    <div class="sec-h"><h2>카테고리별</h2><small>채워진 만큼 사용</small></div>
     <div class="card c-white tm-card">
       <div class="tm" id="tm"></div>
       <div class="tm-detail" id="tmDetail"></div>
@@ -493,19 +511,20 @@
 
     <div class="card c-lime cal" id="cal">
       <div class="cal-h">
-        <h3>September<small>날짜를 눌러 그날의 지출을 확인</small></h3>
+        <h3>9월<small>날짜를 눌러 그날의 지출을 확인</small></h3>
         <button class="ibtn" aria-label="이전 달"><svg class="i"><use href="#i-left"/></svg></button>
         <button class="ibtn" aria-label="다음 달"><svg class="i"><use href="#i-right"/></svg></button>
       </div>
       <div class="cal-grid" id="calGrid"></div>
-      <div class="cal-leg"><span><i style="background:var(--black)"></i>지출 크기</span><span><i style="box-shadow:inset 0 0 0 1.5px var(--black)"></i>무지출</span><span><i style="box-shadow:inset 0 0 0 1.5px var(--black);border-radius:50%"></i>오늘</span></div>
+      <div class="cal-leg"><span>적게<span class="grad"></span>많이 · 흰색이 밝을수록 많이 쓴 날</span></div>
+      <div class="cal-leg" style="margin-top:6px"><span><i style="box-shadow:inset 0 0 0 1.5px rgba(13,13,13,.45)"></i>무지출</span><span><i style="box-shadow:inset 0 0 0 2px var(--black)"></i>오늘</span><span><i style="background:var(--black)"></i>선택한 날</span></div>
       <div class="cal-foot" id="calFoot"></div>
     </div>
   </section>
 
   <!-- ============================ ASSETS ============================ -->
   <section class="screen" id="assets">
-    <h1 class="title" style="margin-top:14px">All in<br><span class="dim">one view</span></h1>
+    <h1 class="title" style="margin-top:14px">내 자산<br><span class="dim">한눈에</span></h1>
     <div class="asset-hero">
       <div class="n num money">12,400,000<span class="cur">₩</span></div>
       <button class="ibtn w" data-act="mask" aria-label="금액 가리기"><svg class="i"><use href="#i-eye"/></svg></button>
@@ -514,33 +533,34 @@
 
     <div class="card c-black" style="margin-top:18px;padding:18px 18px 16px">
       <div style="display:flex;align-items:center;justify-content:space-between">
-        <span class="lbl" style="opacity:.6">5 accounts</span>
-        <div class="seg" id="laySeg"><button data-m="split">Split</button><button data-m="merged" class="on">Overlay</button></div>
+        <span class="lbl" style="opacity:.6">연결된 계좌 5개</span>
+        <div class="seg" id="laySeg"><button data-m="split">나눠 보기</button><button data-m="merged" class="on">겹쳐 보기</button></div>
       </div>
-      <div class="layers merged" id="layers"></div>
+      <div class="layers" id="layers"></div>
+      <div class="deck-nav" id="deckNav"><span class="dots" id="deckDots"></span><span class="num" id="deckCnt">1 / 6</span><span class="hint">← 옆으로 넘겨 계좌별 내역 보기</span></div>
     </div>
 
-    <div class="sec-h"><h2>Composition</h2><small>● 1개 = 124,000 ₩</small></div>
+    <div class="sec-h"><h2>자산 구성</h2><small>● 1개 = 124,000 ₩</small></div>
     <div class="card c-white">
       <div class="wf-head">
-        <div><span class="lbl dim" id="wfLbl">예적금</span><div class="n num money" id="wfAmt" style="margin-top:6px"></div></div>
+        <div><span class="lbl dim" id="wfLbl">전체</span><div class="n num money" id="wfAmt" style="margin-top:6px"></div></div>
         <div class="p num" id="wfPct"></div>
       </div>
       <div class="waffle" id="waffle"></div>
-      <div class="chips" id="wfChips" style="padding:0;margin-top:16px"></div>
+      <div class="chips" id="wfChips" style="padding:0;margin-top:16px;gap:6px;justify-content:space-between"></div>
     </div>
 
     <div class="card c-lime runway">
-      <span class="tag b">Runway</span>
-      <div class="top" style="margin-top:18px"><span class="n num">4.0</span><small>months</small></div>
+      <span class="tag b">생활비 여력</span>
+      <div class="top" style="margin-top:18px"><span class="n num">4.0</span><small>개월</small></div>
       <p style="font-size:13px;margin-top:10px;opacity:.75">입출금 자산 3,200,000 ₩ ÷ 월 예산 800,000 ₩</p>
-      <div class="months"><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span></div>
+      <div class="months"><span>10월</span><span>11월</span><span>12월</span><span>1월</span></div>
     </div>
   </section>
 
   <!-- ============================ COACH ============================ -->
   <section class="screen" id="coach">
-    <h1 class="title" style="margin-top:14px">Ideas for<br><span class="dim">the last 10 days</span></h1>
+    <h1 class="title" style="margin-top:14px">남은 10일을 위한<br><span class="dim">작은 조정</span></h1>
     <p class="sub">꼭 하라는 게 아니라, 골랐을 때의 숫자를 미리 보여드려요.</p>
 
     <div class="card c-lime sim">
@@ -551,7 +571,7 @@
 
     <div id="ideas"></div>
 
-    <div class="sec-h"><h2>Ask</h2><small>AI 조언</small></div>
+    <div class="sec-h"><h2>AI 조언</h2><small>무엇이든 물어보세요</small></div>
     <div class="chat" id="chat"></div>
     <div class="chips prompt-chips" id="prompts"></div>
   </section>
@@ -563,11 +583,11 @@
   </form>
 
   <nav class="nav" id="nav">
-    <button data-tab="home" class="on"><svg class="i"><use href="#i-home"/></svg><span>Home</span></button>
-    <button data-tab="flow"><svg class="i"><use href="#i-flow"/></svg><span>Flow</span></button>
-    <button data-tab="budget"><svg class="i"><use href="#i-pie"/></svg><span>Budget</span></button>
-    <button data-tab="assets"><svg class="i"><use href="#i-layers"/></svg><span>Assets</span></button>
-    <button data-tab="coach"><svg class="i"><use href="#i-spark"/></svg><span>Coach</span></button>
+    <button data-tab="home" class="on"><svg class="i"><use href="#i-home"/></svg><span>홈</span></button>
+    <button data-tab="flow"><svg class="i"><use href="#i-flow"/></svg><span>흐름</span></button>
+    <button data-tab="budget"><svg class="i"><use href="#i-pie"/></svg><span>예산</span></button>
+    <button data-tab="assets"><svg class="i"><use href="#i-layers"/></svg><span>자산</span></button>
+    <button data-tab="coach"><svg class="i"><use href="#i-spark"/></svg><span>코치</span></button>
   </nav>
   <div class="home-ind" id="homeInd"></div>
 </div>
@@ -665,8 +685,8 @@
         <text x="${b.x}" y="${b.y - (b.r > 45 ? 10 : 6)}" font-size="${b.r > 45 ? 12 : 11}" opacity=".75">${b.name}</text>
         <text x="${b.x}" y="${b.y + fs(b.r) * .55 + 2}" font-size="${fs(b.r)}" font-weight="400" letter-spacing="-.5" class="money">${b.amt.toLocaleString('en-US')}<tspan font-size="${fs(b.r) * .5}" dx="2">₩</tspan></text>
       </g>`).join('') +
-    `<g class="lab"><rect x="36" y="36" width="104" height="28" rx="14" fill="#D9F84A"/>
-      <text x="88" y="54.5" text-anchor="middle" font-size="12" font-weight="500" fill="#0D0D0D">+40,000 ₩ vs Aug</text></g>
+    `<g class="lab"><rect x="30" y="36" width="122" height="28" rx="14" fill="#D9F84A"/>
+      <text x="91" y="54.5" text-anchor="middle" font-size="12" font-weight="500" fill="#0D0D0D">지난달보다 +40,000 ₩</text></g>
      <g class="lab" fill="#86867F" font-size="11"><text x="334" y="16" text-anchor="end">상위 4개 = 지출의 70%</text></g>`;
   const selBub = i => {
     $$('circle.b', bub).forEach((c, j) => c.classList.toggle('sel', i === j));
@@ -757,13 +777,13 @@
 
   /* ---------------- 지출 흐름: 주간 막대 + 세로 날짜 칩 + 거래 ---------------- */
   const WEEK = [
-    { d: 14, w: 'Mon', tx: [['배달 · 저녁', 'food', 'pay', '19:40', 21000], ['카페', 'cafe', 'life', '09:10', 5500], ['편의점', 'etc', 'life', '22:05', 5500]] },
-    { d: 15, w: 'Tue', tx: [['점심', 'food', 'life', '12:20', 9000], ['카페', 'cafe', 'life', '13:05', 4800], ['간식', 'cafe', 'pay', '16:30', 4200]] },
-    { d: 16, w: 'Wed', tx: [['배달 · 야식', 'food', 'pay', '23:10', 24000], ['생필품', 'shop', 'life', '18:50', 12500], ['카페', 'cafe', 'life', '10:00', 4500]] },
-    { d: 17, w: 'Thu', tx: [['점심', 'food', 'life', '12:10', 8500], ['카페', 'cafe', 'life', '12:55', 3500]] },
-    { d: 18, w: 'Fri', tx: [['영화', 'fun', 'life', '20:00', 15000], ['팝콘·간식', 'cafe', 'life', '19:45', 6500], ['택시', 'move', 'sal', '23:20', 4500]] },
-    { d: 19, w: 'Sat', tx: [['옷', 'shop', 'life', '15:30', 29000], ['배달 · 점심', 'food', 'pay', '12:40', 18000], ['카페', 'cafe', 'life', '16:20', 8000]] },
-    { d: 20, w: 'Sun', tx: [['배달 · 저녁', 'food', 'life', '18:30', 16500], ['편의점', 'etc', 'life', '11:15', 5500]] },
+    { d: 14, w: '월', tx: [['배달 · 저녁', 'food', 'pay', '19:40', 21000], ['카페', 'cafe', 'life', '09:10', 5500], ['편의점', 'etc', 'life', '22:05', 5500]] },
+    { d: 15, w: '화', tx: [['점심', 'food', 'life', '12:20', 9000], ['카페', 'cafe', 'life', '13:05', 4800], ['간식', 'cafe', 'pay', '16:30', 4200]] },
+    { d: 16, w: '수', tx: [['배달 · 야식', 'food', 'pay', '23:10', 24000], ['생필품', 'shop', 'life', '18:50', 12500], ['카페', 'cafe', 'life', '10:00', 4500]] },
+    { d: 17, w: '목', tx: [['점심', 'food', 'life', '12:10', 8500], ['카페', 'cafe', 'life', '12:55', 3500]] },
+    { d: 18, w: '금', tx: [['영화', 'fun', 'life', '20:00', 15000], ['팝콘·간식', 'cafe', 'life', '19:45', 6500], ['택시', 'move', 'sal', '23:20', 4500]] },
+    { d: 19, w: '토', tx: [['옷', 'shop', 'life', '15:30', 29000], ['배달 · 점심', 'food', 'pay', '12:40', 18000], ['카페', 'cafe', 'life', '16:20', 8000]] },
+    { d: 20, w: '일', tx: [['배달 · 저녁', 'food', 'life', '18:30', 16500], ['편의점', 'etc', 'life', '11:15', 5500]] },
   ];
   WEEK.forEach(w => w.total = w.tx.reduce((s, t) => s + t[4], 0));
   const MAXV = 60000, BAR_H = 150;
@@ -774,7 +794,7 @@
       <span class="tip num">${won(w.total)}</span>
       <span class="stem" style="height:${196 - 30 - h - 6}px"></span>
       <span class="bar" data-h="${h}"></span></div>`;
-  }).join('') + `<div class="avg" style="bottom:${27000 / MAXV * BAR_H}px"><span>avg</span></div>`;
+  }).join('') + `<div class="avg" style="bottom:${27000 / MAXV * BAR_H}px"><span>평균</span></div>`;
   dchips.innerHTML = WEEK.map((w, i) => `<button class="dchip" data-i="${i}"><small>${w.w}</small><b>${w.d}</b></button>`).join('');
   const srcName = { life: '생활비 통장', pay: '간편결제', sal: '월급 통장' };
   const selDay = i => {
@@ -820,15 +840,15 @@
   /* ---------------- 예산: 라임 달력 ---------------- */
   const grid = $('#calGrid');
   const FIRST = 2; // 2026년 9월 1일 = 화요일
-  const PLAN = {};
-  let html = ['S','M','T','W','T','F','S'].map(d => `<span class="wd">${d}</span>`).join('');
+  let html = ['일','월','화','수','목','금','토'].map(d => `<span class="wd">${d}</span>`).join('');
   for (let i = 0; i < FIRST; i++) html += '<span></span>';
   for (let d = 1; d <= 30; d++) {
     const v = DAILY[d - 1];
-    let mark = '';
-    if (d <= 20) mark = v === 0 ? '<span class="zero"></span>' : `<span class="sp" style="width:${4 + v / 55000 * 8}px;height:${4 + v / 55000 * 8}px"></span>`;
-    else if (PLAN[d]) mark = '<span class="plan"></span>';
-    html += `<button class="day ${d > 20 ? 'fut' : ''} ${PLAN[d] ? 'hasplan' : ''} ${d === 20 ? 'today' : ''}" data-d="${d}">
+    // 지출 크기 = 흰색의 명도(불투명도). 0원인 날은 테두리만
+    const a = d <= 20 && v > 0 ? (.18 + v / 55000 * .82).toFixed(2) : 0;
+    const bg = a ? `style="background:rgba(255,255,255,${a})"` : '';
+    const mark = d <= 20 ? `<span class="cap num">${v ? +(v / 10000).toFixed(1) + '만' : '0'}</span>` : '';
+    html += `<button class="day ${d > 20 ? 'fut' : ''} ${d <= 20 && !v ? 'zero' : ''} ${d === 20 ? 'today' : ''}" data-d="${d}" ${bg}>
       <span class="n num">${d}</span>${mark}<span class="ck">${ico('check')}</span></button>`;
   }
   grid.innerHTML = html;
@@ -837,7 +857,7 @@
     const foot = $('#calFoot');
     const wd = ['일','월','화','수','목','금','토'][(FIRST + d - 1) % 7];
     if (d > 20) {
-      foot.innerHTML = `<div class="t">9월 ${d}일 (${wd})<span>${PLAN[d] || '아직 오지 않은 날'}</span></div><div class="v num">26,000 ₩</div>`;
+      foot.innerHTML = `<div class="t">9월 ${d}일 (${wd})<span>아직 오지 않은 날 · 하루 가능 금액</span></div><div class="v num">26,000 ₩</div>`;
     } else {
       const v = DAILY[d - 1];
       foot.innerHTML = `<div class="t">9월 ${d}일 (${wd})${d === 20 ? ' · 오늘' : ''}<span>${v === 0 ? '무지출' : '하루 평균 27,000 ₩ 대비 ' + (v >= 27000 ? '+' : '−') + won(Math.abs(v - 27000))}</span></div><div class="v num money">${won(v)}</div>`;
@@ -846,27 +866,72 @@
   $$('.day', grid).forEach(x => x.addEventListener('click', () => selCal(+x.dataset.d)));
   selCal(20);
 
-  /* ---------------- 자산: 레이어 오버레이 ---------------- */
+  /* ---------------- 자산: 레이어 오버레이 (넘겨서 계좌별 내역) ---------------- */
+  const TOTAL = 12400000;
   const ACC = [
-    { t: '입출금', n: '월급 통장',   c: 'rgba(255,255,255,.16)', dot: '#fff' },
-    { t: '입출금', n: '생활비 통장', c: 'rgba(255,255,255,.16)', dot: '#fff' },
-    { t: '예적금', n: '청년 적금',   c: 'rgba(217,248,74,.26)',  dot: '#D9F84A' },
-    { t: '예적금', n: '정기 예금',   c: 'rgba(217,248,74,.26)',  dot: '#D9F84A' },
-    { t: '투자',   n: '투자 계좌',   c: 'rgba(166,139,245,.34)', dot: '#A68BF5' },
+    { t: '입출금', n: '월급 통장',   v: 2300000, c: 'rgba(60,60,57,.78)',  dot: '#fff',    note: '이번 달 나간 돈 210,000 ₩' },
+    { t: '입출금', n: '생활비 통장', v:  900000, c: 'rgba(60,60,57,.78)',  dot: '#fff',    note: '이번 달 나간 돈 330,000 ₩' },
+    { t: '예적금', n: '청년 적금',   v: 5100000, c: 'rgba(92,106,28,.8)',  dot: '#D9F84A', note: '매달 25일 자동 적립' },
+    { t: '예적금', n: '정기 예금',   v: 3000000, c: 'rgba(92,106,28,.8)',  dot: '#D9F84A', note: '만기 2027년 3월' },
+    { t: '투자',   n: '투자 계좌',   v: 1100000, c: 'rgba(88,70,150,.82)', dot: '#A68BF5', note: '평가액 기준 · 수익은 표시 안 함' },
   ];
+  const pct = v => (v / TOTAL * 100).toFixed(1) + '%';
   const layers = $('#layers');
-  layers.innerHTML = ACC.map((a, i) => `<div class="lay" data-i="${i}" style="background:${a.c};z-index:${i}">
-      <span class="ty"><i style="background:${a.dot}"></i>${a.t}</span><b>${a.n}</b></div>`).join('') +
-    `<div class="lay total"><span class="ty" style="font-weight:500">Overlay · 5 layers</span><b class="num money">12,400,000 ₩</b></div>`;
-  const SPLIT = [[-76,-50,-6],[76,-54,5],[-72,46,4],[76,42,-5],[0,-2,0]];
-  const setLayers = mode => {
-    layers.classList.toggle('merged', mode === 'merged');
-    $$('#laySeg button').forEach(b => b.classList.toggle('on', b.dataset.m === mode));
-    $$('.lay:not(.total)', layers).forEach((el, i) => {
-      const [x, y, r, sc] = mode === 'split' ? [...SPLIT[i], .82] : [0, -62 + i * 11, 0, .78 + i * .06];
+  layers.innerHTML =
+    `<div class="lay total"><span class="ty"><i style="background:#0D0D0D"></i>전체</span><b>연결된 계좌 5개 합계</b>
+      <div class="det"><div class="bal num money">12,400,000<span class="cur">₩</span></div>
+      <div class="row"><span>입출금 26 · 예적금 65 · 투자 9 (%)</span><span>1 / 6</span></div>
+      <div class="mbar"><span style="flex:25.8;background:#fff"></span><span style="flex:65.3;background:#0D0D0D"></span><span style="flex:8.9;background:#A68BF5"></span></div></div></div>` +
+    ACC.map((a, i) => `<div class="lay acc" style="background:${a.c}">
+      <span class="ty"><i style="background:${a.dot}"></i>${a.t}</span><b>${a.n}</b>
+      <div class="det"><div class="bal num money">${a.v.toLocaleString('en-US')}<span class="cur">₩</span></div>
+      <div class="row"><span>전체의 ${pct(a.v)}</span><span>${a.note}</span></div>
+      <div class="mbar"><span style="width:${a.v / TOTAL * 100}%;background:${a.dot}"></span></div></div></div>`).join('') +
+    `<div class="deck-scroll" id="deckScroll">${'<span></span>'.repeat(ACC.length + 1)}</div>`;
+  const deck = $$('.lay', layers), dScroll = $('#deckScroll');
+  $('#deckDots').innerHTML = deck.map((_, i) => `<button aria-label="${i + 1}번째"></button>`).join('');
+  const SPLIT = [[-78,-52,-6],[78,-56,5],[-74,48,4],[78,44,-5],[0,-2,0]];
+  let mode = 'merged';
+  const layout = p => {
+    deck.forEach((el, j) => {
+      let x = 0, y = 0, r = 0, sc = 1, o = 1, z;
+      if (mode === 'split') {
+        if (j === 0) return;
+        [x, y, r] = SPLIT[j - 1]; z = j;
+      } else {
+        const d = j - p;
+        if (d < 0) { x = d * 330; r = d * 10; o = Math.max(0, 1 + d * 1.1); }
+        else { y = -d * 17; sc = 1 - d * .07; o = d > 3.3 ? 0 : 1; }
+        y += 26; z = 100 - Math.round(d * 10);
+      }
+      el.style.zIndex = z; el.style.opacity = o;
       el.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${r}deg) scale(${sc})`;
     });
-    $('.lay.total', layers).style.transform = `translate(-50%, calc(-50% + ${mode === 'split' ? 90 : 26}px))`;
+    const k = Math.round(p);
+    $$('#deckDots button').forEach((b, i) => b.classList.toggle('on', i === k));
+    $('#deckCnt').textContent = `${k + 1} / ${deck.length}`;
+  };
+  let stopT;
+  dScroll.addEventListener('scroll', () => {
+    layers.classList.add('scrolling');
+    layout(dScroll.scrollLeft / dScroll.clientWidth);
+    clearTimeout(stopT); stopT = setTimeout(() => layers.classList.remove('scrolling'), 140);
+  }, { passive: true });
+  $$('#deckDots button').forEach((b, i) => b.addEventListener('click', () => dScroll.scrollTo({ left: i * dScroll.clientWidth, behavior: 'smooth' })));
+  // 데스크톱: 드래그로 넘기기
+  let drag = null;
+  dScroll.addEventListener('pointerdown', e => { if (e.pointerType === 'mouse') { drag = { x: e.clientX, l: dScroll.scrollLeft }; dScroll.style.scrollSnapType = 'none'; } });
+  window.addEventListener('pointermove', e => { if (drag) dScroll.scrollLeft = drag.l - (e.clientX - drag.x); });
+  window.addEventListener('pointerup', () => {
+    if (!drag) return; drag = null; dScroll.style.scrollSnapType = '';
+    dScroll.scrollTo({ left: Math.round(dScroll.scrollLeft / dScroll.clientWidth) * dScroll.clientWidth, behavior: 'smooth' });
+  });
+  const setLayers = m => {
+    mode = m;
+    layers.classList.toggle('split', m === 'split');
+    $('#deckNav').classList.toggle('off', m === 'split');
+    $$('#laySeg button').forEach(b => b.classList.toggle('on', b.dataset.m === m));
+    layout(m === 'split' ? 0 : dScroll.scrollLeft / (dScroll.clientWidth || 1));
   };
   $$('#laySeg button').forEach(b => b.addEventListener('click', () => setLayers(b.dataset.m)));
   setLayers('merged');
@@ -880,18 +945,25 @@
   const wf = $('#waffle');
   wf.innerHTML = COMP.flatMap(c => Array.from({ length: c.n }, () => `<i data-k="${c.k}" style="background:${c.c}"></i>`)).join('');
   $$('i', wf).forEach((el, i) => el.style.transitionDelay = (i * 6) + 'ms');
-  $('#wfChips').innerHTML = COMP.map(c => `<button class="chip" style="background:var(--gray)" data-k="${c.k}"><span class="sw" style="background:${c.c}"></span>${c.t}</button>`).join('');
+  $('#wfChips').innerHTML = `<button class="chip" data-k="all">전체</button>` + COMP.map(c => `<button class="chip" style="background:var(--gray)" data-k="${c.k}"><span class="sw" style="background:${c.c}"></span>${c.t}</button>`).join('');
+  let compK = 'all';
   const selComp = k => {
-    const c = COMP.find(x => x.k === k);
-    wf.classList.add('focus');
+    if (k === compK && k !== 'all') k = 'all';   // 다시 누르면 전체로
+    compK = k;
+    $$('i', wf).forEach(el => el.style.transitionDelay = '0ms');
+    const c = k === 'all' ? { t: '전체', v: TOTAL } : COMP.find(x => x.k === k);
+    wf.classList.toggle('focus', k !== 'all');
     $$('i', wf).forEach(el => el.classList.toggle('hl', el.dataset.k === k));
     $$('#wfChips .chip').forEach(b => { const on = b.dataset.k === k; b.classList.toggle('on', on); b.style.background = on ? '' : 'var(--gray)'; });
     $('#wfLbl').textContent = c.t;
     $('#wfAmt').innerHTML = `${c.v.toLocaleString('en-US')}<span class="cur">₩</span>`;
-    $('#wfPct').innerHTML = `${(c.v / 12400000 * 100).toFixed(1)}<small>%</small>`;
+    $('#wfPct').innerHTML = `${k === 'all' ? 100 : (c.v / TOTAL * 100).toFixed(1)}<small>%</small>`;
   };
   $$('#wfChips .chip').forEach(b => b.addEventListener('click', () => selComp(b.dataset.k)));
-  selComp('save');
+  selComp('all');
+  // 첫 등장 애니메이션 딜레이는 이후 선택 전환에 영향을 주지 않도록 한 번만 사용
+  const wfDelays = () => $$('i', wf).forEach((el, i) => el.style.transitionDelay = (i * 6) + 'ms');
+  wfDelays();
 
   /* ---------------- 코치: 시뮬레이터 ---------------- */
   const IDEAS = [
@@ -945,7 +1017,7 @@
     const el = document.createElement('div');
     el.className = 'msg ' + who;
     text = text.replace(/ ₩/g, '\u00A0₩');
-    el.innerHTML = who === 'ai' ? `<div class="who"><i></i>Coach</div>${text}` : text;
+    el.innerHTML = who === 'ai' ? `<div class="who"><i></i>코치</div>${text}` : text;
     chat.appendChild(el); return el;
   };
   const ask = q => {
