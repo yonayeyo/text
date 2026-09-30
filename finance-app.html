@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=402, initial-scale=1, viewport-fit=cover">
+<title>흐름 · 9월</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+  :root {
+    /* 5단계 블루 스케일 */
+    --b1: #1131A2;
+    --b2: #3A5BBF;
+    --b3: #6F93D4;
+    --b4: #ADD0EC;
+    --b5: #DCEAF6;
+    --ink: #15200F;
+    --ink-2: rgba(21, 32, 15, .56);
+    --ink-3: rgba(21, 32, 15, .34);
+    --line: rgba(21, 32, 15, .08);
+    --bg: #F6F7F3;
+    --card: #FFFFFF;
+    --sans: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    --serif: "Noto Serif KR", "Nanum Myeongjo", "AppleMyungjo", serif;
+    --emboss: 0 1px 0 rgba(255,255,255,.9) inset, 0 -1px 0 rgba(21,32,15,.04) inset, 0 12px 28px -14px rgba(17,49,162,.28), 0 2px 6px rgba(21,32,15,.04);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); }
+  body {
+    font-family: var(--sans); color: var(--ink); -webkit-font-smoothing: antialiased;
+    word-break: keep-all; display: flex; justify-content: center;
+  }
+  button { font-family: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+  .num { font-variant-numeric: tabular-nums; letter-spacing: -.02em; font-weight: 700; }
+
+  /* ---------- 디바이스 402 x 874 ---------- */
+  .phone {
+    width: 402px; max-width: 100vw; height: 874px; position: relative; overflow: hidden;
+    background: var(--bg);
+  }
+  .phone::before, .phone::after {           /* 배경 색 번짐: 글래스 카드가 비칠 재료 */
+    content: ""; position: absolute; border-radius: 50%; filter: blur(60px); pointer-events: none; z-index: 0;
+  }
+  .phone::before { width: 300px; height: 300px; top: -80px; right: -120px; background: rgba(173,208,236,.75); }
+  .phone::after  { width: 260px; height: 260px; bottom: 120px; left: -150px; background: rgba(17,49,162,.16); }
+
+  .statusbar {
+    position: absolute; top: 0; left: 0; right: 0; height: 54px; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between; padding: 6px 32px 0 40px;
+    font-size: 17px; font-weight: 600;
+    background: linear-gradient(180deg, rgba(246,247,243,.96) 55%, rgba(246,247,243,0));
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent); mask-image: linear-gradient(180deg, #000 60%, transparent);
+  }
+  .island { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 124px; height: 36px; border-radius: 20px; background: #000; z-index: 21; }
+  .statusbar .icons { display: flex; gap: 6px; align-items: center; }
+  .home-ind { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 140px; height: 5px; border-radius: 3px; background: var(--ink); z-index: 30; }
+
+  .screens { position: absolute; inset: 0; z-index: 1; }
+  .screen {
+    position: absolute; inset: 0; overflow-y: auto; padding: 70px 24px 132px;
+    opacity: 0; visibility: hidden; transform: translateY(10px);
+    transition: opacity .35s ease, transform .35s ease, visibility .35s;
+    scrollbar-width: none;
+  }
+  .screen::-webkit-scrollbar { display: none; }
+  .screen.active { opacity: 1; visibility: visible; transform: none; }
+
+  /* ---------- 공통 컴포넌트 ---------- */
+  .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+  .date { font-size: 15px; font-weight: 600; color: var(--ink-2); }
+  .date b { color: var(--ink); font-weight: 700; }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+    background: linear-gradient(145deg, #fff, #E9EEF2); box-shadow: var(--emboss);
+  }
+  .eyebrow { font-size: 13px; font-weight: 600; color: var(--ink-2); letter-spacing: .01em; }
+  .h-title { font-size: 26px; font-weight: 800; letter-spacing: -.03em; margin-top: 6px; }
+  .h-title .unit { font-size: 16px; font-weight: 600; color: var(--ink-2); margin-left: 2px; }
+  .h-title .sub { font-size: 16px; font-weight: 600; color: var(--ink-3); margin-left: 6px; }
+
+  .card {
+    background: var(--card); border-radius: 28px; padding: 22px; box-shadow: var(--emboss);
+    position: relative; margin-top: 16px;
+  }
+  .glass {
+    background: linear-gradient(140deg, rgba(255,255,255,.72), rgba(255,255,255,.38));
+    backdrop-filter: blur(22px) saturate(160%); -webkit-backdrop-filter: blur(22px) saturate(160%);
+    border: 1px solid rgba(255,255,255,.8);
+    box-shadow: 0 1px 0 rgba(255,255,255,.9) inset, 0 16px 36px -18px rgba(17,49,162,.35);
+    border-radius: 28px; padding: 22px; position: relative; margin-top: 16px;
+  }
+  .glass.deep {
+    background: linear-gradient(150deg, rgba(17,49,162,.92), rgba(58,91,191,.82));
+    border-color: rgba(173,208,236,.35); color: #fff;
+    box-shadow: 0 1px 0 rgba(255,255,255,.25) inset, 0 24px 40px -20px rgba(17,49,162,.7);
+  }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
+  .card-head .t { font-size: 15px; font-weight: 700; }
+  .card-head .m { font-size: 13px; font-weight: 600; color: var(--ink-3); }
+  .pill {
+    display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 10px; border-radius: 13px;
+    font-size: 12px; font-weight: 700; background: var(--b5); color: var(--b1);
+  }
+
+  /* ---------- 홈 ---------- */
+  .hero { padding: 8px 2px 6px; }
+  .hero .lead { font-family: var(--serif); font-size: 26px; font-weight: 400; color: var(--ink-2); letter-spacing: -.02em; }
+  .hero .big {
+    font-family: var(--serif); font-weight: 700; font-size: 76px; line-height: 1; letter-spacing: -.045em;
+    margin-top: 6px; color: var(--ink); display: flex; align-items: baseline;
+  }
+  .hero .big em {
+    font-style: normal;
+    background: linear-gradient(180deg, var(--b1) 20%, var(--b3) 120%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero .big small { font-size: 30px; font-weight: 600; margin-left: 6px; color: var(--ink); }
+  .hero .formula { display: flex; gap: 8px; align-items: center; margin-top: 16px; font-size: 14px; font-weight: 600; color: var(--ink-2); }
+  .hero .formula .num { color: var(--ink); font-size: 15px; }
+  .hero .formula i { font-style: normal; color: var(--ink-3); }
+
+  .ring-wrap { display: flex; align-items: center; gap: 20px; }
+  .dial {
+    width: 148px; height: 148px; border-radius: 50%; flex: none; position: relative;
+    background: linear-gradient(145deg, #FFFFFF, #E7ECF1);
+    box-shadow: 8px 8px 18px rgba(17,49,162,.12), -6px -6px 14px rgba(255,255,255,.95), inset 0 0 0 1px rgba(255,255,255,.6);
+  }
+  .dial svg { position: absolute; inset: 0; }
+  .dial .core {
+    position: absolute; inset: 42px; border-radius: 50%; display: grid; place-items: center; text-align: center;
+    background: linear-gradient(145deg, #F1F4F7, #FFFFFF);
+    box-shadow: inset 3px 3px 7px rgba(17,49,162,.12), inset -3px -3px 7px rgba(255,255,255,.9);
+  }
+  .dial .core .num { font-size: 22px; line-height: 1; }
+  .dial .core span { display: block; font-size: 10px; font-weight: 600; color: var(--ink-3); margin-top: 3px; }
+  .legend { flex: 1; display: grid; gap: 16px; }
+  .legend .row { display: grid; grid-template-columns: 10px 1fr auto; gap: 8px; align-items: center; }
+  .legend .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .legend .lab { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+  .legend .v { font-size: 17px; }
+  .legend .sep { height: 1px; background: var(--line); }
+  .legend .amt { font-size: 13px; font-weight: 600; color: var(--ink-3); }
+  .legend .amt .num { color: var(--ink); font-size: 15px; }
+
+  .days { display: grid; grid-template-columns: repeat(30, 1fr); gap: 3px; align-items: end; height: 46px; }
+  .days i { display: block; border-radius: 3px; height: 100%; }
+  .days i.past { background: linear-gradient(180deg, var(--b2), var(--b1)); height: 70%; opacity: .9; }
+  .days i.today { background: var(--b1); height: 100%; box-shadow: 0 0 0 3px rgba(17,49,162,.18); }
+  .days i.left { background: rgba(173,208,236,.55); height: 52%; box-shadow: inset 0 0 0 1px rgba(17,49,162,.12); }
+  .days-ax { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; font-weight: 600; color: var(--ink-3); }
+  .pace { display: grid; grid-template-columns: 1fr 28px 1fr; align-items: center; margin-top: 18px; padding-top: 18px; border-top: 1px dashed rgba(21,32,15,.12); }
+  .pace .k { font-size: 12px; font-weight: 600; color: var(--ink-3); }
+  .pace .num { font-size: 20px; margin-top: 4px; display: block; }
+  .pace .arrow { color: var(--b3); text-align: center; }
+  .pace > div:last-child { text-align: right; }
+  .pace > div:last-child .num { color: var(--b1); }
+
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .tile { margin-top: 0; padding: 18px; text-align: left; border-radius: 24px; }
+  .tile .ic { width: 34px; height: 34px; border-radius: 12px; display: grid; place-items: center; margin-bottom: 16px; }
+  .tile .k { font-size: 12px; font-weight: 600; opacity: .7; }
+  .tile .num { font-size: 20px; display: block; margin-top: 4px; }
+  .tile .mini { display: flex; height: 6px; border-radius: 3px; overflow: hidden; margin-top: 12px; gap: 2px; }
+
+  /* ---------- 지출 흐름 ---------- */
+  #sankey { width: 100%; display: block; overflow: visible; }
+  #sankey .lk { transition: opacity .25s; cursor: pointer; }
+  #sankey .nd { transition: opacity .25s; cursor: pointer; }
+  #sankey.focus .lk:not(.on), #sankey.focus .nd:not(.on) { opacity: .18; }
+  .flow-detail {
+    display: flex; align-items: center; justify-content: space-between; margin-top: 14px;
+    padding: 14px 16px; border-radius: 18px; background: var(--bg);
+    box-shadow: inset 2px 2px 6px rgba(21,32,15,.06), inset -2px -2px 6px rgba(255,255,255,.9);
+    min-height: 58px;
+  }
+  .flow-detail .n { font-size: 14px; font-weight: 700; }
+  .flow-detail .s { font-size: 12px; font-weight: 600; color: var(--ink-3); margin-top: 2px; }
+  .flow-detail .num { font-size: 18px; color: var(--b1); }
+
+  .dumb { position: relative; height: 92px; margin: 8px 4px 0; }
+  .dumb .track { position: absolute; left: 0; right: 0; top: 50px; height: 8px; border-radius: 4px; background: var(--b5); box-shadow: inset 0 1px 2px rgba(17,49,162,.15); }
+  .dumb .span { position: absolute; top: 50px; height: 8px; border-radius: 4px; background: linear-gradient(90deg, var(--b4), var(--b1)); }
+  .dumb .pt { position: absolute; top: 44px; width: 20px; height: 20px; margin-left: -10px; border-radius: 50%; }
+  .dumb .pt.a { background: #fff; border: 3px solid var(--b4); box-shadow: 0 2px 6px rgba(17,49,162,.2); }
+  .dumb .pt.b { background: radial-gradient(circle at 35% 30%, var(--b3), var(--b1) 70%); box-shadow: 0 4px 10px rgba(17,49,162,.45); }
+  .dumb .lab { position: absolute; top: 74px; transform: translateX(-50%); font-size: 11px; font-weight: 600; color: var(--ink-3); white-space: nowrap; text-align: center; }
+  .dumb .lab b { display: block; font-size: 13px; color: var(--ink); font-weight: 700; }
+  .dumb .delta { position: absolute; top: 4px; transform: translateX(-50%); }
+  .dumb .delta .pill { background: var(--b1); color: #fff; height: 28px; font-size: 13px; }
+  .dumb .delta::after { content: ""; position: absolute; left: 50%; bottom: -6px; margin-left: -5px; border: 5px solid transparent; border-top-color: var(--b1); }
+
+  /* ---------- 조정 시뮬레이션 ---------- */
+  .proj { display: flex; align-items: baseline; gap: 10px; margin-top: 6px; }
+  .proj .num { font-size: 34px; letter-spacing: -.035em; }
+  .proj .unit { font-size: 17px; font-weight: 600; color: var(--ink-2); }
+  .proj .pill { transition: background .3s, color .3s; }
+  #pace { width: 100%; display: block; overflow: visible; }
+
+  .slider { margin-top: 22px; }
+  .slider .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .slider .n { font-size: 14px; font-weight: 700; }
+  .slider .n span { font-size: 12px; font-weight: 600; color: var(--ink-3); margin-left: 4px; }
+  .slider .v { font-size: 17px; }
+  .rng { position: relative; height: 28px; }
+  .rng input { -webkit-appearance: none; appearance: none; width: 100%; height: 28px; background: transparent; position: relative; z-index: 2; cursor: pointer; }
+  .rng input::-webkit-slider-runnable-track { height: 10px; border-radius: 5px; background: transparent; }
+  .rng input::-moz-range-track { height: 10px; background: transparent; }
+  .rng input::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%; margin-top: -9px;
+    background: linear-gradient(145deg, #FFFFFF, #DDE4EC);
+    box-shadow: 0 4px 10px rgba(17,49,162,.3), inset 0 1px 0 #fff, inset 0 0 0 7px #fff, inset 0 0 0 9px var(--b1);
+  }
+  .rng input::-moz-range-thumb {
+    width: 28px; height: 28px; border-radius: 50%; border: 0;
+    background: linear-gradient(145deg, #FFFFFF, #DDE4EC);
+    box-shadow: 0 4px 10px rgba(17,49,162,.3), inset 0 0 0 7px #fff, inset 0 0 0 9px var(--b1);
+  }
+  .rng .bed { position: absolute; left: 0; right: 0; top: 9px; height: 10px; border-radius: 5px; background: var(--b5); box-shadow: inset 1px 2px 3px rgba(17,49,162,.18); }
+  .rng .fill { position: absolute; left: 0; top: 9px; height: 10px; border-radius: 5px; background: linear-gradient(90deg, var(--b4), var(--b1)); }
+  .rng .mark { position: absolute; top: 2px; width: 2px; height: 24px; margin-left: -1px; background: var(--b3); border-radius: 1px; }
+  .rng .mark span { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 10px; font-weight: 700; color: var(--b2); white-space: nowrap; }
+
+  .ideas { display: grid; gap: 12px; margin-top: 16px; }
+  .idea { display: grid; grid-template-columns: 44px 1fr auto; gap: 14px; align-items: center; margin-top: 0; padding: 18px; border-radius: 24px; }
+  .idea .ic { width: 44px; height: 44px; border-radius: 15px; display: grid; place-items: center; background: linear-gradient(145deg, #fff, #E5ECF3); box-shadow: 3px 3px 8px rgba(17,49,162,.12), -2px -2px 6px #fff; }
+  .idea .n { font-size: 14px; font-weight: 700; }
+  .idea .d { font-size: 12px; font-weight: 600; color: var(--ink-3); margin-top: 3px; }
+  .idea .gain { text-align: right; }
+  .idea .gain .num { font-size: 17px; color: var(--b1); display: block; }
+  .idea .gain button {
+    margin-top: 6px; height: 26px; padding: 0 10px; border-radius: 13px; font-size: 11px; font-weight: 700;
+    background: var(--b1); color: #fff; box-shadow: 0 4px 10px -4px rgba(17,49,162,.6);
+    transition: background .2s;
+  }
+  .idea .gain button.on { background: var(--b5); color: var(--b1); box-shadow: none; }
+  .months { display: grid; grid-template-columns: repeat(12, 1fr); gap: 3px; margin-top: 10px; grid-column: 1 / -1; }
+  .months i { height: 18px; border-radius: 5px; background: linear-gradient(180deg, var(--b4), var(--b3)); opacity: .55; }
+  .months i:nth-child(9) { opacity: 1; background: linear-gradient(180deg, var(--b2), var(--b1)); }
+
+  /* ---------- 자산 ---------- */
+  .asset-stage { display: grid; grid-template-columns: 170px 1fr; gap: 12px; align-items: end; margin-top: 8px; }
+  .jar {
+    position: relative; width: 170px; height: 330px; border-radius: 34px 34px 44px 44px;
+    background: linear-gradient(100deg, rgba(255,255,255,.55), rgba(255,255,255,.18) 40%, rgba(255,255,255,.5));
+    border: 1.5px solid rgba(255,255,255,.95);
+    box-shadow: inset 0 0 0 1px rgba(17,49,162,.08), inset 8px 0 18px rgba(255,255,255,.7), 0 30px 40px -24px rgba(17,49,162,.45);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    overflow: hidden; transition: background .4s;
+  }
+  .jar::before { /* 유리 하이라이트 */
+    content: ""; position: absolute; top: 16px; left: 14px; width: 12px; bottom: 30px; border-radius: 8px; z-index: 5;
+    background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,0)); pointer-events: none;
+  }
+  .jar .lay {
+    position: absolute; left: 8px; right: 8px; border-radius: 10px;
+    transition: bottom .6s cubic-bezier(.3,1.3,.5,1), border-radius .4s, left .4s, right .4s;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,.35), inset 0 -8px 16px rgba(0,0,0,.08);
+  }
+  .jar .lay::after { /* 액체 윗면 */
+    content: ""; position: absolute; top: -4px; left: 0; right: 0; height: 8px; border-radius: 50%; background: inherit; filter: brightness(1.12);
+  }
+  .jar .l1 { background: linear-gradient(180deg, var(--b2), var(--b1)); border-radius: 10px 10px 36px 36px; }
+  .jar .l2 { background: linear-gradient(180deg, var(--b4), var(--b3)); }
+  .jar .l3 { background: linear-gradient(180deg, #EEF5FB, var(--b5)); }
+  .jar.split .lay { border-radius: 14px; }
+  .jar.split { background: linear-gradient(100deg, rgba(255,255,255,.3), rgba(255,255,255,.08)); }
+
+  .tags { position: relative; height: 330px; }
+  .tag { position: absolute; left: 0; right: 0; transition: top .6s cubic-bezier(.3,1.3,.5,1); padding-left: 16px; }
+  .tag::before { content: ""; position: absolute; left: -18px; top: 11px; width: 28px; height: 1px; background: var(--ink-3); }
+  .tag::after { content: ""; position: absolute; left: 8px; top: 8px; width: 7px; height: 7px; border-radius: 50%; background: var(--ink); }
+  .tag .n { font-size: 13px; font-weight: 600; color: var(--ink-2); padding-left: 4px; }
+  .tag .num { font-size: 18px; display: block; padding-left: 4px; margin-top: 2px; }
+  .tag .pct { font-size: 12px; font-weight: 700; color: var(--b2); padding-left: 4px; }
+
+  .seg { display: inline-flex; padding: 4px; border-radius: 16px; background: rgba(21,32,15,.05); box-shadow: inset 1px 1px 3px rgba(21,32,15,.08); }
+  .seg button { height: 30px; padding: 0 14px; border-radius: 12px; font-size: 12px; font-weight: 700; color: var(--ink-2); transition: all .25s; }
+  .seg button.on { background: #fff; color: var(--b1); box-shadow: 0 2px 6px rgba(17,49,162,.18); }
+
+  .blocks { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px; }
+  .blocks i {
+    height: 54px; border-radius: 14px; position: relative;
+    background: linear-gradient(160deg, rgba(255,255,255,.28), rgba(255,255,255,.06));
+    border: 1px solid rgba(255,255,255,.35); box-shadow: inset 0 1px 0 rgba(255,255,255,.35);
+    display: grid; place-items: center; font-style: normal; font-size: 12px; font-weight: 700; color: rgba(255,255,255,.9);
+  }
+  .waffle { display: grid; grid-template-columns: repeat(20, 1fr); gap: 3px; margin-top: 14px; }
+  .waffle i { aspect-ratio: 1; border-radius: 3px; background: var(--b5); }
+  .waffle i.on { background: var(--b1); }
+
+  /* ---------- 탭바 (글래스) ---------- */
+  .tabbar {
+    position: absolute; left: 20px; right: 20px; bottom: 30px; height: 68px; z-index: 25;
+    display: grid; grid-template-columns: repeat(4, 1fr); padding: 8px; border-radius: 34px;
+    background: linear-gradient(140deg, rgba(255,255,255,.7), rgba(255,255,255,.45));
+    backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255,255,255,.9);
+    box-shadow: 0 1px 0 #fff inset, 0 18px 40px -16px rgba(17,49,162,.45);
+  }
+  .tabbar .glow { position: absolute; top: 8px; bottom: 8px; left: 8px; width: calc((100% - 16px) / 4); border-radius: 26px;
+    background: linear-gradient(150deg, var(--b2), var(--b1)); box-shadow: 0 8px 18px -6px rgba(17,49,162,.6), inset 0 1px 0 rgba(255,255,255,.3);
+    transition: transform .45s cubic-bezier(.3,1.25,.5,1); }
+  .tab { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--ink-2); transition: color .3s; }
+  .tab span { font-size: 10px; font-weight: 700; }
+  .tab.on { color: #fff; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="island"></div>
+  <div class="statusbar">
+    <span>9:41</span>
+    <span class="icons">
+      <svg width="19" height="12" viewBox="0 0 19 12" fill="#15200F"><rect x="0" y="8" width="3.4" height="4" rx="1"/><rect x="5" y="5.5" width="3.4" height="6.5" rx="1"/><rect x="10" y="3" width="3.4" height="9" rx="1"/><rect x="15" y="0" width="3.4" height="12" rx="1"/></svg>
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="#15200F"><path d="M8.5 2.4c2.3 0 4.4.9 6 2.4l1.2-1.2A10.2 10.2 0 0 0 8.5.7 10.2 10.2 0 0 0 1.3 3.6l1.2 1.2a8.5 8.5 0 0 1 6-2.4Zm0 3.4c1.4 0 2.6.5 3.6 1.4l1.2-1.2a6.8 6.8 0 0 0-9.6 0l1.2 1.2c1-.9 2.2-1.4 3.6-1.4Zm0 3.4c-.5 0-1 .2-1.3.5L8.5 11l1.3-1.3c-.3-.3-.8-.5-1.3-.5Z"/></svg>
+      <svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="#15200F" opacity=".4"/><rect x="2" y="2" width="18" height="9" rx="2" fill="#15200F"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2Z" fill="#15200F" opacity=".45"/></svg>
+    </span>
+  </div>
+
+  <div class="screens">
+
+    <!-- ================= 홈 ================= -->
+    <section class="screen active" id="s-home">
+      <div class="top">
+        <div class="date"><b>9월 18일</b> · 남은 12일</div>
+        <div class="avatar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15200F" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>
+        </div>
+      </div>
+
+      <div class="hero">
+        <div class="lead">오늘부터 하루</div>
+        <div class="big"><em class="num" style="font-family:var(--serif)">23,333</em><small>원</small></div>
+        <div class="formula">
+          <span>남은 예산</span><span class="num">280,000</span><i>÷</i><span class="num">12</span><span>일</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ring-wrap">
+          <div class="dial">
+            <svg viewBox="0 0 148 148" width="148" height="148">
+              <defs>
+                <linearGradient id="gOut" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A5BBF"/><stop offset="1" stop-color="#1131A2"/></linearGradient>
+              </defs>
+              <!-- 바깥: 예산 사용 65% -->
+              <circle cx="74" cy="74" r="62" fill="none" stroke="#DCEAF6" stroke-width="10"/>
+              <circle id="ringBudget" cx="74" cy="74" r="62" fill="none" stroke="url(#gOut)" stroke-width="10" stroke-linecap="round"
+                      stroke-dasharray="389.56" stroke-dashoffset="389.56" transform="rotate(-90 74 74)" style="transition:stroke-dashoffset 1.4s cubic-bezier(.3,.9,.3,1)"/>
+              <!-- 안쪽: 기간 경과 60% -->
+              <circle cx="74" cy="74" r="48" fill="none" stroke="rgba(173,208,236,.35)" stroke-width="7"/>
+              <circle id="ringTime" cx="74" cy="74" r="48" fill="none" stroke="#ADD0EC" stroke-width="7" stroke-linecap="round"
+                      stroke-dasharray="301.59" stroke-dashoffset="301.59" transform="rotate(-90 74 74)" style="transition:stroke-dashoffset 1.4s .15s cubic-bezier(.3,.9,.3,1)"/>
+            </svg>
+            <div class="core"><div><div class="num">65%</div><span>사용</span></div></div>
+          </div>
+          <div class="legend">
+            <div class="row"><i class="dot" style="background:var(--b1)"></i><span class="lab">예산</span><span class="num v">65%</span></div>
+            <div class="row"><i class="dot" style="background:var(--b4)"></i><span class="lab">기간</span><span class="num v">60%</span></div>
+            <div class="sep"></div>
+            <div class="amt"><span class="num">520,000</span> / 800,000</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass">
+        <div class="card-head"><span class="t">9월의 30일</span><span class="m">오늘 18일</span></div>
+        <div class="days" id="days"></div>
+        <div class="days-ax"><span>1</span><span>18</span><span>30</span></div>
+        <div class="pace">
+          <div><div class="k">지난 18일 · 하루</div><span class="num">28,889</span></div>
+          <div class="arrow"><svg width="22" height="14" viewBox="0 0 22 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 7h19M14 1l6 6-6 6"/></svg></div>
+          <div><div class="k">남은 12일 · 하루</div><span class="num">23,333</span></div>
+        </div>
+      </div>
+
+      <div class="tiles">
+        <button class="glass tile" data-go="1">
+          <div class="ic" style="background:var(--b5)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1131A2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>
+          </div>
+          <div class="k">지출 1위 · 배달</div>
+          <span class="num">180,000</span>
+          <div class="mini"><i style="flex:180;background:var(--b1)"></i><i style="flex:90;background:var(--b2)"></i><i style="flex:62;background:var(--b3)"></i><i style="flex:45;background:var(--b4)"></i><i style="flex:143;background:var(--b5)"></i></div>
+        </button>
+        <button class="glass deep tile" data-go="3">
+          <div class="ic" style="background:rgba(255,255,255,.16)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
+          </div>
+          <div class="k">총자산</div>
+          <span class="num">12,400,000</span>
+          <div class="mini"><i style="flex:81;background:#fff"></i><i style="flex:32;background:var(--b4)"></i><i style="flex:11;background:rgba(255,255,255,.35)"></i></div>
+        </button>
+      </div>
+    </section>
+
+    <!-- ================= 지출 흐름 ================= -->
+    <section class="screen" id="s-flow">
+      <div class="top">
+        <div>
+          <div class="eyebrow">9월 지출 흐름</div>
+          <div class="h-title"><span class="num">520,000</span><span class="unit">원</span><span class="sub">/ 800,000</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <svg id="sankey" viewBox="0 0 310 400"></svg>
+        <div class="flow-detail" id="flowDetail"></div>
+      </div>
+
+      <div class="glass">
+        <div class="card-head"><span class="t">배달 · 같은 기간 비교</span><span class="m">1–18일</span></div>
+        <div class="dumb">
+          <div class="track"></div>
+          <div class="span" style="left:70%;width:20%"></div>
+          <div class="pt a" style="left:70%"></div>
+          <div class="pt b" style="left:90%"></div>
+          <div class="delta" style="left:80%"><span class="pill">+40,000</span></div>
+          <div class="lab" style="left:70%">8월<b>140,000</b></div>
+          <div class="lab" style="left:90%">9월<b>180,000</b></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 조정 제안 ================= -->
+    <section class="screen" id="s-plan">
+      <div class="top">
+        <div>
+          <div class="eyebrow">지금 속도라면 월말</div>
+          <div class="proj"><span class="num" id="projV">836,667</span><span class="unit">원</span><span class="pill" id="projD">예산 +36,667</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <svg id="pace" viewBox="0 0 310 180"></svg>
+
+        <div class="slider">
+          <div class="row"><span class="n">배달<span>남은 12일 · 하루</span></span><span class="num v" id="vDel">10,000</span></div>
+          <div class="rng">
+            <div class="bed"></div><div class="fill" id="fDel"></div>
+            <div class="mark" style="left:51.85%"><span>8월 속도</span></div>
+            <input type="range" id="rDel" min="0" max="15000" step="100" value="10000" aria-label="배달 하루 금액">
+          </div>
+        </div>
+        <div class="slider">
+          <div class="row"><span class="n">카페·간식<span>남은 12일 · 하루</span></span><span class="num v" id="vCafe">5,000</span></div>
+          <div class="rng">
+            <div class="bed"></div><div class="fill" id="fCafe"></div>
+            <input type="range" id="rCafe" min="0" max="8000" step="100" value="5000" aria-label="카페 간식 하루 금액">
+          </div>
+        </div>
+      </div>
+
+      <div class="ideas">
+        <div class="glass idea">
+          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1131A2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16l-1.5 8.5a2 2 0 0 1-2 1.5h-9a2 2 0 0 1-2-1.5L4 11Z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+          <div><div class="n">배달, 8월 속도로</div><div class="d">하루 10,000 → 7,800</div></div>
+          <div class="gain"><span class="num">−26,400</span><button data-preset="del">적용해 보기</button></div>
+        </div>
+        <div class="glass idea">
+          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1131A2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13v5a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6V8Z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2v3M12 2v3"/></svg></div>
+          <div><div class="n">카페·간식, 하루 2,000 덜</div><div class="d">하루 5,000 → 3,000</div></div>
+          <div class="gain"><span class="num">−24,000</span><button data-preset="cafe">적용해 보기</button></div>
+        </div>
+        <div class="glass idea">
+          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1131A2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>
+          <div><div class="n">구독, 1년으로 보면</div><div class="d">매달 45,000</div></div>
+          <div class="gain"><span class="num">540,000</span></div>
+          <div class="months"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 자산 ================= -->
+    <section class="screen" id="s-asset">
+      <div class="top">
+        <div>
+          <div class="eyebrow">전체 자산</div>
+          <div class="h-title"><span class="num" style="font-size:30px">12,400,000</span><span class="unit">원</span></div>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;margin-top:-8px">
+        <div class="seg"><button class="on" data-mode="merge">겹쳐 보기</button><button data-mode="split">나눠 보기</button></div>
+      </div>
+
+      <div class="asset-stage">
+        <div class="jar" id="jar">
+          <div class="lay l1" data-i="0"></div>
+          <div class="lay l2" data-i="1"></div>
+          <div class="lay l3" data-i="2"></div>
+        </div>
+        <div class="tags" id="tags">
+          <div class="tag" data-i="2"><span class="n">투자</span><span class="num">1,100,000</span><span class="pct">8.9%</span></div>
+          <div class="tag" data-i="1"><span class="n">입출금</span><span class="num">3,200,000</span><span class="pct">25.8%</span></div>
+          <div class="tag" data-i="0"><span class="n">예적금</span><span class="num">8,100,000</span><span class="pct">65.3%</span></div>
+        </div>
+      </div>
+
+      <div class="glass deep">
+        <div class="card-head"><span class="t">입출금 = 예산 4개월</span><span class="m" style="color:rgba(255,255,255,.6)">800,000 × 4</span></div>
+        <div class="blocks"><i>10월</i><i>11월</i><i>12월</i><i>1월</i></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="t">9월 지출 ÷ 총자산</span><span class="num" style="font-size:17px;color:var(--b1)">4.2%</span></div>
+        <div class="waffle" id="waffle"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 탭바 -->
+  <nav class="tabbar" id="tabbar">
+    <div class="glow" id="glow"></div>
+    <button class="tab on" data-tab="0">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/></svg><span>오늘</span>
+    </button>
+    <button class="tab" data-tab="1">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h5c4 0 4 12 8 12h5"/><path d="M3 12h18"/><path d="M3 18h5c4 0 4-12 8-12h5"/></svg><span>흐름</span>
+    </button>
+    <button class="tab" data-tab="2">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg><span>조정</span>
+    </button>
+    <button class="tab" data-tab="3">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 13 9 5 9-5"/></svg><span>자산</span>
+    </button>
+  </nav>
+  <div class="home-ind"></div>
+</div>
+
+<script>
+const fmt = n => Math.round(n).toLocaleString('ko-KR');
+const NS = 'http://www.w3.org/2000/svg';
+const el = (tag, attrs, parent) => {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+};
+
+/* ---------- 데이터 ---------- */
+const BUDGET = 800000, USED = 520000, DAY = 18, DAYS = 30, LEFT = 12;
+const CATS = [
+  { k: '배달',      v: 180000, c: '#1131A2', t: '#fff' },
+  { k: '카페·간식', v: 90000,  c: '#3A5BBF', t: '#fff' },
+  { k: '교통',      v: 62000,  c: '#6F93D4', t: '#fff' },
+  { k: '구독',      v: 45000,  c: '#ADD0EC', t: '#15200F', fixed: true },
+  { k: '기타',      v: 143000, c: '#DCEAF6', t: '#15200F' },
+];
+
+/* ---------- 탭 ---------- */
+const screens = [...document.querySelectorAll('.screen')];
+const tabs = [...document.querySelectorAll('.tab')];
+const glow = document.getElementById('glow');
+function go(i) {
+  screens.forEach((s, j) => s.classList.toggle('active', i === j));
+  tabs.forEach((t, j) => t.classList.toggle('on', i === j));
+  glow.style.transform = `translateX(${i * 100}%)`;
+  screens[i].scrollTop = 0;
+  if (i === 0) animateRings();
+}
+tabs.forEach(t => t.addEventListener('click', () => go(+t.dataset.tab)));
+document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => go(+b.dataset.go)));
+
+/* ---------- 홈: 이중 링 + 30일 스트립 ---------- */
+function animateRings() {
+  const rb = document.getElementById('ringBudget'), rt = document.getElementById('ringTime');
+  rb.style.strokeDashoffset = 389.56; rt.style.strokeDashoffset = 301.59;
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    rb.style.strokeDashoffset = 389.56 * (1 - USED / BUDGET);
+    rt.style.strokeDashoffset = 301.59 * (1 - DAY / DAYS);
+  }));
+}
+animateRings();
+const days = document.getElementById('days');
+for (let d = 1; d <= DAYS; d++) {
+  const i = document.createElement('i');
+  i.className = d < DAY ? 'past' : d === DAY ? 'today' : 'left';
+  days.appendChild(i);
+}
+
+/* ---------- 흐름: 예산 → 항목 산키 ---------- */
+(function sankey() {
+  const svg = document.getElementById('sankey');
+  const W = 310, H = 400, GAP = 9, top = 6;
+  const nodes = [...CATS, { k: '남은 예산', v: BUDGET - USED, c: '#FFFFFF', rest: true }];
+  const scale = (H - top * 2 - GAP * (nodes.length - 1)) / BUDGET;
+  const x0 = 20, x1 = 128, nw = 12;
+  const leftH = BUDGET * scale, leftTop = (H - leftH) / 2;
+
+  const defs = el('defs', {}, svg);
+  const pat = el('pattern', { id: 'hatch', width: 6, height: 6, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' }, defs);
+  el('rect', { width: 6, height: 6, fill: '#fff' }, pat);
+  el('line', { x1: 0, y1: 0, x2: 0, y2: 6, stroke: '#ADD0EC', 'stroke-width': 2 }, pat);
+  const lg = el('linearGradient', { id: 'lb', x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+  el('stop', { offset: 0, 'stop-color': '#3A5BBF' }, lg);
+  el('stop', { offset: 1, 'stop-color': '#1131A2' }, lg);
+
+  // 왼쪽 노드: 예산 전체
+  el('rect', { x: x0 - nw, y: leftTop, width: nw, height: leftH, rx: 6, fill: 'url(#lb)' }, svg);
+  const lt = el('text', { x: 6, y: H / 2, 'font-size': 11, 'font-weight': 700, fill: '#fff',
+    transform: `rotate(-90 ${x0 - nw / 2} ${H / 2})`, 'text-anchor': 'middle', 'dominant-baseline': 'middle' }, svg);
+  lt.setAttribute('x', x0 - nw / 2); lt.textContent = '예산 800,000';
+
+  let ly = leftTop, ry = top;
+  const items = [];
+  nodes.forEach((n, idx) => {
+    const h = n.v * scale;
+    const g = el('g', { class: 'grp', 'data-i': idx }, svg);
+    const mx = (x0 + x1) / 2;
+    const d = `M${x0},${ly} C${mx},${ly} ${mx},${ry} ${x1},${ry} L${x1},${ry + h} C${mx},${ry + h} ${mx},${ly + h} ${x0},${ly + h} Z`;
+    const lk = el('path', { d, class: 'lk', fill: n.rest ? 'url(#hatch)' : n.c, opacity: n.rest ? .9 : .38 }, g);
+    const nd = el('rect', { x: x1, y: ry, width: nw, height: h, rx: Math.min(5, h / 2), class: 'nd',
+      fill: n.rest ? '#fff' : n.c, stroke: n.rest ? '#ADD0EC' : 'none', 'stroke-width': 1.5, 'stroke-dasharray': n.rest ? '3 3' : '' }, g);
+    const cy = ry + h / 2;
+    const tg = el('g', { class: 'nd' }, g);
+    const big = h > 36;
+    const name = el('text', { x: x1 + nw + 12, y: big ? cy - 3 : cy + 5, 'font-size': 12, 'font-weight': 600, fill: 'rgba(21,32,15,.56)' }, tg);
+    name.textContent = n.k;
+    const val = el('text', { x: big ? x1 + nw + 12 : W - (n.rest ? 0 : 44), y: big ? cy + 15 : cy + 5, 'font-size': big ? 16 : 14, 'font-weight': 800,
+      fill: n.rest ? '#1131A2' : '#15200F', 'letter-spacing': '-.02em', 'text-anchor': big ? 'start' : 'end' }, tg);
+    val.textContent = fmt(n.v);
+    if (!n.rest) {
+      const pc = el('text', { x: W, y: big ? cy + 15 : cy + 5, 'font-size': 11, 'font-weight': 700, fill: 'rgba(21,32,15,.34)', 'text-anchor': 'end' }, tg);
+      pc.textContent = (n.v / USED * 100).toFixed(1) + '%';
+    }
+    items.push([lk, nd, tg]);
+    g.addEventListener('click', () => focus(idx));
+    ly += h; ry += h + GAP;
+  });
+
+  const detail = document.getElementById('flowDetail');
+  let cur = -1;
+  function focus(i) {
+    cur = cur === i ? -1 : i;
+    svg.classList.toggle('focus', cur >= 0);
+    items.forEach((arr, j) => arr.forEach(e => e.classList.toggle('on', j === cur)));
+    render();
+  }
+  function render() {
+    if (cur < 0) {
+      detail.innerHTML = `<div><div class="n">항목을 눌러 보세요</div><div class="s">사용 520,000 · 남은 280,000</div></div><span class="num">65%</span>`;
+      return;
+    }
+    const n = nodes[cur];
+    const sub = n.rest ? `남은 ${LEFT}일 · 하루 ${fmt(n.v / LEFT)}`
+      : n.fixed ? '매달 고정 결제'
+      : `1–18일 하루 평균 ${fmt(n.v / DAY)}`;
+    const pct = n.rest ? (n.v / BUDGET * 100).toFixed(0) + '%' : (n.v / USED * 100).toFixed(1) + '%';
+    detail.innerHTML = `<div><div class="n">${n.k}</div><div class="s">${sub}</div></div><span class="num">${pct}</span>`;
+  }
+  render();
+})();
+
+/* ---------- 조정: 누적 페이스 + 슬라이더 ---------- */
+(function plan() {
+  // 남은 12일 동안 항목별 하루 금액 (지금까지의 하루 평균 기준, 구독은 월 고정)
+  const other = (62000 + 143000) / DAY;       // 교통 + 기타
+  const rDel = document.getElementById('rDel'), rCafe = document.getElementById('rCafe');
+  const svg = document.getElementById('pace');
+  const W = 310, H = 180, pl = 0, pr = 0, pt = 14, pb = 22, MAXY = 950000;
+  const X = d => pl + (W - pl - pr) * d / DAYS;
+  const Y = v => pt + (H - pt - pb) * (1 - v / MAXY);
+
+  const defs = el('defs', {}, svg);
+  const ag = el('linearGradient', { id: 'ag', x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+  el('stop', { offset: 0, 'stop-color': '#1131A2', 'stop-opacity': .28 }, ag);
+  el('stop', { offset: 1, 'stop-color': '#1131A2', 'stop-opacity': 0 }, ag);
+  const pg = el('linearGradient', { id: 'pg', x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+  el('stop', { offset: 0, 'stop-color': '#ADD0EC', 'stop-opacity': .55 }, pg);
+  el('stop', { offset: 1, 'stop-color': '#ADD0EC', 'stop-opacity': 0 }, pg);
+
+  // 오늘 이후 구간 배경
+  el('rect', { x: X(DAY), y: pt, width: X(DAYS) - X(DAY), height: H - pt - pb, fill: 'rgba(220,234,246,.35)', rx: 10 }, svg);
+  // 예산선
+  el('line', { x1: 0, x2: W, y1: Y(BUDGET), y2: Y(BUDGET), stroke: '#15200F', 'stroke-opacity': .5, 'stroke-width': 1, 'stroke-dasharray': '2 4' }, svg);
+  const bl = el('text', { x: 2, y: Y(BUDGET) - 6, 'font-size': 11, 'font-weight': 700, fill: 'rgba(21,32,15,.56)' }, svg);
+  bl.textContent = '예산 800,000';
+  // 실제 누적(평균 페이스)
+  el('path', { d: `M${X(0)},${Y(0)} L${X(DAY)},${Y(USED)} L${X(DAY)},${Y(0)} Z`, fill: 'url(#ag)' }, svg);
+  el('path', { d: `M${X(0)},${Y(0)} L${X(DAY)},${Y(USED)}`, stroke: '#1131A2', 'stroke-width': 3, 'stroke-linecap': 'round', fill: 'none' }, svg);
+  // 예상 구간
+  const projArea = el('path', { fill: 'url(#pg)' }, svg);
+  const projLine = el('path', { stroke: '#6F93D4', 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-dasharray': '1 6', fill: 'none' }, svg);
+  const endDot = el('circle', { r: 6, fill: '#fff', stroke: '#6F93D4', 'stroke-width': 3 }, svg);
+  el('circle', { cx: X(DAY), cy: Y(USED), r: 7, fill: '#1131A2', stroke: '#fff', 'stroke-width': 3 }, svg);
+  // 축
+  [[1, '1일'], [DAY, '오늘'], [DAYS, '30일']].forEach(([d, t], i) => {
+    const tx = el('text', { x: i === 0 ? 0 : X(d), y: H - 4, 'font-size': 11, 'font-weight': 700,
+      fill: d === DAY ? '#1131A2' : 'rgba(21,32,15,.34)', 'text-anchor': i === 0 ? 'start' : i === 2 ? 'end' : 'middle' }, svg);
+    tx.textContent = t;
+  });
+
+  const projV = document.getElementById('projV'), projD = document.getElementById('projD');
+  const presets = { del: [rDel, 7800, 10000], cafe: [rCafe, 3000, 5000] };
+  const btns = [...document.querySelectorAll('[data-preset]')];
+
+  function paint(input, fill, out) {
+    const p = (input.value - input.min) / (input.max - input.min) * 100;
+    document.getElementById(fill).style.width = `calc(${p}% + ${14 - p * .28}px)`;
+    document.getElementById(out).textContent = fmt(input.value);
+  }
+  function update() {
+    paint(rDel, 'fDel', 'vDel'); paint(rCafe, 'fCafe', 'vCafe');
+    const end = USED + LEFT * (+rDel.value + +rCafe.value + other);
+    projArea.setAttribute('d', `M${X(DAY)},${Y(USED)} L${X(DAYS)},${Y(end)} L${X(DAYS)},${Y(0)} L${X(DAY)},${Y(0)} Z`);
+    projLine.setAttribute('d', `M${X(DAY)},${Y(USED)} L${X(DAYS)},${Y(end)}`);
+    endDot.setAttribute('cx', X(DAYS) - 6); endDot.setAttribute('cy', Y(end));
+    projV.textContent = fmt(end);
+    const diff = end - BUDGET;
+    projD.textContent = Math.abs(diff) < 500 ? '예산과 같음' : `예산 ${diff > 0 ? '+' : '−'}${fmt(Math.abs(diff))}`;
+    projD.style.background = diff > 0 ? '#DCEAF6' : '#1131A2';
+    projD.style.color = diff > 0 ? '#1131A2' : '#fff';
+    btns.forEach(b => {
+      const [inp, v] = presets[b.dataset.preset];
+      const on = +inp.value === v;
+      b.classList.toggle('on', on);
+      b.textContent = on ? '되돌리기' : '적용해 보기';
+    });
+  }
+  rDel.addEventListener('input', update); rCafe.addEventListener('input', update);
+  btns.forEach(b => b.addEventListener('click', () => {
+    const [inp, v, base] = presets[b.dataset.preset];
+    inp.value = +inp.value === v ? base : v;
+    update();
+  }));
+  update();
+})();
+
+/* ---------- 자산: 유리병 레이어 ---------- */
+(function assets() {
+  const jar = document.getElementById('jar');
+  const vals = [8100000, 3200000, 1100000];          // 예적금(바닥) · 입출금 · 투자
+  const TOTAL = 12400000, INNER = 330 - 16, pad = 8;
+  const lays = [...jar.querySelectorAll('.lay')];
+  const tags = [...document.querySelectorAll('.tag')];
+  const heights = vals.map(v => INNER * v / TOTAL * .92);
+  function layout(split) {
+    const gap = split ? 14 : 0;
+    let b = pad;
+    const centers = [];
+    lays.forEach((l, i) => {
+      const h = split ? heights[i] - gap * 2 / 3 : heights[i];
+      l.style.height = h + 'px';
+      l.style.bottom = b + 'px';
+      centers[i] = 330 - (b + h / 2);
+      b += h + gap;
+    });
+    jar.classList.toggle('split', split);
+    // 태그 위치: 레이어 중앙에 맞추되 겹치지 않게
+    const pos = [centers[2], centers[1], centers[0]].map(c => c - 22);
+    pos[0] = Math.min(pos[0], pos[1] - 64);
+    tags.forEach(t => { t.style.top = pos[[2, 1, 0].indexOf(+t.dataset.i)] + 'px'; });
+  }
+  layout(false);
+  document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('[data-mode]').forEach(x => x.classList.toggle('on', x === b));
+    layout(b.dataset.mode === 'split');
+  }));
+
+  const waffle = document.getElementById('waffle');
+  const on = Math.round(USED / TOTAL * 100);       // 4칸 / 100칸
+  for (let i = 0; i < 100; i++) {
+    const c = document.createElement('i');
+    if (i < on) c.className = 'on';
+    waffle.appendChild(c);
+  }
+})();
+</script>
+</body>
+</html>
