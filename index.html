@@ -125,10 +125,10 @@
   }
   .glass-pill b { color: #fff; font-weight: 600; }
   .bc-lbl { margin-top: 26px; font-size: 13px; color: var(--gray); display: flex; gap: 8px; align-items: center; }
-  .hero { display: flex; align-items: flex-start; gap: 4px; margin-top: 2px; font-variant-numeric: tabular-nums; }
-  .hero .cur { font-size: 28px; font-weight: 600; margin-top: 9px; color: rgba(255,255,255,.7); letter-spacing: -.5px; }
-  .hero .n { font-size: 64px; line-height: 1; font-weight: 700; letter-spacing: -3.4px; }
-  .hero .per { align-self: flex-end; margin: 0 0 8px 6px; font-family: var(--mono); font-size: 13px; color: var(--gray); }
+  .hero { display: flex; align-items: baseline; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .hero .n { font-size: 64px; line-height: 1; font-weight: 600; letter-spacing: normal; }
+  .hero .cur { margin-left: 8px; font-size: 26px; font-weight: 500; color: rgba(255,255,255,.72); }
+  .hero .per { margin-left: 6px; font-family: var(--mono); font-size: 13px; color: var(--gray); }
   .bc-avg { margin-top: 10px; font-family: var(--mono); font-size: 11px; color: var(--gray); }
   .bc-avg b { color: rgba(255,255,255,.85); font-weight: 500; }
   .pace { margin-top: 24px; position: relative; }
@@ -360,15 +360,19 @@
   .cal-h, .cal { display: grid; grid-template-columns: repeat(7, 1fr); }
   .cal-h span { text-align: center; font-size: 11px; color: var(--gray); padding-bottom: 8px; }
   .cal button { height: 46px; display: grid; place-items: center; position: relative; }
-  .cal .b { border-radius: 50%; background: var(--ink); transition: transform .2s; }
-  .cal .b.f { background: none; box-shadow: inset 0 0 0 1px #CFCFCF; }
-  .cal .b.t { background: var(--sage); }
-  .cal .dn { position: absolute; font-family: var(--mono); font-size: 9.5px; color: #fff; }
+  .cal .b { width: 34px; height: 34px; border-radius: 50%; background: var(--ink); transition: transform .2s; }
+  .cal .b.t { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--sage); }
+  .cal .b.f { background: none; box-shadow: none; border: 1px dashed #C4C4C4; }
+    .cal .dn { position: absolute; font-family: var(--mono); font-size: 10px; color: #fff; }
+  .cal .dn.dk { color: var(--ink); }
   .cal .f + .dn { color: var(--gray); }
-  .cal button.sel::after { content: ""; position: absolute; inset: 2px 5px; border-radius: 12px; box-shadow: inset 0 0 0 1.5px var(--ink); }
+  .cal button.sel::after { content: ""; position: absolute; bottom: 0; left: 50%; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--ink); }
+  .cal button.sel .b { transform: scale(1.08); }
   .cal-leg { display: flex; justify-content: space-between; margin-top: 10px; padding-top: 12px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 10px; color: var(--gray); align-items: center; }
   .cal-leg .sz { display: inline-flex; align-items: center; gap: 4px; }
-  .cal-leg .sz i { display: inline-block; border-radius: 50%; background: var(--ink); }
+  .cal-leg .sz i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; }
+  .steps { display: inline-flex; align-items: center; gap: 3px; }
+  .steps i { width: 22px !important; height: 10px !important; border-radius: 3px !important; }
   .day-card { margin-top: 12px; display: flex; justify-content: space-between; align-items: center; }
   .day-card .d { font-family: var(--mono); font-size: 11px; color: var(--gray); }
   .day-card .v { font-size: 24px; font-weight: 700; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
@@ -401,27 +405,38 @@
   .rad-c { font-size: 30px !important; font-weight: 700 !important; letter-spacing: -1.4px; }
   .leg { display: flex; justify-content: center; gap: 18px; margin-top: 4px; font-family: var(--mono); font-size: 10.5px; color: var(--gray); }
   .leg i { display: inline-block; width: 16px; height: 6px; border-radius: 3px; margin-right: 6px; vertical-align: 1px; }
-  .plan { display: grid; grid-template-columns: 58px 1fr; gap: 18px; }
-  .tube {
-    position: relative; height: 100%; min-height: 300px; border-radius: 29px; overflow: hidden;
-    background: linear-gradient(90deg, rgba(0,0,0,.04), rgba(255,255,255,.7) 35%, rgba(0,0,0,.03) 70%, rgba(0,0,0,.06));
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
-    display: flex; flex-direction: column-reverse; padding: 4px;
+.plan { display: grid; grid-template-columns: 78px 1fr; gap: 12px; align-items: stretch; }
+  .plan-h { display: flex; justify-content: space-between; padding: 0 0 10px 24px; font-family: var(--mono); font-size: 10px; color: var(--gray); }
+  /* measuring jar: flat rim, straight walls, rounded base; the fill is clipped by the glass so the lowest layer follows the base curve */
+  .jar { display: grid; grid-template-columns: 24px 1fr; grid-template-rows: auto 1fr; column-gap: 4px; height: 100%; min-height: 300px; }
+  .jar-scale { grid-row: 2; position: relative; font-family: var(--mono); font-size: 9px; color: var(--gray); }
+  .jar-scale span { position: absolute; right: 0; transform: translateY(50%); }
+  .jar-rim { grid-column: 2; height: 8px; margin: 0 -4px; border-radius: 3px;
+    background: linear-gradient(90deg, #D9DBDD, #F7F8F8 35%, #C9CCCF 70%, #E6E8EA); box-shadow: inset 0 0 0 .5px rgba(0,0,0,.18); }
+  .jar-body {
+    grid-column: 2; position: relative; overflow: hidden; border-radius: 3px 3px 18px 18px;
+    background: linear-gradient(90deg, rgba(0,0,0,.035), rgba(255,255,255,.9) 30%, rgba(255,255,255,.4) 65%, rgba(0,0,0,.05));
+    box-shadow: inset 0 0 0 1.5px rgba(0,0,0,.14);
+    display: flex; flex-direction: column; justify-content: flex-end;
   }
-  .tube i { display: block; border-radius: 3px; margin-top: 2px; transition: height .4s cubic-bezier(.2,.8,.2,1); flex: none; }
-  .tube::after { /* glass highlight */
-    content: ""; position: absolute; top: 8px; bottom: 8px; left: 12px; width: 6px; border-radius: 3px;
-    background: linear-gradient(rgba(255,255,255,.75), rgba(255,255,255,.1)); pointer-events: none;
+  .jar-body i { display: block; flex: none; transition: height .45s cubic-bezier(.2,.8,.2,1); box-shadow: inset 0 1.5px 0 rgba(255,255,255,.55); }
+  .jar-body i:first-of-type { box-shadow: inset 0 2px 0 rgba(255,255,255,.35); }
+  .jar-body::after { /* glass reflection over the fill */
+    content: ""; position: absolute; top: 6px; bottom: 14px; left: 7px; width: 5px; border-radius: 3px;
+    background: linear-gradient(rgba(255,255,255,.8), rgba(255,255,255,.15)); pointer-events: none;
   }
-  .tube .cap-line { position: absolute; left: -2px; right: -2px; border-top: 1.5px dashed var(--ink); }
+  .jar-ticks { position: absolute; inset: 0; pointer-events: none; }
+  .jar-ticks b { position: absolute; right: 0; width: 8px; border-top: 1px solid rgba(0,0,0,.28); }
+  .jar-ticks b.l { width: 14px; }
+  .jar-cap { position: absolute; left: 0; right: 0; border-top: 1.5px dashed var(--ink); z-index: 2; }
   .prow { display: grid; grid-template-columns: 14px 1fr auto; gap: 10px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); }
   .prow:first-child { border-top: 0; padding-top: 0; }
   .prow .nm { font-size: 14px; font-weight: 600; letter-spacing: -.3px; }
-  .prow .nm small { display: block; font-family: var(--mono); font-size: 10px; color: var(--gray); font-weight: 400; letter-spacing: 0; margin-top: 2px; }
+  .prow .nm small { display: block; font-size: 11px; color: var(--gray); font-weight: 400; letter-spacing: 0; margin-top: 2px; white-space: nowrap; }
   .step { display: inline-flex; align-items: center; gap: 2px; }
-  .step button { width: 28px; height: 28px; border-radius: 50%; background: var(--bg); display: grid; place-items: center; }
+  .step button { width: 26px; height: 26px; border-radius: 50%; background: var(--bg); display: grid; place-items: center; }
   .step button svg.i { width: 14px; height: 14px; }
-  .step output { min-width: 66px; text-align: center; font-size: 14px; font-weight: 700; letter-spacing: -.4px; font-variant-numeric: tabular-nums; }
+  .step output { min-width: 56px; text-align: center; font-size: 14px; font-weight: 700; letter-spacing: -.4px; font-variant-numeric: tabular-nums; }
   .plan-sum { display: flex; justify-content: space-between; align-items: baseline; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--ink); }
   .plan-sum .v { font-size: 24px; font-weight: 700; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
   .plan-sum .v small { font-family: var(--mono); font-size: 11px; color: var(--gray); font-weight: 400; letter-spacing: 0; }
@@ -502,7 +517,7 @@
   <div class="glassbar" id="glassbar" aria-hidden="true"><span class="gb-t" id="gbT"></span><span class="gb-v" id="gbV"></span></div>
 
   <!-- ═════════ HOME ═════════ -->
-  <main class="page on" id="p-home" data-t="홈" data-v="₩26,000<small>/ DAY</small>">
+  <main class="page on" id="p-home" data-t="홈" data-v="26,000 ₩<small>/ DAY</small>">
     <header class="head">
       <div class="brand"><span class="wordmark">tally<i>.</i></span><span class="head-date">SEP 20 · SUN</span></div>
       <div class="head-btns">
@@ -515,7 +530,7 @@
       <div class="bcard">
         <div class="bc-top"><span class="chip" aria-hidden="true"></span><span class="glass-pill">SEP · <b>D-10</b></span></div>
         <div class="bc-lbl">하루 기준</div>
-        <div class="hero" aria-label="하루 26,000원"><span class="cur">₩</span><span class="n" id="heroNum">26,000</span><span class="per">/ DAY</span></div>
+        <div class="hero" aria-label="하루 26,000원"><span class="n" id="heroNum">26,000</span><span class="cur">₩</span><span class="per">/ DAY</span></div>
         <div class="bc-avg">AVG 1–20 <b>27,000</b> · LEFT <b>260,000</b></div>
         <div class="pace" aria-label="예산 67.5% 사용, 한 달의 66.7% 경과">
           <div class="pace-track"><div class="pace-fill" id="paceFill"></div></div>
@@ -539,7 +554,7 @@
     </div>
 
     <section class="section" style="padding-top:28px" aria-label="이번 달 지출 상위 항목">
-      <div class="s-head"><h2 class="s-title">어디로 나갔나</h2><span class="s-aux">₩540,000</span></div>
+      <div class="s-head"><h2 class="s-title">지출 상위 항목</h2><span class="s-aux">₩540,000</span></div>
       <div class="tree">
         <div class="tcol" style="grid-template-rows:2fr 1fr">
           <button class="tile t-dk" data-go="spend"><span class="tn"><svg class="i"><use href="#c-bag"/></svg>배달</span><span class="badge"><svg class="i"><use href="#i-up"/></svg>40,000</span><span class="tv">180,000<small>33%</small></span></button>
@@ -555,8 +570,8 @@
       </div>
     </section>
 
-    <section class="section" aria-label="줄일 수 있는 지점">
-      <div class="s-head"><h2 class="s-title">조정해 볼 지점</h2><span class="s-aux">3</span></div>
+    <section class="section" aria-label="조정 가능 항목">
+      <div class="s-head"><h2 class="s-title">조정 가능 항목</h2><span class="s-aux">3</span></div>
       <div class="carousel" id="carousel">
         <article class="sg" data-save="20000">
           <div class="sg-top"><span class="sg-cat"><span class="ic"><svg class="i"><use href="#c-bag"/></svg></span>배달</span>
@@ -607,7 +622,7 @@
     </section>
 
     <section class="section" aria-label="전체 자산">
-      <div class="s-head"><h2 class="s-title">내 자산</h2><span class="s-aux">3 ACCOUNTS</span></div>
+      <div class="s-head"><h2 class="s-title">통합 자산</h2><span class="s-aux">3 ACCOUNTS</span></div>
       <button class="mini-assets" data-go="assets" aria-label="자산 탭으로 이동">
         <span class="edge brushed mt-gold" style="top:0"></span>
         <span class="edge brushed mt-silver" style="top:10px"></span>
@@ -636,8 +651,8 @@
         <div class="cal-h"><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span><span>일</span></div>
         <div class="cal" id="cal"></div>
         <div class="cal-leg">
-          <span class="sz"><i style="width:8px;height:8px"></i><i style="width:14px;height:14px"></i><i style="width:22px;height:22px"></i> 원 크기 = 지출</span>
-          <span class="sz"><i style="width:10px;height:10px;background:none;box-shadow:inset 0 0 0 1px #CFCFCF"></i> 남은 날</span>
+          <span class="sz" style="flex-direction:column;align-items:flex-start;gap:5px"><span class="steps" id="calSteps"></span><span id="calStepLbl" style="display:flex;gap:3px"></span></span>
+          <span class="sz"><i style="border:1px dashed #C4C4C4"></i>남은 날</span>
         </div>
         <div class="day-card">
           <div><div class="d" id="dayD">09.20 SUN</div><div class="v" id="dayV">17,000</div></div>
@@ -649,7 +664,7 @@
       </div>
     </section>
     <section class="section">
-      <div class="s-head"><h2 class="s-title">최근 내역</h2><span class="s-aux">3 ACCOUNTS · 1 VIEW</span></div>
+      <div class="s-head"><h2 class="s-title">최근 거래 내역</h2><span class="s-aux">3 ACCOUNTS · 1 VIEW</span></div>
       <div class="box" id="txList" style="padding-top:6px"></div>
     </section>
     <div class="spacer"></div>
@@ -660,21 +675,25 @@
     <header class="head"><h1 class="ptitle">예산</h1><span class="head-date">D-10</span></header>
     <section class="section" style="padding-top:0">
       <div class="box">
-        <div class="s-head" style="margin-bottom:0"><h2 class="s-title" style="font-size:16px">항목별 속도</h2><span class="s-aux">SEP 30 EST.</span></div>
+        <div class="s-head" style="margin-bottom:0"><h2 class="s-title" style="font-size:16px">항목별 지출 속도</h2><span class="s-aux">EST. 787,500</span></div>
         <div class="radial"><svg viewBox="0 0 310 310" id="radial" aria-label="항목별 사용액과 현재 속도로 본 월말 예상"></svg></div>
-        <div class="leg"><span><i style="background:#111"></i>사용</span><span><i style="background:#CFCFCF"></i>월말 예상</span><span>¾ = 270k</span></div>
+        <div class="leg"><span><i style="background:#111"></i>사용</span><span><i style="background:#CFCFCF"></i>월말 예상</span><span>¾ = 375k</span></div>
       </div>
     </section>
     <section class="section">
-      <div class="s-head"><h2 class="s-title">10월 기준 세우기</h2><span class="s-aux">±5,000</span></div>
+      <div class="s-head"><h2 class="s-title">10월 예산 설정</h2><span class="s-aux">±5,000</span></div>
       <div class="box">
         <div class="plan">
-          <div class="tube" id="tube"><span class="cap-line" id="capLine"></span></div>
-          <div id="planRows"></div>
+          <div class="jar" aria-hidden="true">
+            <span></span><span class="jar-rim"></span>
+            <div class="jar-scale" id="jarScale"></div>
+            <div class="jar-body" id="jar"><span class="jar-ticks" id="jarTicks"></span><span class="jar-cap" id="capLine"></span></div>
+          </div>
+          <div><div class="plan-h"><span>9월 예상</span><span>10월</span></div><div id="planRows"></div></div>
         </div>
-        <div class="plan-sum"><span class="s-aux">TOTAL / 800,000</span><span class="v" id="planSum">790,000</span></div>
+        <div class="plan-sum"><span class="s-aux">TOTAL / 800,000</span><span class="v" id="planSum">795,000</span></div>
       </div>
-      <button class="cta" id="saveBtn" style="margin-top:14px">10월 기준 저장</button>
+      <button class="cta" id="saveBtn" style="margin-top:14px">10월 예산 저장</button>
     </section>
     <div class="spacer"></div>
   </main>
@@ -703,7 +722,7 @@
       </div>
     </section>
     <section class="section">
-      <div class="s-head"><h2 class="s-title">예산으로 환산하면</h2><span class="s-aux">÷ 800,000</span></div>
+      <div class="s-head"><h2 class="s-title">예산 환산 기간</h2><span class="s-aux">÷ 800,000</span></div>
       <div class="box">
         <div class="big-mo">15.5<small>MONTHS</small></div>
         <div class="runway" id="runway" style="margin-top:14px" aria-label="입출금 4개월, 예적금 10.1개월, 투자 1.4개월"></div>
@@ -983,13 +1002,17 @@
 
   /* ── SPEND: bubble calendar + tx ── */
   const cal = $('#cal'), MAXD = Math.max(...DAILY);
-  const size = v => 8 + Math.sqrt(v / MAXD) * 30;
+  // five colour steps around the 26,000 daily guide
+  const STEP_AT = [20000, 26000, 32000, 40000], STEP_C = ['#E3E3E0', '#BDBDBA', '#8C8C8A', '#4E4E4F', '#111111'];
+  const stepOf = v => STEP_AT.filter(t => v >= t).length;
+  $('#calSteps').innerHTML = STEP_C.map(c => `<i style="background:${c}"></i>`).join('');
+  $('#calStepLbl').innerHTML = ['~20k', '26k', '32k', '40k', '40k+'].map(t => `<span style="width:22px;text-align:center;font-size:8.5px">${t}</span>`).join('');
   let html = '';
   const lead = (wd(1) + 6) % 7; // Monday-first offset
   for (let i = 0; i < lead; i++) html += '<span></span>';
   for (let d = 1; d <= DAYS; d++) {
-    const v = DAILY[d - 1], s = v ? size(v) : size(PER_DAY);
-    html += `<button data-d="${d}" aria-label="9월 ${d}일 ${v ? won(v) + '원' : '예정'}"><span class="b ${!v ? 'f' : d === DAY ? 't' : ''}" style="width:${s}px;height:${s}px"></span><span class="dn">${d}</span></button>`;
+    const v = DAILY[d - 1], k = v ? stepOf(v) : -1;
+    html += `<button data-d="${d}" aria-label="9월 ${d}일 ${v ? won(v) + '원' : '예정'}"><span class="b ${!v ? 'f' : d === DAY ? 't' : ''}" style="${v ? `background:${STEP_C[k]}` : ''}"></span><span class="dn ${v && k < 2 ? 'dk' : ''}">${d}</span></button>`;
   }
   cal.innerHTML = html;
   function pickDay(d) {
@@ -1009,50 +1032,68 @@
         <span class="a">−${won(x[4])}</span></div>`).join('')}
     </div>`).join('');
 
-  /* ── BUDGET: radial + planner ── */
-  const R = [138, 114, 90, 66, 42], FULL = 360000, CX = 155;
-  const order = [...ALL].sort((a, b) => b.est - a.est);
+  /* ── BUDGET: radial + planner ──
+     Budget categories regroup the same 540,000: 배달 sits inside 식비, 구독 inside 문화·여가.
+     그 외 163,000 = 식비(배달 외) 68,000 + 문화·여가(구독 외) 25,000 + 쇼핑 45,000 + 기타 25,000. */
+  const BCATS = [
+    { k: '식비', v: 248000, fixed: 0, sub: '배달 포함' },
+    { k: '카페·간식', v: 90000, fixed: 0 },
+    { k: '교통', v: 62000, fixed: 0 },
+    { k: '문화·여가', v: 70000, fixed: 45000, sub: '구독 포함' },
+    { k: '쇼핑', v: 45000, fixed: 0 },
+    { k: '기타', v: 25000, fixed: 0, sub: '생활 등' },
+  ];
+  BCATS.forEach(c => c.est = c.fixed + (c.v - c.fixed) / DAY * DAYS); // sums to EST (787,500)
+  const TONE = ['#111111', '#3A3A3C', '#5F5F62', '#8A8A8D', '#B3B3B5', '#D8D8D6'];
+  const R = [140, 118, 96, 74, 52, 30], FULL = 500000, CX = 155;
   let radialDrawn = false;
   function drawRadial() {
     const svg = $('#radial');
     if (!radialDrawn) {
-      svg.innerHTML = order.map((c, i) => {
+      svg.innerHTML = BCATS.map((c, i) => {
         const r = R[i], C = 2 * Math.PI * r;
         return `<g transform="rotate(-90 ${CX} ${CX})">
-            <circle cx="${CX}" cy="${CX}" r="${r}" fill="none" stroke="#F1F1EF" stroke-width="16" stroke-dasharray="${C * .75} ${C}" stroke-linecap="round"/>
-            <circle class="arc" data-to="${C * c.est / FULL}" cx="${CX}" cy="${CX}" r="${r}" fill="none" stroke="#CFCFCF" stroke-width="16" stroke-dasharray="0 ${C}" stroke-linecap="round"/>
-            <circle class="arc" data-to="${C * c.v / FULL}" cx="${CX}" cy="${CX}" r="${r}" fill="none" stroke="#111" stroke-width="16" stroke-dasharray="0 ${C}" stroke-linecap="round"/>
+            <circle cx="${CX}" cy="${CX}" r="${r}" fill="none" stroke="#F1F1EF" stroke-width="14" stroke-dasharray="${C * .75} ${C}" stroke-linecap="round"/>
+            <circle class="arc" data-to="${C * c.est / FULL}" cx="${CX}" cy="${CX}" r="${r}" fill="none" stroke="#CFCFCF" stroke-width="14" stroke-dasharray="0 ${C}" stroke-linecap="round"/>
+            <circle class="arc" data-to="${C * c.v / FULL}" cx="${CX}" cy="${CX}" r="${r}" fill="none" stroke="#111" stroke-width="14" stroke-dasharray="0 ${C}" stroke-linecap="round"/>
           </g>
-          <text x="${CX - 14}" y="${CX - r + 4}" text-anchor="end">${c.k.replace(' 서비스', '')} <tspan class="v">${Math.round(c.est / 1000)}k</tspan></text>`;
-      }).join('') + `<text class="rad-c" x="${CX}" y="${CX + 6}" text-anchor="middle">${won(EST / 1000)}k</text>
-        <text class="v" x="${CX}" y="${CX + 24}" text-anchor="middle">EST. / 800k</text>`;
+          <text x="${CX - 14}" y="${CX - r + 4}" text-anchor="end">${c.k} <tspan class="v">${(c.est / 1000).toFixed(c.est % 1000 ? 1 : 0)}k</tspan></text>`;
+      }).join('');
       radialDrawn = true;
     }
     const arcs = $$('.arc', svg);
     arcs.forEach(a => { a.style.strokeDasharray = `0 ${2 * Math.PI * +a.getAttribute('r')}`; });
     requestAnimationFrame(() => requestAnimationFrame(() => arcs.forEach(a => a.style.strokeDasharray = `${a.dataset.to} 9999`)));
   }
-  const PLAN = order.map(c => ({ k: c.k.replace(' 서비스', ''), p: c.p, v: Math.round(c.est / 5000) * 5000, est: c.est }));
-  const TUBE_MAX = 900000;
+  const PLAN = BCATS.map((c, i) => ({ k: c.k, sub: c.sub, tone: TONE[i], v: Math.round(c.est / 5000) * 5000, est: c.est }));
+  const JAR_MAX = 900000;
   $('#planRows').innerHTML = PLAN.map((c, i) => `
-    <div class="prow"><span class="sw ${c.p}" style="width:14px;height:14px;border-radius:3px"></span>
-      <span class="nm">${c.k}<small>SEP ${won(c.est)}</small></span>
+    <div class="prow"><span class="sw" style="width:14px;height:14px;border-radius:4px;background:${c.tone};box-shadow:inset 0 0 0 .5px rgba(0,0,0,.12)"></span>
+      <span class="nm">${c.k}<small>${(c.est / 1000).toFixed(c.est % 1000 ? 1 : 0)}k${c.sub ? ' · ' + c.sub : ''}</small></span>
       <span class="step"><button data-i="${i}" data-s="-1" aria-label="${c.k} 줄이기"><svg class="i"><use href="#i-minus"/></svg></button><output id="pv${i}">${won(c.v)}</output><button data-i="${i}" data-s="1" aria-label="${c.k} 늘리기"><svg class="i"><use href="#i-plus"/></svg></button></span>
     </div>`).join('');
-  const tube = $('#tube');
-  tube.insertAdjacentHTML('beforeend', PLAN.map((c, i) => `<i class="${c.p}" id="tb${i}"></i>`).join(''));
+  const jar = $('#jar');
+  // same order as the list: first item on top, last item resting on the curved base
+  jar.insertAdjacentHTML('beforeend', PLAN.map((c, i) => `<i id="tb${i}" style="background:${c.tone}"></i>`).join(''));
   function drawPlan() {
-    const H = tube.clientHeight - 8, sum = PLAN.reduce((a, c) => a + c.v, 0);
-    PLAN.forEach((c, i) => { $('#tb' + i).style.height = Math.max(0, c.v / TUBE_MAX * H - 2) + 'px'; $('#pv' + i).textContent = won(c.v); });
-    $('#capLine').style.bottom = (4 + BUDGET / TUBE_MAX * H) + 'px';
+    const H = jar.clientHeight, sum = PLAN.reduce((a, c) => a + c.v, 0);
+    PLAN.forEach((c, i) => { $('#tb' + i).style.height = (c.v / JAR_MAX * H) + 'px'; $('#pv' + i).textContent = won(c.v); });
+    $('#capLine').style.bottom = (BUDGET / JAR_MAX * H) + 'px';
+    let t = '', lb = '';
+    for (let v = 100000; v < JAR_MAX; v += 100000) {
+      const y = v / JAR_MAX * H, major = v % 200000 === 0;
+      t += `<b class="${major ? 'l' : ''}" style="bottom:${y}px"></b>`;
+      if (major) lb += `<span style="bottom:${y}px">${v / 1000}k</span>`;
+    }
+    $('#jarTicks').innerHTML = t; $('#jarScale').innerHTML = lb;
     const d = sum - BUDGET;
     $('#planSum').innerHTML = `${won(sum)} <small>${d === 0 ? '±0' : (d > 0 ? '+' : '−') + won(Math.abs(d))}</small>`;
   }
   $$('#planRows .step button').forEach(b => b.addEventListener('click', () => {
     const c = PLAN[+b.dataset.i]; c.v = Math.max(0, c.v + 5000 * +b.dataset.s); drawPlan();
   }));
-  $('#saveBtn').addEventListener('click', () => toast('10월 기준을 저장했어요'));
-  new ResizeObserver(drawPlan).observe(tube);
+  $('#saveBtn').addEventListener('click', () => toast('10월 예산을 저장했어요'));
+  new ResizeObserver(drawPlan).observe(jar);
 
   /* ── ASSETS: wallet + runway ── */
   const wallet = $('#wallet'), bar = $('#layerBar');
