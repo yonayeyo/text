@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calorie Tracker Home</title>
+<style>
+  @font-face { font-family: "Plus Jakarta Sans"; src: url("fonts/PlusJakartaSans.woff2") format("woff2"); font-weight: 200 800; font-display: block; }
+  :root {
+    --lime: #9BDB3F;
+    --lime-tint: #E3F5C4;
+    --ink: #15200F;
+    --ink-2: #5E6659;
+    --ink-3: #9EA49A;
+    --page: #F6F7F3;
+    --card: #FFFFFF;
+    --line: #ECEEE7;
+    --blue: #4C8DF6;
+    --orange: #FF9A3C;
+    --pink: #F26BA6;
+    --stage: #EFEFF4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--stage); }
+  body {
+    font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+    color: var(--ink); -webkit-font-smoothing: antialiased; word-spacing: .06em;
+    min-height: 100vh; display: grid; place-items: center; padding: 60px 16px;
+  }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* ---------- device ---------- */
+  .device {
+    width: 454px; padding: 12px; border-radius: 62px; background: #fff;
+    box-shadow: 0 0 0 1px rgba(21,32,15,.05), 0 40px 80px -24px rgba(21,32,15,.22), 0 16px 32px -12px rgba(21,32,15,.10);
+  }
+  .screen {
+    width: 430px; height: 932px; border-radius: 50px; background: var(--page);
+    position: relative; overflow: hidden;
+  }
+  .island { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 124px; height: 36px; border-radius: 20px; background: #0A0A0A; z-index: 10; }
+  .status {
+    position: absolute; top: 0; left: 0; right: 0; height: 54px; z-index: 9;
+    display: flex; justify-content: space-between; align-items: center; padding: 4px 30px 0 44px;
+    font-size: 16px; font-weight: 700; letter-spacing: -.01em;
+  }
+  .status .icons { display: flex; gap: 6px; align-items: center; }
+
+  .content { position: absolute; top: 56px; left: 0; right: 0; bottom: 0; padding: 4px 22px 0; }
+
+  /* ---------- header ---------- */
+  .header { display: flex; align-items: center; gap: 12px; }
+  .avatar { width: 48px; height: 48px; border-radius: 50%; padding: 2px; border: 2px solid var(--lime); flex: none; }
+  .avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+  .greet { flex: 1; }
+  .greet small { display: block; font-size: 12.5px; color: var(--ink-3); font-weight: 500; }
+  .greet b { display: block; font-size: 19px; font-weight: 800; letter-spacing: -.02em; margin-top: 1px; }
+  .bell { width: 46px; height: 46px; border-radius: 50%; background: #fff; border: 1px solid var(--line); display: grid; place-items: center; position: relative; }
+  .bell i { position: absolute; top: 11px; right: 12px; width: 8px; height: 8px; border-radius: 50%; background: #FF4D3D; border: 1.5px solid #fff; }
+
+  /* ---------- week ---------- */
+  .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 16px; }
+  .day { height: 54px; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
+  .day span { font-size: 11.5px; font-weight: 600; color: var(--ink-3); }
+  .day b { font-size: 15px; font-weight: 700; }
+  .day.today { background: var(--lime); }
+  .day.today span { color: var(--ink); opacity: .7; }
+  .day.muted b { color: #C4C8BF; }
+
+  /* ---------- cards ---------- */
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 28px; }
+  .hero { margin-top: 14px; padding: 18px 20px 16px; }
+  .label { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+  .flame { width: 24px; height: 24px; border-radius: 50%; background: var(--lime-tint); display: grid; place-items: center; }
+  .big { font-size: 54px; line-height: 1; font-weight: 800; letter-spacing: -.045em; margin-top: 8px; }
+  .big sub { font-size: 15px; font-weight: 600; letter-spacing: 0; color: var(--ink-3); vertical-align: baseline; margin-left: 6px; }
+  .segments { display: grid; grid-template-columns: repeat(30, 1fr); gap: 3px; margin-top: 14px; height: 20px; }
+  .segments i { border-radius: 4px; background: #EDEFE8; }
+  .segments i.on { background: var(--lime); }
+  .scale { display: flex; justify-content: space-between; font-size: 10.5px; font-weight: 600; color: var(--ink-3); margin-top: 7px; }
+  .divider { height: 1px; background: var(--line); margin: 14px 0 13px; }
+  .macros { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .macro { display: flex; align-items: center; gap: 10px; }
+  .macro + .macro { padding-left: 8px; }
+  .cap { width: 10px; height: 40px; border-radius: 6px; position: relative; overflow: hidden; flex: none; }
+  .cap i { position: absolute; left: 0; right: 0; bottom: 0; border-radius: 6px; }
+  .macro small { display: block; font-size: 11.5px; font-weight: 600; color: var(--ink-3); }
+  .macro b { display: block; font-size: 15px; font-weight: 800; letter-spacing: -.01em; margin-top: 2px; }
+  .macro b em { font-style: normal; font-weight: 600; font-size: 11.5px; color: var(--ink-3); }
+
+  /* ---------- activity ---------- */
+  .activity { margin-top: 12px; display: grid; grid-template-columns: 1fr 1px 1fr; align-items: center; padding: 12px 16px; }
+  .activity .vr { height: 38px; background: var(--line); }
+  .stat { display: flex; align-items: center; gap: 11px; }
+  .stat + .vr + .stat { padding-left: 18px; }
+  .ico { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  .stat small { display: block; font-size: 11.5px; font-weight: 600; color: var(--ink-3); }
+  .stat b { display: block; font-size: 17px; font-weight: 800; letter-spacing: -.02em; }
+
+  /* ---------- meals ---------- */
+  .sec { display: flex; justify-content: space-between; align-items: baseline; margin: 16px 2px 9px; }
+  .sec h2 { font-size: 17px; font-weight: 800; letter-spacing: -.02em; }
+  .sec a { font-size: 13px; font-weight: 700; color: #6FB21E; text-decoration: none; }
+  .meals { display: flex; flex-direction: column; gap: 7px; }
+  .meal { display: flex; align-items: center; gap: 12px; padding: 6px 10px 6px 6px; border-radius: 24px; }
+  .meal .ph { width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex: none; box-shadow: 0 2px 6px rgba(21,32,15,.10); }
+  .meal .ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .meal .txt { flex: 1; min-width: 0; }
+  .meal .txt b { display: block; font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
+  .chip { display: inline-flex; align-items: center; gap: 3px; margin-top: 3px; padding: 2px 9px; border-radius: 999px; background: var(--lime-tint); font-size: 11.5px; font-weight: 700; color: #3E6A0E; }
+  .plus { width: 34px; height: 34px; border-radius: 50%; background: #F1F2EE; display: grid; place-items: center; flex: none; }
+  .meal.empty { background: transparent; border: 1.5px dashed #CDD2C6; }
+  .meal.empty .ph { background: var(--lime-tint); box-shadow: none; display: grid; place-items: center; }
+  .meal.empty .txt small { display: block; font-size: 11.5px; font-weight: 600; color: var(--ink-3); margin-top: 3px; }
+
+  /* ---------- nav ---------- */
+  .fade { position: absolute; left: 0; right: 0; bottom: 0; height: 96px; background: linear-gradient(to bottom, rgba(246,247,243,0), var(--page) 62%); pointer-events: none; z-index: 7; }
+  .nav {
+    position: absolute; left: 16px; right: 16px; bottom: 20px; height: 66px; z-index: 8;
+    background: #fff; border-radius: 34px; border: 1px solid var(--line);
+    box-shadow: 0 12px 30px -10px rgba(21,32,15,.16);
+    display: grid; grid-template-columns: repeat(5, 1fr); align-items: center; justify-items: center;
+  }
+  .nav .tab { display: grid; place-items: center; width: 44px; height: 44px; }
+  .scan {
+    width: 64px; height: 64px; border-radius: 50%; background: var(--lime); margin-top: -30px;
+    border: 5px solid #fff; display: grid; place-items: center;
+    box-shadow: 0 10px 22px -6px rgba(111,178,30,.55);
+  }
+  .home-ind { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 134px; height: 5px; border-radius: 3px; background: var(--ink); z-index: 9; }
+</style>
+</head>
+<body>
+<div class="device">
+<div class="screen">
+  <div class="island"></div>
+  <div class="status">
+    <span class="num">9:41</span>
+    <span class="icons">
+      <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" fill="#15200F"/><rect x="5" y="5.5" width="3" height="6.5" rx="1" fill="#15200F"/><rect x="10" y="3" width="3" height="9" rx="1" fill="#15200F"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#15200F"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.1-1.2C13.2 1.6 10.7.6 8 .6S2.8 1.6.9 3.4L2 4.6c1.6-1.5 3.7-2.4 6-2.4zm0 3.3c1.4 0 2.7.5 3.7 1.4l1.1-1.2C11.5 4.5 9.8 3.9 8 3.9s-3.5.6-4.8 1.8l1.1 1.2c1-.9 2.3-1.4 3.7-1.4zm0 3.3c-.6 0-1.2.2-1.6.6L8 11.2l1.6-1.8c-.4-.4-1-.6-1.6-.6z" fill="#15200F"/></svg>
+      <svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="#15200F" stroke-opacity=".4" fill="none"/><rect x="2" y="2" width="20" height="9" rx="2" fill="#15200F"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="#15200F" fill-opacity=".45"/></svg>
+    </span>
+  </div>
+
+  <div class="content">
+    <div class="header">
+      <div class="avatar"><img data-photo="avatar" alt="Tega"></div>
+      <div class="greet"><small>Good morning</small><b>Hello, Tega</b></div>
+      <div class="bell">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#15200F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        <i></i>
+      </div>
+    </div>
+
+    <div class="week num">
+      <div class="day today"><span>M</span><b>28</b></div>
+      <div class="day"><span>T</span><b>29</b></div>
+      <div class="day"><span>W</span><b>30</b></div>
+      <div class="day"><span>T</span><b>1</b></div>
+      <div class="day"><span>F</span><b>2</b></div>
+      <div class="day"><span>S</span><b>3</b></div>
+      <div class="day"><span>S</span><b>4</b></div>
+    </div>
+
+    <div class="card hero">
+      <div class="label">
+        <span class="flame"><svg width="14" height="14" viewBox="0 0 24 24" fill="#6FB21E"><path d="M12 2c1 3.5 5.5 6 5.5 11.5A5.5 5.5 0 0 1 12 19a5.5 5.5 0 0 1-5.5-5.5c0-2.3 1.2-3.9 2.5-5 .1 1.9.9 3.1 2 3.5C11 9 10.8 5.6 12 2z"/><path d="M12 22a7.5 7.5 0 0 1-7.5-7.5h2A5.5 5.5 0 0 0 12 20a5.5 5.5 0 0 0 5.5-5.5h2A7.5 7.5 0 0 1 12 22z" opacity="0"/></svg></span>
+        kcal left
+      </div>
+      <div class="big num">1,240</div>
+      <div class="segments" id="seg"></div>
+      <div class="scale num"><span>0</span><span>2,000</span></div>
+      <div class="divider"></div>
+      <div class="macros">
+        <div class="macro">
+          <div class="cap" style="background:#E3EDFE"><i style="height:52%;background:var(--blue)"></i></div>
+          <div><small>Protein</small><b class="num">62<em>/120g</em></b></div>
+        </div>
+        <div class="macro">
+          <div class="cap" style="background:#FFEBD8"><i style="height:40%;background:var(--orange)"></i></div>
+          <div><small>Carbs</small><b class="num">88<em>/220g</em></b></div>
+        </div>
+        <div class="macro">
+          <div class="cap" style="background:#FDE3EF"><i style="height:37%;background:var(--pink)"></i></div>
+          <div><small>Fat</small><b class="num">24<em>/65g</em></b></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card activity">
+      <div class="stat">
+        <span class="ico" style="background:#FFEEDD">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF8A1F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="1.6" fill="#FF8A1F"/><path d="M7 21l3-6 3 3v3"/><path d="M13 8l-3 7"/><path d="M13 8l-4 2-2 3"/><path d="M13 8l2 4 3 1"/></svg>
+        </span>
+        <div><small>Steps</small><b class="num">6,420</b></div>
+      </div>
+      <div class="vr"></div>
+      <div class="stat">
+        <span class="ico" style="background:#E3EDFE">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#4C8DF6"><path d="M12 2.5S5 10 5 14.5a7 7 0 0 0 14 0C19 10 12 2.5 12 2.5z"/></svg>
+        </span>
+        <div><small>Water</small><b class="num">1.5 L</b></div>
+      </div>
+    </div>
+
+    <div class="sec"><h2>Today's meals</h2><a href="#">See all</a></div>
+    <div class="meals">
+      <div class="meal card">
+        <div class="ph"><img data-photo="breakfast" alt="Avocado toast with poached egg"></div>
+        <div class="txt"><b>Breakfast</b><span class="chip num">320 kcal</span></div>
+        <div class="plus"><svg width="14" height="14" viewBox="0 0 14 14" stroke="#15200F" stroke-width="2" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg></div>
+      </div>
+      <div class="meal card">
+        <div class="ph"><img data-photo="lunch" alt="Grilled chicken salad bowl"></div>
+        <div class="txt"><b>Lunch</b><span class="chip num">440 kcal</span></div>
+        <div class="plus"><svg width="14" height="14" viewBox="0 0 14 14" stroke="#15200F" stroke-width="2" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg></div>
+      </div>
+      <div class="meal card">
+        <div class="ph"><img data-photo="snack" alt="Greek yogurt with berries and granola"></div>
+        <div class="txt"><b>Snack</b><span class="chip num">180 kcal</span></div>
+        <div class="plus"><svg width="14" height="14" viewBox="0 0 14 14" stroke="#15200F" stroke-width="2" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg></div>
+      </div>
+      <div class="meal empty">
+        <div class="ph"><svg width="18" height="18" viewBox="0 0 14 14" stroke="#4E8A10" stroke-width="2" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg></div>
+        <div class="txt"><b>Dinner</b><small>Add your meal</small></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fade"></div>
+  <nav class="nav">
+    <span class="tab"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M3.5 10.2 12 3.5l8.5 6.7V19a2 2 0 0 1-2 2H15v-5.5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1V21H5.5a2 2 0 0 1-2-2z" fill="#15200F"/></svg></span>
+    <span class="tab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#A3A89E" stroke-width="2" stroke-linecap="round"><path d="M5 20V12M12 20V5M19 20v-9"/></svg></span>
+    <span class="scan"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#15200F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M7 12h10"/></svg></span>
+    <span class="tab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#A3A89E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v8M4.5 3v5a2.5 2.5 0 0 0 5 0V3M7 11v10M17 21V3c-2.2 1-3.5 3.5-3.5 7 0 1.5.9 2.5 2 2.5H17"/></svg></span>
+    <span class="tab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#A3A89E" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.4-3.6 4.2-5.5 7.5-5.5s6.1 1.9 7.5 5.5"/></svg></span>
+  </nav>
+  <div class="home-ind"></div>
+</div>
+</div>
+
+<script>
+  // 30 segments, first 19 filled
+  const seg = document.getElementById('seg');
+  for (let i = 0; i < 30; i++) { const s = document.createElement('i'); if (i < 19) s.className = 'on'; seg.appendChild(s); }
+
+  // Real top-down photos (Unsplash); local stand-ins load if the photo host is unreachable
+  const PHOTOS = {
+    avatar:    'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=240&h=240&fit=crop&crop=faces&q=80',
+    breakfast: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=240&h=240&fit=crop&q=80',
+    lunch:     'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=240&h=240&fit=crop&q=80',
+    snack:     'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=240&h=240&fit=crop&q=80',
+  };
+  document.querySelectorAll('img[data-photo]').forEach(img => {
+    const key = img.dataset.photo;
+    img.onerror = () => { img.onerror = null; img.src = 'img/' + key + '.svg'; };
+    img.src = PHOTOS[key];
+  });
+</script>
+</body>
+</html>

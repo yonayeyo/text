@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+<defs>
+<radialGradient id="b" cx="50%" cy="45%" r="55%"><stop offset="0" stop-color="#fff"/><stop offset=".86" stop-color="#F3F2EE"/><stop offset="1" stop-color="#D6D5CE"/></radialGradient>
+<radialGradient id="y" cx="45%" cy="40%" r="60%"><stop offset="0" stop-color="#FFFFFD"/><stop offset="1" stop-color="#F1EDE3"/></radialGradient>
+<radialGradient id="bb" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#6E7BC4"/><stop offset=".6" stop-color="#2E3570"/><stop offset="1" stop-color="#1B1F44"/></radialGradient>
+<filter id="s" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2.5" stdDeviation="3" flood-opacity=".22"/></filter>
+</defs>
+<rect width="200" height="200" fill="#E9E3D8"/>
+<circle cx="100" cy="100" r="92" fill="url(#b)" filter="url(#s)"/>
+<circle cx="100" cy="100" r="76" fill="url(#y)"/>
+<g fill="#C98B45" filter="url(#s)"><circle cx="62" cy="70" r="7"/><circle cx="74" cy="60" r="6"/><circle cx="56" cy="84" r="6"/><circle cx="70" cy="76" r="5"/><circle cx="84" cy="66" r="5"/><circle cx="60" cy="98" r="5"/><circle cx="72" cy="90" r="4.5"/></g>
+<g fill="#E2B36E"><circle cx="66" cy="66" r="3"/><circle cx="78" cy="72" r="2.6"/><circle cx="62" cy="90" r="2.6"/><circle cx="88" cy="60" r="2.4"/></g>
+<g filter="url(#s)">
+<path d="M118 58 q18-6 26 8 q6 14-8 22 q-18 6-24-8 q-4-16 6-22z" fill="#E23B3B"/><path d="M122 62 q12-4 18 6 q-4 10-16 10 q-8-4-2-16z" fill="#F7A6A0" opacity=".85"/>
+<path d="M138 110 q16-4 22 10 q4 14-10 20 q-16 4-20-10 q-2-14 8-20z" fill="#D72F35"/><path d="M142 114 q10-2 14 7 q-4 8-12 8 q-6-4-2-15z" fill="#F4A19C" opacity=".85"/>
+</g>
+<g filter="url(#s)"><circle cx="100" cy="110" r="8" fill="url(#bb)"/><circle cx="116" cy="124" r="7.5" fill="url(#bb)"/><circle cx="94" cy="128" r="7.5" fill="url(#bb)"/><circle cx="84" cy="146" r="7" fill="url(#bb)"/><circle cx="108" cy="144" r="7.5" fill="url(#bb)"/><circle cx="124" cy="98" r="7" fill="url(#bb)"/><circle cx="72" cy="120" r="7" fill="url(#bb)"/></g>
+<g fill="#A3336B" filter="url(#s)"><circle cx="128" cy="150" r="5"/><circle cx="135" cy="146" r="5"/><circle cx="132" cy="156" r="5"/><circle cx="138" cy="154" r="4.5"/></g>
+<path d="M92 76 q8-10 16-2 q-6 8-16 2z" fill="#6BA83A"/>
+</svg>
