@@ -86,7 +86,9 @@
   .ibtn .dot { position: absolute; top: 12px; right: 13px; width: 7px; height: 7px; border-radius: 50%; background: var(--lime); }
   .pill { height: 48px; padding: 0 18px; border-radius: 999px; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; white-space: nowrap; }
 
-  .title { font-size: 38px; font-weight: 400; line-height: 1.04; letter-spacing: -.035em; margin: 22px 20px 0; }
+  .title { font-size: 26px; font-weight: 400; line-height: 1.2; letter-spacing: -.03em; margin: 22px 20px 0; white-space: nowrap; }
+  .greet { font-size: 32px; font-weight: 400; line-height: 1.15; letter-spacing: -.035em; margin: 22px 20px 0; }
+  .greet small { display: block; font-size: 19px; color: #6E6E69; margin-top: 6px; letter-spacing: -.02em; }
   .ink .title .dim { color: #6E6E69; }
   .sub { font-size: 13px; color: var(--mute); margin: 10px 20px 0; line-height: 1.5; }
   .ink .sub { color: var(--mute-d); }
@@ -426,7 +428,7 @@
       <button class="ibtn glass" style="color:#fff" aria-label="알림"><svg class="i"><use href="#i-bell"/></svg><span class="dot"></span></button>
     </div>
 
-    <h1 class="title">9월,<br><span class="dim">열흘 남았어요</span></h1>
+    <h1 class="greet">지우님, 안녕하세요<small>9월, 열흘 남았어요</small></h1>
 
     <div class="hero-wrap">
       <div class="hero">
@@ -445,7 +447,7 @@
     </div>
 
     <div class="sheet">
-      <div class="sec-h"><h2>많이 쓴 곳</h2><small>9.1 — 9.20</small></div>
+      <div class="sec-h"><h2>지출 상위 항목</h2><small>9.1 — 9.20</small></div>
       <div class="card c-white bubble-card">
         <svg class="bub" id="bub" viewBox="0 0 334 240"></svg>
         <div class="bub-foot">
@@ -458,9 +460,9 @@
         <div class="card c-black" data-go="assets">
           <div class="notch tr"><button class="ibtn w" aria-label="자산 보기"><svg class="i"><use href="#i-arrow"/></svg></button></div>
           <span class="lbl" style="opacity:.6">총자산</span>
-          <div class="mini-big num money">1,240<span class="cur">만₩</span></div>
+          <div class="mini-big num money" style="font-size:27px;letter-spacing:-.04em">12,400,000<span class="cur" style="font-size:13px">₩</span></div>
           <div class="segbar"><span style="flex:25.8;background:#fff"></span><span style="flex:65.3;background:var(--lime)"></span><span style="flex:8.9;background:var(--lav)"></span></div>
-          <div class="mini-cap">계좌 5개를 하나로</div>
+          <div class="mini-cap">계좌 5개 합산</div>
         </div>
         <div class="card c-lav" data-go="coach">
           <span class="ibtn b" style="width:40px;height:40px"><svg class="i" style="width:20px;height:20px"><use href="#i-spark"/></svg></span>
@@ -474,11 +476,11 @@
   <!-- ============================ FLOW ============================ -->
   <section class="screen" id="flow">
     <div class="hdr">
-      <h1 class="title" style="margin:10px 4px 0;flex:1">돈이 흘러간<br><span class="dim">길</span></h1>
+      <h1 class="title" style="margin:10px 4px 0;flex:1">지출 흐름</h1>
       <span class="pill c-white" style="background:#fff;align-self:flex-start;margin-top:14px">9월 <svg class="i" style="width:16px;height:16px"><use href="#i-down"/></svg></span>
     </div>
     <div class="big-line"><span class="n num money">540,000<span class="cur">₩</span></span><small>3개 계좌 → 6개 항목</small></div>
-    <p class="sub" style="margin-top:6px">나눠 쓰는 계좌는 그대로, 흐름만 한 장에 겹쳐 봤어요.</p>
+    <p class="sub" style="margin-top:6px">계좌별 지출 흐름 통합 · 9월 1일–20일</p>
 
     <div class="chips" id="catChips" style="margin-top:18px"></div>
 
@@ -487,7 +489,7 @@
       <div class="sk-note"><span id="skNote">계좌를 눌러 흐름을 따라가 보세요</span><span>단위 1,000 ₩</span></div>
     </div>
 
-    <div class="sec-h"><h2>이번 주</h2><small>하루 평균 27,000 ₩</small></div>
+    <div class="sec-h"><h2>이번 주 지출</h2><small>하루 평균 27,000 ₩</small></div>
     <div class="card c-white week">
       <div class="bars" id="bars"></div>
       <div class="dchips" id="dchips"></div>
@@ -497,13 +499,13 @@
 
   <!-- ============================ BUDGET ============================ -->
   <section class="screen ink" id="budget" data-dark="1">
-    <h1 class="title" style="margin-top:14px">9월<br><span class="dim">예산</span></h1>
+    <h1 class="title" style="margin-top:14px">9월 예산</h1>
     <div class="budget-top">
       <div><div class="n num money">260,000<span class="cur">₩</span></div><small>800,000 ₩ 중 남은 금액 · 변동 지출 기준</small></div>
       <div class="dball glass"><div>10<small>일 남음</small></div></div>
     </div>
 
-    <div class="sec-h"><h2>카테고리별</h2><small>채워진 만큼 사용</small></div>
+    <div class="sec-h"><h2>카테고리별 예산</h2><small>채워진 만큼 사용</small></div>
     <div class="card c-white tm-card">
       <div class="tm" id="tm"></div>
       <div class="tm-detail" id="tmDetail"></div>
@@ -524,12 +526,12 @@
 
   <!-- ============================ ASSETS ============================ -->
   <section class="screen" id="assets">
-    <h1 class="title" style="margin-top:14px">내 자산<br><span class="dim">한눈에</span></h1>
+    <h1 class="title" style="margin-top:14px">전체 자산</h1>
     <div class="asset-hero">
       <div class="n num money">12,400,000<span class="cur">₩</span></div>
       <button class="ibtn w" data-act="mask" aria-label="금액 가리기"><svg class="i"><use href="#i-eye"/></svg></button>
     </div>
-    <p class="sub" style="margin-top:8px">수익이 아닌, 지금 가진 것의 모양</p>
+    <p class="sub" style="margin-top:8px">보유 자산 기준 · 수익 정보 제외</p>
 
     <div class="card c-black" style="margin-top:18px;padding:18px 18px 16px">
       <div style="display:flex;align-items:center;justify-content:space-between">
@@ -560,13 +562,13 @@
 
   <!-- ============================ COACH ============================ -->
   <section class="screen" id="coach">
-    <h1 class="title" style="margin-top:14px">남은 10일을 위한<br><span class="dim">작은 조정</span></h1>
-    <p class="sub">꼭 하라는 게 아니라, 골랐을 때의 숫자를 미리 보여드려요.</p>
+    <h1 class="title" style="margin-top:14px">지출 조정 제안</h1>
+    <p class="sub">남은 10일 기준 · 선택 시 하루 사용 가능 금액 미리보기</p>
 
     <div class="card c-lime sim">
       <svg viewBox="0 0 300 168" id="dial"></svg>
       <div class="sim-num"><div class="n num money"><span id="simN">26,000</span><span class="cur">₩</span></div><small>하루 쓸 수 있는 금액</small></div>
-      <div class="sim-delta"><span class="tag b" id="simD">아이디어를 골라보세요</span></div>
+      <div class="sim-delta"><span class="tag b" id="simD">제안 선택 전</span></div>
     </div>
 
     <div id="ideas"></div>
@@ -996,7 +998,7 @@
     const daily = (260000 + gain) / DAYS_LEFT;
     $('#arcAdd').setAttribute('stroke-dasharray', `${daily / MAXD * ARC} ${ARC}`);
     animN(daily);
-    $('#simD').textContent = picked.size ? (gain ? `하루 +${won(gain / DAYS_LEFT)} · 10일 +${won(gain)}` : '10월 예산에 반영돼요') : '아이디어를 골라보세요';
+    $('#simD').textContent = picked.size ? (gain ? `하루 +${won(gain / DAYS_LEFT)} · 10일 +${won(gain)}` : '10월 예산에 반영돼요') : '제안 선택 전';
   };
   $$('.idea', ideas).forEach(el => el.addEventListener('click', () => {
     const k = el.dataset.k; picked.has(k) ? picked.delete(k) : picked.add(k);
