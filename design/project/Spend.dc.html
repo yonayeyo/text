@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>지출 분석</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..600&amp;family=Noto+Sans+KR:wght@300;400;500&amp;display=swap">
+<style>
+body{margin:0;background:#0D0D0D}
+.ph{position:relative;width:390px;overflow:hidden;font-family:"Archivo","Noto Sans KR",sans-serif;font-stretch:112%;color:#0D0D0D;-webkit-font-smoothing:antialiased;word-break:keep-all;letter-spacing:-.01em;line-height:1.4}
+.ph *{box-sizing:border-box}
+:where(.ph) :where(h1,h2,h3,p){margin:0;font-weight:inherit;font-size:inherit}
+:where(.ph) button{font-family:inherit;font-stretch:inherit;cursor:pointer;color:inherit}
+.dk{background:#0D0D0D;color:#fff}
+.lt{background:#EBEBE9;color:#0D0D0D}
+.eng{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.t1{font-size:34px;font-weight:300;line-height:1.16;letter-spacing:-.035em}
+.t2{font-size:22px;font-weight:300;line-height:1.28;letter-spacing:-.03em}
+.n{font-variant-numeric:tabular-nums;font-weight:300;letter-spacing:-.045em;white-space:nowrap}
+.cur{font-size:.42em;letter-spacing:0;margin-left:.2em;font-weight:400}
+.sm{font-size:13px}.xs{font-size:11px}
+.mu{opacity:.56}
+.cd{border-radius:32px;padding:22px;position:relative}
+.cl{background:#D9F84A;color:#0D0D0D}
+.cw{background:#FFFFFF;color:#0D0D0D}
+.cg{background:#EBEBE9;color:#0D0D0D}
+.cb{background:#0D0D0D;color:#FFFFFF}
+.cv{background:#A68BF5;color:#0D0D0D}
+.cp{background:#EEF9B8;color:#0D0D0D}
+.pl{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:500;border:0;white-space:nowrap;text-decoration:none}
+.ib{width:48px;height:48px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:0;padding:0;flex:none;text-decoration:none}
+.bt{display:flex;align-items:center;justify-content:center;gap:8px;height:58px;border-radius:999px;border:0;font-size:16px;font-weight:500;width:100%;text-decoration:none}
+.gl{background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.16);color:#fff}
+.glw{background:rgba(255,255,255,.6);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.8)}
+.ic{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.notch{-webkit-mask:radial-gradient(circle 35px at calc(100% - 30px) calc(100% - 30px),transparent 34px,#000 34.6px);mask:radial-gradient(circle 35px at calc(100% - 30px) calc(100% - 30px),transparent 34px,#000 34.6px)}
+.nb{position:absolute;right:2px;bottom:2px;width:56px;height:56px}
+.nav{position:absolute;left:20px;right:20px;bottom:28px;height:68px;border-radius:999px;background:rgba(13,13,13,.9);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:space-between;padding:0 8px;z-index:5}
+.nav a{height:52px;min-width:52px;border-radius:999px;display:flex;align-items:center;justify-content:center;gap:8px;color:#fff;text-decoration:none;font-size:14px;font-weight:500}
+.nav a.on{background:#D9F84A;color:#0D0D0D;padding:0 20px 0 16px}
+.ai{display:flex;align-items:center;gap:8px;height:60px;border-radius:999px;padding:0 6px}
+.ai input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:14px;color:inherit;outline:none}
+.ai input::placeholder{color:inherit;opacity:.55}
+.tg{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 10px;border-radius:999px;font-size:11px;font-weight:500;white-space:nowrap}
+.top{display:flex;align-items:center;justify-content:space-between;padding:56px 20px 0}
+.row{display:flex;align-items:center}
+.sb{justify-content:space-between}
+.tm{position:absolute;border-radius:20px;padding:12px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+.tm b{font-weight:400;font-size:12px}
+.tm i{font-style:normal;font-size:11px;opacity:.7}
+.dot{width:10px;height:10px;border-radius:50%}
+.sw{width:44px;height:26px;border-radius:999px;border:0;padding:3px;display:flex;align-items:center;flex:none}
+.sw span{width:20px;height:20px;border-radius:50%;background:#fff;display:block}
+</style>
+</helmet>
+<div class="ph lt" style="height:2110px">
+
+  <div class="top">
+    <p class="eng">Spending</p>
+    <div class="row cb" style="border-radius:999px;padding:4px;gap:2px" role="group" aria-label="기간 선택">
+      <button class="pl" style="height:34px;background:transparent;color:#fff;padding:0 14px">주간</button>
+      <button class="pl cl" style="height:34px;padding:0 14px" aria-pressed="true">월간</button>
+    </div>
+  </div>
+
+  <section style="padding:22px 20px 0" aria-label="이번 달 지출 요약">
+    <h1 class="t1">이번 달<br>지출 흐름</h1>
+    <div class="row" style="gap:10px;margin-top:18px;align-items:baseline">
+      <p class="n" style="font-size:40px;line-height:1">742,600<span class="cur">₩</span></p>
+      <span class="tg cb">지난달 같은 기간 +14%</span>
+    </div>
+    <p class="xs mu" style="margin-top:8px">변동 지출 기준 · 고정 지출 585,000 ₩ 별도 · 내 계좌 간 이체 제외</p>
+  </section>
+
+  <section aria-label="카테고리별 지출" class="cd cw" style="margin:20px 16px 0;padding:20px">
+    <div class="row sb"><p class="eng">Categories</p><span class="xs mu">면적 = 금액 · 색 = 증가폭</span></div>
+    <div style="position:relative;height:262px;margin-top:14px">
+      <div class="tm cb" style="left:0;top:0;width:192px;height:136px"><b>식비</b><div><p class="n" style="font-size:22px">248,300 ₩</p><i>+12%</i></div></div>
+      <div class="tm cl" style="left:196px;top:0;width:114px;height:136px"><b>쇼핑</b><div><p class="n" style="font-size:16px">142,700 ₩</p><i style="opacity:1">▲ 48%</i></div></div>
+      <div class="tm cp" style="left:0;top:140px;width:82px;height:122px"><b>카페</b><div><p class="n" style="font-size:13px">96,400</p><i style="opacity:1">▲ 34%</i></div></div>
+      <div class="tm cg" style="left:86px;top:140px;width:74px;height:122px"><b>여가</b><div><p class="n" style="font-size:13px">87,000</p><i>−10%</i></div></div>
+      <div class="tm cg" style="left:164px;top:140px;width:56px;height:122px;padding:10px"><b>교통</b><div><p class="n" style="font-size:12px">68,200</p><i>−5%</i></div></div>
+      <div class="tm" style="left:224px;top:140px;width:86px;height:72px;border:1.5px solid #A68BF5;padding:10px"><b class="row" style="gap:3px">자기계발<svg class="ic" width="11" height="11" viewBox="0 0 24 24" aria-label="유지 항목"><rect x="5" y="11" width="14" height="9" rx="3"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></b><p class="n" style="font-size:12px">60,000</p></div>
+      <div class="tm cg" style="left:224px;top:216px;width:86px;height:46px;padding:8px 10px;flex-direction:row;align-items:center"><b>기타</b><p class="n" style="font-size:12px">40,000</p></div>
+    </div>
+  </section>
+
+  <section aria-label="지난달 대비 변화" class="cd cb" style="margin:12px 16px 0;padding:22px 20px">
+    <div class="row sb"><p class="eng" style="color:#D9F84A">vs Sep</p><span class="xs mu">같은 기간 비교</span></div>
+    <svg width="318" height="196" viewBox="0 0 318 196" style="display:block;margin-top:16px" role="img" aria-label="지난달 대비 쇼핑 48% 증가, 카페 34% 증가, 식비 12% 증가, 자기계발 변화 없음, 교통 5% 감소, 기타 8% 감소, 여가 10% 감소">
+      <line x1="190" y1="0" x2="190" y2="196" stroke="#FFFFFF" stroke-opacity=".25" stroke-width="1"></line>
+      <g font-family="Archivo, Noto Sans KR, sans-serif" font-size="12" fill="#FFFFFF">
+        <text x="0" y="17">쇼핑</text><text x="0" y="45">카페</text><text x="0" y="73">식비</text><text x="0" y="101">자기계발</text><text x="0" y="129">교통</text><text x="0" y="157">기타</text><text x="0" y="185">여가</text>
+      </g>
+      <rect x="190" y="4" width="96" height="18" rx="9" fill="#D9F84A"></rect>
+      <rect x="190" y="32" width="68" height="18" rx="9" fill="#D9F84A"></rect>
+      <rect x="190" y="60" width="24" height="18" rx="9" fill="#D9F84A"></rect>
+      <circle cx="190" cy="97" r="4" fill="#FFFFFF"></circle>
+      <rect x="180" y="116" width="10" height="18" rx="5" fill="#A68BF5"></rect>
+      <rect x="174" y="144" width="16" height="18" rx="9" fill="#A68BF5"></rect>
+      <rect x="170" y="172" width="20" height="18" rx="9" fill="#A68BF5"></rect>
+      <g font-family="Archivo, sans-serif" font-size="11" fill="#FFFFFF">
+        <text x="280" y="17" text-anchor="end" fill="#0D0D0D">+48%</text><text x="252" y="45" text-anchor="end" fill="#0D0D0D">+34%</text><text x="220" y="73">+12%</text><text x="200" y="101">0%</text>
+        <text x="174" y="129" text-anchor="end">−5%</text><text x="168" y="157" text-anchor="end">−8%</text><text x="164" y="185" text-anchor="end">−10%</text>
+      </g>
+    </svg>
+  </section>
+
+  <section aria-label="소액 반복 지출" class="cd cw" style="margin:12px 16px 0;padding:22px 20px">
+    <p class="eng">Small but often</p>
+    <h2 class="t2" style="margin-top:10px">작은 지출도<br>모이면 이만큼</h2>
+    <div style="margin-top:18px;display:flex;flex-direction:column;gap:14px">
+      <div>
+        <div class="row sb sm"><span>카페 22회</span><span class="n" style="font-size:15px">96,400 ₩</span></div>
+        <div class="row" style="flex-wrap:wrap;gap:4px;margin-top:8px" aria-hidden="true">
+          <span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span><span class="dot cl" style="border:1px solid #0D0D0D"></span>
+        </div>
+      </div>
+      <div>
+        <div class="row sb sm"><span>편의점 19회</span><span class="n" style="font-size:15px">86,450 ₩</span></div>
+        <div class="row" style="flex-wrap:wrap;gap:4px;margin-top:8px" aria-hidden="true">
+          <span class="dot cb"></span><span class="dot cb"></span><span class="dot cb"></span><span class="dot cb"></span><span class="dot cb"></span><span class="dot cb"></span><span class="dot cb"></span><span class="dot cb"></span><span class="dot cb"></span><span class="dot cb"></span><span class="dot cb"></span><span class="dot cb"></span><span class="dot cb"></span><span class="dot cb"></span><span class="dot cb"></span><span class="dot cb"></span><span class="dot cb"></span><span class="dot cb"></span><span class="dot cb"></span>
+        </div>
+      </div>
+      <div>
+        <div class="row sb sm"><span>배달 팁 8회</span><span class="n" style="font-size:15px">24,000 ₩</span></div>
+        <div class="row" style="flex-wrap:wrap;gap:4px;margin-top:8px" aria-hidden="true">
+          <span class="dot cv"></span><span class="dot cv"></span><span class="dot cv"></span><span class="dot cv"></span><span class="dot cv"></span><span class="dot cv"></span><span class="dot cv"></span><span class="dot cv"></span>
+        </div>
+      </div>
+    </div>
+    <div class="row sb cg" style="margin-top:18px;border-radius:999px;padding:12px 18px">
+      <span class="sm">1년이면</span><span class="n" style="font-size:20px">2,482,200 ₩</span>
+    </div>
+  </section>
+
+  <section aria-label="줄일 수 있는 항목" class="cd cb" style="margin:12px 16px 0;padding:22px 20px">
+    <div class="row sb"><p class="eng" style="color:#D9F84A">Cut</p><span class="tg cl">월 −91,200 ₩ 가능</span></div>
+    <h2 class="t2" style="margin-top:10px">줄여볼 수 있는<br>지출 3가지</h2>
+    <div style="margin-top:18px;display:flex;flex-direction:column;gap:8px">
+      <div class="row gl" style="border-radius:24px;padding:14px 14px 14px 18px;gap:12px">
+        <div style="flex:1"><p class="sm">카페 주 5회 → 3회</p><p class="n" style="font-size:18px;color:#D9F84A;margin-top:2px">−35,000 ₩</p></div>
+        <button class="pl cl" style="height:40px">적용</button>
+      </div>
+      <div class="row gl" style="border-radius:24px;padding:14px 14px 14px 18px;gap:12px">
+        <div style="flex:1"><p class="sm">쇼핑 예산 100,000 ₩로</p><p class="n" style="font-size:18px;color:#D9F84A;margin-top:2px">−42,700 ₩</p></div>
+        <button class="pl cl" style="height:40px">적용</button>
+      </div>
+      <div class="row gl" style="border-radius:24px;padding:14px 14px 14px 18px;gap:12px">
+        <div style="flex:1"><p class="sm">OTT 구독 2개 중 1개 해지</p><p class="n" style="font-size:18px;color:#D9F84A;margin-top:2px">−13,500 ₩</p></div>
+        <button class="pl cl" style="height:40px">적용</button>
+      </div>
+    </div>
+    <div style="margin-top:20px;border-top:1px solid rgba(255,255,255,.12);padding-top:16px">
+      <div class="row sb"><p class="sm">지키고 싶은 지출은 제안에서 빼요</p></div>
+      <div class="row" style="gap:8px;margin-top:12px;flex-wrap:wrap">
+        <span class="pl" style="border:1.5px solid #A68BF5;color:#fff;height:34px;font-size:12px"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="3"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>여행</span>
+        <span class="pl" style="border:1.5px solid #A68BF5;color:#fff;height:34px;font-size:12px"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="3"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>자기계발</span>
+        <span class="pl" style="border:1.5px solid #A68BF5;color:#fff;height:34px;font-size:12px"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="3"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>경조사</span>
+        <button class="pl gl" style="height:34px;font-size:12px;width:34px;padding:0" aria-label="유지할 지출 추가"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="AI 조언" style="margin:22px 16px 0">
+    <div class="row" style="gap:8px;flex-wrap:wrap">
+      <button class="pl cw" style="height:34px;font-size:12px"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>쇼핑이 왜 늘었을까?</button>
+      <button class="pl cw" style="height:34px;font-size:12px">이 속도면 월말엔?</button>
+    </div>
+    <div class="ai cw" style="margin-top:10px">
+      <button class="ib cg" aria-label="음성으로 질문하기"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg></button>
+      <input type="text" aria-label="지출에 대해 질문하기" placeholder="내 지출 데이터로 물어보기">
+      <button class="ib cl" aria-label="보내기"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"></path></svg></button>
+    </div>
+  </section>
+
+  <nav class="nav" aria-label="주요 메뉴">
+    <a href="Main.dc.html" aria-label="홈"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"></path></svg></a>
+    <a href="Spend.dc.html" class="on" aria-current="page"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"></path></svg><span>지출</span></a>
+    <a href="Plan.dc.html" aria-label="플랜"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg></a>
+    <a href="Goal.dc.html" aria-label="목표"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h11l-2 4 2 4H5"></path></svg></a>
+    <a href="Challenge.dc.html" aria-label="챌린지"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 20h8"></path></svg></a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":2110}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

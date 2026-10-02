@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>실시간 피드백</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..600&amp;family=Noto+Sans+KR:wght@300;400;500&amp;display=swap">
+<style>
+body{margin:0;background:#0D0D0D}
+.ph{position:relative;width:390px;overflow:hidden;font-family:"Archivo","Noto Sans KR",sans-serif;font-stretch:112%;color:#0D0D0D;-webkit-font-smoothing:antialiased;word-break:keep-all;letter-spacing:-.01em;line-height:1.4}
+.ph *{box-sizing:border-box}
+:where(.ph) :where(h1,h2,h3,p){margin:0;font-weight:inherit;font-size:inherit}
+:where(.ph) button{font-family:inherit;font-stretch:inherit;cursor:pointer;color:inherit}
+.dk{background:#0D0D0D;color:#fff}
+.eng{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.n{font-variant-numeric:tabular-nums;font-weight:300;letter-spacing:-.045em;white-space:nowrap}
+.cur{font-size:.42em;letter-spacing:0;margin-left:.2em;font-weight:400}
+.sm{font-size:13px}.xs{font-size:11px}
+.mu{opacity:.56}
+.cl{background:#D9F84A;color:#0D0D0D}
+.cv{background:#A68BF5;color:#0D0D0D}
+.ib{width:48px;height:48px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:0;padding:0;flex:none;text-decoration:none}
+.bt{display:flex;align-items:center;justify-content:center;gap:8px;height:58px;border-radius:999px;border:0;font-size:16px;font-weight:500;width:100%;text-decoration:none}
+.gl{background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.16);color:#fff}
+.ic{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.tg{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 10px;border-radius:999px;font-size:11px;font-weight:500;white-space:nowrap}
+.row{display:flex;align-items:center}
+.sb{justify-content:space-between}
+.st{border-radius:24px;padding:14px 16px}
+</style>
+</helmet>
+<div class="ph dk" style="height:844px">
+
+  <div aria-hidden="true" style="position:absolute;inset:0;opacity:.5">
+    <div style="position:absolute;right:-40px;top:150px;width:220px;height:220px;border-radius:50%;background:#D9F84A;filter:blur(30px);opacity:.55"></div>
+    <div style="position:absolute;left:-30px;top:250px;width:120px;height:120px;border-radius:50%;background:#A68BF5;filter:blur(26px);opacity:.5"></div>
+    <p style="position:absolute;left:20px;top:100px;font-size:11px;letter-spacing:.14em;color:#fff;opacity:.5">TOTAL ASSETS</p>
+    <p class="n" style="position:absolute;left:20px;top:124px;font-size:56px;color:#fff;opacity:.35">13,674,500</p>
+  </div>
+
+  <section role="dialog" aria-label="방금 결제한 지출 피드백" style="position:absolute;left:0;right:0;bottom:0;height:640px;border-radius:40px 40px 0 0;background:rgba(30,30,30,.6);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);border-top:1px solid rgba(255,255,255,.18);padding:12px 20px 0;color:#fff">
+    <div style="width:44px;height:5px;border-radius:3px;background:rgba(255,255,255,.3);margin:0 auto"></div>
+
+    <div class="row sb" style="margin-top:20px">
+      <div class="row" style="gap:10px">
+        <span class="ib gl" style="width:40px;height:40px"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h12v5a5 5 0 0 1-5 5H10a5 5 0 0 1-5-5z"></path><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17M9 3v3M13 3v3"></path></svg></span>
+        <div><p class="sm">카페 · 체크카드</p><p class="xs mu">방금 · 이번 달 23번째</p></div>
+      </div>
+      <span class="tg cv">초과 위험</span>
+    </div>
+
+    <p class="n" style="font-size:56px;line-height:1;margin-top:22px">−12,800<span class="cur">₩</span></p>
+
+    <div class="row" style="gap:16px;margin-top:26px;align-items:stretch">
+      <svg width="120" height="262" viewBox="0 0 120 262" role="img" aria-label="남은 예산 비율 38%에서 37%로" style="flex:none">
+        <defs><clipPath id="vessel"><rect x="2" y="2" width="116" height="258" rx="58"></rect></clipPath></defs>
+        <rect x="2" y="2" width="116" height="258" rx="58" fill="#FFFFFF" fill-opacity=".06" stroke="#FFFFFF" stroke-opacity=".25" stroke-width="1.5"></rect>
+        <g clip-path="url(#vessel)">
+          <path d="M0 166 C20 158 40 174 60 166 C80 158 100 174 120 166 L120 262 L0 262 Z" fill="#D9F84A"></path>
+          <path d="M0 170 C20 164 40 178 60 170 C80 162 100 178 120 170 L120 262 L0 262 Z" fill="#0D0D0D" fill-opacity=".08"></path>
+        </g>
+        <line x1="14" y1="162" x2="106" y2="162" stroke="#FFFFFF" stroke-opacity=".6" stroke-dasharray="2 3"></line>
+        <path d="M60 128 C66 136 68 140 68 144 a8 8 0 0 1 -16 0 C52 140 54 136 60 128 Z" fill="#D9F84A" fill-opacity=".8"></path>
+        <text x="60" y="216" text-anchor="middle" font-family="Archivo, sans-serif" font-size="26" font-weight="300" fill="#0D0D0D" letter-spacing="-1">37%</text>
+        <text x="60" y="236" text-anchor="middle" font-family="Archivo, Noto Sans KR, sans-serif" font-size="10" fill="#0D0D0D">남은 예산</text>
+      </svg>
+      <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+        <div class="st gl"><p class="xs mu">남은 예산</p><p class="n" style="font-size:20px;margin-top:2px">444,600 ₩</p></div>
+        <div class="st gl" style="border-color:#A68BF5"><p class="xs mu">월말 예상</p><p class="n" style="font-size:20px;margin-top:2px;color:#A68BF5">−166,900 ₩</p><p class="xs mu" style="margin-top:2px">방금 전보다 −12,700</p></div>
+        <div class="st gl" style="flex:1"><p class="xs mu">목표 진행률</p><p class="n" style="font-size:20px;margin-top:2px">38.2% 유지</p><p class="xs mu" style="margin-top:2px">선저축은 이미 끝나서 영향 없어요</p></div>
+      </div>
+    </div>
+
+    <div class="row" style="gap:8px;margin-top:22px">
+      <button class="bt gl" style="flex:1;height:54px;font-size:15px">확인</button>
+      <a href="Spend.dc.html" class="bt cl" style="flex:1.7;height:54px;font-size:15px">카페 예산 다시 정하기</a>
+    </div>
+    <p class="xs mu" style="text-align:center;margin-top:12px">예산 초과 위험이 있을 때만 알려드려요</p>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

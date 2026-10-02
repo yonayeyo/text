@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>비정기 수입 배분</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..600&amp;family=Noto+Sans+KR:wght@300;400;500&amp;display=swap">
+<style>
+body{margin:0;background:#0D0D0D}
+.ph{position:relative;width:390px;overflow:hidden;font-family:"Archivo","Noto Sans KR",sans-serif;font-stretch:112%;color:#0D0D0D;-webkit-font-smoothing:antialiased;word-break:keep-all;letter-spacing:-.01em;line-height:1.4}
+.ph *{box-sizing:border-box}
+:where(.ph) :where(h1,h2,h3,p){margin:0;font-weight:inherit;font-size:inherit}
+:where(.ph) button{font-family:inherit;font-stretch:inherit;cursor:pointer;color:inherit}
+.lt{background:#EBEBE9;color:#0D0D0D}
+.eng{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.t1{font-size:34px;font-weight:300;line-height:1.16;letter-spacing:-.035em}
+.n{font-variant-numeric:tabular-nums;font-weight:300;letter-spacing:-.045em;white-space:nowrap}
+.sm{font-size:13px}.xs{font-size:11px}
+.mu{opacity:.56}
+.cl{background:#D9F84A;color:#0D0D0D}
+.cw{background:#FFFFFF;color:#0D0D0D}
+.cb{background:#0D0D0D;color:#FFFFFF}
+.pl{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:500;border:0;white-space:nowrap;text-decoration:none}
+.ib{width:48px;height:48px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:0;padding:0;flex:none;text-decoration:none}
+.bt{display:flex;align-items:center;justify-content:center;gap:8px;height:58px;border-radius:999px;border:0;font-size:16px;font-weight:500;width:100%;text-decoration:none}
+.ic{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.tg{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 10px;border-radius:999px;font-size:11px;font-weight:500;white-space:nowrap}
+.top{display:flex;align-items:center;justify-content:space-between;padding:56px 20px 0}
+.row{display:flex;align-items:center}
+.sb{justify-content:space-between}
+</style>
+</helmet>
+<div class="ph lt" style="height:844px">
+
+  <div class="top">
+    <a href="Plan.dc.html" class="ib cw" style="width:44px;height:44px;color:#0D0D0D" aria-label="닫기"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+    <span class="tg cb">10.17 14:02 입금</span>
+  </div>
+
+  <section style="padding:26px 20px 0" aria-label="비정기 수입 입금">
+    <p class="eng">Extra income</p>
+    <h1 class="t1" style="margin-top:10px">외주비가<br>들어왔어요</h1>
+  </section>
+
+  <section aria-label="배분 제안" style="margin:18px 16px 0">
+    <svg width="358" height="330" viewBox="0 0 358 330" style="display:block" role="img" aria-label="380,000원을 목표 190,000원, 비상금 114,000원, 자유 76,000원으로 나누는 제안">
+      <defs><filter id="gooIncome" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur in="SourceGraphic" stdDeviation="8" result="b"></feGaussianBlur><feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -10"></feColorMatrix></filter></defs>
+      <g filter="url(#gooIncome)">
+        <rect x="79" y="6" width="200" height="64" rx="32" fill="#0D0D0D"></rect>
+        <path d="M150 60 C150 140 72 150 72 230" fill="none" stroke="#0D0D0D" stroke-width="18" stroke-linecap="round"></path>
+        <path d="M179 60 L182 236" fill="none" stroke="#0D0D0D" stroke-width="14" stroke-linecap="round"></path>
+        <path d="M208 60 C208 150 292 160 292 246" fill="none" stroke="#0D0D0D" stroke-width="11" stroke-linecap="round"></path>
+        <circle cx="72" cy="250" r="62" fill="#0D0D0D"></circle>
+        <circle cx="182" cy="262" r="48" fill="#0D0D0D"></circle>
+        <circle cx="292" cy="270" r="40" fill="#0D0D0D"></circle>
+      </g>
+      <circle cx="72" cy="250" r="58" fill="#D9F84A"></circle>
+      <circle cx="182" cy="262" r="44" fill="#A68BF5"></circle>
+      <circle cx="292" cy="270" r="36" fill="#FFFFFF"></circle>
+      <text x="179" y="45" text-anchor="middle" font-family="Archivo, sans-serif" font-size="24" font-weight="300" letter-spacing="-1" fill="#FFFFFF">380,000 ₩</text>
+      <g font-family="Archivo, Noto Sans KR, sans-serif" fill="#0D0D0D" text-anchor="middle">
+        <text x="72" y="238" font-size="12">전세 자금 50%</text>
+        <text x="72" y="262" font-size="18" font-weight="300" letter-spacing="-.8">190,000 ₩</text>
+        <text x="182" y="256" font-size="11">비상금 30%</text>
+        <text x="182" y="276" font-size="14" font-weight="300">114,000</text>
+        <text x="292" y="266" font-size="11">자유 20%</text>
+        <text x="292" y="284" font-size="13" font-weight="300">76,000</text>
+      </g>
+    </svg>
+  </section>
+
+  <div class="row cw" style="margin:6px 16px 0;border-radius:24px;padding:12px 16px;gap:10px;align-items:flex-start">
+    <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="margin-top:2px"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8v.01"></path></svg>
+    <p class="xs" style="line-height:1.55">비상금이 1,800,000 ₩에 닿으면 그 몫은 목표로 보내요. 비율은 언제든 바꿀 수 있어요.</p>
+  </div>
+
+  <div style="position:absolute;left:16px;right:16px;bottom:34px">
+    <div class="row" style="gap:8px">
+      <button class="bt cw" style="flex:1">비율 수정</button>
+      <button class="bt cl" style="flex:1.7">이대로 나누기</button>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

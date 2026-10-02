@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>저축 인출 확인</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..600&amp;family=Noto+Sans+KR:wght@300;400;500&amp;display=swap">
+<style>
+body{margin:0;background:#0D0D0D}
+.ph{position:relative;width:390px;overflow:hidden;font-family:"Archivo","Noto Sans KR",sans-serif;font-stretch:112%;color:#0D0D0D;-webkit-font-smoothing:antialiased;word-break:keep-all;letter-spacing:-.01em;line-height:1.4}
+.ph *{box-sizing:border-box}
+:where(.ph) :where(h1,h2,h3,p){margin:0;font-weight:inherit;font-size:inherit}
+:where(.ph) button{font-family:inherit;font-stretch:inherit;cursor:pointer;color:inherit}
+.dk{background:#0D0D0D;color:#fff}
+.eng{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.t1{font-size:34px;font-weight:300;line-height:1.16;letter-spacing:-.035em}
+.n{font-variant-numeric:tabular-nums;font-weight:300;letter-spacing:-.045em;white-space:nowrap}
+.sm{font-size:13px}.xs{font-size:11px}
+.mu{opacity:.56}
+.cd{border-radius:32px;padding:22px;position:relative}
+.cl{background:#D9F84A;color:#0D0D0D}
+.cv{background:#A68BF5;color:#0D0D0D}
+.cb{background:#0D0D0D;color:#FFFFFF}
+.ib{width:48px;height:48px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:0;padding:0;flex:none;text-decoration:none}
+.bt{display:flex;align-items:center;justify-content:center;gap:8px;height:58px;border-radius:999px;border:0;font-size:16px;font-weight:500;width:100%;text-decoration:none}
+.gl{background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.16);color:#fff}
+.ic{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.notch{-webkit-mask:radial-gradient(circle 35px at calc(100% - 30px) calc(100% - 30px),transparent 34px,#000 34.6px);mask:radial-gradient(circle 35px at calc(100% - 30px) calc(100% - 30px),transparent 34px,#000 34.6px)}
+.nb{position:absolute;right:2px;bottom:2px;width:56px;height:56px}
+.tg{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 10px;border-radius:999px;font-size:11px;font-weight:500;white-space:nowrap}
+.top{display:flex;align-items:center;justify-content:space-between;padding:56px 20px 0}
+.row{display:flex;align-items:center}
+.sb{justify-content:space-between}
+</style>
+</helmet>
+<div class="ph dk" style="height:844px">
+
+  <div class="top">
+    <a href="Goal.dc.html" class="ib gl" style="width:44px;height:44px" aria-label="취소"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+    <span class="tg gl">저축 계좌 → 생활비</span>
+  </div>
+
+  <section style="padding:26px 20px 0" aria-label="인출 확인">
+    <p class="eng" style="color:#D9F84A">Before you withdraw</p>
+    <h1 class="t1" style="margin-top:10px">저축에서<br>500,000 ₩ 꺼낼까요?</h1>
+  </section>
+
+  <section class="cd gl" style="margin:24px 16px 0;padding:22px 20px" aria-label="목표에 미치는 영향">
+    <div class="row sb"><p class="eng">Impact</p><span class="tg cv">완료 1개월 늦어짐</span></div>
+    <svg width="318" height="150" viewBox="0 0 318 150" style="display:block;margin-top:18px" role="img" aria-label="꺼내지 않으면 2028년 11월 완료, 꺼내면 2028년 12월 완료. 3단계 도달은 2027년 1월에서 2월로">
+      <g font-family="Archivo, Noto Sans KR, sans-serif" font-size="11" fill="#FFFFFF">
+        <text x="0" y="12" fill-opacity=".6">그대로 두면</text>
+        <text x="0" y="84" fill-opacity=".6">지금 꺼내면</text>
+      </g>
+      <rect x="0" y="22" width="294" height="26" rx="13" fill="#FFFFFF" fill-opacity=".14"></rect>
+      <circle cx="35" cy="35" r="5" fill="#FFFFFF"></circle>
+      <circle cx="281" cy="35" r="8" fill="#D9F84A"></circle>
+      <rect x="0" y="94" width="294" height="26" rx="13" fill="#FFFFFF" fill-opacity=".14"></rect>
+      <rect x="270" y="94" width="48" height="26" rx="13" fill="#A68BF5"></rect>
+      <circle cx="47" cy="107" r="5" fill="#FFFFFF"></circle>
+      <circle cx="305" cy="107" r="8" fill="#0D0D0D"></circle>
+      <circle cx="305" cy="107" r="5" fill="#D9F84A"></circle>
+      <g font-family="Archivo, Noto Sans KR, sans-serif" font-size="10" fill="#FFFFFF" fill-opacity=".6">
+        <text x="35" y="64" text-anchor="middle">3단계 27.01</text>
+        <text x="281" y="64" text-anchor="middle">28.11</text>
+        <text x="47" y="138" text-anchor="middle">3단계 27.02</text>
+        <text x="300" y="138" text-anchor="middle" fill="#A68BF5" fill-opacity="1">28.12</text>
+      </g>
+    </svg>
+    <div class="row" style="gap:8px;margin-top:16px">
+      <div style="flex:1;border-radius:22px;padding:12px 16px;background:rgba(255,255,255,.06)"><p class="xs mu">진행률</p><p class="n" style="font-size:18px;margin-top:2px">38.2 → 36.5%</p></div>
+      <div style="flex:1;border-radius:22px;padding:12px 16px;background:rgba(255,255,255,.06)"><p class="xs mu">다시 채우려면</p><p class="n" style="font-size:18px;margin-top:2px">약 1개월</p></div>
+    </div>
+  </section>
+
+  <section style="position:relative;margin:12px 16px 0" aria-label="다른 방법 제안">
+    <div class="cd cl notch" style="padding:20px 20px 22px">
+      <p class="eng">Option</p>
+      <p style="font-size:18px;font-weight:300;line-height:1.35;margin-top:8px">비상금 1,200,000 ₩에서 꺼내면<br>목표 일정은 그대로예요</p>
+    </div>
+    <button class="ib cb nb" aria-label="비상금에서 꺼내기"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+  </section>
+
+  <div style="position:absolute;left:16px;right:16px;bottom:34px">
+    <button class="bt gl">그래도 저축에서 꺼내기</button>
+    <p class="xs mu" style="text-align:center;margin-top:12px">인출은 언제든 할 수 있어요. 영향만 먼저 보여드려요.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

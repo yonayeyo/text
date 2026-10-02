@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>기본 설정</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..600&amp;family=Noto+Sans+KR:wght@300;400;500&amp;display=swap">
+<style>
+body{margin:0;background:#0D0D0D}
+.ph{position:relative;width:390px;overflow:hidden;font-family:"Archivo","Noto Sans KR",sans-serif;font-stretch:112%;color:#0D0D0D;-webkit-font-smoothing:antialiased;word-break:keep-all;letter-spacing:-.01em;line-height:1.4}
+.ph *{box-sizing:border-box}
+:where(.ph) :where(h1,h2,h3,p){margin:0;font-weight:inherit;font-size:inherit}
+:where(.ph) button{font-family:inherit;font-stretch:inherit;cursor:pointer;color:inherit}
+.dk{background:#0D0D0D;color:#fff}
+.lt{background:#EBEBE9;color:#0D0D0D}
+.eng{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.t1{font-size:34px;font-weight:300;line-height:1.16;letter-spacing:-.035em}
+.t2{font-size:22px;font-weight:300;line-height:1.28;letter-spacing:-.03em}
+.n{font-variant-numeric:tabular-nums;font-weight:300;letter-spacing:-.045em;white-space:nowrap}
+.cur{font-size:.42em;letter-spacing:0;margin-left:.2em;font-weight:400}
+.sm{font-size:13px}.xs{font-size:11px}
+.mu{opacity:.56}
+.cd{border-radius:32px;padding:22px;position:relative}
+.cl{background:#D9F84A;color:#0D0D0D}
+.cw{background:#FFFFFF;color:#0D0D0D}
+.cg{background:#EBEBE9;color:#0D0D0D}
+.cb{background:#0D0D0D;color:#FFFFFF}
+.cv{background:#A68BF5;color:#0D0D0D}
+.cp{background:#EEF9B8;color:#0D0D0D}
+.pl{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:500;border:0;white-space:nowrap;text-decoration:none}
+.ib{width:48px;height:48px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:0;padding:0;flex:none;text-decoration:none}
+.bt{display:flex;align-items:center;justify-content:center;gap:8px;height:58px;border-radius:999px;border:0;font-size:16px;font-weight:500;width:100%;text-decoration:none}
+.gl{background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.16);color:#fff}
+.glw{background:rgba(255,255,255,.6);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.8)}
+.ic{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.notch{-webkit-mask:radial-gradient(circle 35px at calc(100% - 30px) calc(100% - 30px),transparent 34px,#000 34.6px);mask:radial-gradient(circle 35px at calc(100% - 30px) calc(100% - 30px),transparent 34px,#000 34.6px)}
+.nb{position:absolute;right:2px;bottom:2px;width:56px;height:56px}
+.nav{position:absolute;left:20px;right:20px;bottom:28px;height:68px;border-radius:999px;background:rgba(13,13,13,.9);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:space-between;padding:0 8px;z-index:5}
+.nav a{height:52px;min-width:52px;border-radius:999px;display:flex;align-items:center;justify-content:center;gap:8px;color:#fff;text-decoration:none;font-size:14px;font-weight:500}
+.nav a.on{background:#D9F84A;color:#0D0D0D;padding:0 20px 0 16px}
+.tg{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 10px;border-radius:999px;font-size:11px;font-weight:500;white-space:nowrap}
+.top{display:flex;align-items:center;justify-content:space-between;padding:56px 20px 0}
+.row{display:flex;align-items:center}
+.sb{justify-content:space-between}
+.step{display:flex;align-items:center;gap:14px;border-radius:28px;padding:16px 14px 16px 16px}
+.chk{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
+.todo{border:1.5px dashed rgba(255,255,255,.35)}
+.term{display:flex;gap:8px;align-items:flex-start;border-radius:20px;padding:12px 14px;font-size:12px;line-height:1.5}
+.alloc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.sw{width:44px;height:26px;border-radius:999px;border:0;padding:3px;display:flex;align-items:center;flex:none}
+.sw span{width:20px;height:20px;border-radius:50%;display:block}
+.alloc div{border-radius:18px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-size:12px}
+</style>
+</helmet>
+<div class="ph dk" style="height:2130px">
+
+  <div class="top">
+    <p class="eng" style="color:#D9F84A">Setup</p>
+    <span class="tg gl">필수 2 / 4</span>
+  </div>
+
+  <section style="padding:22px 20px 0" aria-label="필수 설정">
+    <h1 class="t1">저축과 예산<br>기본 설정</h1>
+    <p class="sm mu" style="margin-top:12px">필수 4가지를 먼저 끝내면 투자 같은 선택 항목이 열려요.</p>
+
+    <div style="margin-top:22px;display:flex;flex-direction:column;gap:8px">
+      <div class="step cw">
+        <span class="chk cl"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+        <div style="flex:1"><p class="sm">급여일 선저축 자동이체</p><p class="n" style="font-size:17px;margin-top:2px">매월 25일 · 700,000 ₩</p></div>
+        <button class="pl cg" style="height:34px;font-size:12px;padding:0 12px">변경</button>
+      </div>
+      <div class="term gl">
+        <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="margin-top:1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8v.01"></path></svg>
+        <p><b style="font-weight:500">선저축</b> · 월급이 들어오면 저축부터 빼두고, 남은 돈으로 한 달을 쓰는 방식이에요.</p>
+      </div>
+      <div class="step cw">
+        <span class="chk cl"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+        <div style="flex:1"><p class="sm">비상금 · 고정 지출 3개월치</p><p class="n" style="font-size:17px;margin-top:2px">1,200,000 / 1,800,000 ₩</p></div>
+        <button class="pl cg" style="height:34px;font-size:12px;padding:0 12px">변경</button>
+      </div>
+      <div class="step" style="border:1.5px solid #D9F84A">
+        <span class="chk" style="border:1.5px solid #D9F84A;color:#D9F84A"><span class="n" style="font-size:14px">3</span></span>
+        <div style="flex:1"><p class="sm">월 예산</p><p class="sm" style="color:#D9F84A;margin-top:2px">배분안이 준비됐어요 ↓</p></div>
+        <span class="tg cl">지금</span>
+      </div>
+      <div class="step todo">
+        <span class="chk todo"><span class="n" style="font-size:14px">4</span></span>
+        <div style="flex:1"><p class="sm">고정 지출</p><p class="sm mu" style="margin-top:2px">연동 계좌에서 6건을 찾았어요</p></div>
+        <button class="pl gl" style="height:34px;font-size:12px;padding:0 12px">확인</button>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="월 예산 배분 제안" class="cd cw" style="margin:24px 16px 0;padding:22px 20px">
+    <div class="row sb"><p class="eng">Proposal</p><span class="xs mu">최근 3개월 수입·지출 기준</span></div>
+    <h2 class="t2" style="margin-top:10px">수입 2,830,000 ₩<br>이렇게 나눠볼까요?</h2>
+    <div class="row" style="gap:3px;margin-top:20px;height:44px" role="img" aria-label="고정 지출 21%, 저축 25%, 비상금 3%, 소비 42%, 여유 9%">
+      <span style="width:21%;height:100%;border-radius:22px 8px 8px 22px;background:#0D0D0D"></span>
+      <span style="width:25%;height:100%;border-radius:8px;background:#D9F84A"></span>
+      <span style="width:3.5%;height:100%;border-radius:8px;background:#A68BF5"></span>
+      <span style="width:42%;height:100%;border-radius:8px;background:#EBEBE9"></span>
+      <span style="width:8.5%;height:100%;border-radius:8px 22px 22px 8px;background:#EEF9B8;border:1.5px dashed #0D0D0D"></span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 16px;margin-top:16px;font-size:12px">
+      <div class="row" style="gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:#0D0D0D"></span><span style="flex:1">고정</span><span class="n">585,000</span></div>
+      <div class="row" style="gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:#D9F84A;border:1px solid #0D0D0D"></span><span style="flex:1">저축</span><span class="n">700,000</span></div>
+      <div class="row" style="gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:#A68BF5"></span><span style="flex:1">비상금</span><span class="n">100,000</span></div>
+      <div class="row" style="gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:#EBEBE9;border:1px solid #0D0D0D"></span><span style="flex:1">소비 예산</span><span class="n">1,200,000</span></div>
+      <div class="row" style="gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:#EEF9B8;border:1px dashed #0D0D0D"></span><span style="flex:1">여유</span><span class="n">245,000</span></div>
+    </div>
+    <p class="eng" style="margin-top:22px">Budget 1,200,000 ₩</p>
+    <div class="alloc" style="margin-top:10px">
+      <div class="cg"><span>식비</span><span class="n">380,000</span></div>
+      <div class="cg"><span>여가</span><span class="n">120,000</span></div>
+      <div class="cg"><span>쇼핑</span><span class="n">100,000</span></div>
+      <div class="cg"><span>교통</span><span class="n">90,000</span></div>
+      <div class="cg"><span>카페</span><span class="n">60,000</span></div>
+      <div class="cg"><span>기타</span><span class="n">120,000</span></div>
+      <div style="border:1.5px solid #A68BF5"><span>자기계발 · 유지</span><span class="n">80,000</span></div>
+      <div style="border:1.5px solid #A68BF5"><span>여행 적립 · 유지</span><span class="n">150,000</span></div>
+    </div>
+    <div class="row" style="gap:8px;margin-top:18px">
+      <button class="bt cg" style="flex:1;height:52px;font-size:15px">수정하기</button>
+      <button class="bt cl" style="flex:1.4;height:52px;font-size:15px">이대로 적용</button>
+    </div>
+  </section>
+
+  <section aria-label="비정기 수입 배분 규칙" style="position:relative;margin:12px 16px 0">
+    <div class="cd cl notch" style="padding:22px 20px 24px">
+      <div class="row sb"><p class="eng">Extra income</p><button class="sw cb" aria-label="비정기 수입 배분 제안 켜짐" aria-pressed="true" style="justify-content:flex-end"><span style="background:#D9F84A"></span></button></div>
+      <h2 class="t2" style="margin-top:10px">알바비·보너스가 들어오면<br>바로 나눠드려요</h2>
+      <div class="row" style="gap:6px;margin-top:16px">
+        <span class="tg cb">목표 50</span><span class="tg cb">비상금 30</span><span class="tg" style="border:1.5px solid #0D0D0D">자유 20</span>
+      </div>
+    </div>
+    <a href="Income.dc.html" class="ib cb nb" aria-label="배분 제안 예시 보기"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg></a>
+  </section>
+
+  <section aria-label="선택 항목" class="cd" style="margin:12px 16px 0;padding:20px;border:1.5px dashed rgba(255,255,255,.3)">
+    <div class="row sb"><p class="eng mu">Optional</p><span class="tg gl"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="3"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>필수 2개 남음</span></div>
+    <div class="row" style="gap:14px;margin-top:14px;opacity:.6">
+      <span class="ib gl"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18l5-6 4 3 7-9"></path><path d="M15 6h5v5"></path></svg></span>
+      <div><p class="sm">소액 적립식 투자</p><p class="xs mu" style="margin-top:2px">매달 같은 금액으로 나눠 사서 가격 변동을 줄이는 방식</p></div>
+    </div>
+  </section>
+
+  <section aria-label="체크카드와 신용카드 사용 비율" class="cd cw" style="margin:12px 16px 0;padding:22px 20px">
+    <div class="row sb"><p class="eng">Card mix</p><a href="Benefits.dc.html" class="pl cg" style="height:32px;font-size:12px;color:#0D0D0D">혜택 4개 보기</a></div>
+    <h2 class="t2" style="margin-top:10px">곧 체크카드로<br>바꿀 때예요</h2>
+    <svg width="318" height="172" viewBox="0 0 318 172" style="display:block;margin-top:12px" role="img" aria-label="올해 카드 사용 6,920,000원, 소득공제 시작선 7,350,000원까지 430,000원 남음">
+      <path d="M34 150 A125 125 0 0 1 284 150" fill="none" stroke="#EBEBE9" stroke-width="22" stroke-linecap="round"></path>
+      <path d="M34 150 A125 125 0 0 1 281.9 127" fill="none" stroke="#0D0D0D" stroke-width="22" stroke-linecap="round"></path>
+      <line x1="268" y1="150" x2="300" y2="150" stroke="#0D0D0D" stroke-width="1.5"></line>
+      <circle cx="284" cy="150" r="6" fill="#D9F84A" stroke="#0D0D0D" stroke-width="1.5"></circle>
+      <text x="159" y="122" text-anchor="middle" font-family="Archivo, sans-serif" font-size="30" font-weight="300" letter-spacing="-1.5" fill="#0D0D0D">430,000 ₩</text>
+      <text x="159" y="146" text-anchor="middle" font-family="Archivo, Noto Sans KR, sans-serif" font-size="12" fill="#0D0D0D" fill-opacity=".6">공제 시작선까지</text>
+    </svg>
+    <div class="term cg" style="margin-top:6px">
+      <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="margin-top:1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8v.01"></path></svg>
+      <p><b style="font-weight:500">카드 소득공제</b> · 총급여의 25%(7,350,000 ₩)를 넘게 쓴 금액부터 공제돼요. 그 이후엔 공제율이 두 배인 체크카드가 유리해요.</p>
+    </div>
+  </section>
+
+  <p class="xs mu" style="text-align:center;margin-top:18px;padding:0 30px">모든 설정은 언제든 바꾸거나 끌 수 있어요</p>
+
+  <nav class="nav" aria-label="주요 메뉴">
+    <a href="Main.dc.html" aria-label="홈"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"></path></svg></a>
+    <a href="Spend.dc.html" aria-label="지출"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"></path></svg></a>
+    <a href="Plan.dc.html" class="on" aria-current="page"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg><span>플랜</span></a>
+    <a href="Goal.dc.html" aria-label="목표"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h11l-2 4 2 4H5"></path></svg></a>
+    <a href="Challenge.dc.html" aria-label="챌린지"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 20h8"></path></svg></a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":2130}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

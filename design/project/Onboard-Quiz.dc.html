@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>진단 문항</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..600&amp;family=Noto+Sans+KR:wght@300;400;500&amp;display=swap">
+<style>
+body{margin:0;background:#0D0D0D}
+.ph{position:relative;width:390px;overflow:hidden;font-family:"Archivo","Noto Sans KR",sans-serif;font-stretch:112%;color:#0D0D0D;-webkit-font-smoothing:antialiased;word-break:keep-all;letter-spacing:-.01em;line-height:1.4}
+.ph *{box-sizing:border-box}
+:where(.ph) :where(h1,h2,h3,p){margin:0;font-weight:inherit;font-size:inherit}
+:where(.ph) button{font-family:inherit;font-stretch:inherit;cursor:pointer;color:inherit}
+.lt{background:#EBEBE9;color:#0D0D0D}
+.eng{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.t2{font-size:22px;font-weight:300;line-height:1.32;letter-spacing:-.03em}
+.sm{font-size:13px}.xs{font-size:11px}
+.mu{opacity:.56}
+.cd{border-radius:32px;padding:22px;position:relative}
+.cl{background:#D9F84A;color:#0D0D0D}
+.cw{background:#FFFFFF;color:#0D0D0D}
+.cg{background:#EBEBE9;color:#0D0D0D}
+.cb{background:#0D0D0D;color:#FFFFFF}
+.ib{width:48px;height:48px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:0;padding:0;flex:none;text-decoration:none}
+.bt{display:flex;align-items:center;justify-content:center;gap:8px;height:58px;border-radius:999px;border:0;font-size:16px;font-weight:500;width:100%;text-decoration:none}
+.ic{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.tg{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 10px;border-radius:999px;font-size:11px;font-weight:500;white-space:nowrap}
+.top{display:flex;align-items:center;justify-content:space-between;padding:56px 20px 0}
+.row{display:flex;align-items:center}
+.sb{justify-content:space-between}
+.seg{display:flex;gap:2px;flex:1}
+.seg span{flex:1;height:6px;border-radius:3px;background:rgba(13,13,13,.12)}
+.seg span.d{background:#0D0D0D}
+.seg span.c{background:#D9F84A;outline:1.5px solid #0D0D0D}
+.opt{display:flex;align-items:center;gap:14px;width:100%;min-height:64px;border-radius:26px;border:0;padding:12px 16px 12px 12px;text-align:left;font-size:14px;line-height:1.45;background:#FFFFFF}
+.opt .k{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;font-size:13px;background:#EBEBE9}
+</style>
+</helmet>
+<div class="ph lt" style="height:844px">
+
+  <div class="top">
+    <a href="Onboard-Self.dc.html" class="ib cw" style="width:44px;height:44px;color:#0D0D0D" aria-label="이전"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+    <span class="tg cb">7 / 20</span>
+  </div>
+
+  <div style="padding:22px 20px 0">
+    <div class="row" style="gap:6px" role="img" aria-label="5개 영역 중 2번째 저축과 투자, 20문항 중 7번째">
+      <div class="seg"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span></div>
+      <div class="seg"><span class="d"></span><span class="d"></span><span class="c"></span><span></span></div>
+      <div class="seg"><span></span><span></span><span></span><span></span></div>
+      <div class="seg"><span></span><span></span><span></span><span></span></div>
+      <div class="seg"><span></span><span></span><span></span><span></span></div>
+    </div>
+    <div class="row sb xs" style="margin-top:8px"><span class="mu">소비와 지출</span><span>저축과 투자</span><span class="mu">대출</span><span class="mu">보험</span><span class="mu">세금</span></div>
+  </div>
+
+  <section style="padding:30px 20px 0" aria-label="문항">
+    <p class="eng">Situation</p>
+    <h1 class="t2" style="margin-top:12px">월급 250만 원이 들어온 날,<br>지금 나와 가장 가까운 모습은?</h1>
+  </section>
+
+  <div role="radiogroup" aria-label="선택지" style="display:flex;flex-direction:column;gap:8px;padding:24px 16px 0">
+    <button class="opt" role="radio" aria-checked="false"><span class="k">A</span>쓰고 남은 돈이 있으면 그때 저축한다</button>
+    <button class="opt cl" role="radio" aria-checked="true" style="background:#D9F84A"><span class="k" style="background:#0D0D0D;color:#D9F84A"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>저축할 금액은 정해뒀지만, 이체는 그때그때 직접 한다</button>
+    <button class="opt" role="radio" aria-checked="false"><span class="k">C</span>월급날 정해둔 금액이 자동으로 먼저 빠져나간다</button>
+    <button class="opt" role="radio" aria-checked="false" style="background:transparent;border:1.5px dashed rgba(13,13,13,.35)"><span class="k" style="background:transparent;border:1.5px dashed rgba(13,13,13,.35)">?</span>잘 모르겠다 · 생각해 본 적 없다</button>
+  </div>
+  <p class="xs mu" style="padding:12px 24px 0;line-height:1.5">‘잘 모르겠다’는 틀린 답이 아니에요. 아직 경험이 적은 영역으로 기록하고, 쉬운 단계부터 추천해요.</p>
+
+  <div class="row" style="position:absolute;left:16px;right:16px;bottom:34px;gap:8px">
+    <a href="Onboard-Self.dc.html" class="bt cw" style="flex:1;color:#0D0D0D">이전</a>
+    <a href="Onboard-Result.dc.html" class="bt cb" style="flex:2;color:#fff">다음</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

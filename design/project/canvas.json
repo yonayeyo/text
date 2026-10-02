@@ -1,0 +1,43 @@
+{
+  "v": 3,
+  "createdOnFiles": {"v": 1, "at": "2026-10-02T06:42:02Z"},
+  "title": "청년 금융 실천 앱",
+  "launch": {"view": "canvas"},
+  "pages": [],
+  "boards": {
+    "Onboard-Self.dc.html": {"x": 0, "y": 0, "w": 390, "h": 844, "title": "A-1 진단 전 자기평가", "is_interactive": true},
+    "Onboard-Quiz.dc.html": {"x": 470, "y": 0, "w": 390, "h": 844, "title": "A-2 진단 문항", "is_interactive": true},
+    "Onboard-Result.dc.html": {"x": 940, "y": 0, "w": 390, "h": 1790, "title": "A-3 진단 결과", "is_interactive": true},
+    "Main.dc.html": {"x": 0, "y": 2210, "w": 390, "h": 1660, "title": "B 홈", "is_interactive": true},
+    "Spend.dc.html": {"x": 470, "y": 2210, "w": 390, "h": 2110, "title": "C 지출 분석", "is_interactive": true},
+    "Plan.dc.html": {"x": 940, "y": 2210, "w": 390, "h": 2130, "title": "D 기본 설정", "is_interactive": true},
+    "Goal.dc.html": {"x": 1410, "y": 2210, "w": 390, "h": 1560, "title": "E 목표", "is_interactive": true},
+    "Challenge.dc.html": {"x": 1880, "y": 2210, "w": 390, "h": 1770, "title": "G 챌린지와 보상", "is_interactive": true},
+    "Report.dc.html": {"x": 0, "y": 4760, "w": 390, "h": 1960, "title": "H 월간 리포트", "is_interactive": true},
+    "Feedback.dc.html": {"x": 470, "y": 4760, "w": 390, "h": 844, "title": "F 실시간 피드백", "is_interactive": true},
+    "Income.dc.html": {"x": 940, "y": 4760, "w": 390, "h": 844, "title": "D-2 비정기 수입 배분", "is_interactive": true},
+    "Withdraw.dc.html": {"x": 1410, "y": 4760, "w": 390, "h": 844, "title": "D-3 저축 인출 확인", "is_interactive": true},
+    "Benefits.dc.html": {"x": 1880, "y": 4760, "w": 390, "h": 1360, "title": "D-4 세금과 혜택", "is_interactive": true}
+  },
+  "order": [
+    "Main.dc.html",
+    "Onboard-Self.dc.html",
+    "Onboard-Quiz.dc.html",
+    "Onboard-Result.dc.html",
+    "Spend.dc.html",
+    "Plan.dc.html",
+    "Goal.dc.html",
+    "Challenge.dc.html",
+    "Report.dc.html",
+    "Feedback.dc.html",
+    "Income.dc.html",
+    "Withdraw.dc.html",
+    "Benefits.dc.html"
+  ],
+  "notes": {
+    "row1": {"x": 0, "y": -300, "text": "온보딩 진단", "kind": "title1", "maxW": 1330},
+    "row2": {"x": 0, "y": 1910, "text": "주요 탭", "kind": "title1", "maxW": 2270},
+    "row3": {"x": 0, "y": 4460, "text": "리포트 · 피드백 · 설정 흐름", "kind": "title1", "maxW": 2270}
+  },
+  "designSystems": []
+}

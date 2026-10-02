@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>챌린지와 보상</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..600&amp;family=Noto+Sans+KR:wght@300;400;500&amp;display=swap">
+<style>
+body{margin:0;background:#0D0D0D}
+.ph{position:relative;width:390px;overflow:hidden;font-family:"Archivo","Noto Sans KR",sans-serif;font-stretch:112%;color:#0D0D0D;-webkit-font-smoothing:antialiased;word-break:keep-all;letter-spacing:-.01em;line-height:1.4}
+.ph *{box-sizing:border-box}
+:where(.ph) :where(h1,h2,h3,p){margin:0;font-weight:inherit;font-size:inherit}
+:where(.ph) button{font-family:inherit;font-stretch:inherit;cursor:pointer;color:inherit}
+.dk{background:#0D0D0D;color:#fff}
+.lt{background:#EBEBE9;color:#0D0D0D}
+.eng{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.t1{font-size:34px;font-weight:300;line-height:1.16;letter-spacing:-.035em}
+.t2{font-size:22px;font-weight:300;line-height:1.28;letter-spacing:-.03em}
+.n{font-variant-numeric:tabular-nums;font-weight:300;letter-spacing:-.045em;white-space:nowrap}
+.cur{font-size:.42em;letter-spacing:0;margin-left:.2em;font-weight:400}
+.sm{font-size:13px}.xs{font-size:11px}
+.mu{opacity:.56}
+.cd{border-radius:32px;padding:22px;position:relative}
+.cl{background:#D9F84A;color:#0D0D0D}
+.cw{background:#FFFFFF;color:#0D0D0D}
+.cg{background:#EBEBE9;color:#0D0D0D}
+.cb{background:#0D0D0D;color:#FFFFFF}
+.cv{background:#A68BF5;color:#0D0D0D}
+.cp{background:#EEF9B8;color:#0D0D0D}
+.pl{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:500;border:0;white-space:nowrap;text-decoration:none}
+.ib{width:48px;height:48px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:0;padding:0;flex:none;text-decoration:none}
+.bt{display:flex;align-items:center;justify-content:center;gap:8px;height:58px;border-radius:999px;border:0;font-size:16px;font-weight:500;width:100%;text-decoration:none}
+.gl{background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.16);color:#fff}
+.ic{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.notch{-webkit-mask:radial-gradient(circle 35px at calc(100% - 30px) calc(100% - 30px),transparent 34px,#000 34.6px);mask:radial-gradient(circle 35px at calc(100% - 30px) calc(100% - 30px),transparent 34px,#000 34.6px)}
+.nb{position:absolute;right:2px;bottom:2px;width:56px;height:56px}
+.nav{position:absolute;left:20px;right:20px;bottom:28px;height:68px;border-radius:999px;background:rgba(13,13,13,.9);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:space-between;padding:0 8px;z-index:5}
+.nav a{height:52px;min-width:52px;border-radius:999px;display:flex;align-items:center;justify-content:center;gap:8px;color:#fff;text-decoration:none;font-size:14px;font-weight:500}
+.nav a.on{background:#D9F84A;color:#0D0D0D;padding:0 20px 0 16px}
+.tg{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 10px;border-radius:999px;font-size:11px;font-weight:500;white-space:nowrap}
+.top{display:flex;align-items:center;justify-content:space-between;padding:56px 20px 0}
+.row{display:flex;align-items:center}
+.sb{justify-content:space-between}
+.bdg{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.cal span{height:38px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:12px;font-variant-numeric:tabular-nums}
+.L{background:#D9F84A;color:#0D0D0D}
+.V{background:#A68BF5;color:#0D0D0D}
+.X{background:#2B2B2B;color:#fff}
+.F{border:1px dashed rgba(255,255,255,.25);color:rgba(255,255,255,.5)}
+.E{visibility:hidden}
+.rk{display:flex;align-items:center;gap:10px;font-size:12px}
+.av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex:none}
+</style>
+</helmet>
+<div class="ph dk" style="height:1770px">
+
+  <div class="top">
+    <p class="eng" style="color:#D9F84A">Challenge</p>
+    <span class="tg gl">10월 · 3주차</span>
+  </div>
+
+  <section style="padding:22px 20px 0" aria-label="포인트와 배지">
+    <h1 class="t1">함께 하면<br>오래 가요</h1>
+  </section>
+
+  <section style="position:relative;margin:22px 16px 0" aria-label="내 포인트">
+    <div class="cd cl notch" style="padding:22px 20px 24px">
+      <div class="row sb"><p class="eng">Points</p><span class="xs">이번 달 +420 P</span></div>
+      <p class="n" style="font-size:52px;line-height:1;margin-top:12px">2,340<span class="cur">P</span></p>
+      <div class="row" style="gap:8px;margin-top:18px">
+        <span class="bdg cb" title="예산 지킴 3주"><svg class="ic" width="24" height="24" viewBox="0 0 24 24" aria-label="예산 지킴 3주 배지"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"></path><path d="M8.5 12l2.5 2.5 4.5-5"></path></svg></span>
+        <span class="bdg cb"><svg class="ic" width="24" height="24" viewBox="0 0 24 24" aria-label="선저축 4개월 배지"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v8M9 10.5h4.5a1.5 1.5 0 0 1 0 3H10"></path></svg></span>
+        <span class="bdg cb"><svg class="ic" width="24" height="24" viewBox="0 0 24 24" aria-label="무지출 데이 10회 배지"><path d="M12 3c3 4 6 6.5 6 10a6 6 0 0 1-12 0c0-3.5 3-6 6-10z"></path></svg></span>
+        <span class="bdg" style="border:1.5px dashed #0D0D0D"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-label="잠긴 배지"><rect x="5" y="11" width="14" height="9" rx="3"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></span>
+      </div>
+    </div>
+    <button class="ib cb nb" aria-label="포인트 사용처 보기"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg></button>
+  </section>
+
+  <section aria-label="10월 실천 기록" class="cd gl" style="margin:12px 16px 0;padding:22px 20px">
+    <div class="row sb"><p class="eng">October</p><span class="xs mu">연속 4일</span></div>
+    <div class="cal" style="margin-top:16px;font-size:10px;opacity:.5">
+      <span style="height:18px">월</span><span style="height:18px">화</span><span style="height:18px">수</span><span style="height:18px">목</span><span style="height:18px">금</span><span style="height:18px">토</span><span style="height:18px">일</span>
+    </div>
+    <div class="cal" style="margin-top:4px" role="img" aria-label="10월 1일부터 17일까지: 예산 지킨 날 11일, 무지출 데이 3일, 초과한 날 3일">
+      <span class="E">0</span><span class="E">0</span><span class="E">0</span>
+      <span class="L">1</span><span class="L">2</span><span class="X">3</span><span class="V">4</span>
+      <span class="L">5</span><span class="L">6</span><span class="L">7</span><span class="X">8</span><span class="L">9</span><span class="V">10</span><span class="L">11</span>
+      <span class="X">12</span><span class="L">13</span><span class="L">14</span><span class="V">15</span><span class="L">16</span><span class="L" style="outline:2px solid #fff;outline-offset:2px">17</span><span class="F">18</span>
+      <span class="F">19</span><span class="F">20</span><span class="F">21</span><span class="F">22</span><span class="F">23</span><span class="F">24</span><span class="F">25</span>
+      <span class="F">26</span><span class="F">27</span><span class="F">28</span><span class="F">29</span><span class="F">30</span><span class="F">31</span><span class="E">0</span>
+    </div>
+    <div class="row" style="gap:14px;margin-top:16px;font-size:11px">
+      <span class="row" style="gap:6px"><span class="L" style="width:10px;height:10px;border-radius:50%"></span>예산 안</span>
+      <span class="row" style="gap:6px"><span class="V" style="width:10px;height:10px;border-radius:50%"></span>무지출</span>
+      <span class="row" style="gap:6px"><span class="X" style="width:10px;height:10px;border-radius:50%;border:1px solid #555"></span>초과</span>
+    </div>
+  </section>
+
+  <section aria-label="함께하는 챌린지" class="cd cw" style="margin:12px 16px 0;padding:22px 20px">
+    <div class="row sb"><p class="eng">Together</p><span class="tg cg">전세 자금 모으는 312명</span></div>
+    <h2 class="t2" style="margin-top:10px">무지출 데이<br>주 2번 하기</h2>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px" role="img" aria-label="참여도 순위: 1위 8회, 2위 7회, 3위 7회, 나 6회, 5위 5회">
+      <div class="rk"><span class="av cg">하늘</span><span style="flex:1;position:relative;height:2px;background:#0D0D0D"><span style="position:absolute;right:-6px;top:-5px;width:12px;height:12px;border-radius:50%;background:#0D0D0D"></span></span><span class="n" style="width:30px;text-align:right">8회</span></div>
+      <div class="rk"><span class="av cg">도윤</span><span style="flex:.875;position:relative;height:2px;background:#0D0D0D"><span style="position:absolute;right:-6px;top:-5px;width:12px;height:12px;border-radius:50%;background:#0D0D0D"></span></span><span style="flex:.125"></span><span class="n" style="width:30px;text-align:right">7회</span></div>
+      <div class="rk"><span class="av cg">수아</span><span style="flex:.875;position:relative;height:2px;background:#0D0D0D"><span style="position:absolute;right:-6px;top:-5px;width:12px;height:12px;border-radius:50%;background:#0D0D0D"></span></span><span style="flex:.125"></span><span class="n" style="width:30px;text-align:right">7회</span></div>
+      <div class="rk cl" style="border-radius:999px;padding:6px 10px 6px 6px;margin:0 -10px 0 -6px"><span class="av cb">나</span><span style="flex:.75;position:relative;height:2px;background:#0D0D0D"><span style="position:absolute;right:-7px;top:-6px;width:14px;height:14px;border-radius:50%;background:#0D0D0D"></span></span><span style="flex:.25"></span><span class="n" style="width:30px;text-align:right">6회</span></div>
+      <div class="rk"><span class="av cg">지호</span><span style="flex:.625;position:relative;height:2px;background:#0D0D0D;opacity:.4"><span style="position:absolute;right:-6px;top:-5px;width:12px;height:12px;border-radius:50%;background:#0D0D0D"></span></span><span style="flex:.375"></span><span class="n" style="width:30px;text-align:right">5회</span></div>
+    </div>
+    <p class="xs mu" style="margin-top:14px">순위는 인증 횟수로 정해요. 자산 규모는 서로 보이지 않아요.</p>
+    <button class="bt cb" style="margin-top:16px;height:54px;font-size:15px"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="4"></rect><circle cx="12" cy="13" r="3.5"></circle><path d="M9 6l1.5-2h3L15 6"></path></svg>오늘 인증하기 · +30 P</button>
+  </section>
+
+  <section aria-label="절약 팁과 정책 정보" style="margin:22px 16px 0">
+    <div class="row sb" style="padding:0 4px"><p class="eng">Tips</p><button class="pl gl" style="height:32px;font-size:12px">팁 공유하기</button></div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+      <div class="cd gl" style="padding:18px 20px">
+        <div class="row" style="gap:8px"><span class="av cv">수아</span><span class="xs mu">무지출 데이 · 2시간 전</span></div>
+        <p class="sm" style="margin-top:10px;line-height:1.55">편의점 대신 주말에 장보기 한 번. 평일 간식을 미리 나눠 담아두니 편의점 결제가 주 6회에서 1회로 줄었어요.</p>
+        <div class="row" style="gap:6px;margin-top:12px"><button class="pl gl" style="height:30px;font-size:11px;padding:0 12px">도움돼요 128</button></div>
+      </div>
+      <div class="cd cp" style="padding:18px 20px">
+        <div class="row" style="gap:8px"><span class="tg cb">정책</span><span class="xs" style="opacity:.6">세금과 혜택</span></div>
+        <p class="sm" style="margin-top:10px;line-height:1.55">K-패스 청년은 대중교통비 일부를 돌려받아요. 카드 등록만 하면 다음 달 환급돼요.</p>
+        <div class="row" style="gap:6px;margin-top:12px"><a href="Benefits.dc.html" class="pl cb" style="height:30px;font-size:11px;padding:0 12px">내 조건 확인</a><button class="pl" style="height:30px;font-size:11px;padding:0 12px;border:1px solid #0D0D0D;background:transparent">도움돼요 342</button></div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="nav" aria-label="주요 메뉴">
+    <a href="Main.dc.html" aria-label="홈"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"></path></svg></a>
+    <a href="Spend.dc.html" aria-label="지출"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"></path></svg></a>
+    <a href="Plan.dc.html" aria-label="플랜"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg></a>
+    <a href="Goal.dc.html" aria-label="목표"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h11l-2 4 2 4H5"></path></svg></a>
+    <a href="Challenge.dc.html" class="on" aria-current="page"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 20h8"></path></svg><span>챌린지</span></a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1770}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
