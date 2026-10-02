@@ -1,26 +1,157 @@
 {
   "v": 3,
-  "createdOnFiles": {"v": 1, "at": "2026-10-02T06:42:02Z"},
-  "title": "청년 금융 실천 앱",
-  "launch": {"view": "canvas"},
-  "pages": [],
+  "attachments": {},
   "boards": {
-    "Onboard-Self.dc.html": {"x": 0, "y": 0, "w": 390, "h": 844, "title": "A-1 진단 전 자기평가", "is_interactive": true},
-    "Onboard-Quiz.dc.html": {"x": 470, "y": 0, "w": 390, "h": 844, "title": "A-2 진단 문항", "is_interactive": true},
-    "Onboard-Result.dc.html": {"x": 940, "y": 0, "w": 390, "h": 1790, "title": "A-3 진단 결과", "is_interactive": true},
-    "Main.dc.html": {"x": 0, "y": 2210, "w": 390, "h": 1660, "title": "B 홈", "is_interactive": true},
-    "Spend.dc.html": {"x": 470, "y": 2210, "w": 390, "h": 2110, "title": "C 지출 분석", "is_interactive": true},
-    "Plan.dc.html": {"x": 940, "y": 2210, "w": 390, "h": 2130, "title": "D 기본 설정", "is_interactive": true},
-    "Goal.dc.html": {"x": 1410, "y": 2210, "w": 390, "h": 1560, "title": "E 목표", "is_interactive": true},
-    "Challenge.dc.html": {"x": 1880, "y": 2210, "w": 390, "h": 1770, "title": "G 챌린지와 보상", "is_interactive": true},
-    "Report.dc.html": {"x": 0, "y": 4760, "w": 390, "h": 1960, "title": "H 월간 리포트", "is_interactive": true},
-    "Feedback.dc.html": {"x": 470, "y": 4760, "w": 390, "h": 844, "title": "F 실시간 피드백", "is_interactive": true},
-    "Income.dc.html": {"x": 940, "y": 4760, "w": 390, "h": 844, "title": "D-2 비정기 수입 배분", "is_interactive": true},
-    "Withdraw.dc.html": {"x": 1410, "y": 4760, "w": 390, "h": 844, "title": "D-3 저축 인출 확인", "is_interactive": true},
-    "Benefits.dc.html": {"x": 1880, "y": 4760, "w": 390, "h": 1360, "title": "D-4 세금과 혜택", "is_interactive": true}
+    "Benefits.dc.html": {
+      "h": 1360,
+      "is_interactive": true,
+      "title": "D-4 세금과 혜택",
+      "w": 390,
+      "x": 1880,
+      "y": 4760
+    },
+    "Challenge.dc.html": {
+      "h": 1770,
+      "is_interactive": true,
+      "title": "G 챌린지와 보상",
+      "w": 390,
+      "x": 1880,
+      "y": 2210
+    },
+    "Feedback.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "F 실시간 피드백",
+      "w": 390,
+      "x": 470,
+      "y": 4760
+    },
+    "Goal.dc.html": {
+      "h": 1560,
+      "is_interactive": true,
+      "title": "E 목표",
+      "w": 390,
+      "x": 1410,
+      "y": 2210
+    },
+    "Income.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "D-2 비정기 수입 배분",
+      "w": 390,
+      "x": 940,
+      "y": 4760
+    },
+    "Main.dc.html": {
+      "h": 1290,
+      "is_interactive": true,
+      "title": "B 홈",
+      "w": 390,
+      "x": 0,
+      "y": 2210
+    },
+    "Onboard-Quiz.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "A-2 진단 문항",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "Onboard-Result.dc.html": {
+      "h": 1790,
+      "is_interactive": true,
+      "title": "A-3 진단 결과",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "Onboard-Self.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "A-1 진단 전 자기평가",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "Plan.dc.html": {
+      "h": 2130,
+      "is_interactive": true,
+      "title": "D 기본 설정",
+      "w": 390,
+      "x": 940,
+      "y": 2210
+    },
+    "Report.dc.html": {
+      "h": 1960,
+      "is_interactive": true,
+      "title": "H 월간 리포트",
+      "w": 390,
+      "x": 0,
+      "y": 4760
+    },
+    "Spend.dc.html": {
+      "h": 2110,
+      "is_interactive": true,
+      "title": "C 지출 분석",
+      "w": 390,
+      "x": 470,
+      "y": 2210
+    },
+    "Withdraw.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "D-3 저축 인출 확인",
+      "w": 390,
+      "x": 1410,
+      "y": 4760
+    },
+    "Assets.dc.html": {
+      "x": 2350,
+      "y": 2210,
+      "w": 390,
+      "h": 1480,
+      "title": "B-2 자산 현황",
+      "is_interactive": true
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-02T06:42:02Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "row1": {
+      "kind": "title1",
+      "maxW": 1330,
+      "text": "온보딩 진단",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "row2": {
+      "kind": "title1",
+      "maxW": 2740,
+      "text": "주요 탭",
+      "w": 240,
+      "x": 0,
+      "y": 1910
+    },
+    "row3": {
+      "kind": "title1",
+      "maxW": 2270,
+      "text": "리포트 · 피드백 · 설정 흐름",
+      "w": 240,
+      "x": 0,
+      "y": 4460
+    }
   },
   "order": [
     "Main.dc.html",
+    "Assets.dc.html",
     "Onboard-Self.dc.html",
     "Onboard-Quiz.dc.html",
     "Onboard-Result.dc.html",
@@ -34,10 +165,6 @@
     "Withdraw.dc.html",
     "Benefits.dc.html"
   ],
-  "notes": {
-    "row1": {"x": 0, "y": -300, "text": "온보딩 진단", "kind": "title1", "maxW": 1330},
-    "row2": {"x": 0, "y": 1910, "text": "주요 탭", "kind": "title1", "maxW": 2270},
-    "row3": {"x": 0, "y": 4460, "text": "리포트 · 피드백 · 설정 흐름", "kind": "title1", "maxW": 2270}
-  },
-  "designSystems": []
+  "pages": [],
+  "title": "청년 금융 실천 앱"
 }

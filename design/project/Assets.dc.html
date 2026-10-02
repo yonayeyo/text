@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>자산 현황</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..600&amp;family=Noto+Sans+KR:wght@300;400;500&amp;display=swap">
+<style>
+body{margin:0;background:#0D0D0D}
+.ph{position:relative;width:390px;overflow:hidden;font-family:"Archivo","Noto Sans KR",sans-serif;font-stretch:112%;color:#0D0D0D;-webkit-font-smoothing:antialiased;word-break:keep-all;letter-spacing:-.01em;line-height:1.4}
+.ph *{box-sizing:border-box}
+:where(.ph) :where(h1,h2,h3,p){margin:0;font-weight:inherit;font-size:inherit}
+:where(.ph) button{font-family:inherit;font-stretch:inherit;cursor:pointer;color:inherit}
+.dk{background:#0D0D0D;color:#fff}
+.lt{background:#EBEBE9;color:#0D0D0D}
+.eng{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.t1{font-size:34px;font-weight:300;line-height:1.16;letter-spacing:-.035em}
+.t2{font-size:22px;font-weight:300;line-height:1.28;letter-spacing:-.03em}
+.n{font-variant-numeric:tabular-nums;font-weight:300;letter-spacing:-.045em;white-space:nowrap}
+.cur{font-size:.42em;letter-spacing:0;margin-left:.2em;font-weight:400}
+.sm{font-size:13px}.xs{font-size:11px}
+.mu{opacity:.56}
+.cd{border-radius:32px;padding:22px;position:relative}
+.cl{background:#D9F84A;color:#0D0D0D}
+.cw{background:#FFFFFF;color:#0D0D0D}
+.cg{background:#EBEBE9;color:#0D0D0D}
+.cb{background:#0D0D0D;color:#FFFFFF}
+.cv{background:#A68BF5;color:#0D0D0D}
+.pl{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:500;border:0;white-space:nowrap;text-decoration:none}
+.ib{width:48px;height:48px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:0;padding:0;flex:none;text-decoration:none}
+.gl{background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.16);color:#fff}
+.ic{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.nav{position:absolute;left:20px;right:20px;bottom:28px;height:68px;border-radius:999px;background:rgba(13,13,13,.9);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:space-between;padding:0 8px;z-index:5}
+.nav a{height:52px;min-width:52px;border-radius:999px;display:flex;align-items:center;justify-content:center;gap:8px;color:#fff;text-decoration:none;font-size:14px;font-weight:500}
+.nav a.on{background:#D9F84A;color:#0D0D0D;padding:0 20px 0 16px}
+.tg{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 10px;border-radius:999px;font-size:11px;font-weight:500;white-space:nowrap}
+.top{display:flex;align-items:center;justify-content:space-between;padding:56px 20px 0}
+.row{display:flex;align-items:center}
+.sb{justify-content:space-between}
+.acc{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid rgba(13,13,13,.08)}
+.acc:first-child{border-top:0}
+.acc .k{width:12px;height:12px;border-radius:50%;flex:none}
+</style>
+</helmet>
+<div class="ph dk" style="height:1480px">
+
+  <div class="top">
+    <a href="Main.dc.html" class="ib gl" style="width:44px;height:44px" aria-label="홈으로"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+    <span class="tg gl">계좌·카드·페이 7 연동 · 방금 갱신</span>
+  </div>
+
+  <section aria-label="자산 합계" style="padding:30px 20px 0">
+    <p class="eng" style="color:#D9F84A">Assets</p>
+    <h1 class="t1" style="margin-top:10px">내 돈이<br>있는 곳</h1>
+    <div class="row" style="gap:10px;margin-top:18px;align-items:baseline">
+      <p class="n" style="font-size:38px;line-height:1">13,687,300<span class="cur">₩</span></p>
+      <span class="tg gl" style="color:#D9F84A">+184,000 ₩</span>
+    </div>
+  </section>
+
+  <section aria-label="용도별 계좌 잔액" style="position:relative;margin:16px 20px 0;height:252px">
+    <svg width="350" height="252" viewBox="0 0 350 252" role="img" aria-label="저축 11,460,000원, 비상금 1,200,000원, 생활비 812,400원, 경조사비 150,000원, 간편결제 64,900원">
+      <defs>
+        <filter id="gooAssets" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur in="SourceGraphic" stdDeviation="9" result="b"></feGaussianBlur><feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -10"></feColorMatrix></filter>
+      </defs>
+      <g filter="url(#gooAssets)" fill="#D9F84A">
+        <circle cx="118" cy="122" r="66"></circle>
+        <circle cx="238" cy="70" r="40"></circle>
+        <circle cx="248" cy="182" r="38"></circle>
+        <circle cx="318" cy="130" r="22"></circle>
+        <circle cx="40" cy="214" r="20"></circle>
+        <circle cx="190" cy="92" r="11"></circle>
+        <circle cx="189" cy="153" r="10"></circle>
+        <circle cx="203" cy="160" r="10"></circle>
+        <circle cx="289" cy="152" r="8"></circle>
+        <circle cx="72" cy="176" r="9"></circle>
+        <circle cx="60" cy="190" r="9"></circle>
+      </g>
+      <circle cx="238" cy="70" r="36" fill="#A68BF5"></circle>
+      <circle cx="248" cy="182" r="34" fill="#FFFFFF"></circle>
+      <circle cx="318" cy="130" r="18" fill="#EBEBE9"></circle>
+      <circle cx="40" cy="214" r="16" fill="#2B2B2B"></circle>
+      <g font-family="Archivo, Noto Sans KR, sans-serif" text-anchor="middle" fill="#0D0D0D">
+        <text x="118" y="112" font-size="12">저축</text>
+        <text x="118" y="136" font-size="17" font-weight="300" letter-spacing="-0.5">11,460,000 ₩</text>
+        <text x="238" y="66" font-size="11">비상금</text>
+        <text x="238" y="82" font-size="11">1.2M</text>
+        <text x="248" y="178" font-size="11">생활비</text>
+        <text x="248" y="194" font-size="11">812K</text>
+        <text x="318" y="134" font-size="10">150K</text>
+      </g>
+      <g font-family="Archivo, Noto Sans KR, sans-serif" fill="#FFFFFF" font-size="10" opacity=".6">
+        <text x="300" y="166">경조사</text>
+        <text x="64" y="244">페이 64,900 ₩</text>
+      </g>
+    </svg>
+  </section>
+
+  <div class="row" style="gap:8px;padding:6px 20px 0">
+    <span class="pl gl" style="flex:1;height:44px;justify-content:space-between;padding:0 16px"><span class="eng mu">In</span><span class="n" style="font-size:15px">2,830,000 ₩</span></span>
+    <span class="pl gl" style="flex:1;height:44px;justify-content:space-between;padding:0 16px"><span class="eng mu">Out</span><span class="n" style="font-size:15px">1,327,600 ₩</span></span>
+  </div>
+
+  <div class="lt" style="margin-top:28px;border-radius:40px 40px 0 0;padding:16px 16px 0;min-height:1000px">
+
+    <section aria-label="수입과 지출 흐름" class="cd cw" style="padding:22px 20px 20px">
+      <div class="row sb">
+        <p class="eng">Flow</p>
+        <span class="xs mu">10.01 – 10.17</span>
+      </div>
+      <svg width="318" height="154" viewBox="0 0 350 170" style="display:block;margin-top:14px" role="img" aria-label="급여와 외주 수입이 생활비, 저축, 비상금으로 나뉘고 생활비에서 고정 지출, 식비, 쇼핑, 카페, 기타로 지출, 457,400원 남음">
+        <g fill-opacity=".85">
+          <path d="M8 0 C64 0 64 0 120 0 L120 95 C64 95 64 95 8 95 Z" fill="#D9F84A"></path>
+          <path d="M8 95 C64 95 64 101 120 101 L120 136 C64 136 64 130 8 130 Z" fill="#D9F84A"></path>
+          <path d="M8 138 C64 138 64 136 120 136 L120 148 C64 148 64 150 8 150 Z" fill="#A68BF5"></path>
+          <path d="M8 150 C64 150 64 154 120 154 L120 162 C64 162 64 158 8 158 Z" fill="#A68BF5"></path>
+        </g>
+        <g fill="#0D0D0D" fill-opacity=".1">
+          <path d="M128 0 C184 0 184 0 240 0 L240 31 C184 31 184 31 128 31 Z"></path>
+          <path d="M128 31 C184 31 184 40 240 40 L240 53 C184 53 184 44 128 44 Z"></path>
+          <path d="M128 44 C184 44 184 62 240 62 L240 70 C184 70 184 52 128 52 Z"></path>
+          <path d="M128 52 C184 52 184 79 240 79 L240 84 C184 84 184 57 128 57 Z"></path>
+          <path d="M128 57 C184 57 184 93 240 93 L240 106 C184 106 184 70 128 70 Z"></path>
+        </g>
+        <path d="M128 70 C184 70 184 116 240 116 L240 140 C184 140 184 95 128 95 Z" fill="#D9F84A" fill-opacity=".55"></path>
+        <g fill="#0D0D0D">
+          <rect x="0" y="0" width="8" height="130" rx="3"></rect>
+          <rect x="0" y="138" width="8" height="20" rx="3"></rect>
+          <rect x="120" y="0" width="8" height="95" rx="3"></rect>
+          <rect x="120" y="101" width="8" height="47" rx="3"></rect>
+          <rect x="120" y="154" width="8" height="8" rx="3"></rect>
+          <rect x="240" y="0" width="8" height="31" rx="3"></rect>
+          <rect x="240" y="40" width="8" height="13" rx="3"></rect>
+          <rect x="240" y="62" width="8" height="8" rx="3"></rect>
+          <rect x="240" y="79" width="8" height="5" rx="2"></rect>
+          <rect x="240" y="93" width="8" height="13" rx="3"></rect>
+        </g>
+        <rect x="240.75" y="116.75" width="6.5" height="22.5" rx="3" fill="none" stroke="#0D0D0D" stroke-width="1.5" stroke-dasharray="2 2"></rect>
+        <g font-family="Archivo, Noto Sans KR, sans-serif" font-size="11" fill="#0D0D0D">
+          <text x="14" y="16">급여</text>
+          <text x="14" y="152">외주</text>
+          <text x="134" y="16">생활비</text>
+          <text x="134" y="122">저축</text>
+          <text x="134" y="163">비상금</text>
+          <text x="254" y="19">고정</text>
+          <text x="254" y="50">식비</text>
+          <text x="254" y="70">쇼핑</text>
+          <text x="254" y="86">카페</text>
+          <text x="254" y="103">기타</text>
+          <text x="254" y="132">남음 457K</text>
+        </g>
+      </svg>
+      <div class="row" style="gap:8px;margin-top:14px;flex-wrap:wrap">
+        <span class="pl cg" style="height:34px;font-size:12px;padding:0 14px"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>내 계좌 간 이체 3건 제외</span>
+        <button class="pl cl" style="height:34px;font-size:12px;padding:0 14px"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M3 20a6 6 0 0 1 12 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3 6"></path></svg>더치페이 2건 정리</button>
+      </div>
+    </section>
+
+    <section aria-label="계좌 용도" class="cd cw" style="margin-top:12px;padding:22px 20px 12px">
+      <div class="row sb"><p class="eng">Accounts</p><button class="pl cg" style="height:32px;font-size:12px">용도 바꾸기</button></div>
+      <div style="margin-top:8px">
+        <div class="acc"><span class="k" style="background:#D9F84A;border:1px solid #0D0D0D"></span><div style="flex:1"><p class="sm">저축</p><p class="xs mu">청년 적금 · 자유적립 통장</p></div><span class="n" style="font-size:15px">11,460,000 ₩</span></div>
+        <div class="acc"><span class="k" style="background:#A68BF5"></span><div style="flex:1"><p class="sm">비상금</p><p class="xs mu">파킹 통장</p></div><span class="n" style="font-size:15px">1,200,000 ₩</span></div>
+        <div class="acc"><span class="k" style="background:#FFFFFF;border:1px solid #0D0D0D"></span><div style="flex:1"><p class="sm">생활비</p><p class="xs mu">급여 통장 · 체크카드 연결</p></div><span class="n" style="font-size:15px">812,400 ₩</span></div>
+        <div class="acc"><span class="k" style="background:#EBEBE9;border:1px solid #0D0D0D"></span><div style="flex:1"><p class="sm">경조사비</p><p class="xs mu">모임 통장</p></div><span class="n" style="font-size:15px">150,000 ₩</span></div>
+        <div class="acc"><span class="k" style="background:#2B2B2B"></span><div style="flex:1"><p class="sm">간편결제</p><p class="xs mu">페이 머니 2곳</p></div><span class="n" style="font-size:15px">64,900 ₩</span></div>
+      </div>
+    </section>
+  </div>
+
+  <nav class="nav" aria-label="주요 메뉴">
+    <a href="Main.dc.html" class="on"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"></path></svg><span>홈</span></a>
+    <a href="Spend.dc.html" aria-label="지출"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"></path></svg></a>
+    <a href="Plan.dc.html" aria-label="플랜"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg></a>
+    <a href="Goal.dc.html" aria-label="목표"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h11l-2 4 2 4H5"></path></svg></a>
+    <a href="Challenge.dc.html" aria-label="챌린지"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 20h8"></path></svg></a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1480}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
