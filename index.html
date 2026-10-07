@@ -391,6 +391,25 @@ pre.ascii span{color:var(--lime)}
 .reason{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .alt{display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:24px;border:1px dashed rgba(250,250,250,.3);margin-top:14px;font-size:12.5px;line-height:1.5}
 
+.wopt{display:block;width:100%;text-align:left;border-radius:26px;padding:15px 16px 14px;margin-top:8px;background:#1C1C1C;box-shadow:inset 0 0 0 1px rgba(250,250,250,.08);transition:.15s}
+.wopt.sel{box-shadow:inset 0 0 0 2px var(--lime)}
+.wopt .hd{display:flex;align-items:center;gap:8px}
+.wopt .rd{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(250,250,250,.4);flex:none}
+.wopt.sel .rd{box-shadow:inset 0 0 0 7px var(--lime)}
+.wopt .t{font-size:14.5px;font-weight:500}
+.wopt .bal{font:400 10.5px var(--f-mono);opacity:.55;margin-left:auto;white-space:nowrap}
+.wopt .ef{display:flex;justify-content:space-between;font-size:12.5px;margin:12px 0 0 30px}
+.wopt .ef .mono{font-size:12px}
+.wopt .ef.sm{margin-top:6px}
+.wopt .neg{font-weight:500;color:var(--w);background:rgba(250,250,250,.12);padding:0 5px;border-radius:4px}
+.wopt .pos{font-weight:500;color:var(--lime)}
+.wopt .wbar{display:block;position:relative;height:8px;border-radius:4px;background:#3A3A3A;margin:8px 0 0 30px;overflow:hidden}
+.wopt .wbar b{position:absolute;left:0;top:0;bottom:0;background:var(--w);border-radius:4px 0 0 4px}
+.wopt .wbar u{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(90deg,var(--lime) 0 2px,transparent 2px 4px)}
+.wopt .wbar u.g{background:repeating-linear-gradient(90deg,var(--m) 0 2px,transparent 2px 4px)}
+.wopt .note{display:block;font-size:11.5px;opacity:.6;margin:8px 0 0 30px;line-height:1.45}
+.wopt .note b{font-weight:500;opacity:1;color:var(--lime)}
+
 /* ================= 10 잠금화면 ================= */
 .lock{position:absolute;inset:0}
 .lock canvas{position:absolute;inset:0;width:100%;height:100%}
@@ -1184,42 +1203,34 @@ pre.ascii span{color:var(--lime)}
       <div class="sheet">
         <div class="grab"></div>
         <span class="chip mono">WITHDRAW · 300,000 ₩</span>
-        <h2 class="h1" style="font-size:27px;margin-top:14px">꺼내기 전에,<br>목표를 한 번 볼게요</h2>
-        <p class="sub" style="margin-top:8px">인출은 언제든 할 수 있어요. 대신 이만큼 달라져요.</p>
+        <h2 class="h1" style="font-size:27px;margin-top:14px">어디서 꺼낼지,<br>먼저 골라요</h2>
+        <p class="sub" style="margin-top:8px">인출은 막지 않아요. 어느 계좌냐에 따라 목표가 달라져요.</p>
 
-        <div class="flip">
-          <span class="v disp from">54<small>%</small></span>
-          <svg class="ic" style="opacity:.5"><use href="#i-ar"/></svg>
-          <span class="v disp">51<small>%</small></span>
-          <span class="chip" style="margin-left:auto;align-self:center">독립 자금</span>
-        </div>
-
-        <svg class="tl" viewBox="0 0 350 110" style="width:100%;display:block">
-          <line x1="8" y1="62" x2="342" y2="62" stroke="#3A3A3A" stroke-width="10" stroke-linecap="round"/>
-          <line x1="8" y1="62" x2="126" y2="62" stroke="#FAFAFA" stroke-width="10" stroke-linecap="round"/>
-          <g font-family="IBM Plex Mono" font-size="9.5" fill="rgba(250,250,250,.45)">
-            <text x="8" y="96">26.10</text><text x="118" y="96">27.03</text><text x="186" y="96" fill="#D9F84A">27.05</text><text x="342" y="96" text-anchor="end">27.12</text>
-          </g>
-          <circle cx="126" cy="62" r="11" fill="#161616" stroke="#FAFAFA" stroke-width="1.5" stroke-dasharray="3 3"/>
-          <circle cx="198" cy="62" r="11" fill="#D9F84A"/>
-          <path d="M132 40 Q164 18 192 40" fill="none" stroke="#D9F84A" stroke-width="1.5" marker-end="url(#arw)"/>
-          <text x="162" y="18" text-anchor="middle" font-size="11" fill="#D9F84A" font-family="Noto Sans KR">+2개월</text>
-          <text x="126" y="44" text-anchor="middle" font-size="9.5" fill="rgba(250,250,250,.5)" font-family="Noto Sans KR">원래</text>
-          <circle cx="342" cy="62" r="5" fill="#8C8C8A"/>
-        </svg>
-        <p style="font-size:12px;opacity:.6;margin-top:-4px">3단계(6,000,000 ₩) 도달이 2027년 5월로 밀려요</p>
-
-        <p class="eyebrow" style="margin-top:18px">어디에 쓰시나요? · 선택</p>
+        <p class="eyebrow" style="margin-top:16px">어디에 쓰시나요? · 선택</p>
         <div class="reason"><span class="chip">의료비</span><span class="chip">이사·보증금</span><span class="chip wfill">생활비 부족</span><span class="chip">기타</span></div>
-        <div class="alt"><svg class="ic" style="color:var(--lime)"><use href="#i-info"/></svg><span>생활비 부족이라면 <b style="font-weight:500">비상금</b>에서 꺼내는 게 맞아요. 목표 진행률은 그대로예요.</span></div>
 
-        <div style="display:flex;gap:8px;margin-top:16px">
-          <button class="pill ghost soft" style="flex:1">그래도 인출하기</button>
-          <button class="pill lime" style="flex:1">비상금에서 꺼내기</button>
+        <div data-wopt style="margin-top:14px">
+          <button class="wopt" data-label="저축에서 300,000 ₩ 꺼내기">
+            <span class="hd"><span class="rd"></span><span class="t">저축 계좌에서</span></span>
+            <span class="ef"><span>계좌 잔액</span><span class="mono">5,400,000 → 5,100,000</span></span>
+            <span class="ef sm"><span>독립 자금</span><span class="mono">54% → <b class="neg">51%</b></span></span>
+            <span class="wbar"><b style="width:51%"></b><u style="left:51%;width:3%"></u></span>
+            <span class="note">3단계 도달 2027.03 → <b>2027.05 (+2개월)</b></span>
+          </button>
+          <button class="wopt sel" data-label="비상금에서 300,000 ₩ 꺼내기">
+            <span class="hd"><span class="rd"></span><span class="t">비상금 계좌에서</span><span class="chip lime" style="height:22px;font-size:10.5px;padding:0 8px;margin-left:auto">생활비 부족엔 추천</span></span>
+            <span class="ef"><span>계좌 잔액</span><span class="mono">1,800,000 → 1,500,000</span></span>
+            <span class="ef sm"><span>독립 자금</span><span class="mono">54% <b class="pos">그대로</b></span></span>
+            <span class="wbar"><b style="width:42%"></b><u class="g" style="left:42%;width:8%"></u></span>
+            <span class="note">비상금 3개월치 중 50% → 42% · 다음 달 자동이체로 다시 채워요</span>
+          </button>
         </div>
+
+        <button class="pill lime block" data-wgo style="margin-top:16px">비상금에서 300,000 ₩ 꺼내기</button>
+        <button class="lnk" style="display:block;margin:12px auto 0">취소하고 돌아가기</button>
       </div>
     </div></div>
-    <figcaption><b>08</b>저축 인출 확인 단계. 진행률이 바뀌는 숫자와 목표 도달 시점이 밀리는 타임라인으로 영향을 보여줍니다. 막지는 않고, 인출 이유에 맞는 다른 방법을 하나 제안합니다.</figcaption>
+    <figcaption><b>08</b>저축 인출 확인 단계. 두 버튼을 나란히 두는 대신, 어느 계좌에서 꺼낼지 두 장의 선택 카드로 비교합니다. 카드마다 잔액 변화, 독립 자금 진행률, 줄어드는 몫(줄무늬)을 보여주고, 아래 확인 버튼 문구가 선택한 계좌 이름과 금액으로 바뀝니다. 인출은 어느 쪽이든 가능합니다.</figcaption>
   </figure>
 
   <!-- 09 혜택 -->
@@ -1303,7 +1314,7 @@ pre.ascii span{color:var(--lime)}
   <figure class="shot" id="s-lock">
     <div class="device"><div class="screen dark">
       <div class="lock">
-        <canvas class="dither" id="lockBg" width="130" height="28" style="inset:auto 0 auto 0;top:226px;height:78px"></canvas>
+        <canvas class="dither" id="lockBg" width="130" height="282"></canvas>
         <div class="clock">
           <p>10월 14일 화요일</p>
           <p class="t disp num">12:48</p>
@@ -1338,7 +1349,7 @@ pre.ascii span{color:var(--lime)}
         </div>
       </div>
     </div></div>
-    <figcaption><b>10</b>실시간 피드백. 결제 직후 예산 잔여율(아스키 막대), 오늘 남은 돈, 월말 예상을 작은 영수증 형태로 알려줍니다. 저축하면 목표 진행률 변화를 알리고, 경고 알림은 예산 초과 위험이 있을 때만 라임색으로 보냅니다. 디더링 그래픽은 시계와 알림 사이 빈 띠에만 두어 글자와 겹치지 않습니다.</figcaption>
+    <figcaption><b>10</b>실시간 피드백. 결제 직후 예산 잔여율(아스키 막대), 오늘 남은 돈, 월말 예상을 작은 영수증 형태로 알려줍니다. 저축하면 목표 진행률 변화를 알리고, 경고 알림은 예산 초과 위험이 있을 때만 라임색으로 보냅니다.</figcaption>
   </figure>
 
   <!-- 11 목표 -->
@@ -1737,6 +1748,13 @@ pre.ascii span{color:var(--lime)}
     $$('.opt', g).forEach(x => x.classList.toggle('sel', x === o));
   }));
 
+  /* ---------- 인출 계좌 선택 ---------- */
+  $$('[data-wopt]').forEach(g => g.addEventListener('click', e => {
+    const o = e.target.closest('.wopt'); if (!o) return;
+    $$('.wopt', g).forEach(x => x.classList.toggle('sel', x === o));
+    $('[data-wgo]', g.parentElement).textContent = o.dataset.label;
+  }));
+
   /* ---------- 감액 쿠폰 토글 ---------- */
   const won = n => n.toLocaleString('ko-KR') + ' ₩';
   $$('[data-coupons]').forEach(g => {
@@ -1882,10 +1900,11 @@ pre.ascii span{color:var(--lime)}
   // 잠금화면 배경
   const lb = $('#lockBg');
   if (lb) dither(lb, (x, y) => {
-    const sun = Math.exp(-((x - .5) ** 2 / .018 + (y - 1) ** 2 / .5));
-    const haze = Math.exp(-((x - .5) ** 2 / .16)) * y * .55;
-    return Math.min(1, sun + haze) * Math.min(1, x * 6, (1 - x) * 6);
-  }, ['#0D0D0D', '#262626', '#3A3A3A', '#8C8C8A', '#D9F84A']);
+    const a = Math.exp(-((x - .78) ** 2 / .06 + (y - .86) ** 2 / .02));
+    const b = Math.exp(-((x - .2) ** 2 / .12 + (y - .16) ** 2 / .03)) * .62;
+    const c = Math.exp(-((x - .5) ** 2 / .3 + (y - .5) ** 2 / .1)) * .45;
+    return Math.min(1, a + b + c) * .95;
+  }, ['#0D0D0D', '#262626', '#3A3A3A', '#D9F84A']);
 
   // 챌린지 : 참여 횟수 분포 (내 위치 이상은 라임)
   const dc = $('#distCv');
