@@ -276,7 +276,7 @@ pre.ascii span{color:var(--lime)}
 .tm .c .n{font-size:12px;font-weight:500;display:flex;gap:4px;align-items:center}
 .tm .c .a{font:300 15px var(--f-disp);font-stretch:106%;letter-spacing:-.02em;white-space:nowrap}
 .tm .c .a small{font-size:10px;opacity:.6}
-.tm .c.keep{box-shadow:inset 0 0 0 1px rgba(250,250,250,.5);background:repeating-linear-gradient(135deg,rgba(250,250,250,.06) 0 6px,transparent 6px 12px)}
+.tm .c.keep{box-shadow:none;border:1.5px dashed rgba(250,250,250,.55);background:transparent}
 .tm .c .chg{font:500 10px var(--f-mono)}
 .dv{display:flex;flex-direction:column;gap:6px}
 .dv-r{display:grid;grid-template-columns:70px 1fr;align-items:center;gap:10px;height:28px;font-size:12.5px}
@@ -455,6 +455,69 @@ pre.ascii span{color:var(--lime)}
 .tip p{font-size:13.5px;line-height:1.55;margin-top:8px}
 .tip .ft{display:flex;gap:14px;font-size:11.5px;opacity:.6;margin-top:10px;align-items:center}
 
+/* ================= 알림 · 할 일 ================= */
+.bell{position:relative}
+.bell .badge{position:absolute;top:3px;right:3px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:var(--lime);color:var(--k);font:600 9.5px/17px var(--f-mono);font-style:normal;text-align:center;box-shadow:0 0 0 2px var(--w)}
+.todo{display:flex;align-items:center;gap:10px;height:54px;padding:0 6px 0 8px;border-radius:999px;background:#F0F0ED;margin:-8px 0 26px;font-size:12.5px;cursor:pointer}
+.todo .tx{flex:1;line-height:1.35}
+.todo .tx b{font-weight:500}
+.todo .tx small{display:block;font-size:10.5px;opacity:.5}
+.todo .go{height:42px}
+.xfer{font-size:11px;opacity:.5;margin:8px 0 0 16px;display:flex;gap:5px;align-items:center}
+.td-card{padding:20px 18px 18px}
+.td-card .net{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.td-card .net div{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;font-size:12.5px;padding:8px 8px 8px 6px;border-radius:999px;background:#1C1C1C}
+.td-card .net .av{width:30px;height:30px;border-radius:50%;background:#3A3A3A;display:grid;place-items:center;font-size:11px}
+.td-card .net .m{font:400 11px var(--f-mono);opacity:.55}
+.td-row{display:grid;grid-template-columns:36px 1fr auto;gap:12px;align-items:center;padding:14px 14px 14px 12px;border-radius:26px;background:#F0F0ED;margin-top:8px}
+.td-row .k{width:36px;height:36px;border-radius:50%;background:var(--k);color:var(--lime);display:grid;place-items:center;font:500 11px var(--f-mono)}
+.td-row.un{background:transparent;border:1.5px dashed var(--k)}
+.td-row.un .k{background:transparent;color:var(--k);border:1.5px dashed var(--k)}
+.td-row .t{font-size:14px;font-weight:500}
+.td-row .s{font-size:11.5px;opacity:.55;margin-top:2px}
+.nt{display:grid;grid-template-columns:8px 1fr auto;gap:12px;align-items:baseline;padding:12px 4px;border-bottom:1px solid #EDEDEA;font-size:12.5px;line-height:1.45}
+.nt i{width:8px;height:8px;border-radius:50%;background:var(--l);transform:translateY(-1px)}
+.nt i.on{background:var(--k)}
+.nt time{font:400 10.5px var(--f-mono);opacity:.45}
+
+/* ================= 챌린지 분포 ================= */
+.dist{position:relative;padding-top:30px}
+.dist canvas{width:100%;height:64px}
+.dist .mk{position:absolute;top:0;bottom:16px;width:2px;background:var(--lime);transform:translateX(-1px)}
+.dist .mk span{position:absolute;top:0;right:8px;white-space:nowrap;font-size:11px;color:var(--lime)}
+.dist .ax{display:flex;justify-content:space-between;font:400 10px var(--f-mono);opacity:.4;margin-top:6px}
+.pxbar{display:flex;gap:1.5px;margin-top:5px}
+.pxbar i{width:6px;height:9px;background:currentColor;opacity:.9}
+.pxbar i.e{opacity:.14}
+
+/* ================= 영수증 프린터 ================= */
+.printer{position:relative;z-index:3;height:64px;border-radius:999px;background:#1C1C1C;box-shadow:inset 0 0 0 1px rgba(250,250,250,.1);display:flex;align-items:center;gap:10px;padding:0 8px 0 22px}
+.printer .led{width:8px;height:8px;border-radius:50%;background:#3A3A3A;box-shadow:0 0 0 3px rgba(250,250,250,.04)}
+.printer .pt{font:500 10.5px var(--f-mono);letter-spacing:.14em;opacity:.55}
+.printer .st{margin-left:auto;font:500 10.5px var(--f-mono);letter-spacing:.12em}
+.printer .prn{width:48px;height:48px}
+.printer .slit{position:absolute;left:24px;right:24px;bottom:-4px;height:8px;border-radius:4px;background:#000;box-shadow:inset 0 2px 2px rgba(0,0,0,.8),0 1px 0 rgba(250,250,250,.08)}
+.printing .printer .led{background:var(--lime);animation:blink .32s steps(2) infinite}
+.printing .printer .prn{animation:press .4s ease}
+@keyframes blink{50%{opacity:.2}}
+@keyframes press{40%{transform:scale(.9)}}
+.feed{position:relative;overflow:hidden;margin:-2px 12px 0;padding-bottom:14px}
+.feed .paper{transform:translateY(-101%)}
+.feed.out .paper{transform:none;transition:transform 2.8s steps(30,end)}
+.feed.mid{max-height:560px}
+.feed.mid .paper{transform:translateY(-54%)}
+.paper pre.ascii{color:var(--k);margin:4px 0 14px}
+.paper pre.ascii span{color:var(--k);background:var(--lime)}
+.wk{position:relative;display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:120px;margin:18px 0 6px}
+.wk .col{display:flex;flex-direction:column-reverse;gap:2px;align-items:center}
+.wk .col i{width:24px;height:6px;background:var(--k)}
+.wk .col i.ov{background:repeating-linear-gradient(90deg,var(--k) 0 2px,transparent 2px 4px)}
+.wk .col.zero::after{content:"";width:22px;height:22px;border-radius:50%;border:1.5px dashed var(--k);margin-bottom:4px}
+.wk .bl{position:absolute;left:-4px;right:-4px;border-top:1.5px dashed var(--k)}
+.wk-l{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;text-align:center;font-size:10.5px}
+.wk-l b{display:block;font:400 9.5px var(--f-mono);opacity:.5}
+.ck{display:grid;grid-template-columns:18px 1fr auto;gap:8px;font-size:12.5px;line-height:1.9}
+
 /* ================= 13 월간 리포트 ================= */
 .paper{position:relative;background:var(--w);color:var(--k);margin:6px 0 0;padding:22px 20px 30px;font-family:var(--f-mono-kr);border-radius:4px 4px 0 0}
 .paper::after{content:"";position:absolute;left:0;right:0;bottom:-11px;height:11px;background:radial-gradient(circle 7px at 50% 100%,transparent 6.5px,var(--w) 7px) 0 0/16px 11px repeat-x}
@@ -541,6 +604,8 @@ pre.ascii span{color:var(--lime)}
   <symbol id="i-flash" viewBox="0 0 24 24"><path d="M9 3h6v4l-1.5 3v10.5h-3V10L9 7zM12 13v2"/></symbol>
   <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
   <symbol id="i-swap" viewBox="0 0 24 24"><path d="M5 8h13M14 4l4 4-4 4M19 16H6M10 12l-4 4 4 4"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 9V3.5h10V9M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></symbol>
+  <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 3h12v18l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5L6 21zM9 8h6M9 12h6M9 16h3"/></symbol>
   <symbol id="i-chat" viewBox="0 0 24 24"><path d="M5 18.5V7a2.5 2.5 0 0 1 2.5-2.5h9A2.5 2.5 0 0 1 19 7v6.5a2.5 2.5 0 0 1-2.5 2.5H8z"/></symbol>
 </svg>
 
@@ -668,30 +733,31 @@ pre.ascii span{color:var(--lime)}
         <p class="sub">금융 지식은 상위권, 실천은 아직 시작 단계예요.<br>버튼 한 번으로 끝나는 자동 설정부터 권해요.</p>
 
         <div class="quad">
-          <svg viewBox="0 0 350 300" role="img" aria-label="금융 지식과 실천 수준 사분면">
-            <rect x="187" y="142" width="153" height="128" rx="18" fill="url(#dLime2)"/>
+          <svg viewBox="0 0 350 300" role="img" aria-label="세로축 금융 지식, 가로축 실천 수준 사분면">
+            <rect x="34.5" y="14.5" width="152" height="127" rx="18" fill="#D9F84A" fill-opacity=".09" stroke="#D9F84A" stroke-opacity=".5"/>
             <rect x="34" y="14" width="306" height="256" rx="22" fill="none" stroke="rgba(250,250,250,.18)"/>
             <line x1="187" y1="14" x2="187" y2="270" stroke="rgba(250,250,250,.18)" stroke-dasharray="3 4"/>
             <line x1="34" y1="142" x2="340" y2="142" stroke="rgba(250,250,250,.18)" stroke-dasharray="3 4"/>
+            <text x="48" y="36" font-size="12" font-weight="500" fill="#D9F84A" font-family="Noto Sans KR">인지우세형</text>
             <g font-size="11" fill="rgba(250,250,250,.45)" font-family="Noto Sans KR">
-              <text x="48" y="36">습관우세형</text>
               <text x="326" y="36" text-anchor="end">자기관리형</text>
               <text x="48" y="258">저관여형</text>
+              <text x="326" y="258" text-anchor="end">습관우세형</text>
             </g>
-            <text x="326" y="258" text-anchor="end" font-size="12" font-weight="500" fill="#D9F84A" font-family="Noto Sans KR">인지우세형</text>
-            <g font-family="IBM Plex Mono" font-size="9" fill="rgba(250,250,250,.4)" letter-spacing="1">
-              <text x="340" y="290" text-anchor="end">KNOWLEDGE</text>
-              <text transform="translate(18 270) rotate(-90)">ACTION</text>
-              <text x="34" y="290">0</text><text x="183" y="290">5</text>
+            <g font-size="9.5" fill="rgba(250,250,250,.45)" font-family="Noto Sans KR">
+              <text x="340" y="290" text-anchor="end">실천 수준 높음 ▸</text>
+              <text transform="translate(20 270) rotate(-90)">금융 지식 높음 ▸</text>
             </g>
-            <line x1="248" y1="142" x2="268" y2="182" stroke="#FAFAFA" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arw)"/>
-            <circle cx="248" cy="142" r="7" fill="#0D0D0D" stroke="#FAFAFA" stroke-width="1.5"/>
-            <circle cx="273" cy="188" r="17" fill="none" stroke="#D9F84A" stroke-opacity=".45"/>
-            <circle cx="273" cy="188" r="9" fill="#D9F84A"/>
-            <g font-size="10.5" font-family="Noto Sans KR" fill="#FAFAFA">
-              <text x="236" y="128" text-anchor="end">내 생각 7 · 5</text>
-              <text x="258" y="216" text-anchor="end" fill="#D9F84A" stroke="#0D0D0D" stroke-width="4" paint-order="stroke">진단 7.8 · 3.2</text>
+            <g font-family="IBM Plex Mono" font-size="9" fill="rgba(250,250,250,.4)"><text x="34" y="290">0</text><text x="183" y="290">5</text></g>
+            <line x1="180" y1="88" x2="146" y2="75" stroke="#FAFAFA" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arw)"/>
+            <circle cx="187" cy="91" r="7" fill="#0D0D0D" stroke="#FAFAFA" stroke-width="1.5"/>
+            <circle cx="132" cy="70" r="17" fill="none" stroke="#D9F84A" stroke-opacity=".45"/>
+            <circle cx="132" cy="70" r="9" fill="#D9F84A"/>
+            <g font-size="10.5" font-family="Noto Sans KR">
+              <text x="199" y="95" fill="#FAFAFA">내 생각 7 · 5</text>
+              <text x="132" y="108" text-anchor="middle" fill="#D9F84A">진단 7.8 · 3.2</text>
             </g>
+            <text x="199" y="109" font-size="9" font-family="Noto Sans KR" fill="rgba(250,250,250,.4)">(지식 · 실천)</text>
           </svg>
         </div>
 
@@ -732,7 +798,7 @@ pre.ascii span{color:var(--lime)}
         </div>
       </div>
     </div></div>
-    <figcaption><b>03</b>사분면 위치, 자기평가→진단 이동 화살표, 영역별 관심·실천 덤벨 차트. 대출·보험은 확장 예정으로 흐리게 표시하고, 결과에서 바로 계좌 연동이나 기본 설정으로 넘어갑니다.</figcaption>
+    <figcaption><b>03</b>사분면은 세로가 금융 지식, 가로가 실천 수준입니다(좌상 인지우세형 · 우상 자기관리형 · 좌하 저관여형 · 우하 습관우세형). 해당 유형 칸은 단색 라임 면으로만 강조해 글자 뒤에 패턴이 깔리지 않게 했습니다. 자기평가→진단 이동 화살표, 영역별 관심·실천 덤벨 차트. 대출·보험은 확장 예정으로 흐리게 표시하고, 결과에서 바로 계좌 연동이나 기본 설정으로 넘어갑니다.</figcaption>
   </figure>
 
   </div>
@@ -752,9 +818,15 @@ pre.ascii span{color:var(--lime)}
         <div class="hh">
           <div class="who"><span class="av">HN</span><span class="mono" style="font-size:11px;letter-spacing:.12em">TUE · 10.14</span></div>
           <div style="display:flex;gap:6px">
-            <button class="icb line" aria-label="월간 리포트"><svg class="ic"><use href="#i-mark"/></svg></button>
-            <button class="icb line" aria-label="알림"><svg class="ic"><use href="#i-bell"/></svg></button>
+            <button class="icb line" data-go="s-week" aria-label="주간 영수증"><svg class="ic"><use href="#i-receipt"/></svg></button>
+            <button class="icb line bell" data-go="s-inbox" aria-label="할 일 3건"><svg class="ic"><use href="#i-bell"/></svg><i class="badge">3</i></button>
           </div>
+        </div>
+
+        <div class="todo" data-go="s-inbox">
+          <span class="avs"><i style="background:var(--k);color:var(--lime)">민</i><i style="background:var(--l)">동</i></span>
+          <span class="tx"><b>정산 2건</b> · 받을 돈 30,000 ₩<small>10.12 저녁 · 할 일 외 2건</small></span>
+          <button class="pill ink sm go">정산하기</button>
         </div>
 
         <div class="hero-l"><span>오늘 쓸 수 있는 돈</span><span class="chip mono" style="height:24px">DAY 14 / 31</span></div>
@@ -805,6 +877,7 @@ pre.ascii span{color:var(--lime)}
           <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:12px 16px;border-radius:999px;background:#F0F0ED">
             <span>이번 달 누적 지출</span><span class="mono" style="font-size:12px">540,000 ₩</span>
           </div>
+          <p class="xfer"><svg class="ic xs"><use href="#i-swap"/></svg>내 계좌 사이 이체 3건(800,000 ₩)은 지출에서 뺐어요</p>
         </div>
 
         <div class="sec">
@@ -824,15 +897,70 @@ pre.ascii span{color:var(--lime)}
           </div>
         </div>
 
-        <div class="settle">
-          <span class="chip"><span class="avs"><i style="background:var(--k);color:var(--lime)">민</i><i style="background:var(--l)">동</i></span>정산 42,000 ₩</span>
-          <span class="chip"><svg class="ic xs"><use href="#i-swap"/></svg>내 계좌 이체 3건 제외</span>
+      </div>
+      <div class="fade-b short"></div>
+      <nav class="nav" data-on="home"></nav>
+    </div></div>
+    <figcaption><b>04</b>가장 큰 숫자는 '오늘 쓸 수 있는 돈'. 바로 처리해야 할 정산은 헤더 바로 아래 얇은 한 줄로 두고(알림 배지 3), 히어로 숫자보다 작게 해서 위계를 지켰습니다. 31개 일자 알약(검정 예산 안·회색 초과·점 무지출), 용도별 잔액 gooey 버블, 수입→지출 생키, 디더링 원판으로 목표 달성률. 본인 계좌 간 이체는 지출에서 빠집니다.</figcaption>
+  </figure>
+
+
+  <!-- 04-b 할 일 · 알림 -->
+  <figure class="shot" id="s-inbox">
+    <div class="device"><div class="screen light">
+      <div class="scroll">
+        <div class="topbar">
+          <button class="icb line" data-go="s-home" aria-label="뒤로"><svg class="ic"><use href="#i-back"/></svg></button>
+          <div class="seg"><button class="on">할 일 3</button><button>알림 4</button></div>
+          <button class="icb line" aria-label="알림 설정"><svg class="ic"><use href="#i-set"/></svg></button>
+        </div>
+        <h1 class="h1">바로 처리할 일,<br>세 가지예요</h1>
+        <p class="sub" style="margin-top:8px">급한 순서대로 놓았어요.</p>
+
+        <div class="nwrap" style="margin-top:20px">
+          <div class="card ink notch td-card">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <p class="eyebrow">01 · DUTCH PAY</p><span class="chip lime" style="height:24px;font-size:11px">오늘</span>
+            </div>
+            <p class="h2" style="font-weight:300;margin-top:10px">을지로 저녁 63,000 ₩,<br>내가 먼저 냈어요</p>
+            <svg viewBox="0 0 310 118" style="width:100%;display:block;margin:12px 0 6px">
+              <path d="M60 52 Q96 26 128 48" fill="none" stroke="#FAFAFA" stroke-width="1.5" marker-end="url(#arw)"/>
+              <path d="M250 52 Q214 26 182 48" fill="none" stroke="#FAFAFA" stroke-width="1.5" marker-end="url(#arw)"/>
+              <path d="M182 74 Q214 98 248 76" fill="none" stroke="#8C8C8A" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arw)"/>
+              <circle cx="40" cy="62" r="20" fill="#3A3A3A"/><circle cx="270" cy="62" r="20" fill="#3A3A3A"/>
+              <circle cx="155" cy="62" r="24" fill="#D9F84A"/>
+              <g font-family="Noto Sans KR" font-size="11" text-anchor="middle">
+                <text x="40" y="66" fill="#FAFAFA">민지</text><text x="270" y="66" fill="#FAFAFA">동현</text><text x="155" y="66" fill="#0D0D0D" font-weight="500">나</text>
+              </g>
+              <g font-family="IBM Plex Mono" font-size="10" text-anchor="middle">
+                <text x="94" y="20" fill="#FAFAFA">21,000</text><text x="216" y="20" fill="#FAFAFA">21,000</text><text x="216" y="114" fill="#8C8C8A">택시비 12,000</text>
+              </g>
+            </svg>
+            <div class="net">
+              <div><span class="av">민</span><span>민지에게 받을 돈</span><span class="mono" style="font-size:12px">21,000 ₩</span></div>
+              <div><span class="av">동</span><span>동현 <span class="m">21,000 − 12,000</span></span><span class="mono" style="font-size:12px">9,000 ₩</span></div>
+            </div>
+            <p style="font-size:11px;opacity:.5;margin:10px 60px 0 4px;line-height:1.5">서로 주고받을 돈은 빼고 차액만 요청해요. 받으면 생활비 예산에 다시 더해져요.</p>
+          </div>
+          <button class="nbtn" style="background:var(--lime);color:var(--k)" aria-label="정산 요청 보내기"><svg class="ic"><use href="#i-send"/></svg></button>
+        </div>
+
+        <div class="td-row un"><span class="k">02</span><div><p class="t">월 예산 확정</p><p class="s">제안안 1,200,000 ₩ · 수락하면 바로 적용</p></div><button class="pill ink sm" style="height:34px;padding:0 14px">수락</button></div>
+        <div class="td-row"><span class="k">03</span><div><p class="t">청년 월세 지원 신청</p><p class="s">서류 2개 · 1년간 최대 2,400,000 ₩</p></div><span class="chip" style="height:26px">D-18</span></div>
+
+        <div class="sec">
+          <div class="sec-h"><h3 class="h2">알림<small>정보만, 처리할 것 없음</small></h3></div>
+          <div class="nt"><i class="on"></i><span>카페 예산 92% 사용 · 남은 17일 동안 6,400 ₩</span><time>어제</time></div>
+          <div class="nt"><i class="on"></i><span>주간 영수증이 나왔어요 · 이번 주 28,000 ₩ 남김</span><time>10.13</time></div>
+          <div class="nt"><i></i><span>선저축 400,000 ₩ 이체 완료 · 독립 자금 54%</span><time>10.14</time></div>
+          <div class="nt"><i></i><span>아르바이트비 620,000 ₩ 배분 완료</span><time>10.14</time></div>
+          <p style="font-size:11px;opacity:.45;margin-top:12px;line-height:1.5">알림은 예산 초과 위험과 결제 직후 피드백처럼 꼭 필요한 경우에만 보내요. 설정에서 언제든 끌 수 있어요.</p>
         </div>
       </div>
       <div class="fade-b short"></div>
       <nav class="nav" data-on="home"></nav>
     </div></div>
-    <figcaption><b>04</b>가장 큰 숫자는 '오늘 쓸 수 있는 돈'. 31개 일자 알약(검정 예산 안·회색 초과·점 무지출), 용도별 잔액 gooey 버블, 수입→지출 생키, 디더링 원판으로 목표 달성률. 본인 계좌 간 이체는 지출에서 빠지고, 더치페이 정산은 칩 하나로 정리합니다.</figcaption>
+    <figcaption><b>04-b</b>할 일과 알림 페이지. 홈 배지와 정산 한 줄에서 들어옵니다. 처리해야 하는 일(할 일)과 읽기만 하면 되는 정보(알림)를 탭으로 나누고, 더치페이·대리 결제는 주고받는 화살표 다이어그램으로 상계한 금액만 요청합니다.</figcaption>
   </figure>
 
   <!-- 05 지출 분석 -->
@@ -860,7 +988,7 @@ pre.ascii span{color:var(--lime)}
           <div class="c" style="left:225px;top:164px;width:66px;height:60px;background:#1C1C1C"><span class="n">기타</span><span class="a" style="font-size:12px">62,000</span></div>
           <div class="c" style="left:295px;top:164px;width:55px;height:60px;background:#8C8C8A;color:#0D0D0D;padding:11px 8px"><span class="n">구독</span><span class="a" style="font-size:12px">47.9K</span></div>
         </div>
-        <p style="font-size:11px;opacity:.45;margin-top:8px;display:flex;gap:4px;align-items:center"><svg class="ic xs"><use href="#i-mark"/></svg>빗금 칸은 유지하는 지출 · 감액 제안에서 빠져요</p>
+        <p style="font-size:11px;opacity:.45;margin-top:8px;display:flex;gap:4px;align-items:center"><svg class="ic xs"><use href="#i-mark"/></svg>점선 칸은 유지하는 지출 · 감액 제안에서 빠져요</p>
 
         <div class="sec">
           <div class="sec-h"><h3 class="h2">전월 대비</h3><span class="lnk">8월 → 9월</span></div>
@@ -905,7 +1033,7 @@ pre.ascii span{color:var(--lime)}
       <div class="ai glass" data-ph="카페 지출, 어디서 더 줄일까?"></div>
       <nav class="nav" data-on="spend"></nav>
     </div></div>
-    <figcaption><b>05</b>트리맵으로 카테고리 비중, 가운데 축 막대로 전월 대비 증감, 점 행렬로 작은 반복 지출의 횟수와 누적 금액을 보여줍니다. 감액 제안은 쿠폰처럼 켜고 끄고, 유지하기로 한 지출(빗금)은 제안에서 빠집니다.</figcaption>
+    <figcaption><b>05</b>트리맵으로 카테고리 비중, 가운데 축 막대로 전월 대비 증감, 점 행렬로 작은 반복 지출의 횟수와 누적 금액을 보여줍니다. 감액 제안은 쿠폰처럼 켜고 끄고, 유지하기로 한 지출(점선 칸)은 제안에서 빠집니다.</figcaption>
   </figure>
 
   </div>
@@ -1175,7 +1303,7 @@ pre.ascii span{color:var(--lime)}
   <figure class="shot" id="s-lock">
     <div class="device"><div class="screen dark">
       <div class="lock">
-        <canvas class="dither" id="lockBg" width="130" height="282"></canvas>
+        <canvas class="dither" id="lockBg" width="130" height="28" style="inset:auto 0 auto 0;top:226px;height:78px"></canvas>
         <div class="clock">
           <p>10월 14일 화요일</p>
           <p class="t disp num">12:48</p>
@@ -1210,7 +1338,7 @@ pre.ascii span{color:var(--lime)}
         </div>
       </div>
     </div></div>
-    <figcaption><b>10</b>실시간 피드백. 결제 직후 예산 잔여율(아스키 막대), 오늘 남은 돈, 월말 예상을 작은 영수증 형태로 알려줍니다. 저축하면 목표 진행률 변화를 알리고, 경고 알림은 예산 초과 위험이 있을 때만 라임색으로 보냅니다.</figcaption>
+    <figcaption><b>10</b>실시간 피드백. 결제 직후 예산 잔여율(아스키 막대), 오늘 남은 돈, 월말 예상을 작은 영수증 형태로 알려줍니다. 저축하면 목표 진행률 변화를 알리고, 경고 알림은 예산 초과 위험이 있을 때만 라임색으로 보냅니다. 디더링 그래픽은 시계와 알림 사이 빈 띠에만 두어 글자와 겹치지 않습니다.</figcaption>
   </figure>
 
   <!-- 11 목표 -->
@@ -1273,7 +1401,7 @@ pre.ascii span{color:var(--lime)}
             <circle cx="206" cy="66" r="4" fill="#0D0D0D"/>
             <g font-family="IBM Plex Mono" font-size="9.5" fill="#8C8C8A">
               <text x="20" y="148" text-anchor="middle">05</text><text x="82" y="148" text-anchor="middle">06</text><text x="144" y="148" text-anchor="middle">07</text><text x="206" y="148" text-anchor="middle">08</text><text x="268" y="148" text-anchor="middle">09</text><text x="330" y="148" text-anchor="middle">10</text>
-              <text x="318" y="14" text-anchor="end">계획 5.8M</text>
+              <text x="300" y="11" text-anchor="end">계획 5.8M</text>
             </g>
             <text x="206" y="84" text-anchor="middle" font-size="10" font-family="Noto Sans KR" fill="#0D0D0D">인출</text>
           </svg>
@@ -1324,8 +1452,13 @@ pre.ascii span{color:var(--lime)}
         </div>
 
         <div class="sec">
-          <div class="sec-h"><h3 class="h2">참여 순위</h3><span class="lnk">인증 횟수 기준</span></div>
-          <div class="rank" id="rank"></div>
+          <div class="sec-h"><h3 class="h2">참여 순위</h3><span class="lnk">1,284명 · 인증 횟수</span></div>
+          <div class="dist">
+            <canvas class="dither" id="distCv" width="120" height="24"></canvas>
+            <span class="mk" style="left:87.5%"><span>나 21회 · 상위 4%</span></span>
+            <div class="ax"><span>0회</span><span>8</span><span>16</span><span>24일차</span></div>
+          </div>
+          <div class="rank" id="rank" style="margin-top:16px"></div>
           <p style="font-size:11px;opacity:.45;margin-top:10px;line-height:1.5">순위는 인증·참여 횟수로만 매겨요. 자산 규모나 금액은 서로 보이지 않아요.</p>
         </div>
 
@@ -1351,7 +1484,7 @@ pre.ascii span{color:var(--lime)}
       <div class="fade-b short"></div>
       <nav class="nav" data-on="chal"></nav>
     </div></div>
-    <figcaption><b>12</b>챌린지 카드는 인버티드 코너에 인증 버튼을 끼웠습니다. 30일 점 히트맵, 바를 정(正) 대신 쓰는 탤리 마크 순위, 1비트 픽셀 배지, 팁·정책 피드로 구성했습니다.</figcaption>
+    <figcaption><b>12</b>챌린지 카드는 인버티드 코너에 인증 버튼을 끼웠습니다. 30일 점 히트맵, 참여자 1,284명의 인증 횟수 분포를 디더링 면으로 그리고 내 위치를 라임 선으로 표시, 순위는 24칸 픽셀 막대로 비교, 1비트 픽셀 배지, 팁·정책 피드로 구성했습니다.</figcaption>
   </figure>
 
   </div>
@@ -1361,20 +1494,86 @@ pre.ascii span{color:var(--lime)}
      FLOW 05 — 월간 리포트
      ====================================================== -->
 <section>
-  <div class="flow-h"><span class="no">FLOW 05</span><h2>한 달 후 · 월간 리포트</h2><p>시나리오 5 · 한 달 결과를 영수증 한 장으로 받습니다. 목표 대비 결과, 다음 달 예산 조정, 다음 단계와 인접 영역, 재진단 안내까지 이어집니다.</p></div>
+  <div class="flow-h"><span class="no">FLOW 05</span><h2>영수증 리포트 · 주간과 월간</h2><p>시나리오 5 · 리포트는 앱 안의 영수증 프린터에서 출력됩니다. 매주 월요일엔 짧은 주간 영수증, 매달 1일엔 긴 월간 영수증. 원형 출력 버튼을 누르면 감열지처럼 끊어지며 종이가 내려옵니다.</p></div>
   <div class="row">
+
+
+  <!-- 13-a 출력 중 (13-b를 복제해 중간 상태로 표시) -->
+  <figure class="shot" id="s-print">
+    <div class="device" data-clone="s-week"></div>
+    <figcaption><b>13-a</b>출력 인터랙션. 라임 버튼을 누르면 LED가 깜박이고, 영수증이 슬롯에서 30단계로 끊어지며 내려옵니다(실제 화면에서 출력 버튼을 눌러 볼 수 있습니다). 출력이 끝나면 PRINTED로 바뀌고 종이 끝은 톱니 절취선으로 마감됩니다.</figcaption>
+  </figure>
+
+  <!-- 13-b 주간 리포트 -->
+  <figure class="shot" id="s-week">
+    <div class="device"><div class="screen dark">
+      <div class="scroll" style="padding-left:16px;padding-right:16px">
+        <div class="topbar">
+          <button class="icb glass" data-go="s-home" aria-label="뒤로"><svg class="ic"><use href="#i-back"/></svg></button>
+          <div class="seg"><button class="on">주간</button><button data-go="s-report">월간</button></div>
+          <button class="icb glass" aria-label="공유"><svg class="ic"><use href="#i-share"/></svg></button>
+        </div>
+        <div class="printer">
+          <span class="led"></span><span class="pt">WEEKLY · WEEK 41</span><span class="st" data-st>PRINTED</span>
+          <button class="icb lime prn" aria-label="영수증 출력"><svg class="ic"><use href="#i-print"/></svg></button>
+          <i class="slit"></i>
+        </div>
+        <div class="feed out"><div class="paper">
+          <pre class="ascii" data-ascii="WEEKLY|RECEIPT" data-cols="50" data-rows="16"></pre>
+          <div class="ctr">
+            <p style="font:500 10px var(--f-mono);letter-spacing:.3em">TALLY · WEEK 41</p>
+            <p style="font-size:11px;opacity:.55;margin-top:6px">10.06 MON – 10.12 SUN · 발행 10.13 08:00</p>
+          </div>
+          <h2 class="h1" style="font-family:var(--f-disp);font-size:28px;margin:18px 0 0;text-align:center">28,000 ₩ 남기고<br>지나간 한 주</h2>
+          <hr class="rule">
+          <div class="wk" id="weekStack"></div>
+          <div class="wk-l"><span>월<b>32.4</b></span><span>화<b>0</b></span><span>수<b>51.2</b></span><span>목<b>28.9</b></span><span>금<b>61.0</b></span><span>토<b>44.3</b></span><span>일<b>25.1</b></span></div>
+          <p style="font-size:10.5px;opacity:.5;margin-top:10px">▮ 5천 ₩ &nbsp;▥ 초과분 &nbsp;┄ 하루 예산 38,700 &nbsp;(단위 천 ₩)</p>
+          <hr class="rule">
+          <div class="ln"><span>주간 예산</span><span class="dt"></span><b>270,900</b></div>
+          <div class="ln"><span>쓴 돈</span><span class="dt"></span><b>242,900</b></div>
+          <div class="ln" style="opacity:.6"><span>· 식비·카페·교통</span><span class="dt"></span><span>151,500</span></div>
+          <div class="ln" style="opacity:.6"><span>· 내 계좌 이체 (제외)</span><span class="dt"></span><span>400,000</span></div>
+          <hr class="rule dbl">
+          <div class="score">
+            <div><p style="font-size:12px;font-weight:700">TOTAL · 남긴 돈</p><p style="font-size:11px;opacity:.55;margin-top:2px">예산 초과한 날 3일</p></div>
+            <p class="v" style="font-size:60px">+28<small>,000 ₩</small></p>
+          </div>
+          <hr class="rule">
+          <p style="font-size:12px;font-weight:700;margin-bottom:4px">실천 체크</p>
+          <div class="ck"><span>✓</span><span>선저축 유지</span><span>400,000</span></div>
+          <div class="ck"><span>✓</span><span>챌린지 인증</span><span>6 / 7</span></div>
+          <div class="ck"><span>△</span><span>무지출 데이</span><span>1 / 2</span></div>
+          <div class="ck"><span>✕</span><span>정산 요청</span><span>미처리 2건</span></div>
+          <hr class="rule">
+          <p style="font-size:12px;font-weight:700">다음 주 한 가지</p>
+          <p style="font-size:12px;line-height:1.6;margin-top:4px">카페 예산이 이번 달 6,400 ₩ 남았어요.<br>텀블러 데이 두 번, 해볼까요?</p>
+          <button class="pill ink block" style="height:46px;margin-top:12px;font-size:13.5px;font-family:var(--f-kr)">다음 주 목표로 담기</button>
+          <div class="barcode" data-seed="4106"></div>
+          <p class="ctr" style="font:400 10px var(--f-mono);letter-spacing:.2em">*SEE YOU NEXT MONDAY*</p>
+        </div></div>
+      </div>
+      <div class="fade-b short" style="height:90px"></div>
+    </div></div>
+    <figcaption><b>13-b</b>주간 영수증. 일주일을 요일별 픽셀 스택(한 칸 5,000 ₩)으로 찍고, 하루 예산선 위로 넘친 칸은 줄무늬로 구분합니다. TOTAL 자리에는 남긴 돈, 아래에 실천 체크와 다음 주 한 가지 행동이 이어집니다.</figcaption>
+  </figure>
 
   <!-- 13 월간 리포트 -->
   <figure class="shot" id="s-report">
     <div class="device"><div class="screen dark">
       <div class="scroll" style="padding-left:16px;padding-right:16px">
         <div class="topbar">
-          <button class="icb glass" aria-label="뒤로"><svg class="ic"><use href="#i-back"/></svg></button>
-          <span class="chip mono">REPORT · 2026.09</span>
+          <button class="icb glass" data-go="s-home" aria-label="뒤로"><svg class="ic"><use href="#i-back"/></svg></button>
+          <div class="seg"><button data-go="s-week">주간</button><button class="on">월간</button></div>
           <button class="icb glass" aria-label="공유"><svg class="ic"><use href="#i-share"/></svg></button>
         </div>
-        <div class="paper">
-          <canvas class="dither" id="paperBand" width="119" height="14" style="width:100%;height:28px;margin-bottom:14px"></canvas>
+        <div class="printer">
+          <span class="led"></span><span class="pt">MONTHLY · 2026.09</span><span class="st" data-st>PRINTED</span>
+          <button class="icb lime prn" aria-label="영수증 출력"><svg class="ic"><use href="#i-print"/></svg></button>
+          <i class="slit"></i>
+        </div>
+        <div class="feed out"><div class="paper">
+          <pre class="ascii" data-ascii="MONTHLY|RECEIPT" data-cols="50" data-rows="16"></pre>
           <div class="ctr">
             <p style="font:500 10px var(--f-mono);letter-spacing:.3em">TALLY · MONTHLY RECEIPT</p>
             <p style="font-size:11px;opacity:.55;margin-top:6px">NO. 2026-09 · 발행 10.01 09:00 · 인지우세형</p>
@@ -1427,14 +1626,15 @@ pre.ascii span{color:var(--lime)}
             <button class="icb ink" aria-label="재진단"><svg class="ic s" style="color:var(--lime)"><use href="#i-refresh"/></svg></button>
           </div>
 
-          <div class="barcode" id="barcode"></div>
+          <canvas class="dither" id="paperBand" width="119" height="10" style="width:100%;height:20px;margin-top:22px"></canvas>
+          <div class="barcode" data-seed="2609"></div>
           <p class="ctr" style="font:400 10px var(--f-mono);letter-spacing:.2em">*THANK YOU FOR CHECKING IN*</p>
-        </div>
+        </div></div>
       </div>
       <div class="fade-b short" style="height:120px"></div>
       <div class="ai glass" style="bottom:26px" data-ph="9월에 왜 카페 지출이 늘었어?"></div>
     </div></div>
-    <figcaption><b>13</b>월간 리포트는 영수증 한 장입니다. 품목 대신 목표·실제·체크를 쓰고, 칸마다 불릿 막대로 목표선과 초과분을 표시합니다. TOTAL 자리에는 관리 지수를 두고, 다음 달 예산 조정과 다음 단계, 재진단 안내가 이어집니다.</figcaption>
+    <figcaption><b>13-c</b>월간 영수증. 상단엔 온보딩과 같은 아스키 타이틀을 찍었습니다. 품목 대신 목표·실제·체크를 쓰고, 칸마다 불릿 막대로 목표선과 초과분을 표시합니다. TOTAL 자리에는 관리 지수를 두고, 다음 달 예산 조정과 다음 단계, 재진단 안내가 이어집니다.</figcaption>
   </figure>
 
   <!-- 디자인 시스템 카드 -->
@@ -1618,13 +1818,13 @@ pre.ascii span{color:var(--lime)}
     const miss = [6, 13, 19];
     heat.innerHTML = Array.from({ length: 30 }, (_, i) => { const d = i + 1; return `<i class="${d > 24 ? 'fut' : d === 24 ? 'today' : miss.includes(d) ? 'miss' : ''}" title="DAY ${d}"></i>`; }).join('');
   }
-  const tally = n => { let h = ''; for (let g = 0; g < Math.ceil(n / 5); g++) { const k = Math.min(5, n - g * 5); h += `<span class="${k === 5 ? 'f' : ''}">${'<i></i>'.repeat(Math.min(k, 4))}</span>`; } return h; };
+  const pxbar = n => Array.from({ length: 24 }, (_, i) => `<i class="${i < n ? '' : 'e'}"></i>`).join('');
   const rank = $('#rank');
   if (rank) {
-    const R = [[1, '늘봄', 30], [2, '지호', 29], [3, '서윤', 29], [18, '나', 21, 1], [19, '도담', 20]];
+    const R = [[1, '늘봄', 24], [2, '지호', 24], [3, '서윤', 23], [52, '나', 21, 1], [53, '도담', 21]];
     rank.innerHTML = R.map(([no, n, c, me], i) => `${i === 3 ? '<p class="mono" style="font-size:10px;opacity:.35;text-align:center;letter-spacing:.3em">· · ·</p>' : ''}
       <div class="rank-r ${me ? 'me' : ''}"><span class="no">${String(no).padStart(2, '0')}</span><span class="av">${n[0]}</span>
-      <div><div style="font-size:13px">${me ? '하늘 (나)' : n}</div><div class="tally">${tally(c)}</div></div><span class="c">${c}회</span></div>`).join('');
+      <div><div style="font-size:13px">${me ? '하늘 (나)' : n}</div><div class="pxbar">${pxbar(c)}</div></div><span class="c">${c}회</span></div>`).join('');
   }
   const BADGES = [
     ['예산 지킴이', ['001111100','011111110','110000011','110000011','110010011','110100011','011000110','001111100','000010000']],
@@ -1640,11 +1840,20 @@ pre.ascii span{color:var(--lime)}
   }
 
   /* ---------- 리포트 : 바코드 ---------- */
-  const bc = $('#barcode');
-  if (bc) {
-    let s = 2609, h = '';
+  $$('.barcode[data-seed]').forEach(bc => {
+    let s = +bc.dataset.seed, h = '';
     for (let i = 0; i < 64; i++) { s = (s * 9301 + 49297) % 233280; const w = 1 + (s % 3); h += `<i style="width:${w}px;margin-right:${1 + (s >> 3) % 3}px"></i>`; }
     bc.innerHTML = h;
+  });
+
+  /* ---------- 주간 영수증 : 요일별 픽셀 스택 ---------- */
+  const wk = $('#weekStack');
+  if (wk) {
+    const D = [32400, 0, 51200, 28900, 61000, 44300, 25100], unit = 5000, budget = 38700, cell = 8;
+    wk.innerHTML = D.map(v => {
+      const n = Math.ceil(v / unit);
+      return `<div class="col ${v ? '' : 'zero'}">${Array.from({ length: n }, (_, i) => `<i class="${i * unit >= budget ? 'ov' : ''}"></i>`).join('')}</div>`;
+    }).join('') + `<span class="bl" style="bottom:${budget / unit * cell}px"></span>`;
   }
 
   /* ---------- 오더드 디더링 (Bayer 8×8) ---------- */
@@ -1673,11 +1882,26 @@ pre.ascii span{color:var(--lime)}
   // 잠금화면 배경
   const lb = $('#lockBg');
   if (lb) dither(lb, (x, y) => {
-    const a = Math.exp(-((x - .78) ** 2 / .06 + (y - .86) ** 2 / .02));
-    const b = Math.exp(-((x - .2) ** 2 / .12 + (y - .16) ** 2 / .03)) * .62;
-    const c = Math.exp(-((x - .5) ** 2 / .3 + (y - .5) ** 2 / .1)) * .45;
-    return Math.min(1, a + b + c) * .95;
-  }, ['#0D0D0D', '#262626', '#3A3A3A', '#D9F84A']);
+    const sun = Math.exp(-((x - .5) ** 2 / .018 + (y - 1) ** 2 / .5));
+    const haze = Math.exp(-((x - .5) ** 2 / .16)) * y * .55;
+    return Math.min(1, sun + haze) * Math.min(1, x * 6, (1 - x) * 6);
+  }, ['#0D0D0D', '#262626', '#3A3A3A', '#8C8C8A', '#D9F84A']);
+
+  // 챌린지 : 참여 횟수 분포 (내 위치 이상은 라임)
+  const dc = $('#distCv');
+  if (dc) {
+    const w = dc.width, h = dc.height, ctx = dc.getContext('2d'), img = ctx.createImageData(w, h);
+    const dens = x => { const c = x * 24; return Math.min(1, Math.exp(-((c - 9) ** 2) / 26) + Math.exp(-((c - 23.4) ** 2) / .6) * .32 + .04); };
+    const lime = hex('#D9F84A'), white = hex('#FAFAFA'), bg = hex('#0D0D0D');
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const fx = (x + .5) / w, d = dens(fx), fy = 1 - (y + .5) / h;
+      const inside = fy <= d, v = inside ? .45 + .55 * (1 - fy / Math.max(d, .01)) * .6 + .2 : 0;
+      const on = inside && v > (B8[y & 7][x & 7] + .5) / 64;
+      const c = on ? (fx >= 21 / 24 ? lime : white) : bg, k = (y * w + x) * 4;
+      img.data[k] = c[0]; img.data[k + 1] = c[1]; img.data[k + 2] = c[2]; img.data[k + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+  }
   // 리포트 상단 밴드
   const pb = $('#paperBand');
   if (pb) dither(pb, (x, y) => (1 - x) * .9 + Math.sin(x * 18) * .05, ['#FAFAFA', '#0D0D0D']);
@@ -1709,7 +1933,29 @@ pre.ascii span{color:var(--lime)}
   }
   const runAscii = () => $$('pre.ascii').forEach(ascii);
   runAscii();
-  document.fonts && document.fonts.ready.then(runAscii);
+
+  /* ---------- 영수증 출력 인터랙션 ---------- */
+  function cloneMid() {
+    $$('[data-clone]').forEach(d => {
+      const src = $('#' + d.dataset.clone + ' .screen');
+      d.innerHTML = ''; const c = src.cloneNode(true);
+      $$('[id]', c).forEach(e => e.removeAttribute('id'));
+      $('.feed', c).className = 'feed mid';
+      c.classList.add('printing'); $('[data-st]', c).textContent = 'PRINTING 46%';
+      d.appendChild(c);
+    });
+  }
+  cloneMid();
+  document.fonts && document.fonts.ready.then(() => { runAscii(); cloneMid(); });
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.prn'); if (!b) return;
+    const scr = b.closest('.screen'), feed = $('.feed', scr), st = $('[data-st]', scr), sc = $('.scroll', scr);
+    sc.scrollTo({ top: 0 });
+    feed.classList.remove('out', 'mid'); void feed.offsetWidth;
+    scr.classList.add('printing'); st.textContent = 'PRINTING';
+    feed.classList.add('out');
+    clearTimeout(scr._t); scr._t = setTimeout(() => { scr.classList.remove('printing'); st.textContent = 'PRINTED'; }, 2900);
+  });
 })();
 </script>
 </body>
