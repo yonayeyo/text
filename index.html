@@ -840,7 +840,7 @@ function vHome() {
         ${S.settled ? `<span class="btn sm" style="flex:1;background:var(--g2);color:var(--g6);font-size:12px;padding:0 12px">더치페이 정리 완료</span>` : `<button class="btn sm" style="flex:1;background:var(--aura);color:var(--ink);font-size:12px;padding:0 12px" data-act="sheet" data-sheet="settle">${ic('users', 16)}더치페이 2건 정리</button>`}
       </div>
     </div>`;
-  const order = S.persona === 'low' ? [proj, goalAndSpend, accounts] : S.persona === 'self' ? [goalAndSpend, proj, accounts, flow] : [proj, goalAndSpend, accounts, flow];
+  const order = S.persona === 'self' ? [goalAndSpend, proj, accounts, flow] : [proj, goalAndSpend, accounts, flow];
   return `<header class="top">
       <div><div class="t12 mute">지혜님</div><div class="t14">10월 12일 월요일</div></div>
       <div class="row g8">
