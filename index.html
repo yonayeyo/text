@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#181818">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SLIP">
+<meta name="format-detection" content="telephone=no">
 <title>SLIP 청년 금융 앱</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -61,6 +67,28 @@ svg{display:block}
   .screen{border-radius:0}
   .panel{position:static;width:auto;max-width:393px;padding:0 16px}
 }
+/* 휴대폰에서 열면 기기 프레임·패널 없이 전체 화면 앱으로 동작 (사용성 테스트용) */
+@media (max-width:520px){
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
+  body{touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-text-size-adjust:100%}
+  .stage{display:block;min-height:0;padding:0}
+  .panel{display:none}
+  .device{position:fixed;inset:0;width:100%;max-width:none;height:100%;padding:0;border-radius:0;box-shadow:none;background:none}
+  .screen{border-radius:0}
+  .island,.statusbar>*{display:none!important}
+  .statusbar{height:calc(env(safe-area-inset-top,0px) + 12px);padding:0}
+  .view{padding-top:calc(env(safe-area-inset-top,0px) + 16px);overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  .tabbar{bottom:calc(env(safe-area-inset-bottom,0px) + 12px)}
+  .ai-dock{bottom:calc(env(safe-area-inset-bottom,0px) + 88px)}
+  .ai-dock input{font-size:16px}
+  .toast{top:calc(env(safe-area-inset-top,0px) + 8px)}
+  .toast.open{width:calc(100% - 24px)}
+  .sheet{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 32px)}
+  .ob-col{min-height:calc(100dvh - env(safe-area-inset-top,0px) - 40px)}
+  .res-sheet{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 48px)}
+  button:active,.opt:active,.cut:active{transform:scale(.97);transition:transform .08s}
+}
+.log{font-family:var(--f-mono);font-size:11px;line-height:1.6;max-height:280px;overflow:auto;padding:12px 16px;border-radius:20px;background:var(--g2);-webkit-user-select:text;user-select:text;white-space:pre-wrap}
 
 /* ---------- screen chrome ---------- */
 .statusbar{position:absolute;top:0;left:0;right:0;height:54px;background:linear-gradient(var(--page) 78%,transparent);padding:16px 30px 0 40px;display:flex;justify-content:space-between;font-size:16px;z-index:30;pointer-events:none;color:var(--fg)}
@@ -183,7 +211,7 @@ svg{display:block}
 /* ---------- home ---------- */
 .urgent{width:100%;height:48px;margin-top:16px;border-radius:999px;padding:0 6px 0 20px;display:flex;align-items:center;gap:8px;background:var(--paper);box-shadow:inset 0 0 0 1px var(--g3)}
 .urgent .u-dot{width:8px;height:8px;border-radius:50%;background:var(--rose);flex:none}
-.urgent .grow{flex:1}
+.urgent .grow{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
 .hero{text-align:center;margin-top:32px}
 .hero-n{display:flex;justify-content:center;align-items:baseline;gap:8px;margin:12px 0 8px}
 .meter{margin-top:24px;position:relative}
@@ -531,6 +559,16 @@ const S = {
   switches:{ pre:true, emer:true, budget:true, fixed:false },
   chat:[], flowSel:null, topSel:null, cutApplied:null,
 };
+/* ---------- 사용성 테스트 기록: 화면 이동과 탭을 시간순으로 남김 (이 기기에만 저장) ---------- */
+const LOG_KEY = 'slip-usability-log';
+let LOG = []; try { LOG = JSON.parse(localStorage.getItem(LOG_KEY) || '[]'); } catch (e) { LOG = []; }
+const T0 = Date.now();
+function log(ev) {
+  LOG.push({ t:new Date().toISOString(), s:Math.round((Date.now() - T0) / 100) / 10, ev });
+  if (LOG.length > 2000) LOG = LOG.slice(-2000);
+  try { localStorage.setItem(LOG_KEY, JSON.stringify(LOG)); } catch (e) {}
+}
+const logText = () => LOG.map(l => `${l.t.slice(11, 19)}  +${l.s}s  ${l.ev}`).join('\n') || '아직 기록이 없어요.';
 const D = () => {
   const remain = S.budget - S.spent, left = S.days - S.day + 1;
   const daily = Math.floor(remain / left / 100) * 100;
@@ -1351,7 +1389,19 @@ function sheetHTML(name) {
     }
     case 'compare': return head('적금 비교', '월 350,000 ₩ · 12개월 · 세후 이자 (예시)') + `<div class="stack mt24">${[['지금 쓰는 적금','3.1%',59700,1],['A은행 청년 적금','4.2%',80800,0],['B은행 자유 적금','3.6%',69300,0]].map(([n, r, i, cur]) => `<div class="card ${cur ? 'c-paper' : 'c-sky'}" style="padding:20px 24px"><div class="row between"><span class="t14">${n}</span>${cur ? '<span class="tag line">사용 중</span>' : `<span class="tag ink">+${won(i - 59700)} ₩</span>`}</div><div class="row between mt12" style="align-items:baseline"><span class="n24">${r}</span><span class="t14 num">이자 ${W(i)}</span></div></div>`).join('')}
       <p class="t12 mute">금리는 우대 조건(급여이체·카드 실적)을 모두 채웠을 때 기준이에요.</p></div>`;
-    case 'menu': return head('메뉴') + `<div class="stack8 mt24">${[['link','연동 계좌·카드 관리','6개 계좌 · 카드 2 · 간편결제 1'],['bell','알림 설정','예산 초과 위험 · 정산 · 입금'],['sliders','기본 설정 바꾸기·해제','선저축 · 비상금 · 예산 · 고정 지출'],['refresh','재진단','마지막 2026.06.12']].map(([i, t, s]) => `<button class="card c-paper setrow" style="padding:16px 20px;text-align:left" data-act="${i === 'refresh' ? 'rediag' : i === 'sliders' ? 'tab' : 'toast'}" data-tab="plan" data-msg="${t} 화면은 데모에서 생략했어요"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(i, 20)}</span><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${s}</span></span>${ic('arrow', 18)}</button>`).join('')}</div>`;
+    case 'menu': return head('메뉴') + `<div class="stack8 mt24">${[['link','연동 계좌·카드 관리','6개 계좌 · 카드 2 · 간편결제 1'],['bell','알림 설정','예산 초과 위험 · 정산 · 입금'],['sliders','기본 설정 바꾸기·해제','선저축 · 비상금 · 예산 · 고정 지출'],['refresh','재진단','마지막 2026.06.12']].map(([i, t, s]) => `<button class="card c-paper setrow" style="padding:16px 20px;text-align:left" data-act="${i === 'refresh' ? 'rediag' : i === 'sliders' ? 'tab' : 'toast'}" data-tab="plan" data-msg="${t} 화면은 데모에서 생략했어요"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(i, 20)}</span><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${s}</span></span>${ic('arrow', 18)}</button>`).join('')}</div>
+      <div class="eng mute mt24">테스트 진행자용</div>
+      <div class="row g8 mt12" style="flex-wrap:wrap">
+        <button class="chip" data-act="mod" data-v="pay">결제 발생</button>
+        <button class="chip" data-act="mod" data-v="income">알바비 입금</button>
+        <button class="chip" data-act="mod" data-v="settle">정산 다시</button>
+        <button class="chip" data-act="sheet" data-sheet="log">탭 기록 보기</button>
+      </div>
+      <div class="t12 mute mt16">사용자 유형</div>
+      <div class="row g8 mt8" style="flex-wrap:wrap">${Object.entries(PERSONA).map(([k, p]) => `<button class="chip ${S.persona === k ? 'on' : ''}" data-act="persona" data-v="${k}">${p.name}</button>`).join('')}</div>
+      <button class="btn ghost full mt24" data-act="mod" data-v="reset">처음부터 다시 (진단부터)</button>`;
+    case 'log': return head('탭 기록', `${LOG.length}건 · 이 기기에만 저장돼요`) + `<pre class="log mt24" id="logBox">${logText()}</pre>
+      <div class="row g8 mt16"><button class="btn" style="flex:1" data-act="logCopy">복사</button><button class="btn ghost" style="flex:1" data-act="logClear">기록 지우기</button></div>`;
     case 'ai': return head('AI 조언', '연동된 자산·예산·목표 데이터 기준') + `<div class="stack mt24" style="display:grid">
       ${S.chat.map(c => c.q ? `<div class="ai-q">${c.q}</div>` : `<div class="ai-a c-sky">${c.a}<div class="t10 mute mt8">근거 · ${c.src}</div></div>`).join('')}
       <div class="row g8" style="flex-wrap:wrap">${['오늘 얼마 더 써도 돼?','알바비 어떻게 나눌까?','적금 깨도 될까?'].map(q => `<button class="chip" data-act="aiAsk" data-v="${q}">${q}</button>`).join('')}</div></div>`;
@@ -1369,6 +1419,7 @@ function aiAnswer(q) {
 /* =========================================================
    render
    ========================================================= */
+const SCREEN_NAME = k => ({ ob0:'진단 시작', ob1:'자기평가', ob2:'진단 문항', ob3:'진단 결과', tabhome:'홈', tabspend:'지출', tabplan:'플랜', tabgoal:'목표', tabbenefit:'혜택' }[k] || k);
 const TABS = [ ['home','홈','home'], ['spend','지출','bars'], ['plan','플랜','sliders'], ['goal','목표','flag'], ['benefit','혜택','gift'] ];
 const screen = document.getElementById('screen'), view = document.getElementById('view');
 let lastKey = '';
@@ -1381,14 +1432,16 @@ function render(keepScroll = true) {
   screen.classList.toggle('home', S.mode === 'app' && S.tab === 'home');
   if (S.mode === 'onboard') view.innerHTML = [vIntro, vSelf, vQuiz, vResult][S.ob]();
   else view.innerHTML = { home:vHome, spend:vSpend, plan:vPlan, goal:vGoal, benefit:vBenefit }[S.tab]();
-  view.scrollTop = st; lastKey = key;
+  view.scrollTop = st;
+  if (key !== lastKey) { log('화면 ' + SCREEN_NAME(key)); const tc = document.querySelector('meta[name=theme-color]'); tc && tc.setAttribute('content', dark ? '#181818' : '#FAFAFA'); }
+  lastKey = key;
   document.getElementById('tabbar').innerHTML = TABS.map(([k, n, i]) => `<button class="tab ${S.tab === k ? 'on' : ''}" data-act="tab" data-tab="${k}" aria-label="${n}" ${S.tab === k ? 'aria-current="page"' : ''}>${ic(i, 22)}<span>${n}</span></button>`).join('');
   const dock = document.getElementById('aiDock');
   dock.hidden = !(S.mode === 'app' && (S.tab === 'plan' || (S.tab === 'spend' && S.spendView === 'analysis')));
   view.style.paddingBottom = S.mode === 'onboard' ? (S.ob === 3 ? '0' : '24px') : dock.hidden ? '140px' : '200px';
   renderPanel();
 }
-function openSheet(name) { S.sheet = name; document.getElementById('sheet').innerHTML = sheetHTML(name); document.getElementById('layer').classList.add('open'); }
+function openSheet(name) { if (name !== 'log') log('시트 ' + name); S.sheet = name; document.getElementById('sheet').innerHTML = sheetHTML(name); document.getElementById('layer').classList.add('open'); }
 function refreshSheet() { if (S.sheet) document.getElementById('sheet').innerHTML = sheetHTML(S.sheet); }
 function closeSheet() { S.sheet = null; document.getElementById('layer').classList.remove('open'); }
 let toastT;
@@ -1422,6 +1475,7 @@ document.addEventListener('click', e => {
   const tb = e.target.closest('[data-term]');
   if (tb) { const host = tb.closest('.card') || tb.parentElement; const def = host.querySelector('.term-def'); def && def.classList.toggle('open'); return; }
   const el = e.target.closest('[data-act]'); if (!el) { if (e.target.id === 'layer') closeSheet(); return; }
+  log('탭 ' + el.dataset.act + (el.dataset.v ? ':' + el.dataset.v : el.dataset.sheet ? ':' + el.dataset.sheet : el.dataset.tab ? ':' + el.dataset.tab : '') + (S.mode === 'onboard' && el.dataset.act === 'ans' ? ` (Q${S.q + 1})` : ''));
   const a = el.dataset.act, v = el.dataset.v;
   switch (a) {
     case 'ob': S.mode = 'onboard'; S.ob = +v; closeSheet(); render(false); break;
@@ -1470,6 +1524,17 @@ document.addEventListener('click', e => {
       if (SUGG.some(s => s.id === 's4' && S.applied.has('s4') && !S.keeps.has('구독'))) ch.push(['구독', 45000, 31500]);
       S.cutApplied = ch; render(); simpleToast('11월 예산에 반영했어요'); break; }
     case 'cutUndo': S.cutApplied.forEach(([c, a]) => { if (S.cat[c] != null) S.cat[c] = a; }); S.cutApplied = null; render(); break;
+    case 'persona': S.persona = v; S.mode = 'app'; S.tab = 'home'; closeSheet(); render(false); break;
+    case 'mod':
+      closeSheet(); S.mode = 'app';
+      if (v === 'pay') { S.tab = 'home'; render(false); payment(); }
+      if (v === 'income') { S.tab = 'home'; S.incomeIn = true; S.allocDone = false; render(false); openSheet('alloc'); }
+      if (v === 'settle') { if (S.settled) { S.settled = false; S.spent += 48000; } S.tab = 'home'; render(false); }
+      if (v === 'reset') { log('--- 처음부터 다시 ---'); location.reload(); }
+      break;
+    case 'logCopy': { const txt = logText(); const sel = () => { const r = document.createRange(); r.selectNodeContents(document.getElementById('logBox')); const g = getSelection(); g.removeAllRanges(); g.addRange(r); simpleToast('기록을 선택했어요. 길게 눌러 복사하세요'); };
+      try { navigator.clipboard.writeText(txt).then(() => simpleToast('탭 기록을 복사했어요'), sel); } catch (err) { sel(); } break; }
+    case 'logClear': LOG = []; try { localStorage.removeItem(LOG_KEY); } catch (err) {} refreshSheet(); break;
     case 'flow': S.flowSel = S.flowSel === v ? null : v; render(); break;
     case 'interest': S.interest.has(v) ? S.interest.delete(v) : S.interest.add(v); render(); break;
     case 'aiAsk': ask(v); break;
