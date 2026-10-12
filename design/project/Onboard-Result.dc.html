@@ -63,7 +63,8 @@ body{margin:0;background:#FAFAFA}
 
   <section style="margin:24px 16px 0" aria-label="금융 지식과 실천 수준 사분면">
     <svg width="358" height="358" viewBox="0 0 358 358" style="display:block" role="img" aria-label="실천 2.9, 지식 6.4로 인지우세형. 자기평가는 실천 3, 지식 8">
-      <rect x="16" y="0" width="167" height="167" rx="32" fill="#C8E1FF"></rect>
+      <defs><radialGradient id="quadG" cx="35%" cy="40%" r="75%"><stop offset="0" stop-color="#9CC7FF"></stop><stop offset=".6" stop-color="#C8E1FF"></stop><stop offset="1" stop-color="#EEF5FF"></stop></radialGradient></defs>
+      <rect x="16" y="0" width="167" height="167" rx="32" fill="url(#quadG)"></rect>
       <rect x="187" y="0" width="167" height="167" rx="32" fill="#EBEBE9"></rect>
       <rect x="16" y="171" width="167" height="167" rx="32" fill="#EBEBE9"></rect>
       <rect x="187" y="171" width="167" height="167" rx="32" fill="#EBEBE9"></rect>
@@ -112,12 +113,13 @@ body{margin:0;background:#FAFAFA}
     <section class="cd cw" style="margin-top:12px;padding:22px 20px" aria-label="영역별 관심도와 실천 수준">
       <div class="row sb"><p class="eng">5 areas</p><span class="row xs" style="gap:10px"><span class="row" style="gap:5px"><span style="width:12px;height:12px;border-radius:4px;background:#C8E1FF;border:1px solid #0D0D0D"></span>관심도</span><span class="row" style="gap:5px"><span style="width:12px;height:12px;border-radius:4px;background:#0D0D0D"></span>실천</span></span></div>
       <svg width="318" height="186" viewBox="0 0 318 186" style="display:block;margin-top:18px" role="img" aria-label="관심도와 실천: 소비와 지출 82와 35, 저축과 투자 74와 40, 대출과 신용 30과 20, 보험과 은퇴 22와 15, 세금과 혜택 68과 12">
+      <defs><linearGradient id="intG" x1="0" x2="1"><stop offset="0" stop-color="#EEF5FF"></stop><stop offset="1" stop-color="#9CC7FF"></stop></linearGradient></defs>
         <g>
-          <rect x="21.4" y="0" width="97.6" height="24" rx="12" fill="#C8E1FF" stroke="#0D0D0D" stroke-width="1.5"></rect>
-          <rect x="30.9" y="38" width="88.1" height="24" rx="12" fill="#C8E1FF"></rect>
-          <rect x="83.3" y="76" width="35.7" height="24" rx="12" fill="#C8E1FF" fill-opacity=".45"></rect>
-          <rect x="92.8" y="114" width="26.2" height="24" rx="12" fill="#C8E1FF" fill-opacity=".45"></rect>
-          <rect x="38.1" y="152" width="80.9" height="24" rx="12" fill="#C8E1FF"></rect>
+          <rect x="21.4" y="0" width="97.6" height="24" rx="12" fill="url(#intG)" stroke="#0D0D0D" stroke-width="1.5"></rect>
+          <rect x="30.9" y="38" width="88.1" height="24" rx="12" fill="url(#intG)"></rect>
+          <rect x="83.3" y="76" width="35.7" height="24" rx="12" fill="url(#intG)" fill-opacity=".45"></rect>
+          <rect x="92.8" y="114" width="26.2" height="24" rx="12" fill="url(#intG)" fill-opacity=".45"></rect>
+          <rect x="38.1" y="152" width="80.9" height="24" rx="12" fill="url(#intG)"></rect>
         </g>
         <g fill="#0D0D0D">
           <rect x="199" y="0" width="41.7" height="24" rx="12"></rect>

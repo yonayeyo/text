@@ -69,18 +69,19 @@ body{margin:0;background:#FAFAFA}
     <p class="sm mu" style="margin-top:12px">오늘 쓸 수 있는 돈 · 남은 예산 ÷ 남은 15일</p>
 
     <svg width="350" height="104" viewBox="0 0 350 104" style="display:block;margin-top:26px" role="img" aria-label="오늘 17일부터 31일까지 남은 15일, 하루 30,400원씩. 25일은 급여일">
+      <defs><radialGradient id="todayOrb" cx="40%" cy="38%" r="65%"><stop offset="0" stop-color="#8EBFFF"></stop><stop offset=".55" stop-color="#C8E1FF"></stop><stop offset="1" stop-color="#EEF5FF"></stop></radialGradient><filter id="todayGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8"></feGaussianBlur></filter></defs>
       <defs>
         <filter id="gooDays" x="-10%" y="-40%" width="120%" height="180%"><feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b"></feGaussianBlur><feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9"></feColorMatrix></filter>
       </defs>
-      <g filter="url(#gooDays)" fill="#0D0D0D">
+      <g filter="url(#gooDays)" fill="#D4D4D2">
         <circle cx="36" cy="40" r="34"></circle>
         <rect x="36" y="36" width="56" height="8" rx="4"></rect>
         <circle cx="96" cy="40" r="7"></circle>
       </g>
       <line x1="96" y1="40" x2="336" y2="40" stroke="#0D0D0D" stroke-opacity=".18" stroke-width="2"></line>
-      <g fill="#0D0D0D" fill-opacity=".85"><circle cx="96" cy="40" r="7"></circle><circle cx="114.5" cy="40" r="7"></circle><circle cx="132.9" cy="40" r="7"></circle><circle cx="151.4" cy="40" r="7"></circle><circle cx="169.8" cy="40" r="7"></circle><circle cx="188.3" cy="40" r="7"></circle><circle cx="206.8" cy="40" r="7"></circle><circle cx="225.2" cy="40" r="7"></circle><circle cx="243.7" cy="40" r="7"></circle><circle cx="262.2" cy="40" r="7"></circle><circle cx="280.6" cy="40" r="7"></circle><circle cx="299.1" cy="40" r="7"></circle><circle cx="317.5" cy="40" r="7"></circle><circle cx="336" cy="40" r="7"></circle></g>
-      <circle cx="36" cy="40" r="32" fill="#C8E1FF"></circle>
-      <circle cx="225.2" cy="40" r="7" fill="#C8E1FF" stroke="#0D0D0D" stroke-width="1.5"></circle>
+      <g fill="#D4D4D2"><circle cx="96" cy="40" r="7"></circle><circle cx="114.5" cy="40" r="7"></circle><circle cx="132.9" cy="40" r="7"></circle><circle cx="151.4" cy="40" r="7"></circle><circle cx="169.8" cy="40" r="7"></circle><circle cx="188.3" cy="40" r="7"></circle><circle cx="206.8" cy="40" r="7"></circle><circle cx="225.2" cy="40" r="7"></circle><circle cx="243.7" cy="40" r="7"></circle><circle cx="262.2" cy="40" r="7"></circle><circle cx="280.6" cy="40" r="7"></circle><circle cx="299.1" cy="40" r="7"></circle><circle cx="317.5" cy="40" r="7"></circle><circle cx="336" cy="40" r="7"></circle></g>
+      <circle cx="36" cy="40" r="38" fill="#9CC7FF" opacity=".55" filter="url(#todayGlow)"></circle><circle cx="36" cy="40" r="32" fill="url(#todayOrb)"></circle>
+      <circle cx="225.2" cy="40" r="7" fill="#9CC7FF"></circle><circle cx="225.2" cy="40" r="11" fill="none" stroke="#0D0D0D" stroke-width="1"></circle>
       <g font-family="Archivo, Noto Sans KR, sans-serif" text-anchor="middle">
         <text x="36" y="40" font-size="18" font-weight="300" fill="#0D0D0D">17</text>
         <text x="36" y="55" font-size="10" fill="#0D0D0D">오늘</text>
@@ -137,7 +138,7 @@ body{margin:0;background:#FAFAFA}
         <div class="row sb"><p class="eng" style="color:#C8E1FF">Goal</p><span class="xs mu">3 / 5</span></div>
         <svg width="112" height="112" viewBox="0 0 112 112" style="display:block;margin:14px auto 0" aria-hidden="true">
           <circle cx="56" cy="56" r="46" fill="none" stroke="#FFFFFF" stroke-opacity=".12" stroke-width="12"></circle>
-          <circle cx="56" cy="56" r="46" fill="none" stroke="#C8E1FF" stroke-width="12" stroke-linecap="round" stroke-dasharray="110.4 289" transform="rotate(-90 56 56)"></circle>
+          <defs><linearGradient id="ringG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EEF5FF"></stop><stop offset=".5" stop-color="#C8E1FF"></stop><stop offset="1" stop-color="#7DB6FF"></stop></linearGradient><filter id="ringGlow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4"></feGaussianBlur></filter></defs><circle cx="56" cy="56" r="46" fill="none" stroke="url(#ringG)" stroke-width="14" stroke-linecap="round" stroke-dasharray="110.4 289" transform="rotate(-90 56 56)" filter="url(#ringGlow)" opacity=".6"></circle><circle cx="56" cy="56" r="46" fill="none" stroke="url(#ringG)" stroke-width="12" stroke-linecap="round" stroke-dasharray="110.4 289" transform="rotate(-90 56 56)"></circle>
           <text x="56" y="62" text-anchor="middle" font-family="Archivo, sans-serif" font-size="22" font-weight="300" fill="#FFFFFF" letter-spacing="-1">38.2%</text>
         </svg>
         <p class="sm" style="text-align:center;margin-top:10px">전세 자금</p>
