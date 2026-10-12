@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#181818">
+<meta name="theme-color" content="#FAFAFA">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -340,7 +340,7 @@ svg{display:block}
   .screen{border-radius:0}
   .island,.statusbar>*{display:none!important}
   /* iOS Safari는 화면 맨 위에 붙은 position:fixed 요소의 단색 배경을 읽어 상단(상태바) 색을 정한다 */
-  .statusbar{position:fixed;top:0;left:0;right:0;height:calc(env(safe-area-inset-top,0px) + 4px);padding:0;background:none;background-color:var(--page)}
+  .statusbar{position:fixed;top:0;left:0;right:0;height:calc(env(safe-area-inset-top,0px) + 4px);padding:0;background:none;background-color:var(--bg)}
   .view{padding-top:calc(env(safe-area-inset-top,0px) + 4px);overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
   .tabbar{bottom:calc(env(safe-area-inset-bottom,0px) + 12px)}
   .ai-dock{bottom:calc(env(safe-area-inset-bottom,0px) + 88px)}
@@ -642,7 +642,7 @@ function vIntro() {
       <p class="t18 mt16">돈을 얼마나 아는지보다,<br>지금 어떻게 관리하고 있는지 알아봐요</p>
       <p class="t12 mute mt8">5개 영역의 관심도와 실천 수준을 보고 시작할 영역을 추천해 드려요. 정답을 맞히는 시험이 아니에요.</p>
     </div>
-    <div class="stack8 mt24">${AREAS.map(a => `<div class="row between t14" style="padding:10px 0;border-bottom:1px solid #2f2f2f"><span><span class="eng mute">${a.no}</span>&nbsp;&nbsp;${a.name}</span>${a.now ? '' : '<span class="tag dash t10 mute">확장 예정</span>'}</div>`).join('')}</div>
+    <div class="stack8 mt24">${AREAS.map(a => `<div class="row between t14" style="padding:10px 0;border-bottom:1px solid var(--line)"><span><span class="eng mute">${a.no}</span>&nbsp;&nbsp;${a.name}</span>${a.now ? '' : '<span class="tag dash t10 mute">확장 예정</span>'}</div>`).join('')}</div>
     <div style="margin-top:auto;padding-top:32px" class="stack8">
       <button class="btn full" data-act="ob" data-v="1">진단 시작</button>
       <button class="btn ghost full" data-act="toApp" style="box-shadow:none;color:var(--g4)">둘러보기만 할게요</button>
@@ -1425,7 +1425,7 @@ let lastKey = '';
 function render(keepScroll = true) {
   const key = S.mode === 'onboard' ? 'ob' + S.ob : 'tab' + S.tab;
   const st = keepScroll && key === lastKey ? view.scrollTop : 0;
-  const dark = S.mode === 'onboard' ? S.ob !== 2 : S.tab === 'spend';
+  const dark = S.mode === 'onboard' ? (S.ob === 1 || S.ob === 3) : S.tab === 'spend';
   screen.classList.toggle('dark', dark);
   screen.classList.toggle('nonav', S.mode === 'onboard');
   if (S.mode === 'onboard') view.innerHTML = [vIntro, vSelf, vQuiz, vResult][S.ob]();
@@ -1433,7 +1433,7 @@ function render(keepScroll = true) {
   view.scrollTop = st;
   if (key !== lastKey) log('화면 ' + SCREEN_NAME(key));
   // 휴대폰에서는 Safari 상단(상태바)·하단 영역이 페이지 배경색을 따르므로 화면 색과 맞춘다
-  setPageColor(dark ? '#181818' : '#FAFAFA');
+  setPageColor('#FAFAFA'); // 휴대폰 상단(상태바)은 모든 화면에서 #FAFAFA로 통일
   lastKey = key;
   document.getElementById('tabbar').innerHTML = TABS.map(([k, n, i]) => `<button class="tab ${S.tab === k ? 'on' : ''}" data-act="tab" data-tab="${k}" aria-label="${n}" ${S.tab === k ? 'aria-current="page"' : ''}>${ic(i, 22)}<span>${n}</span></button>`).join('');
   const dock = document.getElementById('aiDock');
