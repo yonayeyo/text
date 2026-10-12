@@ -80,9 +80,7 @@ svg{display:block}
   background-image:radial-gradient(circle,var(--ink) 1.1px,transparent 1.5px);background-size:5px 5px;
   -webkit-mask-image:linear-gradient(transparent,rgba(0,0,0,.55) 70%,#000);mask-image:linear-gradient(transparent,rgba(0,0,0,.55) 70%,#000);opacity:.55}
 .screen.dark .halftone{background-image:radial-gradient(circle,#FCFCFC 1px,transparent 1.4px);opacity:.25}
-.screen.nonav .halftone,.screen.home .halftone{display:none}
-.screen.home{--page:#FAFAFA}
-.screen.home .view{background:#FAFAFA url("assets/home-bg.webp") center top/100% auto no-repeat local;background-blend-mode:multiply}
+.screen.nonav .halftone{display:none}
 .keeps{display:grid;gap:4px}
 .keeps .kr{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;min-height:40px}
 .pick{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 1.5px var(--g4);flex:none}
@@ -1429,21 +1427,26 @@ function render(keepScroll = true) {
   const dark = S.mode === 'onboard' ? S.ob !== 2 : S.tab === 'spend';
   screen.classList.toggle('dark', dark);
   screen.classList.toggle('nonav', S.mode === 'onboard');
-  screen.classList.toggle('home', S.mode === 'app' && S.tab === 'home');
   if (S.mode === 'onboard') view.innerHTML = [vIntro, vSelf, vQuiz, vResult][S.ob]();
   else view.innerHTML = { home:vHome, spend:vSpend, plan:vPlan, goal:vGoal, benefit:vBenefit }[S.tab]();
   view.scrollTop = st;
   if (key !== lastKey) log('화면 ' + SCREEN_NAME(key));
   // 휴대폰에서는 Safari 상단(상태바)·하단 영역이 페이지 배경색을 따르므로 화면 색과 맞춘다
-  const pageColor = dark ? '#181818' : '#FAFAFA', tc = document.querySelector('meta[name=theme-color]');
-  tc && tc.setAttribute('content', pageColor);
-  if (matchMedia('(max-width:520px)').matches) { document.documentElement.style.backgroundColor = pageColor; document.body.style.backgroundColor = pageColor; }
+  setPageColor(dark ? '#181818' : '#FAFAFA');
   lastKey = key;
   document.getElementById('tabbar').innerHTML = TABS.map(([k, n, i]) => `<button class="tab ${S.tab === k ? 'on' : ''}" data-act="tab" data-tab="${k}" aria-label="${n}" ${S.tab === k ? 'aria-current="page"' : ''}>${ic(i, 22)}<span>${n}</span></button>`).join('');
   const dock = document.getElementById('aiDock');
   dock.hidden = !(S.mode === 'app' && (S.tab === 'plan' || (S.tab === 'spend' && S.spendView === 'analysis')));
   view.style.paddingBottom = S.mode === 'onboard' ? (S.ob === 3 ? '0' : '24px') : dock.hidden ? '140px' : '200px';
   renderPanel();
+}
+// Safari는 theme-color 값 변경만으로는 상단 색을 다시 칠하지 않을 때가 있어, 태그를 새로 넣고 고정 레이어 배경도 함께 바꾼다
+let pageColorNow = '';
+function setPageColor(c) {
+  if (c === pageColorNow) return; pageColorNow = c;
+  document.querySelectorAll('meta[name=theme-color]').forEach(m => m.remove());
+  const m = document.createElement('meta'); m.name = 'theme-color'; m.content = c; document.head.appendChild(m);
+  if (matchMedia('(max-width:520px)').matches) [document.documentElement, document.body, document.querySelector('.device')].forEach(el => el.style.backgroundColor = c);
 }
 function openSheet(name) { if (name !== 'log') log('시트 ' + name); S.sheet = name; document.getElementById('sheet').innerHTML = sheetHTML(name); document.getElementById('layer').classList.add('open'); }
 function refreshSheet() { if (S.sheet) document.getElementById('sheet').innerHTML = sheetHTML(S.sheet); }
