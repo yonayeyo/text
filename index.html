@@ -186,8 +186,6 @@ svg{display:block}
 .meter .mk{position:absolute;top:-20px;transform:translateX(-50%);white-space:nowrap}
 .next-card{display:grid;gap:16px}
 .next-card .title{padding-right:48px}
-.flow-lbl{font-size:10px;fill:var(--g6)}
-.flow-val{font-size:11px;fill:var(--ink);font-family:var(--f-num)}
 .pillcols{display:flex;justify-content:space-between;align-items:flex-end;height:150px;padding-top:8px}
 .pillcols .col{display:grid;justify-items:center;gap:8px;width:44px}
 .pillcols .pill{width:32px;border-radius:999px}
@@ -478,7 +476,7 @@ const S = {
   gNew:{ type:'전세 자금', amt:10000000, months:24 },
   cert:false, liked:new Set(), benefitMoved:false, pointsMoved:false, interest:new Set(),
   switches:{ pre:true, emer:true, budget:true, fixed:false },
-  chat:[],
+  chat:[], flowSel:null,
 };
 const D = () => {
   const remain = S.budget - S.spent, left = S.days - S.day + 1;
@@ -685,22 +683,61 @@ function nextCard() {
     <button class="btn light sm" style="justify-self:start" ${c.act}>${c.b}</button>
   </div>`;
 }
-function flowSVG() {
-  const ins = [ ['급여',2200000], ['알바',320000], ['환급',12300] ];
-  const outs = [ ['체크카드',162000], ['신용카드',74000], ['간편결제',44000] ];
-  const ys = [24, 78, 132], cx = 152, cy = 78, L = 72, R = 233;
-  const wi = v => Math.max(2, v / 2532300 * 22), wo = v => Math.max(2, v / 280000 * 18);
-  const curve = (x1, y1, x2, y2) => `M${x1} ${y1} C ${(x1 + x2) / 2} ${y1}, ${(x1 + x2) / 2} ${y2}, ${x2} ${y2}`;
-  return `<svg viewBox="0 0 305 170" width="100%" role="img" aria-label="이번 달 들어온 돈: 급여 2,200,000, 알바 320,000, 환급 12,300. 나간 돈: 체크카드 162,000, 신용카드 74,000, 간편결제 44,000">
-    <defs><linearGradient id="fl" x1="0" x2="1"><stop offset="0" stop-color="#C8E1FF"/><stop offset="1" stop-color="#FF769C" stop-opacity=".8"/></linearGradient></defs>
-    ${ins.map((d, i) => `<path d="${curve(L, ys[i], cx - 14, cy)}" stroke="url(#fl)" stroke-width="${wi(d[1])}" fill="none" stroke-linecap="round"/>`).join('')}
-    ${outs.map((d, i) => `<path d="${curve(cx + 14, cy, R, ys[i])}" stroke="#181818" stroke-width="${wo(d[1])}" fill="none" stroke-linecap="round" opacity="${1 - i * .2}"/>`).join('')}
-    <path d="M${cx - 8} ${cy + 12} C ${cx - 34} ${cy + 56}, ${cx + 34} ${cy + 56}, ${cx + 8} ${cy + 12}" fill="none" stroke="#9C9C9C" stroke-dasharray="3 3"/>
-    <circle cx="${cx}" cy="${cy}" r="14" fill="#FCFCFC" stroke="#181818" stroke-width="1.5"/><circle cx="${cx}" cy="${cy}" r="4" fill="#181818"/>
-    ${ins.map((d, i) => `<text class="flow-lbl" x="0" y="${ys[i] - 3}">${d[0]}</text><text class="flow-val" x="0" y="${ys[i] + 11}">${won(d[1])}</text>`).join('')}
-    ${outs.map((d, i) => `<text class="flow-lbl" x="305" y="${ys[i] - 3}" text-anchor="end">${d[0]}</text><text class="flow-val" x="305" y="${ys[i] + 11}" text-anchor="end">${won(d[1])}</text>`).join('')}
-    <text class="flow-lbl" x="${cx}" y="164" text-anchor="middle">내 계좌 간 이체 300,000 · 지출 제외</text>
-  </svg>`;
+function sankey() {
+  // 3단: 들어온 돈 → 용도별 통장 → 쓴 곳. 모든 단이 같은 축척(1px = 약 9,400 ₩)을 씀
+  const A = S.allocDone ? { bal:[.5,.3,.2], save:[.7,.2,.1], free:[.3,.2,.5] }[S.alloc] : [0, 0, 1];
+  const vr = (235000 + (S.spent - 280000)) / 235000;
+  const N = {
+    pay:{ c:0, n:'급여', v:0 }, job:{ c:0, n:'알바', v:0 }, ref:{ c:0, n:'환급', v:0 },
+    life:{ c:1, n:'생활비', v:0 }, save:{ c:1, n:'저축', v:0 }, emer:{ c:1, n:'비상금', v:0 },
+    fix:{ c:2, n:'고정', v:0 }, dlv:{ c:2, n:'배달', v:0 }, cafe:{ c:2, n:'카페', v:0 }, bus:{ c:2, n:'교통', v:0 }, shop:{ c:2, n:'쇼핑', v:0 }, etc:{ c:2, n:'기타', v:0 }, left:{ c:2, n:'남음', v:0, open:true },
+  };
+  const L = [
+    ['pay','life',1450000], ['pay','save',650000], ['pay','emer',100000],
+    ['job','life',320000 * A[2]], ['job','save',320000 * A[0]], ['job','emer',320000 * A[1]],
+    ['ref', S.benefitMoved ? 'emer' : 'life', 12300],
+    ['life','fix',582000], ...[['dlv',96000],['cafe',52000],['bus',41000],['shop',28000],['etc',18000]].map(([t, v]) => ['life', t, v * vr]),
+  ].filter(l => l[2] > 0);
+  const lifeIn = L.filter(l => l[1] === 'life').reduce((t, l) => t + l[2], 0);
+  L.push(['life','left', lifeIn - L.filter(l => l[0] === 'life').reduce((t, l) => t + l[2], 0)]);
+  L.forEach(([f, t, v]) => { N[t].v += v; if (N[f].c === 0) N[f].v += v; });
+  const ids = Object.keys(N), H = 272, TOP = 4, GAP = [14, 14, 16], X = [0, 124, 230], BW = 8;
+  const k = (H - 2 * GAP[0]) / ids.filter(i => N[i].c === 0).reduce((t, i) => t + N[i].v, 0);
+  [0, 1, 2].forEach(c => {
+    const col = ids.filter(i => N[i].c === c && N[i].v > 0);
+    const tot = col.reduce((t, i) => t + Math.max(3, N[i].v * k), 0) + GAP[c] * (col.length - 1);
+    let y = TOP + (H - tot) / 2;
+    col.forEach(i => { Object.assign(N[i], { x:X[c], y, h:Math.max(3, N[i].v * k), so:0, to:0 }); y += N[i].h + GAP[c]; });
+  });
+  const sel = S.flowSel, on = l => !sel || l[0] === sel || l[1] === sel;
+  const fill = l => l[1] === 'left' ? 'url(#skA)' : l[0] === 'pay' ? '#C8E1FF' : l[0] === 'job' ? 'url(#skR)' : l[0] === 'ref' ? '#CFCFCF' : '#E6E6E6';
+  const kw = v => won(v / 1000);
+  const links = L.map(l => {
+    const [f, t, v] = l, s = N[f], d = N[t], w = v * k;
+    const x0 = s.x + BW, x1 = d.x, y0 = s.y + s.so, y1 = d.y + d.to, m = (x0 + x1) / 2;
+    s.so += w; d.to += w;
+    return `<path d="M${x0} ${y0} C${m} ${y0} ${m} ${y1} ${x1} ${y1} L${x1} ${y1 + w} C${m} ${y1 + w} ${m} ${y0 + w} ${x0} ${y0 + w}Z" fill="${fill(l)}" opacity="${on(l) ? .92 : .18}"/>`;
+  }).join('');
+  const lastY = [];
+  const nodes = ids.filter(i => N[i].v > 0).map(i => {
+    const n = N[i], dim = sel && sel !== i && !L.some(l => on(l) && (l[0] === i || l[1] === i));
+    const bar = n.open
+      ? `<rect x="${n.x + .75}" y="${n.y + .75}" width="${BW - 1.5}" height="${n.h - 1.5}" rx="${(BW - 1.5) / 2}" fill="#FCFCFC" stroke="#181818" stroke-width="1.5" stroke-dasharray="2.5 2.5"/>`
+      : `<rect x="${n.x}" y="${n.y}" width="${BW}" height="${n.h}" rx="${BW / 2}" fill="#181818"/>`;
+    let lab;
+    if (n.c < 2 && n.h >= 34) lab = `<text x="${n.x + 16}" y="${n.y + 16}" font-size="12" fill="#181818">${n.n}</text><text x="${n.x + 16}" y="${n.y + 30}" font-size="10" fill="#606060" font-family="Outfit">${kw(n.v)}</text>`;
+    else {
+      let ly = n.y + n.h / 2 + 4;
+      if (n.c === 2) { const p = lastY[lastY.length - 1]; if (p != null && ly - p < 15) ly = p + 15; lastY.push(ly); }
+      lab = `<text x="${n.x + 16}" y="${ly}" font-size="12" fill="#181818">${n.n} <tspan font-size="10" fill="#606060" font-family="Outfit">${kw(n.v)}</tspan></text>`;
+    }
+    const hit = n.c < 2 ? `<rect x="${n.x - 4}" y="${n.y - 4}" width="64" height="${n.h + 8}" fill="transparent"/>` : '';
+    return `<g ${n.c < 2 ? `data-act="flow" data-v="${i}" style="cursor:pointer" role="button" aria-pressed="${sel === i}" aria-label="${n.n} ${won(n.v)}원 흐름 보기"` : ''} opacity="${dim ? .35 : 1}">${hit}${bar}${lab}</g>`;
+  }).join('');
+  return `<svg viewBox="0 0 305 ${H + 8}" width="100%" role="img" aria-label="들어온 돈 ${ids.filter(i => N[i].c === 0).map(i => `${N[i].n} ${won(N[i].v)}원`).join(', ')}이 생활비·저축·비상금으로 나뉘고, 생활비에서 ${ids.filter(i => N[i].c === 2).map(i => `${N[i].n} ${won(N[i].v)}원`).join(', ')}">
+    <defs><linearGradient id="skR" x1="0" x2="1"><stop offset="0" stop-color="#FF769C" stop-opacity=".55"/><stop offset="1" stop-color="#FFC2D3"/></linearGradient>
+    <linearGradient id="skA" x1="0" x2="1"><stop offset="0" stop-color="#C8E1FF"/><stop offset="1" stop-color="#FFC2D3"/></linearGradient></defs>
+    ${links}${nodes}</svg>`;
 }
 function pillCols() {
   const max = 5000000, H = 110;
@@ -741,9 +778,13 @@ function vHome() {
       <hr class="hair mt16"><div class="row between mt12 t12"><span class="mute">통합 자산</span><span class="num">${W(12400000)}</span></div>
     </div>`;
   const flow = `<div class="card c-paper">
-      <div class="row between"><span class="t14">돈의 흐름</span><span class="t10 mute">10.01 – 10.12</span></div>
-      <div class="row between t10 mute mt8"><span>들어온 곳</span><span>나간 곳</span></div>
-      <div class="mt8">${flowSVG()}</div>
+      <div class="row between"><span class="eng">Flow</span><span class="t10 mute num">10.01 – 10.12</span></div>
+      <div class="mt16">${sankey()}</div>
+      <div class="row between t10 mute mt8"><span>${S.flowSel ? '다시 누르면 전체 흐름' : '통장을 눌러 흐름을 따라가 보세요'}</span><span>단위 1,000 ₩</span></div>
+      <div class="row g8 mt16">
+        <button class="btn sm" style="flex:1;background:var(--g2);color:var(--ink);font-size:12px;padding:0 12px" data-act="toast" data-msg="내 계좌끼리 옮긴 3건(300,000 ₩)은 지출에서 뺐어요">${ic('check', 16)}내 계좌 간 이체 3건 제외</button>
+        ${S.settled ? `<span class="btn sm" style="flex:1;background:var(--g2);color:var(--g6);font-size:12px;padding:0 12px">더치페이 정리 완료</span>` : `<button class="btn sm" style="flex:1;background:var(--aura);color:var(--ink);font-size:12px;padding:0 12px" data-act="sheet" data-sheet="settle">${ic('users', 16)}더치페이 2건 정리</button>`}
+      </div>
     </div>`;
   const order = S.persona === 'low' ? [proj, goalAndSpend, accounts] : S.persona === 'self' ? [goalAndSpend, proj, accounts, flow] : [proj, goalAndSpend, accounts, flow];
   return `<header class="top">
@@ -1334,6 +1375,7 @@ document.addEventListener('click', e => {
     case 'like': S.liked.has(+v) ? S.liked.delete(+v) : S.liked.add(+v); render(); break;
     case 'benMove': S.benefitMoved = true; S.emergency += 12300; render(); simpleToast('12,300 ₩을 비상금으로 옮겼어요'); break;
     case 'ptMove': S.pointsMoved = true; goalBump(32440, '포인트 현금 전환'); break;
+    case 'flow': S.flowSel = S.flowSel === v ? null : v; render(); break;
     case 'interest': S.interest.has(v) ? S.interest.delete(v) : S.interest.add(v); render(); break;
     case 'aiAsk': ask(v); break;
   }
