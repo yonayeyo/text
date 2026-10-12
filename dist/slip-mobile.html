@@ -339,7 +339,8 @@ svg{display:block}
   .device{position:fixed;inset:0;width:100%;max-width:none;height:100%;padding:0;border-radius:0;box-shadow:none;background:none}
   .screen{border-radius:0}
   .island,.statusbar>*{display:none!important}
-  .statusbar{height:env(safe-area-inset-top,0px);padding:0;background:var(--page)}
+  /* iOS Safari는 화면 맨 위에 붙은 position:fixed 요소의 단색 배경을 읽어 상단(상태바) 색을 정한다 */
+  .statusbar{position:fixed;top:0;left:0;right:0;height:calc(env(safe-area-inset-top,0px) + 4px);padding:0;background:none;background-color:var(--page)}
   .view{padding-top:calc(env(safe-area-inset-top,0px) + 4px);overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
   .tabbar{bottom:calc(env(safe-area-inset-bottom,0px) + 12px)}
   .ai-dock{bottom:calc(env(safe-area-inset-bottom,0px) + 88px)}
