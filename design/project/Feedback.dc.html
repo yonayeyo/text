@@ -21,8 +21,8 @@ body{margin:0;background:#0D0D0D}
 .cur{font-size:.42em;letter-spacing:0;margin-left:.2em;font-weight:400}
 .sm{font-size:13px}.xs{font-size:11px}
 .mu{opacity:.56}
-.cl{background:#D9F84A;color:#0D0D0D}
-.cv{background:#A68BF5;color:#0D0D0D}
+.cl{background:#C8E1FF;color:#0D0D0D}
+.cv{background:#FF769C;color:#0D0D0D}
 .ib{width:48px;height:48px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:0;padding:0;flex:none;text-decoration:none}
 .bt{display:flex;align-items:center;justify-content:center;gap:8px;height:58px;border-radius:999px;border:0;font-size:16px;font-weight:500;width:100%;text-decoration:none}
 .gl{background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.16);color:#fff}
@@ -31,14 +31,19 @@ body{margin:0;background:#0D0D0D}
 .row{display:flex;align-items:center}
 .sb{justify-content:space-between}
 .st{border-radius:24px;padding:14px 16px}
+.cd{border-radius:40px}
+.cd,.step,.st,.tm,.opt,.fld,.term,.bf,.alloc div,.lt,[style*="border-radius:2"],[style*="border-radius:3"],[style*="border-radius:4"]{corner-shape:squircle}
+.gb{background:radial-gradient(120% 115% at 28% 40%,#A9CFFF 0%,#C8E1FF 40%,#E2EEFF 76%,#F5F9FF 100%);box-shadow:inset 0 0 20px 6px rgba(255,255,255,.92),inset 0 0 64px 8px rgba(255,255,255,.4);color:#0D0D0D}
+.gp{background:radial-gradient(120% 115% at 28% 40%,#FF6890 0%,#FF86A8 40%,#FFBACD 80%,#FFDDE6 100%);box-shadow:inset 0 0 20px 6px rgba(255,255,255,.85),inset 0 0 64px 8px rgba(255,255,255,.3);color:#0D0D0D}
+.gm{background:radial-gradient(90% 120% at 18% 30%,#FF7FA3 0%,rgba(255,127,163,0) 62%),radial-gradient(90% 120% at 90% 85%,#B9D8FF 0%,rgba(185,216,255,0) 70%),#E9C6E6;box-shadow:inset 0 0 20px 6px rgba(255,255,255,.88),inset 0 0 64px 8px rgba(255,255,255,.35);color:#0D0D0D}
 </style>
 </helmet>
 <div class="ph dk" style="height:844px">
 
   <div aria-hidden="true" style="position:absolute;inset:0;opacity:.5">
-    <div style="position:absolute;right:-40px;top:150px;width:220px;height:220px;border-radius:50%;background:#D9F84A;filter:blur(30px);opacity:.55"></div>
-    <div style="position:absolute;left:-30px;top:250px;width:120px;height:120px;border-radius:50%;background:#A68BF5;filter:blur(26px);opacity:.5"></div>
-    <p style="position:absolute;left:20px;top:100px;font-size:11px;letter-spacing:.14em;color:#D9F84A;opacity:.6">TODAY</p>
+    <div style="position:absolute;right:-40px;top:150px;width:220px;height:220px;border-radius:50%;background:#C8E1FF;filter:blur(30px);opacity:.55"></div>
+    <div style="position:absolute;left:-30px;top:250px;width:120px;height:120px;border-radius:50%;background:#FF769C;filter:blur(26px);opacity:.5"></div>
+    <p style="position:absolute;left:20px;top:100px;font-size:11px;letter-spacing:.14em;color:#C8E1FF;opacity:.6">TODAY</p>
     <p class="n" style="position:absolute;left:20px;top:122px;font-size:72px;color:#fff;opacity:.35">17,600</p>
   </div>
 
@@ -60,17 +65,17 @@ body{margin:0;background:#0D0D0D}
         <defs><clipPath id="vessel"><rect x="2" y="2" width="116" height="258" rx="58"></rect></clipPath></defs>
         <rect x="2" y="2" width="116" height="258" rx="58" fill="#FFFFFF" fill-opacity=".06" stroke="#FFFFFF" stroke-opacity=".25" stroke-width="1.5"></rect>
         <g clip-path="url(#vessel)">
-          <path d="M0 166 C20 158 40 174 60 166 C80 158 100 174 120 166 L120 262 L0 262 Z" fill="#D9F84A"></path>
+          <path d="M0 166 C20 158 40 174 60 166 C80 158 100 174 120 166 L120 262 L0 262 Z" fill="#C8E1FF"></path>
           <path d="M0 170 C20 164 40 178 60 170 C80 162 100 178 120 170 L120 262 L0 262 Z" fill="#0D0D0D" fill-opacity=".08"></path>
         </g>
         <line x1="14" y1="162" x2="106" y2="162" stroke="#FFFFFF" stroke-opacity=".6" stroke-dasharray="2 3"></line>
-        <path d="M60 128 C66 136 68 140 68 144 a8 8 0 0 1 -16 0 C52 140 54 136 60 128 Z" fill="#D9F84A" fill-opacity=".8"></path>
+        <path d="M60 128 C66 136 68 140 68 144 a8 8 0 0 1 -16 0 C52 140 54 136 60 128 Z" fill="#C8E1FF" fill-opacity=".8"></path>
         <text x="60" y="216" text-anchor="middle" font-family="Archivo, sans-serif" font-size="26" font-weight="300" fill="#0D0D0D" letter-spacing="-1">37%</text>
         <text x="60" y="236" text-anchor="middle" font-family="Archivo, Noto Sans KR, sans-serif" font-size="10" fill="#0D0D0D">남은 예산</text>
       </svg>
       <div style="flex:1;display:flex;flex-direction:column;gap:8px">
         <div class="st gl"><p class="xs mu">남은 예산</p><p class="n" style="font-size:20px;margin-top:2px">444,600 ₩</p></div>
-        <div class="st gl" style="border-color:#A68BF5"><p class="xs mu">월말 예상</p><p class="n" style="font-size:20px;margin-top:2px;color:#A68BF5">−166,900 ₩</p><p class="xs mu" style="margin-top:2px">방금 전보다 −12,700</p></div>
+        <div class="st gl" style="border-color:#FF769C"><p class="xs mu">월말 예상</p><p class="n" style="font-size:20px;margin-top:2px;color:#FF769C">−166,900 ₩</p><p class="xs mu" style="margin-top:2px">방금 전보다 −12,700</p></div>
         <div class="st gl" style="flex:1"><p class="xs mu">목표 진행률</p><p class="n" style="font-size:20px;margin-top:2px">38.2% 유지</p><p class="xs mu" style="margin-top:2px">선저축은 이미 끝나서 영향 없어요</p></div>
       </div>
     </div>

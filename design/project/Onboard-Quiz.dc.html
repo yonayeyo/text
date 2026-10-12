@@ -21,7 +21,12 @@ body{margin:0;background:#0D0D0D}
 .sm{font-size:13px}.xs{font-size:11px}
 .mu{opacity:.56}
 .cd{border-radius:32px;padding:22px;position:relative}
-.cl{background:#D9F84A;color:#0D0D0D}
+.cd{border-radius:40px}
+.cd,.step,.st,.tm,.opt,.fld,.term,.bf,.alloc div,.lt,[style*="border-radius:2"],[style*="border-radius:3"],[style*="border-radius:4"]{corner-shape:squircle}
+.gb{background:radial-gradient(120% 115% at 28% 40%,#A9CFFF 0%,#C8E1FF 40%,#E2EEFF 76%,#F5F9FF 100%);box-shadow:inset 0 0 20px 6px rgba(255,255,255,.92),inset 0 0 64px 8px rgba(255,255,255,.4);color:#0D0D0D}
+.gp{background:radial-gradient(120% 115% at 28% 40%,#FF6890 0%,#FF86A8 40%,#FFBACD 80%,#FFDDE6 100%);box-shadow:inset 0 0 20px 6px rgba(255,255,255,.85),inset 0 0 64px 8px rgba(255,255,255,.3);color:#0D0D0D}
+.gm{background:radial-gradient(90% 120% at 18% 30%,#FF7FA3 0%,rgba(255,127,163,0) 62%),radial-gradient(90% 120% at 90% 85%,#B9D8FF 0%,rgba(185,216,255,0) 70%),#E9C6E6;box-shadow:inset 0 0 20px 6px rgba(255,255,255,.88),inset 0 0 64px 8px rgba(255,255,255,.35);color:#0D0D0D}
+.cl{background:#C8E1FF;color:#0D0D0D}
 .cw{background:#FFFFFF;color:#0D0D0D}
 .cg{background:#EBEBE9;color:#0D0D0D}
 .cb{background:#0D0D0D;color:#FFFFFF}
@@ -35,7 +40,7 @@ body{margin:0;background:#0D0D0D}
 .seg{display:flex;gap:2px;flex:1}
 .seg span{flex:1;height:6px;border-radius:3px;background:rgba(13,13,13,.12)}
 .seg span.d{background:#0D0D0D}
-.seg span.c{background:#D9F84A;outline:1.5px solid #0D0D0D}
+.seg span.c{background:#C8E1FF;outline:1.5px solid #0D0D0D}
 .opt{display:flex;align-items:center;gap:14px;width:100%;min-height:64px;border-radius:26px;border:0;padding:12px 16px 12px 12px;text-align:left;font-size:14px;line-height:1.45;background:#FFFFFF}
 .opt .k{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;font-size:13px;background:#EBEBE9}
 </style>
@@ -55,7 +60,7 @@ body{margin:0;background:#0D0D0D}
       <div class="seg"><span></span><span></span><span></span><span></span></div>
       <div class="seg"><span></span><span></span><span></span><span></span></div>
     </div>
-    <div class="row sb xs" style="margin-top:8px"><span class="mu">소비와 지출</span><span>저축과 투자</span><span class="mu">대출</span><span class="mu">보험</span><span class="mu">세금</span></div>
+    <div class="row sb xs" style="margin-top:8px"><span class="mu">소비와 지출&nbsp; &nbsp; &nbsp;&nbsp;<span style="letter-spacing: -0.01em">저축과 투자</span><span style="letter-spacing: -0.11px">&nbsp; &nbsp; &nbsp; &nbsp;</span><span style="letter-spacing: -0.11px"></span><span style="letter-spacing: -0.01em">대출과 신용</span><span style="letter-spacing: -0.11px">&nbsp; &nbsp; &nbsp;&nbsp;</span><span style="letter-spacing: -0.01em">보험과 은퇴</span><span style="letter-spacing: -0.11px">&nbsp; &nbsp; &nbsp; &nbsp;</span><span style="letter-spacing: -0.01em">세금과 혜택</span></span></div>
   </div>
 
   <section style="padding:30px 20px 0" aria-label="문항">
@@ -65,7 +70,7 @@ body{margin:0;background:#0D0D0D}
 
   <div role="radiogroup" aria-label="선택지" style="display:flex;flex-direction:column;gap:8px;padding:24px 16px 0">
     <button class="opt" role="radio" aria-checked="false"><span class="k">A</span>쓰고 남은 돈이 있으면 그때 저축한다</button>
-    <button class="opt cl" role="radio" aria-checked="true" style="background:#D9F84A"><span class="k" style="background:#0D0D0D;color:#D9F84A"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>저축할 금액은 정해뒀지만, 이체는 그때그때 직접 한다</button>
+    <button class="opt cl" role="radio" aria-checked="true" style="background:#C8E1FF"><span class="k" style="background:#0D0D0D;color:#C8E1FF"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>저축할 금액은 정해뒀지만, 이체는 그때그때 직접 한다</button>
     <button class="opt" role="radio" aria-checked="false"><span class="k">C</span>월급날 정해둔 금액이 자동으로 먼저 빠져나간다</button>
     <button class="opt" role="radio" aria-checked="false" style="background:transparent;border:1.5px dashed rgba(13,13,13,.35)"><span class="k" style="background:transparent;border:1.5px dashed rgba(13,13,13,.35)">?</span>잘 모르겠다 · 생각해 본 적 없다</button>
   </div>

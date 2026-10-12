@@ -25,12 +25,17 @@ body{margin:0;background:#0D0D0D}
 .sm{font-size:13px}.xs{font-size:11px}
 .mu{opacity:.56}
 .cd{border-radius:32px;padding:22px;position:relative}
-.cl{background:#D9F84A;color:#0D0D0D}
+.cd{border-radius:40px}
+.cd,.step,.st,.tm,.opt,.fld,.term,.bf,.alloc div,.lt,[style*="border-radius:2"],[style*="border-radius:3"],[style*="border-radius:4"]{corner-shape:squircle}
+.gb{background:radial-gradient(120% 115% at 28% 40%,#A9CFFF 0%,#C8E1FF 40%,#E2EEFF 76%,#F5F9FF 100%);box-shadow:inset 0 0 20px 6px rgba(255,255,255,.92),inset 0 0 64px 8px rgba(255,255,255,.4);color:#0D0D0D}
+.gp{background:radial-gradient(120% 115% at 28% 40%,#FF6890 0%,#FF86A8 40%,#FFBACD 80%,#FFDDE6 100%);box-shadow:inset 0 0 20px 6px rgba(255,255,255,.85),inset 0 0 64px 8px rgba(255,255,255,.3);color:#0D0D0D}
+.gm{background:radial-gradient(90% 120% at 18% 30%,#FF7FA3 0%,rgba(255,127,163,0) 62%),radial-gradient(90% 120% at 90% 85%,#B9D8FF 0%,rgba(185,216,255,0) 70%),#E9C6E6;box-shadow:inset 0 0 20px 6px rgba(255,255,255,.88),inset 0 0 64px 8px rgba(255,255,255,.35);color:#0D0D0D}
+.cl{background:#C8E1FF;color:#0D0D0D}
 .cw{background:#FFFFFF;color:#0D0D0D}
 .cg{background:#EBEBE9;color:#0D0D0D}
 .cb{background:#0D0D0D;color:#FFFFFF}
-.cv{background:#A68BF5;color:#0D0D0D}
-.cp{background:#EEF9B8;color:#0D0D0D}
+.cv{background:#FF769C;color:#0D0D0D}
+.cp{background:#E6F0FF;color:#0D0D0D}
 .pl{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:500;border:0;white-space:nowrap;text-decoration:none}
 .ib{width:48px;height:48px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:0;padding:0;flex:none;text-decoration:none}
 .bt{display:flex;align-items:center;justify-content:center;gap:8px;height:58px;border-radius:999px;border:0;font-size:16px;font-weight:500;width:100%;text-decoration:none}
@@ -41,7 +46,7 @@ body{margin:0;background:#0D0D0D}
 .nb{position:absolute;right:2px;bottom:2px;width:56px;height:56px}
 .nav{position:absolute;left:20px;right:20px;bottom:28px;height:68px;border-radius:999px;background:rgba(13,13,13,.9);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:space-between;padding:0 8px;z-index:5}
 .nav a{height:52px;min-width:52px;border-radius:999px;display:flex;align-items:center;justify-content:center;gap:8px;color:#fff;text-decoration:none;font-size:14px;font-weight:500}
-.nav a.on{background:#D9F84A;color:#0D0D0D;padding:0 20px 0 16px}
+.nav a.on{background:#C8E1FF;color:#0D0D0D;padding:0 20px 0 16px}
 .tg{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 10px;border-radius:999px;font-size:11px;font-weight:500;white-space:nowrap}
 .top{display:flex;align-items:center;justify-content:space-between;padding:56px 20px 0}
 .row{display:flex;align-items:center}
@@ -59,7 +64,7 @@ body{margin:0;background:#0D0D0D}
 <div class="ph dk" style="height:2130px">
 
   <div class="top">
-    <p class="eng" style="color:#D9F84A">Setup</p>
+    <p class="eng" style="color:#C8E1FF">Setup</p>
     <span class="tg gl">필수 2 / 4</span>
   </div>
 
@@ -82,9 +87,9 @@ body{margin:0;background:#0D0D0D}
         <div style="flex:1"><p class="sm">비상금 · 고정 지출 3개월치</p><p class="n" style="font-size:17px;margin-top:2px">1,200,000 / 1,800,000 ₩</p></div>
         <button class="pl cg" style="height:34px;font-size:12px;padding:0 12px">변경</button>
       </div>
-      <div class="step" style="border:1.5px solid #D9F84A">
-        <span class="chk" style="border:1.5px solid #D9F84A;color:#D9F84A"><span class="n" style="font-size:14px">3</span></span>
-        <div style="flex:1"><p class="sm">월 예산</p><p class="sm" style="color:#D9F84A;margin-top:2px">배분안이 준비됐어요 ↓</p></div>
+      <div class="step" style="border:1.5px solid #C8E1FF">
+        <span class="chk" style="border:1.5px solid #C8E1FF;color:#C8E1FF"><span class="n" style="font-size:14px">3</span></span>
+        <div style="flex:1"><p class="sm">월 예산</p><p class="sm" style="color:#C8E1FF;margin-top:2px">배분안이 준비됐어요 ↓</p></div>
         <span class="tg cl">지금</span>
       </div>
       <div class="step todo">
@@ -100,17 +105,17 @@ body{margin:0;background:#0D0D0D}
     <h2 class="t2" style="margin-top:10px">수입 2,830,000 ₩<br>이렇게 나눠볼까요?</h2>
     <div class="row" style="gap:3px;margin-top:20px;height:44px" role="img" aria-label="고정 지출 21%, 저축 25%, 비상금 3%, 소비 42%, 여유 9%">
       <span style="width:21%;height:100%;border-radius:22px 8px 8px 22px;background:#0D0D0D"></span>
-      <span style="width:25%;height:100%;border-radius:8px;background:#D9F84A"></span>
-      <span style="width:3.5%;height:100%;border-radius:8px;background:#A68BF5"></span>
+      <span style="width:25%;height:100%;border-radius:8px;background:#C8E1FF"></span>
+      <span style="width:3.5%;height:100%;border-radius:8px;background:#FF769C"></span>
       <span style="width:42%;height:100%;border-radius:8px;background:#EBEBE9"></span>
-      <span style="width:8.5%;height:100%;border-radius:8px 22px 22px 8px;background:#EEF9B8;border:1.5px dashed #0D0D0D"></span>
+      <span style="width:8.5%;height:100%;border-radius:8px 22px 22px 8px;background:#E6F0FF;border:1.5px dashed #0D0D0D"></span>
     </div>
     <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 16px;margin-top:16px;font-size:12px">
       <div class="row" style="gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:#0D0D0D"></span><span style="flex:1">고정</span><span class="n">585,000</span></div>
-      <div class="row" style="gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:#D9F84A;border:1px solid #0D0D0D"></span><span style="flex:1">저축</span><span class="n">700,000</span></div>
-      <div class="row" style="gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:#A68BF5"></span><span style="flex:1">비상금</span><span class="n">100,000</span></div>
+      <div class="row" style="gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:#C8E1FF;border:1px solid #0D0D0D"></span><span style="flex:1">저축</span><span class="n">700,000</span></div>
+      <div class="row" style="gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:#FF769C"></span><span style="flex:1">비상금</span><span class="n">100,000</span></div>
       <div class="row" style="gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:#EBEBE9;border:1px solid #0D0D0D"></span><span style="flex:1">소비 예산</span><span class="n">1,200,000</span></div>
-      <div class="row" style="gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:#EEF9B8;border:1px dashed #0D0D0D"></span><span style="flex:1">여유</span><span class="n">245,000</span></div>
+      <div class="row" style="gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:#E6F0FF;border:1px dashed #0D0D0D"></span><span style="flex:1">여유</span><span class="n">245,000</span></div>
     </div>
     <p class="eng" style="margin-top:22px">Budget 1,200,000 ₩</p>
     <div class="alloc" style="margin-top:10px">
@@ -120,8 +125,8 @@ body{margin:0;background:#0D0D0D}
       <div class="cg"><span>교통</span><span class="n">90,000</span></div>
       <div class="cg"><span>카페</span><span class="n">60,000</span></div>
       <div class="cg"><span>기타</span><span class="n">120,000</span></div>
-      <div style="border:1.5px solid #A68BF5"><span>자기계발 · 유지</span><span class="n">80,000</span></div>
-      <div style="border:1.5px solid #A68BF5"><span>여행 적립 · 유지</span><span class="n">150,000</span></div>
+      <div style="border:1.5px solid #FF769C"><span>자기계발 · 유지</span><span class="n">80,000</span></div>
+      <div style="border:1.5px solid #FF769C"><span>여행 적립 · 유지</span><span class="n">150,000</span></div>
     </div>
     <div class="row" style="gap:8px;margin-top:18px">
       <button class="bt cg" style="flex:1;height:52px;font-size:15px">수정하기</button>
@@ -130,8 +135,8 @@ body{margin:0;background:#0D0D0D}
   </section>
 
   <section aria-label="비정기 수입 배분 규칙" style="position:relative;margin:12px 16px 0">
-    <div class="cd cl notch" style="padding:22px 20px 24px">
-      <div class="row sb"><p class="eng">Extra income</p><button class="sw cb" aria-label="비정기 수입 배분 제안 켜짐" aria-pressed="true" style="justify-content:flex-end"><span style="background:#D9F84A"></span></button></div>
+    <div class="cd gp notch" style="padding:22px 20px 24px">
+      <div class="row sb"><p class="eng">Extra income</p><button class="sw cb" aria-label="비정기 수입 배분 제안 켜짐" aria-pressed="true" style="justify-content:flex-end"><span style="background:#C8E1FF"></span></button></div>
       <h2 class="t2" style="margin-top:10px">알바비·보너스가 들어오면<br>바로 나눠드려요</h2>
       <div class="row" style="gap:6px;margin-top:16px">
         <span class="tg cb">목표 50</span><span class="tg cb">비상금 30</span><span class="tg" style="border:1.5px solid #0D0D0D">자유 20</span>
@@ -155,7 +160,7 @@ body{margin:0;background:#0D0D0D}
       <path d="M34 150 A125 125 0 0 1 284 150" fill="none" stroke="#EBEBE9" stroke-width="22" stroke-linecap="round"></path>
       <path d="M34 150 A125 125 0 0 1 281.9 127" fill="none" stroke="#0D0D0D" stroke-width="22" stroke-linecap="round"></path>
       <line x1="268" y1="150" x2="300" y2="150" stroke="#0D0D0D" stroke-width="1.5"></line>
-      <circle cx="284" cy="150" r="6" fill="#D9F84A" stroke="#0D0D0D" stroke-width="1.5"></circle>
+      <circle cx="284" cy="150" r="6" fill="#C8E1FF" stroke="#0D0D0D" stroke-width="1.5"></circle>
       <text x="159" y="122" text-anchor="middle" font-family="Archivo, sans-serif" font-size="30" font-weight="300" letter-spacing="-1.5" fill="#0D0D0D">430,000 ₩</text>
       <text x="159" y="146" text-anchor="middle" font-family="Archivo, Noto Sans KR, sans-serif" font-size="12" fill="#0D0D0D" fill-opacity=".6">공제 시작선까지</text>
     </svg>
