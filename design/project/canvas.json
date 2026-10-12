@@ -2,6 +2,14 @@
   "v": 3,
   "attachments": {},
   "boards": {
+    "Assets.dc.html": {
+      "h": 1540,
+      "is_interactive": true,
+      "title": "B-2 자산 현황",
+      "w": 390,
+      "x": 2350,
+      "y": 2210
+    },
     "Benefits.dc.html": {
       "h": 1360,
       "is_interactive": true,
@@ -43,7 +51,7 @@
       "y": 4760
     },
     "Main.dc.html": {
-      "h": 1290,
+      "h": 1340,
       "is_interactive": true,
       "title": "B 홈",
       "w": 390,
@@ -105,14 +113,6 @@
       "w": 390,
       "x": 1410,
       "y": 4760
-    },
-    "Assets.dc.html": {
-      "x": 2350,
-      "y": 2210,
-      "w": 390,
-      "h": 1540,
-      "title": "B-2 자산 현황",
-      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -165,6 +165,15 @@
     "Withdraw.dc.html",
     "Benefits.dc.html"
   ],
-  "pages": [],
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "Page 1"
+    },
+    {
+      "id": "page-vax5r6",
+      "name": "Page 2"
+    }
+  ],
   "title": "청년 금융 실천 앱"
 }

@@ -16,12 +16,13 @@ body{margin:0;background:#FAFAFA}
 :where(.ph) :where(h1,h2,h3,p){margin:0;font-weight:inherit;font-size:inherit}
 :where(.ph) button{font-family:inherit;font-stretch:inherit;cursor:pointer;color:inherit}
 .dk{background:#FAFAFA;color:#0D0D0D}
-.lt{background:#EBEBE9;color:#0D0D0D}
-.eng{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.lt{background:radial-gradient(70% 28% at 8% 6%,rgba(200,225,255,.95),rgba(200,225,255,0) 70%),radial-gradient(55% 22% at 100% 30%,rgba(255,118,156,.28),rgba(255,118,156,0) 70%),radial-gradient(70% 26% at 0% 62%,rgba(170,205,255,.6),rgba(170,205,255,0) 70%),radial-gradient(60% 24% at 95% 92%,rgba(255,170,195,.3),rgba(255,170,195,0) 70%),#EEEEEC;color:#0D0D0D}
+.eng{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:0;text-transform:none;font-weight:400}
+.eng::before{content:"";width:14px;height:14px;border-radius:50%;box-shadow:inset 0 0 0 1px currentColor;opacity:.45;flex:none}
 .t1{font-size:34px;font-weight:300;line-height:1.16;letter-spacing:-.035em}
 .t2{font-size:22px;font-weight:300;line-height:1.28;letter-spacing:-.03em}
 .n{font-variant-numeric:tabular-nums;font-weight:300;letter-spacing:-.045em;white-space:nowrap}
-.cur{font-size:.42em;letter-spacing:0;margin-left:.2em;font-weight:400}
+.cur{font-size:.42em;letter-spacing:0;margin-left:.2em;font-weight:400;opacity:.45}
 .sm{font-size:13px}.xs{font-size:11px}
 .mu{opacity:.56}
 .cd{border-radius:32px;padding:22px;position:relative}
@@ -56,11 +57,14 @@ body{margin:0;background:#FAFAFA}
 .dot{width:10px;height:10px;border-radius:50%}
 .sw{width:44px;height:26px;border-radius:999px;border:0;padding:3px;display:flex;align-items:center;flex:none}
 .sw span{width:20px;height:20px;border-radius:50%;background:#fff;display:block}
-.cd{border-radius:40px}
+.cd{border-radius:44px}
 .cd,.step,.st,.tm,.opt,.fld,.term,.bf,.alloc div,.lt,[style*="border-radius:2"],[style*="border-radius:3"],[style*="border-radius:4"]{corner-shape:squircle}
 .gb{background:radial-gradient(120% 115% at 28% 40%,#A9CFFF 0%,#C8E1FF 40%,#E2EEFF 76%,#F5F9FF 100%);box-shadow:inset 0 0 20px 6px rgba(255,255,255,.92),inset 0 0 64px 8px rgba(255,255,255,.4);color:#0D0D0D}
 .gp{background:radial-gradient(120% 115% at 28% 40%,#FF6890 0%,#FF86A8 40%,#FFBACD 80%,#FFDDE6 100%);box-shadow:inset 0 0 20px 6px rgba(255,255,255,.85),inset 0 0 64px 8px rgba(255,255,255,.3);color:#0D0D0D}
 .gm{background:radial-gradient(90% 120% at 18% 30%,#FF7FA3 0%,rgba(255,127,163,0) 62%),radial-gradient(90% 120% at 90% 85%,#B9D8FF 0%,rgba(185,216,255,0) 70%),#E9C6E6;box-shadow:inset 0 0 20px 6px rgba(255,255,255,.88),inset 0 0 64px 8px rgba(255,255,255,.35);color:#0D0D0D}
+.dim{opacity:.36}
+.io{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:none;box-shadow:inset 0 0 0 1px rgba(13,13,13,.2)}
+.cb .io,.ob .io{box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
 </style>
 </helmet>
 <div class="ph lt" style="height:2110px">
@@ -74,7 +78,7 @@ body{margin:0;background:#FAFAFA}
   </div>
 
   <section style="padding:22px 20px 0" aria-label="이번 달 지출 요약">
-    <h1 class="t1">이번 달<br>지출 흐름</h1>
+    <h1 class="t1"><span class="dim">이번 달</span><br>지출 흐름</h1>
     <div class="row" style="gap:10px;margin-top:18px;align-items:baseline">
       <p class="n" style="font-size:40px;line-height:1">742,600<span class="cur">₩</span></p>
       <span class="tg cb">지난달 같은 기간 +14%</span>
@@ -119,7 +123,7 @@ body{margin:0;background:#FAFAFA}
 
   <section aria-label="소액 반복 지출" class="cd cw" style="margin:12px 16px 0;padding:22px 20px">
     <p class="eng">Small but often</p>
-    <h2 class="t2" style="margin-top:10px">작은 지출도<br>모이면 이만큼</h2>
+    <h2 class="t2" style="margin-top:10px"><span class="dim">작은 지출도</span><br>모이면 이만큼</h2>
     <div style="margin-top:18px;display:flex;flex-direction:column;gap:14px">
       <div>
         <div class="row sb sm"><span>카페 22회</span><span class="n" style="font-size:15px">96,400 ₩</span></div>
@@ -147,7 +151,7 @@ body{margin:0;background:#FAFAFA}
 
   <section aria-label="줄일 수 있는 항목" class="cd cb" style="margin:12px 16px 0;padding:22px 20px">
     <div class="row sb"><p class="eng" style="color:#C8E1FF">Cut</p><span class="tg cl">월 −91,200 ₩ 가능</span></div>
-    <h2 class="t2" style="margin-top:10px">줄여볼 수 있는<br>지출 3가지</h2>
+    <h2 class="t2" style="margin-top:10px"><span class="dim">줄여볼 수 있는</span><br>지출 3가지</h2>
     <div style="margin-top:18px;display:flex;flex-direction:column;gap:8px">
       <div class="row gl" style="border-radius:24px;padding:14px 14px 14px 18px;gap:12px">
         <div style="flex:1"><p class="sm">카페 주 5회 → 3회</p><p class="n" style="font-size:18px;color:#C8E1FF;margin-top:2px">−35,000 ₩</p></div>

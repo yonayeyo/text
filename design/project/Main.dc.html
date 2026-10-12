@@ -16,16 +16,17 @@ body{margin:0;background:#FAFAFA}
 :where(.ph) :where(h1,h2,h3,p){margin:0;font-weight:inherit;font-size:inherit}
 :where(.ph) button{font-family:inherit;font-stretch:inherit;cursor:pointer;color:inherit}
 .dk{background:#FAFAFA;color:#0D0D0D}
-.lt{background:#EBEBE9;color:#0D0D0D}
-.eng{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.lt{background:radial-gradient(70% 28% at 8% 6%,rgba(200,225,255,.95),rgba(200,225,255,0) 70%),radial-gradient(55% 22% at 100% 30%,rgba(255,118,156,.28),rgba(255,118,156,0) 70%),radial-gradient(70% 26% at 0% 62%,rgba(170,205,255,.6),rgba(170,205,255,0) 70%),radial-gradient(60% 24% at 95% 92%,rgba(255,170,195,.3),rgba(255,170,195,0) 70%),#EEEEEC;color:#0D0D0D}
+.eng{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:0;text-transform:none;font-weight:400}
+.eng::before{content:"";width:14px;height:14px;border-radius:50%;box-shadow:inset 0 0 0 1px currentColor;opacity:.45;flex:none}
 .t1{font-size:34px;font-weight:300;line-height:1.16;letter-spacing:-.035em}
 .t2{font-size:22px;font-weight:300;line-height:1.28;letter-spacing:-.03em}
 .n{font-variant-numeric:tabular-nums;font-weight:300;letter-spacing:-.045em;white-space:nowrap}
-.cur{font-size:.42em;letter-spacing:0;margin-left:.2em;font-weight:400}
+.cur{font-size:.42em;letter-spacing:0;margin-left:.2em;font-weight:400;opacity:.45}
 .sm{font-size:13px}.xs{font-size:11px}
 .mu{opacity:.56}
 .cd{border-radius:32px;padding:22px;position:relative}
-.cd{border-radius:40px}
+.cd{border-radius:44px}
 .cd,.step,.st,.tm,.opt,.fld,.term,.bf,.alloc div,.lt,[style*="border-radius:2"],[style*="border-radius:3"],[style*="border-radius:4"]{corner-shape:squircle}
 .gb{background:radial-gradient(120% 115% at 28% 40%,#A9CFFF 0%,#C8E1FF 40%,#E2EEFF 76%,#F5F9FF 100%);box-shadow:inset 0 0 20px 6px rgba(255,255,255,.92),inset 0 0 64px 8px rgba(255,255,255,.4);color:#0D0D0D}
 .gp{background:radial-gradient(120% 115% at 28% 40%,#FF6890 0%,#FF86A8 40%,#FFBACD 80%,#FFDDE6 100%);box-shadow:inset 0 0 20px 6px rgba(255,255,255,.85),inset 0 0 64px 8px rgba(255,255,255,.3);color:#0D0D0D}
@@ -50,12 +51,19 @@ body{margin:0;background:#FAFAFA}
 .top{display:flex;align-items:center;justify-content:space-between;padding:56px 20px 0}
 .row{display:flex;align-items:center}
 .sb{justify-content:space-between}
+.hero{position:relative;border-radius:44px;padding:22px;corner-shape:squircle;background:radial-gradient(90% 120% at 15% 10%,#8EBFFF 0%,rgba(142,191,255,0) 60%),radial-gradient(80% 110% at 95% 90%,#FF8DAE 0%,rgba(255,141,174,0) 62%),linear-gradient(135deg,#B9D6FF,#DCE6F2 55%,#F2C9D6);box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),inset 0 0 40px 6px rgba(255,255,255,.35)}
+.wg{border-radius:36px;padding:16px;corner-shape:squircle;display:flex;flex-direction:column;justify-content:space-between;min-height:150px}
+.wg .lb{font-size:12px;line-height:1.3}
+.bk{background:#0D0D0D;color:#FFFFFF}
 .sw5{width:10px;height:10px;border-radius:50%;flex:none}
+.dim{opacity:.36}
+.io{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:none;box-shadow:inset 0 0 0 1px rgba(13,13,13,.2)}
+.cb .io,.ob .io{box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
 </style>
 </helmet>
-<div class="ph dk" style="height:1290px">
+<div class="ph dk" style="height:1340px">
 
-  <div class="top">
+  <div class="top" style="position:relative">
     <div class="row" style="gap:10px">
       <span class="ib gl" style="width:44px;height:44px"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></span>
       <span class="sm mu">10월 17일 금요일</span>
@@ -63,45 +71,41 @@ body{margin:0;background:#FAFAFA}
     <button class="ib gl" aria-label="알림 1개: 예산 초과 위험" style="position:relative;width:44px;height:44px"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"></path><path d="M10 20a2 2 0 0 0 4 0"></path></svg><span style="position:absolute;top:10px;right:11px;width:8px;height:8px;border-radius:50%;background:#FF769C"></span></button>
   </div>
 
-  <section aria-label="오늘 쓸 수 있는 돈" style="padding:40px 20px 0">
-    <p class="eng">Today</p>
-    <h1 class="n" style="font-size: 72px; line-height: .95; margin-top: 14px">30,400<span class="cur">₩</span></h1>
-    <p class="sm mu" style="margin-top:12px">오늘 쓸 수 있는 돈 · 남은 예산 ÷ 남은 15일</p>
+  <div aria-hidden="true" style="position:absolute;left:0;right:0;top:0;height:760px;overflow:hidden;pointer-events:none">
+    <div style="position:absolute;left:-90px;top:60px;width:320px;height:320px;border-radius:50%;background:#A9CFFF;filter:blur(70px);opacity:.75"></div>
+    <div style="position:absolute;right:-80px;top:250px;width:260px;height:260px;border-radius:50%;background:#FF9DB8;filter:blur(80px);opacity:.45"></div>
+    <div style="position:absolute;left:40px;top:520px;width:300px;height:220px;border-radius:50%;background:#C8E1FF;filter:blur(80px);opacity:.7"></div>
+  </div>
 
-    <svg width="350" height="104" viewBox="0 0 350 104" style="display:block;margin-top:26px" role="img" aria-label="오늘 17일부터 31일까지 남은 15일, 하루 30,400원씩. 25일은 급여일">
-      <defs><radialGradient id="todayOrb" cx="40%" cy="38%" r="65%"><stop offset="0" stop-color="#8EBFFF"></stop><stop offset=".55" stop-color="#C8E1FF"></stop><stop offset="1" stop-color="#EEF5FF"></stop></radialGradient><filter id="todayGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8"></feGaussianBlur></filter></defs>
-      <defs>
-        <filter id="gooDays" x="-10%" y="-40%" width="120%" height="180%"><feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b"></feGaussianBlur><feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9"></feColorMatrix></filter>
-      </defs>
-      <g filter="url(#gooDays)" fill="#D4D4D2">
-        <circle cx="36" cy="40" r="34"></circle>
-        <rect x="36" y="36" width="56" height="8" rx="4"></rect>
-        <circle cx="96" cy="40" r="7"></circle>
-      </g>
-      <line x1="96" y1="40" x2="336" y2="40" stroke="#0D0D0D" stroke-opacity=".18" stroke-width="2"></line>
-      <g fill="#D4D4D2"><circle cx="96" cy="40" r="7"></circle><circle cx="114.5" cy="40" r="7"></circle><circle cx="132.9" cy="40" r="7"></circle><circle cx="151.4" cy="40" r="7"></circle><circle cx="169.8" cy="40" r="7"></circle><circle cx="188.3" cy="40" r="7"></circle><circle cx="206.8" cy="40" r="7"></circle><circle cx="225.2" cy="40" r="7"></circle><circle cx="243.7" cy="40" r="7"></circle><circle cx="262.2" cy="40" r="7"></circle><circle cx="280.6" cy="40" r="7"></circle><circle cx="299.1" cy="40" r="7"></circle><circle cx="317.5" cy="40" r="7"></circle><circle cx="336" cy="40" r="7"></circle></g>
-      <circle cx="36" cy="40" r="38" fill="#9CC7FF" opacity=".55" filter="url(#todayGlow)"></circle><circle cx="36" cy="40" r="32" fill="url(#todayOrb)"></circle>
-      <circle cx="225.2" cy="40" r="7" fill="#9CC7FF"></circle><circle cx="225.2" cy="40" r="11" fill="none" stroke="#0D0D0D" stroke-width="1"></circle>
-      <g font-family="Archivo, Noto Sans KR, sans-serif" text-anchor="middle">
-        <text x="36" y="40" font-size="18" font-weight="300" fill="#0D0D0D">17</text>
-        <text x="36" y="55" font-size="10" fill="#0D0D0D">오늘</text>
-        <text x="96" y="70" font-size="10" fill="#0D0D0D" fill-opacity=".45">18</text>
-        <text x="225.2" y="70" font-size="10" fill="#0D0D0D">25 급여</text>
-        <text x="336" y="70" font-size="10" fill="#0D0D0D" fill-opacity=".45">31</text>
-      </g>
-      <text x="96" y="98" font-family="Archivo, Noto Sans KR, sans-serif" font-size="11" fill="#0D0D0D" fill-opacity=".55">남은 날마다 30,400 ₩</text>
-    </svg>
+  <section aria-label="오늘 쓸 수 있는 돈" style="position:relative;padding:28px 16px 0">
+    <div class="hero">
+      <div class="row sb" style="align-items:flex-start">
+        <div class="row" style="gap:12px"><span class="io" style="box-shadow:inset 0 0 0 1px rgba(13,13,13,.25)"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="3"></rect><path d="M3 10h18M16 14.5h2"></path></svg></span><p style="font-size:15px;line-height:1.3">오늘 쓸 수 있는<br>돈</p></div>
+        <a href="Spend.dc.html" class="ib cw" style="width:48px;height:48px;color:#0D0D0D" aria-label="지출 분석 보기"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg></a>
+      </div>
+      <h1 class="n" style="font-size:72px;line-height:.95;margin-top:44px">30,400<span class="cur">₩</span></h1>
+      <div class="row sb" style="margin-top:20px">
+        <span class="xs"><span class="dim">남은</span> 15일 <span class="dim">· 25일 급여</span></span>
+        <div class="row" style="gap:5px" aria-label="17일부터 31일까지 남은 15일, 오늘과 급여일 표시"><span style="width:18px;height:18px;border-radius:50%;flex:none;background:#FFFFFF;box-shadow:0 0 0 4px rgba(255,255,255,.35)"></span><span style="width:6px;height:6px;border-radius:50%;flex:none;background:rgba(13,13,13,.35);"></span><span style="width:6px;height:6px;border-radius:50%;flex:none;background:rgba(13,13,13,.35);"></span><span style="width:6px;height:6px;border-radius:50%;flex:none;background:rgba(13,13,13,.35);"></span><span style="width:6px;height:6px;border-radius:50%;flex:none;background:rgba(13,13,13,.35);"></span><span style="width:6px;height:6px;border-radius:50%;flex:none;background:rgba(13,13,13,.35);"></span><span style="width:6px;height:6px;border-radius:50%;flex:none;background:rgba(13,13,13,.35);"></span><span style="width:6px;height:6px;border-radius:50%;flex:none;background:rgba(13,13,13,.35);"></span><span style="width:6px;height:6px;border-radius:50%;flex:none;background:#0D0D0D;"></span><span style="width:6px;height:6px;border-radius:50%;flex:none;background:rgba(13,13,13,.35);"></span><span style="width:6px;height:6px;border-radius:50%;flex:none;background:rgba(13,13,13,.35);"></span><span style="width:6px;height:6px;border-radius:50%;flex:none;background:rgba(13,13,13,.35);"></span><span style="width:6px;height:6px;border-radius:50%;flex:none;background:rgba(13,13,13,.35);"></span><span style="width:6px;height:6px;border-radius:50%;flex:none;background:rgba(13,13,13,.35);"></span><span style="width:6px;height:6px;border-radius:50%;flex:none;background:rgba(13,13,13,.35);"></span></div>
+      </div>
+    </div>
 
-    <div class="row" style="gap:8px;margin-top:14px">
-      <span class="pl gl" style="flex:1;height:44px;justify-content:space-between;padding:0 16px"><span class="xs mu">오늘 쓴 돈</span><span class="n" style="font-size:15px">0 ₩</span></span>
-      <span class="pl gl" style="flex:1;height:44px;justify-content:space-between;padding:0 16px;border-color:#FF769C"><span class="xs mu">최근 7일 평균</span><span class="n" style="font-size:15px;color:#E0466F">43,700 ₩</span></span>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px">
+      <div class="wg cw">
+        <div class="row" style="gap:10px"><span class="io"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h12v5a5 5 0 0 1-5 5H10a5 5 0 0 1-5-5z"></path><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"></path></svg></span><p class="lb">오늘<br>쓴 돈</p></div>
+        <div class="row sb" style="align-items:flex-end"><p class="n" style="font-size:30px;line-height:1">0<span class="cur">₩</span></p><svg width="52" height="22" viewBox="0 0 52 22" aria-label="최근 7일 지출 막대"><rect x="0" y="12" width="4" height="10" rx="2" fill="#0D0D0D" fill-opacity="0.25"></rect><rect x="8" y="6" width="4" height="16" rx="2" fill="#0D0D0D" fill-opacity="0.25"></rect><rect x="16" y="15" width="4" height="7" rx="2" fill="#0D0D0D" fill-opacity="0.25"></rect><rect x="24" y="4" width="4" height="18" rx="2" fill="#0D0D0D" fill-opacity="0.25"></rect><rect x="32" y="10" width="4" height="12" rx="2" fill="#0D0D0D" fill-opacity="0.25"></rect><rect x="40" y="2" width="4" height="20" rx="2" fill="#0D0D0D" fill-opacity="0.25"></rect><rect x="48" y="20" width="4" height="2" rx="2" fill="#0D0D0D" fill-opacity="1"></rect></svg></div>
+      </div>
+      <div class="wg cw">
+        <div class="row" style="gap:10px"><span class="io"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16l5-5 4 3 7-7"></path></svg></span><p class="lb">최근 7일<br>평균</p></div>
+        <div class="row sb" style="align-items:flex-end"><p class="n" style="font-size:24px;line-height:1;color:#D93C66">43,700<span class="cur">₩</span></p><svg width="44" height="22" viewBox="0 0 44 22" aria-label="평균이 한도를 넘는 추세"><path d="M1 18 C8 18 9 6 15 8 S24 18 30 10 S38 2 43 3" fill="none" stroke="#FF769C" stroke-width="1.5" stroke-linecap="round"></path><circle cx="43" cy="3" r="2.5" fill="#FF769C"></circle></svg></div>
+      </div>
     </div>
   </section>
 
-  <div class="lt" style="margin-top: 28px; border-radius: 40px 40px 0 0; padding: 16px 16px 0; min-height: 1000px; height: 718px">
+  <div class="bk" style="position:relative;margin-top:28px;border-radius:40px 40px 0 0;padding:16px 16px 0;min-height:760px">
 
-    <a href="Report.dc.html" class="pl cb" style="width:100%;height:56px;justify-content:space-between;padding:0 6px 0 20px;color:#fff">
-      <span class="row" style="gap:10px"><span class="eng" style="color:#C8E1FF">Report</span><span class="sm">9월 리포트가 도착했어요</span></span>
+    <a href="Report.dc.html" class="pl cw" style="width:100%;height:56px;justify-content:space-between;padding:0 6px 0 20px;color:#0D0D0D">
+      <span class="row" style="gap:10px"><span class="eng">Report</span><span class="sm">9월 리포트가 도착했어요</span></span>
       <span class="ib cl" style="width:44px;height:44px"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg></span>
     </a>
 
@@ -134,12 +138,12 @@ body{margin:0;background:#FAFAFA}
     </section>
 
     <div class="row" style="gap:12px;margin-top:12px;align-items:stretch">
-      <a href="Goal.dc.html" class="cd cb" style="flex:1;padding:20px;text-decoration:none;display:block" aria-label="전세 자금 목표 38.2% 달성, 3단계 진행 중">
-        <div class="row sb"><p class="eng" style="color:#C8E1FF">Goal</p><span class="xs mu">3 / 5</span></div>
+      <a href="Goal.dc.html" class="cd cw"  style="flex:1;padding:20px;text-decoration:none;display:block;color:#0D0D0D" aria-label="전세 자금 목표 38.2% 달성, 3단계 진행 중">
+        <div class="row sb"><p class="eng">Goal</p><span class="xs mu">3 / 5</span></div>
         <svg width="112" height="112" viewBox="0 0 112 112" style="display:block;margin:14px auto 0" aria-hidden="true">
-          <circle cx="56" cy="56" r="46" fill="none" stroke="#FFFFFF" stroke-opacity=".12" stroke-width="12"></circle>
+          <circle cx="56" cy="56" r="46" fill="none" stroke="#0D0D0D" stroke-opacity=".08" stroke-width="12"></circle>
           <defs><linearGradient id="ringG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EEF5FF"></stop><stop offset=".5" stop-color="#C8E1FF"></stop><stop offset="1" stop-color="#7DB6FF"></stop></linearGradient><filter id="ringGlow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4"></feGaussianBlur></filter></defs><circle cx="56" cy="56" r="46" fill="none" stroke="url(#ringG)" stroke-width="14" stroke-linecap="round" stroke-dasharray="110.4 289" transform="rotate(-90 56 56)" filter="url(#ringGlow)" opacity=".6"></circle><circle cx="56" cy="56" r="46" fill="none" stroke="url(#ringG)" stroke-width="12" stroke-linecap="round" stroke-dasharray="110.4 289" transform="rotate(-90 56 56)"></circle>
-          <text x="56" y="62" text-anchor="middle" font-family="Archivo, sans-serif" font-size="22" font-weight="300" fill="#FFFFFF" letter-spacing="-1">38.2%</text>
+          <text x="56" y="62" text-anchor="middle" font-family="Archivo, sans-serif" font-size="22" font-weight="300" fill="#0D0D0D" letter-spacing="-1">38.2%</text>
         </svg>
         <p class="sm" style="text-align:center;margin-top:10px">전세 자금</p>
       </a>
@@ -175,7 +179,7 @@ body{margin:0;background:#FAFAFA}
   </nav>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1290}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1340}}'>
 class Component extends DCLogic {
   renderVals() { return {}; }
 }
