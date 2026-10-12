@@ -2,8 +2,17 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=390, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=390, viewport-fit=cover, user-scalable=no">
 <title>9월 영수증</title>
+<!-- 홈 화면에 추가하면 브라우저 UI 없이 전체화면으로 실행 -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="영수증">
+<meta name="theme-color" content="#151515">
+<meta name="format-detection" content="telephone=no">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Nanum+Gothic+Coding:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -203,6 +212,34 @@
   }
   .tabbar button.active { color: #fff; }
   .home-ind { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 134px; height: 5px; border-radius: 3px; background: #fff; }
+
+  /* ---------- 실기기 전체화면 (사용성 테스트) ----------
+     목업용 가짜 상태바·홈 인디케이터를 숨기고 화면 전체를 채운다.
+     실제 노치/홈 인디케이터 영역은 safe-area로 비워 둔다. */
+  @media (hover: none) and (pointer: coarse), (display-mode: fullscreen), (display-mode: standalone) {
+    :root { --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px); }
+    html, body { height: 100%; overflow: hidden; overscroll-behavior: none; background: var(--bg); }
+    body {
+      -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none;
+      -webkit-user-select: none; user-select: none; touch-action: manipulation;
+    }
+    .phone { width: 100%; height: 100vh; height: 100dvh; }
+    .statusbar { height: var(--safe-top); padding: 0; }
+    .statusbar .num, .statusbar .icons { display: none; }
+    .slot { top: var(--safe-top); }
+    .scroll { top: calc(var(--safe-top) + 23px); bottom: calc(49px + var(--safe-bottom)); overscroll-behavior: contain; }
+    .tabbar { height: calc(49px + var(--safe-bottom)); padding-bottom: var(--safe-bottom); }
+    .home-ind { display: none; }
+  }
+
+  /* iOS 사파리 탭에서 열었을 때만 뜨는 '홈 화면에 추가' 안내 */
+  .a2hs {
+    position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 20;
+    padding: 14px 16px; border-radius: 14px; background: #fff; color: #141414;
+    font-family: var(--kr); font-size: 14px; line-height: 1.5; box-shadow: 0 8px 30px rgba(0,0,0,.5);
+  }
+  .a2hs[hidden] { display: none; }
+  .a2hs button { margin-top: 8px; width: 100%; padding: 10px; border: 0; border-radius: 10px; background: #141414; color: #fff; font: 600 14px var(--kr); }
 </style>
 </head>
 <body>
@@ -360,6 +397,12 @@
   </nav>
 </div>
 
+<div class="a2hs" id="a2hs" role="dialog" aria-label="전체화면 안내" hidden>
+  <b>전체화면으로 보려면</b><br>
+  하단 공유 버튼 → <b>홈 화면에 추가</b> 후, 홈 화면 아이콘으로 실행하세요.
+  <button type="button" id="a2hsClose">이대로 볼게요</button>
+</div>
+
 <script>
   // 장식용 바코드 (고정 시드로 매번 같은 모양)
   function rng(seed) { return () => (seed = (seed * 9301 + 49297) % 233280) / 233280; }
@@ -402,6 +445,45 @@
     update();
   }));
   update();
+
+  // ---------- 사용성 테스트용 전체화면 ----------
+  (() => {
+    const standalone = matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches || navigator.standalone;
+    const touch = matchMedia('(hover: none) and (pointer: coarse)').matches;
+    const root = document.documentElement;
+
+    // 안드로이드 등 Fullscreen API 지원 브라우저: 첫 터치에 전체화면 진입 (사용자 제스처 필요)
+    if (touch && !standalone && root.requestFullscreen) {
+      const enter = () => {
+        if (document.fullscreenElement) return;
+        root.requestFullscreen({ navigationUI: 'hide' })
+          .then(() => screen.orientation?.lock?.('portrait').catch(() => {}))
+          .catch(() => {});
+      };
+      document.addEventListener('click', enter, true);
+      document.addEventListener('touchend', enter, true);
+    }
+
+    // iPhone 사파리는 페이지 전체화면을 지원하지 않음 → 홈 화면 추가 안내 (테스트 전 1회)
+    const ios = /iP(hone|od)/.test(navigator.userAgent);
+    if (ios && !standalone) {
+      const box = document.getElementById('a2hs');
+      let seen = false;
+      try { seen = sessionStorage.getItem('a2hs') === '1'; } catch (e) {}
+      if (!seen) box.hidden = false;
+      document.getElementById('a2hsClose').addEventListener('click', () => {
+        box.hidden = true;
+        try { sessionStorage.setItem('a2hs', '1'); } catch (e) {}
+      });
+    }
+
+    // 테스트 중 화면 꺼짐 방지
+    if (touch && 'wakeLock' in navigator) {
+      const lock = () => navigator.wakeLock.request('screen').catch(() => {});
+      lock();
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') lock(); });
+    }
+  })();
 </script>
 </body>
 </html>
