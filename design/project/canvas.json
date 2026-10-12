@@ -83,7 +83,7 @@
       "y": 2210
     },
     "Report.dc.html": {
-      "h": 1960,
+      "h": 2140,
       "is_interactive": true,
       "title": "H 월간 리포트",
       "w": 390,
@@ -110,7 +110,7 @@
       "x": 2350,
       "y": 2210,
       "w": 390,
-      "h": 1480,
+      "h": 1540,
       "title": "B-2 자산 현황",
       "is_interactive": true
     }

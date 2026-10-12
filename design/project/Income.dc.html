@@ -55,17 +55,19 @@ body{margin:0;background:#FAFAFA}
     <svg width="358" height="330" viewBox="0 0 358 330" style="display:block" role="img" aria-label="380,000원을 목표 190,000원, 비상금 114,000원, 자유 76,000원으로 나누는 제안">
       <defs><filter id="gooIncome" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur in="SourceGraphic" stdDeviation="8" result="b"></feGaussianBlur><feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -10"></feColorMatrix></filter></defs>
       <g filter="url(#gooIncome)">
-        <rect x="79" y="6" width="200" height="64" rx="32" fill="#0D0D0D"></rect>
-        <path d="M150 60 C150 140 72 150 72 230" fill="none" stroke="#0D0D0D" stroke-width="18" stroke-linecap="round"></path>
-        <path d="M179 60 L182 236" fill="none" stroke="#0D0D0D" stroke-width="14" stroke-linecap="round"></path>
-        <path d="M208 60 C208 150 292 160 292 246" fill="none" stroke="#0D0D0D" stroke-width="11" stroke-linecap="round"></path>
-        <circle cx="72" cy="250" r="62" fill="#0D0D0D"></circle>
-        <circle cx="182" cy="262" r="48" fill="#0D0D0D"></circle>
-        <circle cx="292" cy="270" r="40" fill="#0D0D0D"></circle>
+        <rect x="79" y="6" width="200" height="64" rx="32" fill="#FFFFFF"></rect>
+        <path d="M150 60 C150 140 72 150 72 230" fill="none" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round"></path>
+        <path d="M179 60 L182 236" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round"></path>
+        <path d="M208 60 C208 150 292 160 292 246" fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round"></path>
+        <circle cx="72" cy="250" r="62" fill="#FFFFFF"></circle>
+        <circle cx="182" cy="262" r="48" fill="#FFFFFF"></circle>
+        <circle cx="292" cy="270" r="40" fill="#FFFFFF"></circle>
       </g>
-      <circle cx="72" cy="250" r="58" fill="#C8E1FF"></circle>
-      <circle cx="182" cy="262" r="44" fill="#FF769C"></circle>
-      <circle cx="292" cy="270" r="36" fill="#FFFFFF"></circle>
+      <defs><radialGradient id="dropB" cx="40%" cy="38%" r="65%"><stop offset="0" stop-color="#94C3FF"></stop><stop offset=".55" stop-color="#C8E1FF"></stop><stop offset="1" stop-color="#F2F7FF"></stop></radialGradient><radialGradient id="dropP" cx="40%" cy="38%" r="65%"><stop offset="0" stop-color="#FF6890"></stop><stop offset=".55" stop-color="#FF9DB8"></stop><stop offset="1" stop-color="#FFE6ED"></stop></radialGradient><radialGradient id="dropG" cx="40%" cy="38%" r="65%"><stop offset="0" stop-color="#E2E2E0"></stop><stop offset="1" stop-color="#FFFFFF"></stop></radialGradient></defs>
+      <rect x="79" y="6" width="200" height="64" rx="32" fill="#0D0D0D"></rect>
+      <circle cx="72" cy="250" r="58" fill="url(#dropB)"></circle>
+      <circle cx="182" cy="262" r="44" fill="url(#dropP)"></circle>
+      <circle cx="292" cy="270" r="36" fill="url(#dropG)"></circle>
       <text x="179" y="45" text-anchor="middle" font-family="Archivo, sans-serif" font-size="24" font-weight="300" letter-spacing="-1" fill="#FFFFFF">380,000 ₩</text>
       <g font-family="Archivo, Noto Sans KR, sans-serif" fill="#0D0D0D" text-anchor="middle">
         <text x="72" y="238" font-size="12">전세 자금 50%</text>
