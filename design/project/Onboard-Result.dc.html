@@ -46,9 +46,11 @@ body{margin:0;background:#FAFAFA}
 .top{display:flex;align-items:center;justify-content:space-between;padding:56px 20px 0}
 .row{display:flex;align-items:center}
 .sb{justify-content:space-between}
+.ob{background:#0D0D0D;color:#FFFFFF}
+.ob .gl{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#FFFFFF}
 </style>
 </helmet>
-<div class="ph dk" style="height:1790px">
+<div class="ph ob" style="height:1790px">
 
   <div class="top">
     <span class="tg gl">진단 완료 · 20문항</span>
@@ -56,7 +58,7 @@ body{margin:0;background:#FAFAFA}
   </div>
 
   <section style="padding:30px 20px 0" aria-label="사용자 유형">
-    <p class="eng">Your type · 인지우세형</p>
+    <p class="eng" style="color:#C8E1FF">Your type · 인지우세형</p>
     <h1 class="t1" style="margin-top:12px">아는 만큼<br>움직일 차례예요</h1>
     <p class="sm mu" style="margin-top:12px">개념은 잘 알고 있지만 실행이 아직 따라오지 않는 유형이에요. 바로 누를 수 있는 버튼과 자동 실행 위주로 안내할게요.</p>
   </section>
@@ -65,14 +67,14 @@ body{margin:0;background:#FAFAFA}
     <svg width="358" height="358" viewBox="0 0 358 358" style="display:block" role="img" aria-label="실천 2.9, 지식 6.4로 인지우세형. 자기평가는 실천 3, 지식 8">
       <defs><radialGradient id="quadG" cx="35%" cy="40%" r="75%"><stop offset="0" stop-color="#9CC7FF"></stop><stop offset=".6" stop-color="#C8E1FF"></stop><stop offset="1" stop-color="#EEF5FF"></stop></radialGradient></defs>
       <rect x="16" y="0" width="167" height="167" rx="32" fill="url(#quadG)"></rect>
-      <rect x="187" y="0" width="167" height="167" rx="32" fill="#EBEBE9"></rect>
-      <rect x="16" y="171" width="167" height="167" rx="32" fill="#EBEBE9"></rect>
-      <rect x="187" y="171" width="167" height="167" rx="32" fill="#EBEBE9"></rect>
+      <rect x="187" y="0" width="167" height="167" rx="32" fill="#FFFFFF" fill-opacity=".08"></rect>
+      <rect x="16" y="171" width="167" height="167" rx="32" fill="#FFFFFF" fill-opacity=".08"></rect>
+      <rect x="187" y="171" width="167" height="167" rx="32" fill="#FFFFFF" fill-opacity=".08"></rect>
       <g font-family="Archivo, Noto Sans KR, sans-serif" font-size="12">
         <text x="34" y="30" fill="#0D0D0D">인지우세형</text>
-        <text x="336" y="30" fill="#0D0D0D" fill-opacity=".5" text-anchor="end">자기관리형</text>
-        <text x="34" y="322" fill="#0D0D0D" fill-opacity=".5">저관여형</text>
-        <text x="336" y="322" fill="#0D0D0D" fill-opacity=".5" text-anchor="end">습관우세형</text>
+        <text x="336" y="30" fill="#FFFFFF" fill-opacity=".6" text-anchor="end">자기관리형</text>
+        <text x="34" y="322" fill="#FFFFFF" fill-opacity=".6">저관여형</text>
+        <text x="336" y="322" fill="#FFFFFF" fill-opacity=".6" text-anchor="end">습관우세형</text>
       </g>
       <g font-family="Archivo, Noto Sans KR, sans-serif" font-size="10" fill="#0D0D0D" fill-opacity=".55">
         <text x="34" y="46">지식 높음 · 실천 낮음</text>
@@ -85,14 +87,14 @@ body{margin:0;background:#FAFAFA}
         <text x="106" y="79">내 생각 8 · 3</text>
         <text x="104" y="139">진단 6.4 · 2.9</text>
       </g>
-      <g font-family="Archivo, Noto Sans KR, sans-serif" font-size="10" fill="#0D0D0D" fill-opacity=".45">
+      <g font-family="Archivo, Noto Sans KR, sans-serif" font-size="10" fill="#FFFFFF" fill-opacity=".5">
         <text x="185" y="354" text-anchor="middle">실천 수준 →</text>
         <text x="8" y="169" text-anchor="middle" transform="rotate(-90 8 169)">금융 지식 →</text>
       </g>
     </svg>
   </section>
 
-  <div class="lt" style="margin-top:28px;border-radius:40px 40px 0 0;padding:16px 16px 40px;min-height:900px">
+  <div style="margin-top:28px;padding:0 16px 40px">
 
     <section class="cd cw" style="padding:22px 20px" aria-label="자기평가와 진단 결과 차이">
       <div class="row sb"><p class="eng">Gap</p><span class="row xs" style="gap:10px"><span class="row" style="gap:5px"><span style="width:12px;height:12px;border-radius:50%;border:1.5px dashed #0D0D0D"></span>내 생각</span><span class="row" style="gap:5px"><span style="width:12px;height:12px;border-radius:50%;background:#C8E1FF;border:1.5px solid #0D0D0D"></span>진단</span></span></div>
@@ -156,7 +158,7 @@ body{margin:0;background:#FAFAFA}
     </section>
 
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px">
-      <a href="Main.dc.html" class="bt cb" style="color:#fff"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"></path><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"></path></svg>계좌·카드 연동하고 시작</a>
+      <a href="Main.dc.html" class="bt cl"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"></path><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"></path></svg>계좌·카드 연동하고 시작</a>
       <a href="Plan.dc.html" class="bt cw" style="color:#0D0D0D">기본 설정부터 할게요</a>
     </div>
     <p class="xs mu" style="text-align:center;margin-top:14px">30일 뒤 다시 진단하고 오늘 결과와 비교해 드려요</p>

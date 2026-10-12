@@ -38,18 +38,21 @@ body{margin:0;background:#FAFAFA}
 .row{display:flex;align-items:center}
 .sb{justify-content:space-between}
 .seg{display:flex;gap:2px;flex:1}
-.seg span{flex:1;height:6px;border-radius:3px;background:rgba(13,13,13,.12)}
-.seg span.d{background:#0D0D0D}
-.seg span.c{background:#C8E1FF;outline:1.5px solid #0D0D0D}
-.opt{display:flex;align-items:center;gap:14px;width:100%;min-height:64px;border-radius:26px;border:0;padding:12px 16px 12px 12px;text-align:left;font-size:14px;line-height:1.45;background:#FFFFFF}
-.opt .k{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;font-size:13px;background:#EBEBE9}
+.seg span{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.16)}
+.seg span.d{background:#FFFFFF}
+.seg span.c{background:#C8E1FF}
+.opt{display:flex;align-items:center;gap:14px;width:100%;min-height:64px;border-radius:26px;border:0;padding:12px 16px 12px 12px;text-align:left;font-size:14px;line-height:1.45;background:rgba(255,255,255,.08);color:#FFFFFF}
+.opt.cl{color:#0D0D0D}
+.opt .k{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;font-size:13px;background:rgba(255,255,255,.12)}
+.ob{background:#0D0D0D;color:#FFFFFF}
+.ob .gl{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#FFFFFF}
 </style>
 </helmet>
-<div class="ph lt" style="height:844px">
+<div class="ph ob" style="height:844px">
 
   <div class="top">
-    <a href="Onboard-Self.dc.html" class="ib cw" style="width:44px;height:44px;color:#0D0D0D" aria-label="이전"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
-    <span class="tg cb">7 / 20</span>
+    <a href="Onboard-Self.dc.html" class="ib gl" style="width:44px;height:44px" aria-label="이전"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+    <span class="tg gl">7 / 20</span>
   </div>
 
   <div style="padding:22px 20px 0">
@@ -72,13 +75,13 @@ body{margin:0;background:#FAFAFA}
     <button class="opt" role="radio" aria-checked="false"><span class="k">A</span>쓰고 남은 돈이 있으면 그때 저축한다</button>
     <button class="opt cl" role="radio" aria-checked="true" style="background:#C8E1FF"><span class="k" style="background:#0D0D0D;color:#C8E1FF"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>저축할 금액은 정해뒀지만, 이체는 그때그때 직접 한다</button>
     <button class="opt" role="radio" aria-checked="false"><span class="k">C</span>월급날 정해둔 금액이 자동으로 먼저 빠져나간다</button>
-    <button class="opt" role="radio" aria-checked="false" style="background:transparent;border:1.5px dashed rgba(13,13,13,.35)"><span class="k" style="background:transparent;border:1.5px dashed rgba(13,13,13,.35)">?</span>잘 모르겠다 · 생각해 본 적 없다</button>
+    <button class="opt" role="radio" aria-checked="false" style="background:transparent;border:1.5px dashed rgba(255,255,255,.35)"><span class="k" style="background:transparent;border:1.5px dashed rgba(255,255,255,.35)">?</span>잘 모르겠다 · 생각해 본 적 없다</button>
   </div>
   <p class="xs mu" style="padding:12px 24px 0;line-height:1.5">‘잘 모르겠다’는 틀린 답이 아니에요. 아직 경험이 적은 영역으로 기록하고, 쉬운 단계부터 추천해요.</p>
 
   <div class="row" style="position:absolute;left:16px;right:16px;bottom:34px;gap:8px">
-    <a href="Onboard-Self.dc.html" class="bt cw" style="flex:1;color:#0D0D0D">이전</a>
-    <a href="Onboard-Result.dc.html" class="bt cb" style="flex:2;color:#fff">다음</a>
+    <a href="Onboard-Self.dc.html" class="bt gl" style="flex:1">이전</a>
+    <a href="Onboard-Result.dc.html" class="bt cl" style="flex:2">다음</a>
   </div>
 </div>
 </x-dc>

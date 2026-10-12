@@ -38,32 +38,34 @@ body{margin:0;background:#FAFAFA}
 .top{display:flex;align-items:center;justify-content:space-between;padding:56px 20px 0}
 .row{display:flex;align-items:center}
 .sb{justify-content:space-between}
+.ob{background:#0D0D0D;color:#FFFFFF}
+.ob .gl{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#FFFFFF}
 </style>
 </helmet>
-<div class="ph dk" style="height:844px">
+<div class="ph ob" style="height:844px">
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="slideG" x1="0" x2="1"><stop offset="0" stop-color="#EEF5FF"></stop><stop offset="1" stop-color="#9CC7FF"></stop></linearGradient><filter id="gooSelf"><feGaussianBlur in="SourceGraphic" stdDeviation="6" result="b"></feGaussianBlur><feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9"></feColorMatrix></filter></defs></svg>
 
   <div class="top">
-    <button class="ib cg" style="width:44px;height:44px" aria-label="닫기"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+    <button class="ib gl" style="width:44px;height:44px" aria-label="닫기"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
     <div class="row" style="gap:4px" aria-label="3단계 중 1단계">
-      <span style="width:28px;height:6px;border-radius:3px;background:#0D0D0D"></span>
-      <span style="width:28px;height:6px;border-radius:3px;background:rgba(13,13,13,.12)"></span>
-      <span style="width:28px;height:6px;border-radius:3px;background:rgba(13,13,13,.12)"></span>
+      <span style="width:28px;height:6px;border-radius:3px;background:#C8E1FF"></span>
+      <span style="width:28px;height:6px;border-radius:3px;background:rgba(255,255,255,.18)"></span>
+      <span style="width:28px;height:6px;border-radius:3px;background:rgba(255,255,255,.18)"></span>
     </div>
     <span style="width:44px"></span>
   </div>
 
   <section style="padding:34px 20px 0">
-    <p class="eng">Self check</p>
+    <p class="eng" style="color:#C8E1FF">Self check</p>
     <h1 class="t1" style="margin-top:12px">진단 전에<br>스스로 매겨볼까요</h1>
     <p class="sm mu" style="margin-top:12px">정답은 없어요. 진단 결과와 나란히 놓고 비교해 드려요.</p>
   </section>
 
-  <section class="cd cg" style="margin:28px 16px 0;padding:22px 20px" aria-label="금융 지식 자기평가">
+  <section class="cd gl" style="margin:28px 16px 0;padding:22px 20px" aria-label="금융 지식 자기평가">
     <div class="row sb"><h2 style="font-size:17px;font-weight:400">금융 지식</h2><span class="ib cl" style="width:36px;height:36px;font-size:16px">8</span></div>
     <p class="xs mu" style="margin-top:4px">예산, 적금, 신용점수 같은 개념을 설명할 수 있나요?</p>
     <svg width="318" height="52" viewBox="0 0 318 52" style="display:block;margin-top:18px" role="slider" aria-label="금융 지식 점수" aria-valuemin="1" aria-valuemax="10" aria-valuenow="8" tabindex="0">
-      <rect x="0" y="12" width="318" height="28" rx="14" fill="#FFFFFF"></rect>
+      <rect x="0" y="12" width="318" height="28" rx="14" fill="#FFFFFF" fill-opacity=".1"></rect>
       <g filter="url(#gooSelf)" fill="url(#slideG)">
         <rect x="0" y="12" width="250" height="28" rx="14"></rect>
         <circle cx="250" cy="26" r="24"></circle>
@@ -71,17 +73,17 @@ body{margin:0;background:#FAFAFA}
       <g font-family="Archivo, sans-serif" font-size="11" text-anchor="middle">
         <text x="14" y="30" fill="#0D0D0D">1</text><text x="44" y="30" fill="#0D0D0D">2</text><text x="74" y="30" fill="#0D0D0D">3</text><text x="104" y="30" fill="#0D0D0D">4</text><text x="134" y="30" fill="#0D0D0D">5</text><text x="164" y="30" fill="#0D0D0D">6</text><text x="194" y="30" fill="#0D0D0D">7</text>
         <text x="250" y="32" fill="#0D0D0D" font-size="18" font-weight="300">8</text>
-        <text x="284" y="30" fill="#0D0D0D" fill-opacity=".4">9</text><text x="306" y="30" fill="#0D0D0D" fill-opacity=".4">10</text>
+        <text x="284" y="30" fill="#FFFFFF" fill-opacity=".5">9</text><text x="306" y="30" fill="#FFFFFF" fill-opacity=".5">10</text>
       </g>
     </svg>
     <div class="row sb xs mu" style="margin-top:8px"><span>처음 들어요</span><span>설명할 수 있어요</span></div>
   </section>
 
-  <section class="cd cg" style="margin:10px 16px 0;padding:22px 20px" aria-label="실천 수준 자기평가">
+  <section class="cd gl" style="margin:10px 16px 0;padding:22px 20px" aria-label="실천 수준 자기평가">
     <div class="row sb"><h2 style="font-size:17px;font-weight:400">실천 수준</h2><span class="ib cl" style="width:36px;height:36px;font-size:16px">3</span></div>
     <p class="xs mu" style="margin-top:4px">예산 관리와 저축을 실제로 꾸준히 하고 있나요?</p>
     <svg width="318" height="52" viewBox="0 0 318 52" style="display:block;margin-top:18px" role="slider" aria-label="실천 수준 점수" aria-valuemin="1" aria-valuemax="10" aria-valuenow="3" tabindex="0">
-      <rect x="0" y="12" width="318" height="28" rx="14" fill="#FFFFFF"></rect>
+      <rect x="0" y="12" width="318" height="28" rx="14" fill="#FFFFFF" fill-opacity=".1"></rect>
       <g filter="url(#gooSelf)" fill="url(#slideG)">
         <rect x="0" y="12" width="80" height="28" rx="14"></rect>
         <circle cx="80" cy="26" r="24"></circle>
@@ -89,7 +91,7 @@ body{margin:0;background:#FAFAFA}
       <g font-family="Archivo, sans-serif" font-size="11" text-anchor="middle">
         <text x="14" y="30" fill="#0D0D0D">1</text><text x="44" y="30" fill="#0D0D0D" fill-opacity=".6">2</text>
         <text x="80" y="32" fill="#0D0D0D" font-size="18" font-weight="300">3</text>
-        <text x="134" y="30" fill="#0D0D0D" fill-opacity=".4">4</text><text x="164" y="30" fill="#0D0D0D" fill-opacity=".4">5</text><text x="194" y="30" fill="#0D0D0D" fill-opacity=".4">6</text><text x="224" y="30" fill="#0D0D0D" fill-opacity=".4">7</text><text x="254" y="30" fill="#0D0D0D" fill-opacity=".4">8</text><text x="284" y="30" fill="#0D0D0D" fill-opacity=".4">9</text><text x="306" y="30" fill="#0D0D0D" fill-opacity=".4">10</text>
+        <text x="134" y="30" fill="#FFFFFF" fill-opacity=".5">4</text><text x="164" y="30" fill="#FFFFFF" fill-opacity=".5">5</text><text x="194" y="30" fill="#FFFFFF" fill-opacity=".5">6</text><text x="224" y="30" fill="#FFFFFF" fill-opacity=".5">7</text><text x="254" y="30" fill="#FFFFFF" fill-opacity=".5">8</text><text x="284" y="30" fill="#FFFFFF" fill-opacity=".5">9</text><text x="306" y="30" fill="#FFFFFF" fill-opacity=".5">10</text>
       </g>
     </svg>
     <div class="row sb xs mu" style="margin-top:8px"><span>거의 안 해요</span><span>꾸준히 해요</span></div>
