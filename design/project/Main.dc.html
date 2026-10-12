@@ -8,7 +8,7 @@
 <body>
 <x-dc>
 <helmet>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..600&amp;family=Noto+Sans+KR:wght@300;400;500&amp;family=Silkscreen&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..600&amp;family=Noto+Sans+KR:wght@300;400;500&amp;display=swap">
 <style>
 body{margin:0;background:#FAFAFA}
 .ph{position:relative;width:390px;overflow:hidden;font-family:"Archivo","Noto Sans KR",sans-serif;font-stretch:112%;color:#0D0D0D;-webkit-font-smoothing:antialiased;word-break:keep-all;letter-spacing:-.01em;line-height:1.4}
@@ -50,11 +50,10 @@ body{margin:0;background:#FAFAFA}
 .top{display:flex;align-items:center;justify-content:space-between;padding:56px 20px 0}
 .row{display:flex;align-items:center}
 .sb{justify-content:space-between}
-.px{font-family:"Silkscreen",monospace;font-stretch:normal;letter-spacing:.04em}
 .sw5{width:10px;height:10px;border-radius:50%;flex:none}
 </style>
 </helmet>
-<div class="ph dk" style="height:1450px">
+<div class="ph dk" style="height:1290px">
 
   <div class="top">
     <div class="row" style="gap:10px">
@@ -65,50 +64,37 @@ body{margin:0;background:#FAFAFA}
   </div>
 
   <section aria-label="오늘 쓸 수 있는 돈" style="padding:40px 20px 0">
-    <p class="px" style="font-size:13px">TODAY · 10.17</p>
+    <p class="eng">Today</p>
     <h1 class="n" style="font-size: 72px; line-height: .95; margin-top: 14px">30,400<span class="cur">₩</span></h1>
     <p class="sm mu" style="margin-top:12px">오늘 쓸 수 있는 돈 · 남은 예산 ÷ 남은 15일</p>
 
-    <svg width="350" height="296" viewBox="0 0 350 296" style="display:block;margin-top:22px" role="img" aria-label="오늘 쓸 수 있는 돈 30,400원을 원으로, 최근 7일 하루 평균 43,700원을 점선 원으로 비교. 평균이 하루 한도보다 13,300원 많음. 오늘 17일부터 31일까지 남은 15일, 25일은 급여일">
+    <svg width="350" height="104" viewBox="0 0 350 104" style="display:block;margin-top:26px" role="img" aria-label="오늘 17일부터 31일까지 남은 15일, 하루 30,400원씩. 25일은 급여일">
+      <defs><radialGradient id="todayOrb" cx="40%" cy="38%" r="65%"><stop offset="0" stop-color="#8EBFFF"></stop><stop offset=".55" stop-color="#C8E1FF"></stop><stop offset="1" stop-color="#EEF5FF"></stop></radialGradient><filter id="todayGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8"></feGaussianBlur></filter></defs>
       <defs>
-        <pattern id="bay1" width="12" height="12" patternUnits="userSpaceOnUse"><g fill="#0D0D0D"><rect x="0" y="0" width="3" height="3"></rect></g></pattern><pattern id="bay3" width="12" height="12" patternUnits="userSpaceOnUse"><g fill="#0D0D0D"><rect x="0" y="0" width="3" height="3"></rect><rect x="6" y="0" width="3" height="3"></rect><rect x="6" y="6" width="3" height="3"></rect></g></pattern><pattern id="bay5" width="12" height="12" patternUnits="userSpaceOnUse"><g fill="#0D0D0D"><rect x="0" y="0" width="3" height="3"></rect><rect x="6" y="0" width="3" height="3"></rect><rect x="3" y="3" width="3" height="3"></rect><rect x="0" y="6" width="3" height="3"></rect><rect x="6" y="6" width="3" height="3"></rect></g></pattern><pattern id="bay8" width="12" height="12" patternUnits="userSpaceOnUse"><g fill="#0D0D0D"><rect x="0" y="0" width="3" height="3"></rect><rect x="6" y="0" width="3" height="3"></rect><rect x="3" y="3" width="3" height="3"></rect><rect x="9" y="3" width="3" height="3"></rect><rect x="0" y="6" width="3" height="3"></rect><rect x="6" y="6" width="3" height="3"></rect><rect x="3" y="9" width="3" height="3"></rect><rect x="9" y="9" width="3" height="3"></rect></g></pattern><pattern id="bay11" width="12" height="12" patternUnits="userSpaceOnUse"><g fill="#0D0D0D"><rect x="0" y="0" width="3" height="3"></rect><rect x="3" y="0" width="3" height="3"></rect><rect x="6" y="0" width="3" height="3"></rect><rect x="9" y="0" width="3" height="3"></rect><rect x="3" y="3" width="3" height="3"></rect><rect x="9" y="3" width="3" height="3"></rect><rect x="0" y="6" width="3" height="3"></rect><rect x="6" y="6" width="3" height="3"></rect><rect x="9" y="6" width="3" height="3"></rect><rect x="3" y="9" width="3" height="3"></rect><rect x="9" y="9" width="3" height="3"></rect></g></pattern><pattern id="bay15" width="12" height="12" patternUnits="userSpaceOnUse"><g fill="#0D0D0D"><rect x="0" y="0" width="3" height="3"></rect><rect x="3" y="0" width="3" height="3"></rect><rect x="6" y="0" width="3" height="3"></rect><rect x="9" y="0" width="3" height="3"></rect><rect x="0" y="3" width="3" height="3"></rect><rect x="3" y="3" width="3" height="3"></rect><rect x="6" y="3" width="3" height="3"></rect><rect x="9" y="3" width="3" height="3"></rect><rect x="0" y="6" width="3" height="3"></rect><rect x="3" y="6" width="3" height="3"></rect><rect x="6" y="6" width="3" height="3"></rect><rect x="9" y="6" width="3" height="3"></rect><rect x="3" y="9" width="3" height="3"></rect><rect x="6" y="9" width="3" height="3"></rect><rect x="9" y="9" width="3" height="3"></rect></g></pattern>
-        <radialGradient id="limArea" cx="45%" cy="42%" r="60%"><stop offset="0" stop-color="#8EBFFF"></stop><stop offset=".6" stop-color="#C8E1FF"></stop><stop offset="1" stop-color="#EEF5FF"></stop></radialGradient>
-        <pattern id="hatchP" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#FF769C" stroke-width="1.6"></line></pattern>
-        <mask id="overRing"><circle cx="150" cy="124" r="101" fill="#fff"></circle><circle cx="150" cy="124" r="84" fill="#000"></circle></mask>
+        <filter id="gooDays" x="-10%" y="-40%" width="120%" height="180%"><feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b"></feGaussianBlur><feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9"></feColorMatrix></filter>
       </defs>
-      <g stroke="#0D0D0D" stroke-opacity=".07" stroke-width="1"><line x1="0" y1="0" x2="0" y2="236"></line><line x1="25" y1="0" x2="25" y2="236"></line><line x1="50" y1="0" x2="50" y2="236"></line><line x1="75" y1="0" x2="75" y2="236"></line><line x1="100" y1="0" x2="100" y2="236"></line><line x1="125" y1="0" x2="125" y2="236"></line><line x1="150" y1="0" x2="150" y2="236"></line><line x1="175" y1="0" x2="175" y2="236"></line><line x1="200" y1="0" x2="200" y2="236"></line><line x1="225" y1="0" x2="225" y2="236"></line><line x1="250" y1="0" x2="250" y2="236"></line><line x1="275" y1="0" x2="275" y2="236"></line><line x1="300" y1="0" x2="300" y2="236"></line><line x1="325" y1="0" x2="325" y2="236"></line><line x1="350" y1="0" x2="350" y2="236"></line><line x1="0" y1="0" x2="350" y2="0"></line><line x1="0" y1="25" x2="350" y2="25"></line><line x1="0" y1="50" x2="350" y2="50"></line><line x1="0" y1="75" x2="350" y2="75"></line><line x1="0" y1="100" x2="350" y2="100"></line><line x1="0" y1="125" x2="350" y2="125"></line><line x1="0" y1="150" x2="350" y2="150"></line><line x1="0" y1="175" x2="350" y2="175"></line><line x1="0" y1="200" x2="350" y2="200"></line><line x1="0" y1="225" x2="350" y2="225"></line></g>
-      <circle cx="150" cy="124" r="101" fill="url(#hatchP)" mask="url(#overRing)"></circle>
-      <circle cx="150" cy="124" r="101" fill="none" stroke="#0D0D0D" stroke-width="1" stroke-dasharray="3 4"></circle>
-      <circle cx="150" cy="124" r="84" fill="url(#limArea)"></circle>
-      <g opacity=".9"><circle cx="150" cy="124" r="84" fill="url(#bay1)"></circle><circle cx="150" cy="124" r="70" fill="url(#bay3)"></circle><circle cx="150" cy="124" r="56" fill="url(#bay5)"></circle><circle cx="150" cy="124" r="42" fill="url(#bay8)"></circle><circle cx="150" cy="124" r="28" fill="url(#bay11)"></circle><circle cx="150" cy="124" r="15" fill="url(#bay15)"></circle></g>
-      <circle cx="150" cy="124" r="84" fill="none" stroke="#0D0D0D" stroke-width="1.2"></circle>
-      <g stroke="#0D0D0D" stroke-width="1"><line x1="32" y1="124" x2="268" y2="124"></line><line x1="150" y1="6" x2="150" y2="242"></line></g>
-      <g stroke="#0D0D0D" stroke-width="1"><line x1="40" y1="121" x2="40" y2="127"></line><line x1="50" y1="121" x2="50" y2="127"></line><line x1="60" y1="121" x2="60" y2="127"></line><line x1="70" y1="121" x2="70" y2="127"></line><line x1="80" y1="121" x2="80" y2="127"></line><line x1="90" y1="121" x2="90" y2="127"></line><line x1="100" y1="121" x2="100" y2="127"></line><line x1="110" y1="121" x2="110" y2="127"></line><line x1="120" y1="121" x2="120" y2="127"></line><line x1="130" y1="121" x2="130" y2="127"></line><line x1="140" y1="121" x2="140" y2="127"></line><line x1="160" y1="121" x2="160" y2="127"></line><line x1="170" y1="121" x2="170" y2="127"></line><line x1="180" y1="121" x2="180" y2="127"></line><line x1="190" y1="121" x2="190" y2="127"></line><line x1="200" y1="121" x2="200" y2="127"></line><line x1="210" y1="121" x2="210" y2="127"></line><line x1="220" y1="121" x2="220" y2="127"></line><line x1="230" y1="121" x2="230" y2="127"></line><line x1="240" y1="121" x2="240" y2="127"></line><line x1="250" y1="121" x2="250" y2="127"></line><line x1="260" y1="121" x2="260" y2="127"></line><line x1="147" y1="14" x2="153" y2="14"></line><line x1="147" y1="24" x2="153" y2="24"></line><line x1="147" y1="34" x2="153" y2="34"></line><line x1="147" y1="44" x2="153" y2="44"></line><line x1="147" y1="54" x2="153" y2="54"></line><line x1="147" y1="64" x2="153" y2="64"></line><line x1="147" y1="74" x2="153" y2="74"></line><line x1="147" y1="84" x2="153" y2="84"></line><line x1="147" y1="94" x2="153" y2="94"></line><line x1="147" y1="104" x2="153" y2="104"></line><line x1="147" y1="114" x2="153" y2="114"></line><line x1="147" y1="134" x2="153" y2="134"></line><line x1="147" y1="144" x2="153" y2="144"></line><line x1="147" y1="154" x2="153" y2="154"></line><line x1="147" y1="164" x2="153" y2="164"></line><line x1="147" y1="174" x2="153" y2="174"></line><line x1="147" y1="184" x2="153" y2="184"></line><line x1="147" y1="194" x2="153" y2="194"></line><line x1="147" y1="204" x2="153" y2="204"></line><line x1="147" y1="214" x2="153" y2="214"></line><line x1="147" y1="224" x2="153" y2="224"></line><line x1="147" y1="234" x2="153" y2="234"></line></g>
-      <circle cx="234" cy="124" r="3.5" fill="#0D0D0D"></circle>
-      <circle cx="221.4" cy="52.599999999999994" r="3.5" fill="#FF769C" stroke="#0D0D0D"></circle>
-      <g stroke="#0D0D0D" stroke-width=".8">
-        <line x1="238" y1="124" x2="276" y2="124"></line>
-        <line x1="224.4" y1="49.599999999999994" x2="262" y2="24"></line>
+      <g filter="url(#gooDays)" fill="#D4D4D2">
+        <circle cx="36" cy="40" r="34"></circle>
+        <rect x="36" y="36" width="56" height="8" rx="4"></rect>
+        <circle cx="96" cy="40" r="7"></circle>
       </g>
-      <g font-family="Silkscreen, monospace" font-size="9" fill="#0D0D0D"><text x="280" y="118">LIMIT</text><text x="266" y="16">7D AVG</text></g>
-      <g font-family="Archivo, Noto Sans KR, sans-serif" fill="#0D0D0D">
-        <text x="280" y="136" font-size="13">30,400</text>
-        <text x="266" y="36" font-size="13" fill="#D93C66">43,700</text>
-        <text x="266" y="52" font-size="10" fill-opacity=".6">하루 +13,300 ₩</text>
+      <line x1="96" y1="40" x2="336" y2="40" stroke="#0D0D0D" stroke-opacity=".18" stroke-width="2"></line>
+      <g fill="#D4D4D2"><circle cx="96" cy="40" r="7"></circle><circle cx="114.5" cy="40" r="7"></circle><circle cx="132.9" cy="40" r="7"></circle><circle cx="151.4" cy="40" r="7"></circle><circle cx="169.8" cy="40" r="7"></circle><circle cx="188.3" cy="40" r="7"></circle><circle cx="206.8" cy="40" r="7"></circle><circle cx="225.2" cy="40" r="7"></circle><circle cx="243.7" cy="40" r="7"></circle><circle cx="262.2" cy="40" r="7"></circle><circle cx="280.6" cy="40" r="7"></circle><circle cx="299.1" cy="40" r="7"></circle><circle cx="317.5" cy="40" r="7"></circle><circle cx="336" cy="40" r="7"></circle></g>
+      <circle cx="36" cy="40" r="38" fill="#9CC7FF" opacity=".55" filter="url(#todayGlow)"></circle><circle cx="36" cy="40" r="32" fill="url(#todayOrb)"></circle>
+      <circle cx="225.2" cy="40" r="7" fill="#9CC7FF"></circle><circle cx="225.2" cy="40" r="11" fill="none" stroke="#0D0D0D" stroke-width="1"></circle>
+      <g font-family="Archivo, Noto Sans KR, sans-serif" text-anchor="middle">
+        <text x="36" y="40" font-size="18" font-weight="300" fill="#0D0D0D">17</text>
+        <text x="36" y="55" font-size="10" fill="#0D0D0D">오늘</text>
+        <text x="96" y="70" font-size="10" fill="#0D0D0D" fill-opacity=".45">18</text>
+        <text x="225.2" y="70" font-size="10" fill="#0D0D0D">25 급여</text>
+        <text x="336" y="70" font-size="10" fill="#0D0D0D" fill-opacity=".45">31</text>
       </g>
-      <line x1="0" y1="262" x2="350" y2="262" stroke="#0D0D0D" stroke-opacity=".35"></line>
-      <circle cx="16.0" cy="262" r="7" fill="#C8E1FF" stroke="#0D0D0D" stroke-width="1.5"></circle><circle cx="38.7" cy="262" r="3" fill="#0D0D0D"></circle><circle cx="61.4" cy="262" r="3" fill="#0D0D0D"></circle><circle cx="84.1" cy="262" r="3" fill="#0D0D0D"></circle><circle cx="106.9" cy="262" r="3" fill="#0D0D0D"></circle><circle cx="129.6" cy="262" r="3" fill="#0D0D0D"></circle><circle cx="152.3" cy="262" r="3" fill="#0D0D0D"></circle><circle cx="175.0" cy="262" r="3" fill="#0D0D0D"></circle><circle cx="197.7" cy="262" r="3" fill="#0D0D0D"></circle><circle cx="220.4" cy="262" r="3" fill="#0D0D0D"></circle><circle cx="243.1" cy="262" r="3" fill="#0D0D0D"></circle><circle cx="265.9" cy="262" r="3" fill="#0D0D0D"></circle><circle cx="288.6" cy="262" r="3" fill="#0D0D0D"></circle><circle cx="311.3" cy="262" r="3" fill="#0D0D0D"></circle><circle cx="334.0" cy="262" r="3" fill="#0D0D0D"></circle>
-      <circle cx="197.7" cy="262" r="7" fill="none" stroke="#0D0D0D"></circle>
-      <g font-family="Silkscreen, monospace" font-size="8" fill="#0D0D0D">
-        <text x="16" y="286" text-anchor="middle">17</text>
-        <text x="197.7" y="286" text-anchor="middle">25 PAY</text>
-        <text x="334" y="286" text-anchor="middle">31</text>
-        <text x="0" y="250" fill-opacity=".55">15 DAYS LEFT</text>
-      </g>
+      <text x="96" y="98" font-family="Archivo, Noto Sans KR, sans-serif" font-size="11" fill="#0D0D0D" fill-opacity=".55">남은 날마다 30,400 ₩</text>
     </svg>
-    <div class="row sb" style="margin-top:10px">
-      <span class="xs"><span class="mu">오늘 쓴 돈</span> <span class="n" style="font-size:13px">0 ₩</span></span>
-      <span class="xs" style="color:#D93C66">평균대로 쓰면 월말 −154,200 ₩</span>
+
+    <div class="row" style="gap:8px;margin-top:14px">
+      <span class="pl gl" style="flex:1;height:44px;justify-content:space-between;padding:0 16px"><span class="xs mu">오늘 쓴 돈</span><span class="n" style="font-size:15px">0 ₩</span></span>
+      <span class="pl gl" style="flex:1;height:44px;justify-content:space-between;padding:0 16px;border-color:#FF769C"><span class="xs mu">최근 7일 평균</span><span class="n" style="font-size:15px;color:#E0466F">43,700 ₩</span></span>
     </div>
   </section>
 
@@ -189,7 +175,7 @@ body{margin:0;background:#FAFAFA}
   </nav>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1450}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1290}}'>
 class Component extends DCLogic {
   renderVals() { return {}; }
 }
