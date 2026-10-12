@@ -1,0 +1,16 @@
+{
+  "name": "SLIP 청년 금융 앱",
+  "short_name": "SLIP",
+  "id": "./slip-mobile.html",
+  "start_url": "./slip-mobile.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "portrait",
+  "background_color": "#FAFAFA",
+  "theme_color": "#FAFAFA",
+  "icons": [
+    { "src": "icons/slip-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/slip-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
