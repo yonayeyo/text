@@ -10,12 +10,12 @@
 <helmet>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..600&amp;family=Noto+Sans+KR:wght@300;400;500&amp;display=swap">
 <style>
-body{margin:0;background:#0D0D0D}
+body{margin:0;background:#FAFAFA}
 .ph{position:relative;width:390px;overflow:hidden;font-family:"Archivo","Noto Sans KR",sans-serif;font-stretch:112%;color:#0D0D0D;-webkit-font-smoothing:antialiased;word-break:keep-all;letter-spacing:-.01em;line-height:1.4}
 .ph *{box-sizing:border-box}
 :where(.ph) :where(h1,h2,h3,p){margin:0;font-weight:inherit;font-size:inherit}
 :where(.ph) button{font-family:inherit;font-stretch:inherit;cursor:pointer;color:inherit}
-.dk{background:#0D0D0D;color:#fff}
+.dk{background:#FAFAFA;color:#0D0D0D}
 .lt{background:#EBEBE9;color:#0D0D0D}
 .eng{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
 .t1{font-size:34px;font-weight:300;line-height:1.16;letter-spacing:-.035em}
@@ -39,7 +39,8 @@ body{margin:0;background:#0D0D0D}
 .pl{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:500;border:0;white-space:nowrap;text-decoration:none}
 .ib{width:48px;height:48px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:0;padding:0;flex:none;text-decoration:none}
 .bt{display:flex;align-items:center;justify-content:center;gap:8px;height:58px;border-radius:999px;border:0;font-size:16px;font-weight:500;width:100%;text-decoration:none}
-.gl{background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.16);color:#fff}
+.gl{background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(13,13,13,.08);color:#0D0D0D}
+.cb .gl{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.16);color:#fff}
 .ic{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .notch{-webkit-mask:radial-gradient(circle 35px at calc(100% - 30px) calc(100% - 30px),transparent 34px,#000 34.6px);mask:radial-gradient(circle 35px at calc(100% - 30px) calc(100% - 30px),transparent 34px,#000 34.6px)}
 .nb{position:absolute;right:2px;bottom:2px;width:56px;height:56px}
@@ -52,21 +53,23 @@ body{margin:0;background:#0D0D0D}
 .sb{justify-content:space-between}
 .bdg{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
 .cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
-.cal span{height:38px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:12px;font-variant-numeric:tabular-nums}
+.cal span{position:relative;height:38px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:12px;font-variant-numeric:tabular-nums}
 .L{background:#C8E1FF;color:#0D0D0D}
-.V{background:#FF769C;color:#0D0D0D}
-.X{background:#2B2B2B;color:#fff}
+.V{background:radial-gradient(circle at 50% 40%,#FFFFFF 0%,#E4F0FF 55%,#C8E1FF 100%);color:#0D0D0D;box-shadow:0 0 14px rgba(200,225,255,.55)}
+.V::after{content:"";position:absolute;top:5px;right:6px;width:7px;height:7px;background:#0D0D0D;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+.X{background:#2B2B2B;color:rgba(255,255,255,.7)}
+.X::after{content:"";position:absolute;bottom:5px;left:50%;margin-left:-2px;width:4px;height:4px;border-radius:50%;background:#FF769C}
 .F{border:1px dashed rgba(255,255,255,.25);color:rgba(255,255,255,.5)}
 .E{visibility:hidden}
 .rk{display:flex;align-items:center;gap:10px;font-size:12px}
 .av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex:none}
 </style>
 </helmet>
-<div class="ph dk" style="height:1770px">
+<div class="ph lt" style="height:1770px">
 
   <div class="top">
-    <p class="eng" style="color:#C8E1FF">Challenge</p>
-    <span class="tg gl">10월 · 3주차</span>
+    <p class="eng">Challenge</p>
+    <span class="tg cw">10월 · 3주차</span>
   </div>
 
   <section style="padding:22px 20px 0" aria-label="포인트와 배지">
@@ -87,7 +90,7 @@ body{margin:0;background:#0D0D0D}
     <button class="ib cb nb" aria-label="포인트 사용처 보기"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg></button>
   </section>
 
-  <section aria-label="10월 실천 기록" class="cd gl" style="margin:12px 16px 0;padding:22px 20px">
+  <section aria-label="10월 실천 기록" class="cd cb" style="margin:12px 16px 0;padding:22px 20px">
     <div class="row sb"><p class="eng">October</p><span class="xs mu">연속 4일</span></div>
     <div class="cal" style="margin-top:16px;font-size:10px;opacity:.5">
       <span style="height:18px">월</span><span style="height:18px">화</span><span style="height:18px">수</span><span style="height:18px">목</span><span style="height:18px">금</span><span style="height:18px">토</span><span style="height:18px">일</span>
@@ -102,8 +105,8 @@ body{margin:0;background:#0D0D0D}
     </div>
     <div class="row" style="gap:14px;margin-top:16px;font-size:11px">
       <span class="row" style="gap:6px"><span class="L" style="width:10px;height:10px;border-radius:50%"></span>예산 안</span>
-      <span class="row" style="gap:6px"><span class="V" style="width:10px;height:10px;border-radius:50%"></span>무지출</span>
-      <span class="row" style="gap:6px"><span class="X" style="width:10px;height:10px;border-radius:50%;border:1px solid #555"></span>초과</span>
+      <span class="row" style="gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z" fill="#C8E1FF"></path></svg>무지출 데이</span>
+      <span class="row" style="gap:6px"><span style="width:10px;height:10px;border-radius:50%;background:#2B2B2B;border:1px solid #555;display:flex;align-items:center;justify-content:center"><span style="width:4px;height:4px;border-radius:50%;background:#FF769C"></span></span>초과</span>
     </div>
   </section>
 
@@ -122,12 +125,12 @@ body{margin:0;background:#0D0D0D}
   </section>
 
   <section aria-label="절약 팁과 정책 정보" style="margin:22px 16px 0">
-    <div class="row sb" style="padding:0 4px"><p class="eng">Tips</p><button class="pl gl" style="height:32px;font-size:12px">팁 공유하기</button></div>
+    <div class="row sb" style="padding:0 4px"><p class="eng">Tips</p><button class="pl cw" style="height:32px;font-size:12px">팁 공유하기</button></div>
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
-      <div class="cd gl" style="padding:18px 20px">
+      <div class="cd cw" style="padding:18px 20px">
         <div class="row" style="gap:8px"><span class="av cv">수아</span><span class="xs mu">무지출 데이 · 2시간 전</span></div>
         <p class="sm" style="margin-top:10px;line-height:1.55">편의점 대신 주말에 장보기 한 번. 평일 간식을 미리 나눠 담아두니 편의점 결제가 주 6회에서 1회로 줄었어요.</p>
-        <div class="row" style="gap:6px;margin-top:12px"><button class="pl gl" style="height:30px;font-size:11px;padding:0 12px">도움돼요 128</button></div>
+        <div class="row" style="gap:6px;margin-top:12px"><button class="pl cg" style="height:30px;font-size:11px;padding:0 12px">도움돼요 128</button></div>
       </div>
       <div class="cd cp" style="padding:18px 20px">
         <div class="row" style="gap:8px"><span class="tg cb">정책</span><span class="xs" style="opacity:.6">세금과 혜택</span></div>

@@ -10,12 +10,12 @@
 <helmet>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..600&amp;family=Noto+Sans+KR:wght@300;400;500&amp;display=swap">
 <style>
-body{margin:0;background:#0D0D0D}
+body{margin:0;background:#FAFAFA}
 .ph{position:relative;width:390px;overflow:hidden;font-family:"Archivo","Noto Sans KR",sans-serif;font-stretch:112%;color:#0D0D0D;-webkit-font-smoothing:antialiased;word-break:keep-all;letter-spacing:-.01em;line-height:1.4}
 .ph *{box-sizing:border-box}
 :where(.ph) :where(h1,h2,h3,p){margin:0;font-weight:inherit;font-size:inherit}
 :where(.ph) button{font-family:inherit;font-stretch:inherit;cursor:pointer;color:inherit}
-.dk{background:#0D0D0D;color:#fff}
+.dk{background:#FAFAFA;color:#0D0D0D}
 .lt{background:#EBEBE9;color:#0D0D0D}
 .eng{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
 .t1{font-size:34px;font-weight:300;line-height:1.16;letter-spacing:-.035em}
@@ -38,7 +38,8 @@ body{margin:0;background:#0D0D0D}
 .cp{background:#E6F0FF;color:#0D0D0D}
 .pl{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:500;border:0;white-space:nowrap;text-decoration:none}
 .ib{width:48px;height:48px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:0;padding:0;flex:none;text-decoration:none}
-.gl{background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.16);color:#fff}
+.gl{background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(13,13,13,.08);color:#0D0D0D}
+.cb .gl{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.16);color:#fff}
 .ic{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .notch{-webkit-mask:radial-gradient(circle 35px at calc(100% - 30px) calc(100% - 30px),transparent 34px,#000 34.6px);mask:radial-gradient(circle 35px at calc(100% - 30px) calc(100% - 30px),transparent 34px,#000 34.6px)}
 .nb{position:absolute;right:2px;bottom:2px;width:56px;height:56px}
@@ -63,7 +64,7 @@ body{margin:0;background:#0D0D0D}
   </div>
 
   <section aria-label="오늘 쓸 수 있는 돈" style="padding:40px 20px 0">
-    <p class="eng" style="color:#C8E1FF">Today</p>
+    <p class="eng">Today</p>
     <h1 class="n" style="font-size: 72px; line-height: .95; margin-top: 14px">30,400<span class="cur">₩</span></h1>
     <p class="sm mu" style="margin-top:12px">오늘 쓸 수 있는 돈 · 남은 예산 ÷ 남은 15일</p>
 
@@ -71,28 +72,28 @@ body{margin:0;background:#0D0D0D}
       <defs>
         <filter id="gooDays" x="-10%" y="-40%" width="120%" height="180%"><feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b"></feGaussianBlur><feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9"></feColorMatrix></filter>
       </defs>
-      <g filter="url(#gooDays)" fill="#FFFFFF">
+      <g filter="url(#gooDays)" fill="#0D0D0D">
         <circle cx="36" cy="40" r="34"></circle>
         <rect x="36" y="36" width="56" height="8" rx="4"></rect>
         <circle cx="96" cy="40" r="7"></circle>
       </g>
-      <line x1="96" y1="40" x2="336" y2="40" stroke="#FFFFFF" stroke-opacity=".35" stroke-width="2"></line>
-      <g fill="#FFFFFF"><circle cx="96" cy="40" r="7"></circle><circle cx="114.5" cy="40" r="7"></circle><circle cx="132.9" cy="40" r="7"></circle><circle cx="151.4" cy="40" r="7"></circle><circle cx="169.8" cy="40" r="7"></circle><circle cx="188.3" cy="40" r="7"></circle><circle cx="206.8" cy="40" r="7"></circle><circle cx="225.2" cy="40" r="7"></circle><circle cx="243.7" cy="40" r="7"></circle><circle cx="262.2" cy="40" r="7"></circle><circle cx="280.6" cy="40" r="7"></circle><circle cx="299.1" cy="40" r="7"></circle><circle cx="317.5" cy="40" r="7"></circle><circle cx="336" cy="40" r="7"></circle></g>
+      <line x1="96" y1="40" x2="336" y2="40" stroke="#0D0D0D" stroke-opacity=".18" stroke-width="2"></line>
+      <g fill="#0D0D0D" fill-opacity=".85"><circle cx="96" cy="40" r="7"></circle><circle cx="114.5" cy="40" r="7"></circle><circle cx="132.9" cy="40" r="7"></circle><circle cx="151.4" cy="40" r="7"></circle><circle cx="169.8" cy="40" r="7"></circle><circle cx="188.3" cy="40" r="7"></circle><circle cx="206.8" cy="40" r="7"></circle><circle cx="225.2" cy="40" r="7"></circle><circle cx="243.7" cy="40" r="7"></circle><circle cx="262.2" cy="40" r="7"></circle><circle cx="280.6" cy="40" r="7"></circle><circle cx="299.1" cy="40" r="7"></circle><circle cx="317.5" cy="40" r="7"></circle><circle cx="336" cy="40" r="7"></circle></g>
       <circle cx="36" cy="40" r="32" fill="#C8E1FF"></circle>
-      <circle cx="225.2" cy="40" r="5" fill="#C8E1FF"></circle>
+      <circle cx="225.2" cy="40" r="7" fill="#C8E1FF" stroke="#0D0D0D" stroke-width="1.5"></circle>
       <g font-family="Archivo, Noto Sans KR, sans-serif" text-anchor="middle">
         <text x="36" y="40" font-size="18" font-weight="300" fill="#0D0D0D">17</text>
         <text x="36" y="55" font-size="10" fill="#0D0D0D">오늘</text>
-        <text x="96" y="70" font-size="10" fill="#FFFFFF" fill-opacity=".5">18</text>
-        <text x="225.2" y="70" font-size="10" fill="#C8E1FF">25 급여</text>
-        <text x="336" y="70" font-size="10" fill="#FFFFFF" fill-opacity=".5">31</text>
+        <text x="96" y="70" font-size="10" fill="#0D0D0D" fill-opacity=".45">18</text>
+        <text x="225.2" y="70" font-size="10" fill="#0D0D0D">25 급여</text>
+        <text x="336" y="70" font-size="10" fill="#0D0D0D" fill-opacity=".45">31</text>
       </g>
-      <text x="96" y="98" font-family="Archivo, Noto Sans KR, sans-serif" font-size="11" fill="#FFFFFF" fill-opacity=".6">남은 날마다 30,400 ₩</text>
+      <text x="96" y="98" font-family="Archivo, Noto Sans KR, sans-serif" font-size="11" fill="#0D0D0D" fill-opacity=".55">남은 날마다 30,400 ₩</text>
     </svg>
 
     <div class="row" style="gap:8px;margin-top:14px">
       <span class="pl gl" style="flex:1;height:44px;justify-content:space-between;padding:0 16px"><span class="xs mu">오늘 쓴 돈</span><span class="n" style="font-size:15px">0 ₩</span></span>
-      <span class="pl gl" style="flex:1;height:44px;justify-content:space-between;padding:0 16px;border-color:#FF769C"><span class="xs mu">최근 7일 평균</span><span class="n" style="font-size:15px;color:#FF769C">43,700 ₩</span></span>
+      <span class="pl gl" style="flex:1;height:44px;justify-content:space-between;padding:0 16px;border-color:#FF769C"><span class="xs mu">최근 7일 평균</span><span class="n" style="font-size:15px;color:#E0466F">43,700 ₩</span></span>
     </div>
   </section>
 

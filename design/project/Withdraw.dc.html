@@ -10,12 +10,12 @@
 <helmet>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..600&amp;family=Noto+Sans+KR:wght@300;400;500&amp;display=swap">
 <style>
-body{margin:0;background:#0D0D0D}
+body{margin:0;background:#FAFAFA}
 .ph{position:relative;width:390px;overflow:hidden;font-family:"Archivo","Noto Sans KR",sans-serif;font-stretch:112%;color:#0D0D0D;-webkit-font-smoothing:antialiased;word-break:keep-all;letter-spacing:-.01em;line-height:1.4}
 .ph *{box-sizing:border-box}
 :where(.ph) :where(h1,h2,h3,p){margin:0;font-weight:inherit;font-size:inherit}
 :where(.ph) button{font-family:inherit;font-stretch:inherit;cursor:pointer;color:inherit}
-.dk{background:#0D0D0D;color:#fff}
+.dk{background:#FAFAFA;color:#0D0D0D}
 .eng{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
 .t1{font-size:34px;font-weight:300;line-height:1.16;letter-spacing:-.035em}
 .n{font-variant-numeric:tabular-nums;font-weight:300;letter-spacing:-.045em;white-space:nowrap}
@@ -32,7 +32,10 @@ body{margin:0;background:#0D0D0D}
 .cb{background:#0D0D0D;color:#FFFFFF}
 .ib{width:48px;height:48px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:0;padding:0;flex:none;text-decoration:none}
 .bt{display:flex;align-items:center;justify-content:center;gap:8px;height:58px;border-radius:999px;border:0;font-size:16px;font-weight:500;width:100%;text-decoration:none}
-.gl{background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.16);color:#fff}
+.gl{background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(13,13,13,.08);color:#0D0D0D}
+.cb .gl{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.16);color:#fff}
+.cg{background:#EBEBE9;color:#0D0D0D}
+.cw{background:#FFFFFF;color:#0D0D0D}
 .ic{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .notch{-webkit-mask:radial-gradient(circle 35px at calc(100% - 30px) calc(100% - 30px),transparent 34px,#000 34.6px);mask:radial-gradient(circle 35px at calc(100% - 30px) calc(100% - 30px),transparent 34px,#000 34.6px)}
 .nb{position:absolute;right:2px;bottom:2px;width:56px;height:56px}
@@ -45,16 +48,16 @@ body{margin:0;background:#0D0D0D}
 <div class="ph dk" style="height:844px">
 
   <div class="top">
-    <a href="Goal.dc.html" class="ib gl" style="width:44px;height:44px" aria-label="취소"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
-    <span class="tg gl">저축 계좌 → 생활비</span>
+    <a href="Goal.dc.html" class="ib cg" style="width:44px;height:44px" aria-label="취소"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+    <span class="tg cg">저축 계좌 → 생활비</span>
   </div>
 
   <section style="padding:26px 20px 0" aria-label="인출 확인">
-    <p class="eng" style="color:#C8E1FF">Before you withdraw</p>
+    <p class="eng">Before you withdraw</p>
     <h1 class="t1" style="margin-top: 10px; font-size: 34px">저축에서<br>500,000원 꺼낼까요?</h1>
   </section>
 
-  <section class="cd gl" style="margin:24px 16px 0;padding:22px 20px" aria-label="목표에 미치는 영향">
+  <section class="cd cb" style="margin:24px 16px 0;padding:22px 20px" aria-label="목표에 미치는 영향">
     <div class="row sb"><p class="eng">Impact</p><span class="tg cv">완료 1개월 늦어짐</span></div>
     <svg width="318" height="150" viewBox="0 0 318 150" style="display:block;margin-top:18px" role="img" aria-label="꺼내지 않으면 2028년 11월 완료, 꺼내면 2028년 12월 완료. 3단계 도달은 2027년 1월에서 2월로">
       <g font-family="Archivo, Noto Sans KR, sans-serif" font-size="11" fill="#FFFFFF">
@@ -91,7 +94,7 @@ body{margin:0;background:#0D0D0D}
   </section>
 
   <div style="position:absolute;left:16px;right:16px;bottom:34px">
-    <button class="bt gl">그래도 저축에서 꺼내기</button>
+    <button class="bt cg">그래도 저축에서 꺼내기</button>
     <p class="xs mu" style="text-align:center;margin-top:12px">인출은 언제든 할 수 있어요. 영향만 먼저 보여드려요.</p>
   </div>
 </div>
