@@ -67,27 +67,6 @@ svg{display:block}
   .screen{border-radius:0}
   .panel{position:static;width:auto;max-width:393px;padding:0 16px}
 }
-/* 휴대폰에서 열면 기기 프레임·패널 없이 전체 화면 앱으로 동작 (사용성 테스트용) */
-@media (max-width:520px){
-  html,body{height:100%;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
-  body{touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-text-size-adjust:100%}
-  .stage{display:block;min-height:0;padding:0}
-  .panel{display:none}
-  .device{position:fixed;inset:0;width:100%;max-width:none;height:100%;padding:0;border-radius:0;box-shadow:none;background:none}
-  .screen{border-radius:0}
-  .island,.statusbar>*{display:none!important}
-  .statusbar{height:calc(env(safe-area-inset-top,0px) + 12px);padding:0}
-  .view{padding-top:calc(env(safe-area-inset-top,0px) + 16px);overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
-  .tabbar{bottom:calc(env(safe-area-inset-bottom,0px) + 12px)}
-  .ai-dock{bottom:calc(env(safe-area-inset-bottom,0px) + 88px)}
-  .ai-dock input{font-size:16px}
-  .toast{top:calc(env(safe-area-inset-top,0px) + 8px)}
-  .toast.open{width:calc(100% - 24px)}
-  .sheet{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 32px)}
-  .ob-col{min-height:calc(100dvh - env(safe-area-inset-top,0px) - 40px)}
-  .res-sheet{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 48px)}
-  button:active,.opt:active,.cut:active{transform:scale(.97);transition:transform .08s}
-}
 .log{font-family:var(--f-mono);font-size:11px;line-height:1.6;max-height:280px;overflow:auto;padding:12px 16px;border-radius:20px;background:var(--g2);-webkit-user-select:text;user-select:text;white-space:pre-wrap}
 
 /* ---------- screen chrome ---------- */
@@ -353,6 +332,27 @@ svg{display:block}
 .grid-ov i{background:rgba(255,118,156,.12);border-left:1px solid rgba(255,118,156,.5);border-right:1px solid rgba(255,118,156,.5)}
 .ai-a{border-radius:24px;padding:16px 20px;font-size:14px;line-height:1.6}
 .ai-q{justify-self:end;max-width:80%;background:var(--ink);color:var(--paper);border-radius:24px;padding:12px 18px;font-size:14px}
+/* 휴대폰에서 열면 기기 프레임·패널 없이 전체 화면 앱으로 동작 (사용성 테스트용) */
+@media (max-width:520px){
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
+  body{touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-text-size-adjust:100%}
+  .stage{display:block;min-height:0;padding:0}
+  .panel{display:none}
+  .device{position:fixed;inset:0;width:100%;max-width:none;height:100%;padding:0;border-radius:0;box-shadow:none;background:none}
+  .screen{border-radius:0}
+  .island,.statusbar>*{display:none!important}
+  .statusbar{height:env(safe-area-inset-top,0px);padding:0;background:var(--page)}
+  .view{padding-top:calc(env(safe-area-inset-top,0px) + 4px);overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  .tabbar{bottom:calc(env(safe-area-inset-bottom,0px) + 12px)}
+  .ai-dock{bottom:calc(env(safe-area-inset-bottom,0px) + 88px)}
+  .ai-dock input{font-size:16px}
+  .toast{top:calc(env(safe-area-inset-top,0px) + 8px)}
+  .toast.open{width:calc(100% - 24px)}
+  .sheet{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 32px)}
+  .ob-col{min-height:calc(100dvh - env(safe-area-inset-top,0px) - 40px)}
+  .res-sheet{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 48px)}
+  button:active,.opt:active,.cut:active{transform:scale(.97);transition:transform .08s}
+}
 </style>
 </head>
 <body>
@@ -1433,7 +1433,11 @@ function render(keepScroll = true) {
   if (S.mode === 'onboard') view.innerHTML = [vIntro, vSelf, vQuiz, vResult][S.ob]();
   else view.innerHTML = { home:vHome, spend:vSpend, plan:vPlan, goal:vGoal, benefit:vBenefit }[S.tab]();
   view.scrollTop = st;
-  if (key !== lastKey) { log('화면 ' + SCREEN_NAME(key)); const tc = document.querySelector('meta[name=theme-color]'); tc && tc.setAttribute('content', dark ? '#181818' : '#FAFAFA'); }
+  if (key !== lastKey) log('화면 ' + SCREEN_NAME(key));
+  // 휴대폰에서는 Safari 상단(상태바)·하단 영역이 페이지 배경색을 따르므로 화면 색과 맞춘다
+  const pageColor = dark ? '#181818' : '#FAFAFA', tc = document.querySelector('meta[name=theme-color]');
+  tc && tc.setAttribute('content', pageColor);
+  if (matchMedia('(max-width:520px)').matches) { document.documentElement.style.backgroundColor = pageColor; document.body.style.backgroundColor = pageColor; }
   lastKey = key;
   document.getElementById('tabbar').innerHTML = TABS.map(([k, n, i]) => `<button class="tab ${S.tab === k ? 'on' : ''}" data-act="tab" data-tab="${k}" aria-label="${n}" ${S.tab === k ? 'aria-current="page"' : ''}>${ic(i, 22)}<span>${n}</span></button>`).join('');
   const dock = document.getElementById('aiDock');
