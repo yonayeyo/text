@@ -342,8 +342,10 @@ svg{display:block}
   /* iOS Safari는 화면 맨 위에 붙은 position:fixed 요소의 단색 배경을 읽어 상단(상태바) 색을 정한다 */
   .statusbar{position:fixed;top:0;left:0;right:0;height:calc(env(safe-area-inset-top,0px) + 4px);padding:0;background:none;background-color:var(--bg)}
   .view{padding-top:calc(env(safe-area-inset-top,0px) + 4px);overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
-  .tabbar{bottom:calc(env(safe-area-inset-bottom,0px) + 12px)}
-  .ai-dock{bottom:calc(env(safe-area-inset-bottom,0px) + 88px)}
+  /* 하단 여백: 홈 인디케이터가 있는 기기는 안전 영역과 일부 겹치게(34 → 20px), 홈 버튼 기기는 12px */
+  .screen{--nav-gap:max(12px, calc(env(safe-area-inset-bottom,0px) - 14px))}
+  .tabbar{bottom:var(--nav-gap)}
+  .ai-dock{bottom:calc(var(--nav-gap) + 76px)}
   .ai-dock input{font-size:16px}
   .toast{top:calc(env(safe-area-inset-top,0px) + 8px)}
   .toast.open{width:calc(100% - 24px)}
