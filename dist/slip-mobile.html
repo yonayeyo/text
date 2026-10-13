@@ -95,16 +95,23 @@ svg{display:block}
 .n56{font-family:var(--f-num);font-weight:300;font-size:56px;line-height:1;letter-spacing:-.02em}
 .n48{font-family:var(--f-num);font-weight:300;font-size:48px;line-height:1;letter-spacing:-.01em}
 /* 다음 행동 카드 */
-.na-card{border:.5px solid #C8E1FF}
+.card.c-sky.na-card{background:linear-gradient(325deg,#B9D9FF 0%,#FBFCFD 100%);box-shadow:inset 0 0 23px #fff;outline:.5px solid #C8E1FF;outline-offset:-.5px}
+.na-head{display:flex;align-items:center;gap:8px;font-size:12px;line-height:17px;color:#6D6D6D}
+.na-chip{height:17px;padding:0 6.5px;border-radius:21px;border:.5px solid #6D6D6D;font-size:10px;line-height:1;color:#6D6D6D;display:inline-flex;align-items:center}
+.na-body{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:9px}
+.na-title{font-size:20px;line-height:28px;color:#181818}
+.na-desc{margin-top:5px;font-size:12px;line-height:16.8px;color:#646464}
+.ib.na-go{width:44px;height:44px;background:#181818;color:#fff}
 .na-wrap{display:grid;gap:8px}
 .na-why{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--g6);padding:0 8px;line-height:1.5}
 .na-why svg{flex:none;margin-top:1px}
 /* 월말 예상 카드: 여백·라운드·배경은 다른 카드(c-ink)와 같고, 글자 굵기도 다른 카드와 같은 규칙(본문 500, 숫자 Urbanist 300) */
 .proj-card .pc-label{font-size:12px;color:var(--mute);line-height:17px}
-.proj-card .pc-amount{margin-top:4px;height:44px;display:flex;align-items:baseline}
-.proj-card .pc-num{font-family:var(--f-num);font-size:36px;font-weight:300;line-height:44px}
+.proj-card .pc-amount{margin-top:8px;height:48px;display:flex;align-items:baseline}
+.proj-card .pc-num{font-family:var(--f-num);font-size:36px;font-weight:300;line-height:48px}
+.proj-card .pc-desc{font-size:12px;line-height:16.8px;color:#BEBEBE}
 .proj-card .pc-unit{font-size:16px;margin-left:9px}
-.proj-card .pc-axis{position:relative;height:50px;margin-top:12px;--bar:#ABD1FF}
+.proj-card .pc-axis{position:relative;height:50px;margin-top:0;--bar:#ABD1FF}
 .proj-card .pc-axis.over{--bar:#FF9DB8}
 .proj-card .pc-bud{position:absolute;top:0;transform:translateX(-50%);font-size:10px;line-height:14px}
 .proj-card .pc-track{position:absolute;left:0;right:0;top:24.25px;height:1.5px;background:rgba(252,252,252,.45)}
@@ -834,16 +841,16 @@ function vResult(ctx = 'ob') {
 /* =========================================================
    HOME
    ========================================================= */
-// 유형별 다음 행동: 제목 한 줄 · 핵심 정보 한 줄 · 버튼만 두고, 유형 설명은 카드 밖 아래 한 줄로
+// 행동 추천 카드 (Figma 시안): "행동 추천" + 유형 칩 / 제목 20px / 설명 2줄 / 오른쪽 원형 실행 버튼
 function nextCard() {
   const P = S.persona;
   const c = {
     cog:  S.incomeIn && !S.allocDone
-      ? { t:'외주비 320,000원이 들어왔어요', s:'독립 자금 · 비상금 · 자유 5 : 3 : 2로 나눠요', b:'한 번에 나누기', act:'data-act="sheet" data-sheet="alloc"' }
-      : { t:'배달 예산 87% 사용', s:'남은 14,000원 · 이번 주 1회면 충분해요', b:'이번 주 1회로 제한', act:'data-act="toast" data-msg="배달 앱 결제 시 한도 알림을 켰어요"' },
-    low:  { t:'고정 지출 4건만 확인해 주세요', s:'월세 · 통신비 · 구독 · 보험', b:'1분 만에 확인', act:'data-act="tab" data-tab="plan"' },
-    habit:{ t:'금리 4.2% 적금이 있어요', s:'지금 3.1% · 1년 이자 +21,100원', b:'비교 보기', act:'data-act="sheet" data-sheet="compare"' },
-    self: { t:'필수 설정 4/4 완료', s:'다음은 매주 10,000원 적립식 투자', b:'시작하기', act:'data-act="tab" data-tab="plan"' },
+      ? { t:'외주비 320,000원 분할', s:'독립 자금 5 : 비상금 3 : 자유 2<br>추천대로 나누면 목표 달성이 2개월 빨라져요', b:'한 번에 나누기', act:'data-act="sheet" data-sheet="alloc"' }
+      : { t:'배달 이번 주 1회로 제한', s:'배달 예산 87% 사용 · 남은 14,000원<br>한도를 걸면 결제 전에 알려드려요', b:'이번 주 1회로 제한', act:'data-act="toast" data-msg="배달 앱 결제 시 한도 알림을 켰어요"' },
+    low:  { t:'고정 지출 4건 확인', s:'월세 · 통신비 · 구독 · 보험<br>맞는지만 보면 1분이면 끝나요', b:'1분 만에 확인', act:'data-act="tab" data-tab="plan"' },
+    habit:{ t:'금리 4.2% 적금 비교', s:'지금 적금 3.1%보다 1.1%p 높아요<br>월 35만 원 기준 1년 이자 +21,100원', b:'비교 보기', act:'data-act="sheet" data-sheet="compare"' },
+    self: { t:'적립식 투자 시작', s:'필수 설정 4/4 완료<br>매주 10,000원부터 넓혀 볼 수 있어요', b:'시작하기', act:'data-act="tab" data-tab="plan"' },
   }[P];
   const why = {
     cog:'알지만 실행이 어려운 ‘인지우세형’은 간편하게 실행할 수 있는 행동을 추천해요.',
@@ -852,10 +859,9 @@ function nextCard() {
     self:'알고 실천하는 ‘자기관리형’은 다음 영역으로 넓히는 행동을 추천해요.',
   }[P];
   return `<div class="na-wrap"><div class="card c-sky na-card">
-    <div class="row between"><span class="t12 mute">나에게 맞춘 다음 행동</span><button class="tag ink" data-act="diag" aria-label="내 진단 결과 보기">${PERSONA[P].name} ›</button></div>
-    <div class="t16 mt12">${c.t}</div>
-    <div class="t12 mute mt4">${c.s}</div>
-    <button class="btn sm mt16" ${c.act}>${c.b}</button>
+    <div class="na-head"><span>행동 추천</span><button class="na-chip" data-act="diag" aria-label="내 진단 결과 보기">${PERSONA[P].name}</button></div>
+    <div class="na-body"><div><div class="na-title">${c.t}</div><p class="na-desc">${c.s}</p></div>
+      <button class="ib na-go" ${c.act} aria-label="${c.b}">${ic('ur', 16)}</button></div>
   </div><p class="na-why"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5c.8 6.3 3.4 8.9 10 9.8v1.4c-6.6.9-9.2 3.5-10 9.8h-.1c-.8-6.3-3.4-8.9-10-9.8v-1.4c6.6-.9 9.2-3.5 10-9.8z" fill="currentColor"/></svg><span>${why}</span></p></div>`;
 }
 function sankey() {
@@ -934,6 +940,7 @@ function vHome() {
   const proj = `<div class="card c-ink proj-card">
       <div class="pc-label">지금 속도로 쓰면 10월 말에</div>
       <div class="pc-amount"><span class="pc-num">${won(Math.abs(d.proj))}</span> <span class="pc-unit">원 ${under ? '남아요' : '초과예요'}</span></div>
+      <p class="pc-desc">하루 평균 ${W(Math.round(S.spent / S.day / 100) * 100)}씩 쓰는 중이므로 월말 예상 지출은<br>${W(d.projSpend)}이에요</p>
       <div class="pc-axis ${under ? 'under' : 'over'}" role="img" aria-label="월말 예상 지출 ${won(d.projSpend)}원, 예산 ${won(S.budget)}원, ${won(Math.abs(d.proj))}원 ${under ? '남음' : '초과'}">
         <span class="pc-bud" style="left:${ax(S.budget)}%">예산</span>
         <i class="pc-track"></i>
