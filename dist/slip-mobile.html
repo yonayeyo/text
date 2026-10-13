@@ -189,20 +189,15 @@ svg{display:block}
 .urgent{width:100%;height:48px;margin-top:16px;border-radius:999px;padding:0 6px 0 20px;display:flex;align-items:center;gap:8px;background:var(--paper);box-shadow:inset 0 0 0 1px var(--g3)}
 .urgent .u-dot{width:8px;height:8px;border-radius:50%;background:var(--rose);flex:none}
 .urgent .grow{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
-/* 홈 히어로 간격: 정산 띠 → 24 → 제목(16) → 4 → 보조(14) → 12 → 금액(64) → 16 → 바코드 → 12 → 범례 → 24 → 점선 → 24 → 카드 */
-.hero{text-align:center;margin-top:24px}
-.hero-n{display:flex;justify-content:center;align-items:baseline;gap:8px;margin:12px 0 16px}
-.n64{font-family:var(--f-num);font-weight:300;font-size:64px;line-height:1;letter-spacing:-.02em}
-.meter{position:relative}
-.meter .bars{display:flex;justify-content:space-between;align-items:center;height:44px}
-.meter .bars i{height:100%}
+.hero{text-align:center;margin-top:32px}
+.hero-n{display:flex;justify-content:center;align-items:baseline;gap:8px;margin:12px 0 8px}
+.meter{margin-top:24px;position:relative}
+.meter .bars{display:flex;justify-content:space-between;height:44px}
 .meter .bars i{width:2px;background:var(--ink);border-radius:1px}
 .meter .bars i.off{background:var(--g3)}
-.meter .bars i.now{width:4px;height:calc(100% + 10px);background:#8FC0FF;border-radius:2px;box-shadow:0 0 10px 2px rgba(200,225,255,.95)}
-.meter .lbl{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
-.meter .key{display:inline-flex;align-items:center;gap:6px}
-.meter .key i{display:inline-block;border-radius:2px}
-.cut-line{border:0;border-top:1.5px dashed var(--ink);opacity:.55;margin:24px calc(var(--m) * -1) 0}
+.meter .bars i.now{width:3px;background:var(--sky);box-shadow:0 0 8px 2px rgba(200,225,255,.9)}
+.meter .lbl{display:flex;justify-content:space-between;margin-top:8px}
+.meter .mk{position:absolute;top:-20px;transform:translateX(-50%);white-space:nowrap}
 .next-card{display:grid;gap:16px}
 .pillcols{display:flex;justify-content:space-between;align-items:flex-end;height:150px;padding-top:8px}
 .pillcols .col{display:grid;justify-items:center;gap:8px;width:44px}
@@ -628,10 +623,9 @@ function meter(used, time) {
   const n = 64, u = Math.round(used * n), t = Math.min(n - 1, Math.round(time * n));
   let s = ''; for (let i = 0; i < n; i++) s += `<i class="${i === t ? 'now' : i < u ? '' : 'off'}" style="${i % 8 === 0 ? 'width:3px' : ''}"></i>`;
   return `<div class="meter" role="img" aria-label="예산 ${pct(used)} 사용, 한 달 ${pct(time)} 경과">
+    <span class="mk t10 mute" style="left:${t / (n - 1) * 100}%">오늘 ${S.day}일 ▾</span>
     <div class="bars">${s}</div>
-    <div class="lbl t10 mute num"><span>0</span>
-      <span class="row g12"><span class="key"><i style="width:8px;height:8px;background:var(--ink)"></i>쓴 예산 ${pct(used)}</span><span class="key"><i style="width:4px;height:12px;background:#8FC0FF"></i>오늘 · 한 달 ${pct(time)} 지남</span></span>
-      <span>${won(S.budget)}</span></div>
+    <div class="lbl t10 mute num"><span>0</span><span>사용 ${pct(used)} · 경과 ${pct(time)}</span><span>${won(S.budget)}</span></div>
   </div>`;
 }
 function allocBlock() {
@@ -949,13 +943,12 @@ function vHome() {
     </header>
     ${S.settled ? '' : `<button class="urgent" data-act="sheet" data-sheet="settle"><span class="u-dot"></span><span class="t14 grow">정산할 더치페이 2건</span><span class="t14 num">48,000원</span><span class="btn sm" style="height:36px">정산</span></button>`}
     <section class="hero">
-      <div class="t16"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="display:inline-block;vertical-align:-1px"><path d="M12 2c.7 5.4 2.9 7.6 8.5 8.5-5.6.9-7.8 3.1-8.5 8.5-.7-5.4-2.9-7.6-8.5-8.5C9.1 9.6 11.3 7.4 12 2z" fill="currentColor"/></svg> 오늘 쓸 수 있는 금액 <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="display:inline-block;vertical-align:-1px"><path d="M12 2c.7 5.4 2.9 7.6 8.5 8.5-5.6.9-7.8 3.1-8.5 8.5-.7-5.4-2.9-7.6-8.5-8.5C9.1 9.6 11.3 7.4 12 2z" fill="currentColor"/></svg></div>
-      <div class="t14 mute mt4">10월 남은 예산 ${W(d.remain)} / ${d.left}일</div>
-      <div class="hero-n"><span class="n64 num">${won(d.daily)}</span><span class="n24">₩</span></div>
+      <div class="t14 mute">✦ 오늘 쓸 수 있는 돈 ✦</div>
+      <div class="hero-n"><span class="n56 num">${won(d.daily)}</span><span class="n24">₩</span></div>
+      <div class="t12 mute">10월 남은 예산 ${W(d.remain)} · ${d.left}일</div>
       ${meter(d.used, d.time)}
     </section>
-    <hr class="cut-line">
-    <div class="stack" style="margin-top:24px">
+    <div class="stack" style="margin-top:40px">
       ${nextCard()}
       ${order.join('')}
     </div>`;
