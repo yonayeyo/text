@@ -600,7 +600,7 @@ const S = {
   tab:'home', persona:'cog',
   spent:280000, budget:800000, day:12, days:31,
   settled:false, incomeIn:true, allocDone:false, alloc:'bal',
-  spendView:'analysis', period:'month', keeps:new Set(['여행','자기계발','경조사']), applied:new Set(),
+  spendView:'analysis', planView:'budget', period:'month', keeps:new Set(['여행','자기계발','경조사']), applied:new Set(),
   fixedSet:false, ratioOk:false, ratioEdit:false,
   cat:{ '식비':250000, '배달':150000, '카페·간식':100000, '교통':90000, '쇼핑':120000, '기타':90000 },
   goalSaved:2300000, emergency:1100000, wAmt:200000,
@@ -866,10 +866,10 @@ function nextCard() {
     cog: [
       ...(S.incomeIn && !S.allocDone ? [{ t:'외주비 320,000원 분할', s:'독립 자금 5 : 비상금 3 : 자유 2<br>추천대로 나누면 목표 달성이 2개월 빨라져요', b:'한 번에 나누기', act:'data-act="sheet" data-sheet="alloc"' }] : []),
       { t:'배달 이번 주 1회로 제한', s:'배달 예산 87% 사용 · 남은 14,000원<br>한도를 걸면 결제 전에 알려드려요', b:'배달 한도 알림 켜기', i:'bellplus', act:'data-act="toast" data-msg="배달 앱 결제 시 한도 알림을 켰어요"' },
-      { t:'안 쓰는 구독 2건 정리', s:'최근 3개월 사용 기록 없음 · 월 17,800원<br>해지하면 1년에 213,600원 아낄 수 있어요', b:'구독 확인', act:'data-act="tab" data-tab="plan"' },
+      { t:'안 쓰는 구독 2건 정리', s:'최근 3개월 사용 기록 없음 · 월 17,800원<br>해지하면 1년에 213,600원 아낄 수 있어요', b:'구독 확인', act:'data-act="tab" data-tab="plan" data-pv="rule"' },
     ],
     low: [
-      { t:'고정 지출 4건 확인', s:'월세 · 통신비 · 구독 · 보험<br>맞는지만 보면 1분이면 끝나요', b:'1분 만에 확인', act:'data-act="tab" data-tab="plan"' },
+      { t:'고정 지출 4건 확인', s:'월세 · 통신비 · 구독 · 보험<br>맞는지만 보면 1분이면 끝나요', b:'1분 만에 확인', act:'data-act="tab" data-tab="plan" data-pv="rule"' },
       { t:'예산 80% 알림 켜기', s:'켜 두기만 하면 따로 볼 필요 없어요<br>넘기 전에 한 번만 알려드려요', b:'예산 알림 켜기', i:'bellplus', act:'data-act="toast" data-msg="예산 80% 알림을 켰어요"' },
     ],
     habit: [
@@ -877,7 +877,7 @@ function nextCard() {
       { t:'카드 실적 12만 원 남음', s:'이번 달 실적을 채우면 할인 8,000원<br>고정 지출 결제 카드를 바꿔 보세요', b:'카드 확인', act:'data-act="tab" data-tab="benefit"' },
     ],
     self: [
-      { t:'적립식 투자 시작', s:'필수 설정 4/4 완료<br>매주 10,000원부터 넓혀 볼 수 있어요', b:'시작하기', act:'data-act="tab" data-tab="plan"' },
+      { t:'적립식 투자 시작', s:'필수 설정 4/4 완료<br>매주 10,000원부터 넓혀 볼 수 있어요', b:'시작하기', act:'data-act="tab" data-tab="plan" data-pv="bank"' },
       { t:'청년도약계좌 조건 확인', s:'소득 조건 충족 · 정부 기여금 최대 월 33,000원<br>5년 뒤 목돈 마련에 유리해요', b:'조건 보기', act:'data-act="tab" data-tab="benefit"' },
     ],
   }[P];
@@ -965,6 +965,26 @@ function accountsBlock() {
       <i style="flex:none;width:10px;height:10px;border-radius:3px;margin-top:4px;background:${ACC_FILL[a.k]};${a.k === 'emer' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}"></i>
       <span style="min-width:0"><span class="t12" style="display:block">${a.n} <span class="t10 mute num">${pct(a.a / total)}</span></span><span class="t12 num mute">${W(a.a)}</span></span></div>`).join('')}</div>`;
 }
+function accountsCard(home) {
+  return `<div class="card c-paper">
+      ${home ? `<button class="row between" style="width:100%;text-align:left" data-act="tab" data-tab="plan" data-pv="bank"><span class="t14">용도별 통장</span><span class="row g4 t10 mute">6개 계좌${ic('arrow', 14)}</span></button>`
+        : `<div class="row between"><span class="t14">용도별 통장</span><span class="t10 mute">6개 계좌</span></div>`}
+      <div class="row between mt12" style="align-items:baseline"><span class="t12 mute">통합 자산</span><span class="n24">${won(ACCOUNTS.reduce((t, a) => t + a.a, 0))}<span class="cur t12">₩</span></span></div>
+      ${accountsBlock()}
+    </div>`;
+}
+function flowCard(home) {
+  return `<div class="card c-paper">
+      ${home ? `<button class="row between" style="width:100%;text-align:left" data-act="tab" data-tab="spend" data-sv="analysis"><span class="t14">10월 돈의 흐름</span><span class="row g4 t10 mute num">10.01 – 10.12${ic('arrow', 14)}</span></button>`
+        : `<div class="row between"><span class="t14">10월 돈의 흐름</span><span class="t10 mute num">10.01 – 10.12</span></div>`}
+      <div class="mt16">${sankey()}</div>
+      <div class="row between t10 mute mt8"><span>${S.flowSel ? '다시 누르면 전체 흐름' : '항목을 눌러 흐름을 따라가 보세요'}</span><span>금액 단위 만 원</span></div>
+      ${home ? '' : `<div class="row g8 mt16">
+        <button class="btn sm" style="flex:1;background:var(--g2);color:var(--ink);font-size:12px;padding:0 12px" data-act="toast" data-msg="내 계좌끼리 옮긴 3건(300,000원)은 지출에서 뺐어요">${ic('check', 16)}내 계좌 간 이체 3건 제외</button>
+        ${S.settled ? `<span class="btn sm" style="flex:1;background:var(--g2);color:var(--g6);font-size:12px;padding:0 12px">더치페이 정리 완료</span>` : `<button class="btn sm" style="flex:1;background:var(--aura);color:var(--ink);font-size:12px;padding:0 12px" data-act="sheet" data-sheet="settle">${ic('users', 16)}더치페이 2건 정리</button>`}
+      </div>`}
+    </div>`;
+}
 function vHome() {
   const d = D();
   // 축 눈금은 항상 10만 원 간격 4개(30만 폭). 기본은 60만·70만·80만·90만이고,
@@ -999,26 +1019,15 @@ function vHome() {
         <span class="gs-num">${pct(d.goal)}</span>
         <span class="gs-foot"><span class="glowbar"><i style="width:${d.goal * 100}%"></i></span></span>
       </button>
-      <button class="card c-paper gs-card" data-act="tab" data-tab="spend">
+      <button class="card c-paper gs-card" data-act="tab" data-tab="spend" data-sv="report">
         <span class="gs-top">10월 누적 지출</span>
         <span class="gs-num">${won(S.spent)}<span class="gs-won">₩</span></span>
         <span class="gs-foot"><span>영수증 보기</span>${ic('arrow', 16)}</span>
       </button>
     </div>`;
-  const accounts = `<div class="card c-paper">
-      <div class="row between"><span class="t14">용도별 통장</span><span class="t10 mute">6개 계좌</span></div>
-      <div class="row between mt12" style="align-items:baseline"><span class="t12 mute">통합 자산</span><span class="n24">${won(ACCOUNTS.reduce((t, a) => t + a.a, 0))}<span class="cur t12">₩</span></span></div>
-      ${accountsBlock()}
-    </div>`;
-  const flow = `<div class="card c-paper">
-      <div class="row between"><span class="t14">10월 돈의 흐름</span><span class="t10 mute num">10.01 – 10.12</span></div>
-      <div class="mt16">${sankey()}</div>
-      <div class="row between t10 mute mt8"><span>${S.flowSel ? '다시 누르면 전체 흐름' : '항목을 눌러 흐름을 따라가 보세요'}</span><span>금액 단위 만 원</span></div>
-      <div class="row g8 mt16">
-        <button class="btn sm" style="flex:1;background:var(--g2);color:var(--ink);font-size:12px;padding:0 12px" data-act="toast" data-msg="내 계좌끼리 옮긴 3건(300,000원)은 지출에서 뺐어요">${ic('check', 16)}내 계좌 간 이체 3건 제외</button>
-        ${S.settled ? `<span class="btn sm" style="flex:1;background:var(--g2);color:var(--g6);font-size:12px;padding:0 12px">더치페이 정리 완료</span>` : `<button class="btn sm" style="flex:1;background:var(--aura);color:var(--ink);font-size:12px;padding:0 12px" data-act="sheet" data-sheet="settle">${ic('users', 16)}더치페이 2건 정리</button>`}
-      </div>
-    </div>`;
+  // 홈은 요약만: 통장 → 플랜·통장, 돈의 흐름 → 지출·분석 (상세와 정리 버튼은 해당 탭에)
+  const accounts = accountsCard(true);
+  const flow = flowCard(true);
   // 자리는 그대로: 첫 번째 검정 카드 = 월말 예상, 두 번째 하늘색 카드 = 유형별 다음 행동
   const order = [proj, nextCard(), goalAndSpend, accounts, flow];
   return `<header class="top">
@@ -1170,14 +1179,8 @@ function diverging() {
 function vSpend() {
   const m = S.period === 'month', an = S.spendView === 'analysis';
   const rep = REPEATS[S.period], repSum = rep.reduce((s, r) => s + r.k * r.u, 0);
-  const shown = SUGG.filter(s => !S.keeps.has(s.c)), hidden = SUGG.filter(s => S.keeps.has(s.c));
-  const picked = shown.filter(s => S.applied.has(s.id));
-  const save = picked.reduce((t, s) => t + s.save, 0);
-  const remain = 5000000 - S.goalSaved, faster = Math.ceil(remain / 350000) - Math.ceil(remain / (350000 + save));
-  const amtOf = c => (MONTH_ITEMS.find(i => i.c === c) || {}).a || 0;
-  const locked = !!S.cutApplied;
   const head = `<header class="top"><div><div class="t18">지출</div><div class="t12 mute">계좌·카드 연동으로 자동 기록돼요</div></div><button class="ib" style="box-shadow:inset 0 0 0 1px #3a3a3a" data-act="sheet" data-sheet="settle" aria-label="정산·대리 결제 정리">${ic('users', 20)}</button></header>
-    <div class="seg mt16" role="tablist"><button class="${an ? 'on' : ''}" data-act="sv" data-v="analysis">분석 및 조정</button><button class="${an ? '' : 'on'}" data-act="sv" data-v="report">리포트</button></div>
+    <div class="seg mt16" role="tablist"><button class="${an ? 'on' : ''}" data-act="sv" data-v="analysis">분석</button><button class="${an ? '' : 'on'}" data-act="sv" data-v="report">리포트</button></div>
     <div class="row between mt12"><div class="row g8"><button class="chip ${m ? '' : 'on'}" data-act="period" data-v="week">주간</button><button class="chip ${m ? 'on' : ''}" data-act="period" data-v="month">월간</button></div>
     ${an ? '' : `<button class="btn sm" data-act="print" data-v="pReport">${ic('receipt', 18)} 영수증 출력</button>`}</div>`;
   if (!an) return head + printer('pReport', receiptReport()) + `<p class="t12 mute mt16" style="text-align:center">영수증은 매주 월요일, 매월 1일에 자동 발행돼요</p>`;
@@ -1196,6 +1199,72 @@ function vSpend() {
         <p class="t10 mute">점 하나 = 결제 1회</p>
       </div>
     </section>
+    <section class="sec">
+      <div class="sec-h"><div><div class="t12 mute">들어온 돈이 어디로 갔나</div><div class="t18">10월 돈의 흐름</div></div></div>
+      ${flowCard(false)}
+    </section>
+    <button class="card c-sky row between mt24" style="width:100%;text-align:left" data-act="tab" data-tab="plan" data-pv="budget"><span><span class="t12 mute" style="display:block">줄일 곳이 보였다면</span><span class="t16">플랜에서 다음 달 예산에 반영하기</span></span>${ic('arrow', 20)}</button>`;
+}
+
+/* =========================================================
+   PLAN (기본 설정)
+   ========================================================= */
+function halfDonut() {
+  const parts = [ ['고정 지출',24,'#181818'], ['생활비',33,'#606060'], ['저축',35,'url(#hd)'], ['여유',8,'#DEDEDE'] ];
+  const cx = 152, cy = 120, r = 100, sw = 22; let a0 = Math.PI; const gap = .03;
+  const arcs = parts.map(([n, p, c]) => { const a1 = a0 + p / 100 * Math.PI;
+    const s = [cx + r * Math.cos(a0 + gap), cy + r * Math.sin(a0 + gap)], e = [cx + r * Math.cos(a1 - gap), cy + r * Math.sin(a1 - gap)];
+    const d = `M${s[0].toFixed(1)} ${s[1].toFixed(1)} A ${r} ${r} 0 0 1 ${e[0].toFixed(1)} ${e[1].toFixed(1)}`; a0 = a1;
+    return `<path d="${d}" stroke="${c}" stroke-width="${sw}" fill="none" stroke-linecap="round"/>`; }).join('');
+  return `<svg viewBox="0 0 305 130" width="100%" role="img" aria-label="월 수입 배분 제안: 고정 지출 24%, 생활비 33%, 저축 35%, 여유 8%">
+    <defs><linearGradient id="hd" x1="0" x2="1"><stop offset="0" stop-color="#FF769C"/><stop offset="1" stop-color="#C8E1FF"/></linearGradient></defs>${arcs}
+    <text x="${cx}" y="104" text-anchor="middle" font-size="34" font-family="Urbanist" font-weight="300" fill="#181818">35%</text>
+    <text x="${cx}" y="124" text-anchor="middle" font-size="11" fill="#606060">저축 비율</text></svg>
+    <div class="grid2 mt16" style="gap:8px 12px">${parts.map(([n, p, c]) => `<div class="row g8 t12"><i style="width:10px;height:10px;border-radius:50%;display:inline-block;background:${c.startsWith('url') ? 'var(--aura)' : c}"></i><span style="flex:1">${n}</span><span class="num">${p}%</span></div>`).join('')}</div>`;
+}
+function vPlan() {
+  const req = [
+    { k:'pre', t:'급여일 선저축', v:'매월 25일 · 300,000원 → 독립 자금 적금', done:true, icn:'calendar', term:'선저축: 월급이 들어오면 쓰기 전에 먼저 저축 계좌로 옮기는 방식이에요. 남은 돈으로 생활하게 돼요.' },
+    { k:'emer', t:'비상금', v:'매월 25일 · 100,000원 → 비상금 통장', done:true, icn:'shield', term:'비상금: 갑작스러운 병원비·퇴사 같은 상황을 위한 돈이에요. 보통 생활비 3개월치를 권해요.' },
+    { k:'budget', t:'월 예산', v:'800,000원 · 매월 1일 시작', done:true, icn:'wallet' },
+    { k:'fixed', t:'고정 지출', v:S.fixedSet ? '4건 · 월 582,000원' : '자동으로 찾은 4건 확인 필요', done:S.fixedSet, icn:'receipt', term:'고정 지출: 월세·통신비·구독료처럼 매달 정해진 날 나가는 돈이에요. 하루 예산 계산에서 미리 빼 둬요.' },
+  ];
+  const doneN = req.filter(r => r.done).length;
+  const easy = S.persona === 'low';
+  const total = Object.values(S.cat).reduce((s, v) => s + v, 0);
+  const d = D(), pv = S.planView;
+  // 줄이기 계획 (지출 분석 → 다음 달 예산 반영)
+  const shown = SUGG.filter(s => !S.keeps.has(s.c)), hidden = SUGG.filter(s => S.keeps.has(s.c));
+  const picked = shown.filter(s => S.applied.has(s.id));
+  const save = picked.reduce((t, s) => t + s.save, 0);
+  const remain = 5000000 - S.goalSaved, faster = Math.ceil(remain / 350000) - Math.ceil(remain / (350000 + save));
+  const amtOf = c => (MONTH_ITEMS.find(i => i.c === c) || {}).a || 0;
+  const locked = !!S.cutApplied;
+  const head = `<header class="top"><div><div class="t18">플랜</div><div class="t12 mute">예산 · 통장 · 자동 규칙</div></div><button class="ib glass" data-act="sheet" data-sheet="menu" aria-label="설정 메뉴">${ic('sliders', 20)}</button></header>
+  <div class="seg mt16" role="tablist">${[['budget','예산'],['bank','통장'],['rule','자동 규칙']].map(([k, n]) => `<button class="${pv === k ? 'on' : ''}" data-act="pv" data-v="${k}" role="tab" aria-selected="${pv === k}">${n}</button>`).join('')}</div>`;
+  // 예산: 이번 달 예산 현황 · 카테고리별 배분 · 줄이기 계획
+  if (pv === 'budget') return head + `
+  <div class="card c-ink mt16">
+    <div class="row between"><span class="t12 mute">10월 예산</span><span class="t10 mute num">10.01 – 10.31</span></div>
+    <div class="row g8 mt8" style="align-items:baseline"><span class="n32">${won(S.budget)}</span><span class="cur t16">₩</span></div>
+    <div class="glowbar mt16" style="height:8px;background:#333"><i style="width:${Math.min(100, d.used * 100)}%"></i></div>
+    <div class="grid2 mt16" style="gap:12px">
+      <div><div class="t10 mute">지금까지 쓴 돈</div><div class="n20 mt4">${won(S.spent)}</div></div>
+      <div><div class="t10 mute">오늘 쓸 수 있는 돈</div><div class="n20 mt4">${won(d.daily)}</div></div>
+      <div><div class="t10 mute">월말 예상 지출</div><div class="n20 mt4">${won(d.projSpend)}</div></div>
+      <div><div class="t10 mute">남은 기간</div><div class="n20 mt4">${d.left}<span class="t10 mute"> 일</span></div></div>
+    </div>
+  </div>
+  <section class="sec">
+    <div class="sec-h"><div><div class="t12 mute">9월 수입 2,450,000원 · 지출 데이터 기준</div><div class="t18">이렇게 나눠 보면 어때요?</div></div></div>
+    <div class="card c-sky">
+      ${halfDonut()}
+      <hr class="hair mt24">
+      <div class="row between mt16"><span class="t14">카테고리별 생활비</span><span class="t12 num ${total !== 800000 ? '' : 'mute'}">${W(total)}</span></div>
+      <div class="stack8 mt12">${Object.entries(S.cat).map(([k, v]) => `<div class="row between t14"><span>${k}</span>${S.ratioEdit ? `<span class="stepper"><button data-act="step" data-c="${k}" data-d="-10000" aria-label="${k} 줄이기">−</button><span class="num t12" style="min-width:64px;text-align:right">${won(v)}</span><button data-act="step" data-c="${k}" data-d="10000" aria-label="${k} 늘리기">+</button></span>` : `<span class="num">${won(v)}</span>`}</div>`).join('')}</div>
+      ${S.ratioOk ? `<div class="row g8 mt16 t14">${ic('check', 18)} 10월 예산에 적용했어요</div>` : `<div class="row g8 mt24"><button class="btn" style="flex:1" data-act="ratioOk">수락</button><button class="btn ghost" style="flex:1" data-act="ratioEdit">${S.ratioEdit ? '수정 완료' : '수정'}</button></div>`}
+    </div>
+  </section>
     <section class="sec">
       <div class="sec-h"><div><div class="t12 mute">9월 지출 기준 · 다음 달 예산</div><div class="t18">줄이기 계획</div></div></div>
       <div class="t14"><span class="stepn">1</span>줄이지 않을 지출 고르기</div>
@@ -1218,39 +1287,35 @@ function vSpend() {
         <div class="row between"><span class="t12 mute">담은 제안 ${picked.length}개 · 한 달에</span><span class="t12">${save ? `독립 자금 ${faster}개월 빨라져요` : ''}</span></div>
         <div class="row g8 mt8" style="align-items:baseline"><span class="n32">${won(save)}</span><span class="cur t16">₩</span></div>
         ${locked ? `<p class="t12 mt12">${ic('check', 14)} 11월 예산에 반영했어요 · ${S.cutApplied.map(([c, a, b]) => `${c} ${won(a)} → ${won(b)}`).join(' · ')}</p>
-          <div class="row g8 mt16"><button class="btn sm" data-act="tab" data-tab="plan">플랜에서 보기</button><button class="btn sm ghost" data-act="cutUndo">반영 취소</button></div>`
+          <div class="row g8 mt16"><button class="btn sm ghost" data-act="cutUndo">반영 취소</button></div>`
         : `<button class="btn full mt16" data-act="cutApply" ${save ? '' : 'disabled style="opacity:.35"'}>${save ? '11월 예산에 반영' : '제안을 하나 이상 담아 주세요'}</button>`}
       </div>
     </section>`;
-}
-
-/* =========================================================
-   PLAN (기본 설정)
-   ========================================================= */
-function halfDonut() {
-  const parts = [ ['고정 지출',24,'#181818'], ['생활비',33,'#606060'], ['저축',35,'url(#hd)'], ['여유',8,'#DEDEDE'] ];
-  const cx = 152, cy = 120, r = 100, sw = 22; let a0 = Math.PI; const gap = .03;
-  const arcs = parts.map(([n, p, c]) => { const a1 = a0 + p / 100 * Math.PI;
-    const s = [cx + r * Math.cos(a0 + gap), cy + r * Math.sin(a0 + gap)], e = [cx + r * Math.cos(a1 - gap), cy + r * Math.sin(a1 - gap)];
-    const d = `M${s[0].toFixed(1)} ${s[1].toFixed(1)} A ${r} ${r} 0 0 1 ${e[0].toFixed(1)} ${e[1].toFixed(1)}`; a0 = a1;
-    return `<path d="${d}" stroke="${c}" stroke-width="${sw}" fill="none" stroke-linecap="round"/>`; }).join('');
-  return `<svg viewBox="0 0 305 130" width="100%" role="img" aria-label="월 수입 배분 제안: 고정 지출 24%, 생활비 33%, 저축 35%, 여유 8%">
-    <defs><linearGradient id="hd" x1="0" x2="1"><stop offset="0" stop-color="#FF769C"/><stop offset="1" stop-color="#C8E1FF"/></linearGradient></defs>${arcs}
-    <text x="${cx}" y="104" text-anchor="middle" font-size="34" font-family="Urbanist" font-weight="300" fill="#181818">35%</text>
-    <text x="${cx}" y="124" text-anchor="middle" font-size="11" fill="#606060">저축 비율</text></svg>
-    <div class="grid2 mt16" style="gap:8px 12px">${parts.map(([n, p, c]) => `<div class="row g8 t12"><i style="width:10px;height:10px;border-radius:50%;display:inline-block;background:${c.startsWith('url') ? 'var(--aura)' : c}"></i><span style="flex:1">${n}</span><span class="num">${p}%</span></div>`).join('')}</div>`;
-}
-function vPlan() {
-  const req = [
-    { k:'pre', t:'급여일 선저축', v:'매월 25일 · 300,000원 → 독립 자금 적금', done:true, icn:'calendar', term:'선저축: 월급이 들어오면 쓰기 전에 먼저 저축 계좌로 옮기는 방식이에요. 남은 돈으로 생활하게 돼요.' },
-    { k:'emer', t:'비상금', v:`${W(S.emergency)} / 2,400,000원`, done:true, icn:'shield', term:'비상금: 갑작스러운 병원비·퇴사 같은 상황을 위한 돈이에요. 보통 생활비 3개월치를 권해요.', bar:S.emergency / 2400000 },
-    { k:'budget', t:'월 예산', v:'800,000원 · 매월 1일 시작', done:true, icn:'wallet' },
-    { k:'fixed', t:'고정 지출', v:S.fixedSet ? '4건 · 월 582,000원' : '자동으로 찾은 4건 확인 필요', done:S.fixedSet, icn:'receipt', term:'고정 지출: 월세·통신비·구독료처럼 매달 정해진 날 나가는 돈이에요. 하루 예산 계산에서 미리 빼 둬요.' },
-  ];
-  const doneN = req.filter(r => r.done).length;
-  const easy = S.persona === 'low';
-  const total = Object.values(S.cat).reduce((s, v) => s + v, 0);
-  return `<header class="top"><div><div class="t18">플랜</div><div class="t12 mute">저축과 예산 기본 설정</div></div><button class="ib glass" data-act="sheet" data-sheet="menu" aria-label="설정 메뉴">${ic('sliders', 20)}</button></header>
+  // 통장: 용도별 통장 · 비상금 · 저축 꺼내기 · 투자
+  if (pv === 'bank') return head + `
+  <section class="mt16">${accountsCard(false)}</section>
+  <section class="sec">
+    <div class="sec-h"><div class="t18">비상금</div><span class="t10 mute">생활비 3개월 기준</span></div>
+    <div class="card c-paper">
+      <div class="row between" style="align-items:baseline"><span class="n24">${won(S.emergency)}<span class="cur t12">₩</span></span><span class="t12 mute num">/ 2,400,000원</span></div>
+      <div class="glowbar mt16" style="height:8px"><i style="width:${S.emergency / 2400000 * 100}%"></i></div>
+      <div class="row between t10 mute mt8"><span>매월 25일 100,000원씩 자동 적립</span><span>${pct(S.emergency / 2400000)}</span></div>
+    </div>
+  </section>
+  <section class="sec">
+    <div class="sec-h"><div class="t18">저축 꺼내기</div></div>
+    <button class="card c-paper row between" style="width:100%" data-act="sheet" data-sheet="withdraw"><span class="setrow" style="grid-template-columns:40px 1fr"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic('coin', 20)}</span><span><span class="t16" style="display:block">적금·목표에서 꺼내기</span><span class="t12 mute">꺼내기 전에 목표에 미치는 영향을 보여드려요</span></span></span>${ic('arrow', 20)}</button>
+  </section>
+  <section class="sec">
+    <div class="sec-h"><div class="t18">투자</div><span class="t10 mute">필수 설정 후 열려요</span></div>
+    <div class="card ${S.fixedSet ? 'c-aura' : 'c-dash'}">
+      <div class="setrow"><span class="ib ${S.fixedSet ? 'ink' : ''}" style="${S.fixedSet ? '' : 'box-shadow:inset 0 0 0 1px var(--g3)'}">${ic(S.fixedSet ? 'spark' : 'lock', 20)}</span><div><div class="t16">소액 적립식 투자${term()}</div><div class="t12 mute">매주 10,000원 · 국내외 지수 ETF</div></div>${S.fixedSet ? '<button class="btn sm" data-act="toast" data-msg="매주 월요일 10,000원 적립식 투자를 예약했어요">시작</button>' : '<span class="tag dash">잠김</span>'}</div>
+      ${termDef('적립식 투자: 정해진 날 같은 금액을 나눠 사는 방식이에요. 가격이 오르내려도 평균 매입가가 고르게 맞춰져요. 원금 손실이 날 수 있어요.')}
+    </div>
+    <div class="row g8 mt12">${[['대출과 신용','credit'],['보험과 은퇴','insure']].map(([n]) => `<span class="tag dash mute" style="height:32px;padding:0 14px">${ic('lock', 14)}&nbsp;${n} · 확장 예정</span>`).join('')}</div>
+  </section>`;
+  // 자동 규칙: 필수 설정 · 선저축 · 비상금 적립 · 예산 시작일 · 고정 지출 · 비정기 수입 배분
+  return head + `
   ${easy ? `<p class="t12 mute mt12">처음이라면 아래 4개만 켜 두면 충분해요. 나머지는 나중에 해도 괜찮아요.</p>` : ''}
   <div class="card c-paper mt16" style="padding:20px 24px">
     <div class="row between"><div class="row g8" style="align-items:baseline"><span class="t14">필수 설정</span><span class="n24">${doneN}</span><span class="t12 mute">/ 4</span></div>
@@ -1274,16 +1339,6 @@ function vPlan() {
         </div>`).join('')}
     </div>
   </section>
-  <section class="sec">
-    <div class="sec-h"><div><div class="t12 mute">9월 수입 2,450,000원 · 지출 데이터 기준</div><div class="t18">이렇게 나눠 보면 어때요?</div></div></div>
-    <div class="card c-sky">
-      ${halfDonut()}
-      <hr class="hair mt24">
-      <div class="row between mt16"><span class="t14">카테고리별 생활비</span><span class="t12 num ${total !== 800000 ? '' : 'mute'}">${W(total)}</span></div>
-      <div class="stack8 mt12">${Object.entries(S.cat).map(([k, v]) => `<div class="row between t14"><span>${k}</span>${S.ratioEdit ? `<span class="stepper"><button data-act="step" data-c="${k}" data-d="-10000" aria-label="${k} 줄이기">−</button><span class="num t12" style="min-width:64px;text-align:right">${won(v)}</span><button data-act="step" data-c="${k}" data-d="10000" aria-label="${k} 늘리기">+</button></span>` : `<span class="num">${won(v)}</span>`}</div>`).join('')}</div>
-      ${S.ratioOk ? `<div class="row g8 mt16 t14">${ic('check', 18)} 10월 예산에 적용했어요</div>` : `<div class="row g8 mt24"><button class="btn" style="flex:1" data-act="ratioOk">수락</button><button class="btn ghost" style="flex:1" data-act="ratioEdit">${S.ratioEdit ? '수정 완료' : '수정'}</button></div>`}
-    </div>
-  </section>
   <section class="sec" id="allocSec">
     <div class="sec-h"><div><div class="t12 mute">비정기 수입</div><div class="t18">외주비가 들어오면</div></div></div>
     <div class="card c-ink">
@@ -1292,19 +1347,6 @@ function vPlan() {
       <div class="mt16" style="color:var(--paper)">${allocBlock()}</div>
       ${S.allocDone ? `<div class="row g8 mt16 t14">${ic('check', 18)} 나눠서 옮겼어요</div>` : `<button class="btn full mt16" data-act="allocDo">이대로 나누기</button>`}
     </div>
-  </section>
-  <section class="sec">
-    <div class="sec-h"><div class="t18">저축 꺼내기</div></div>
-    <button class="card c-paper row between" style="width:100%" data-act="sheet" data-sheet="withdraw"><span class="setrow" style="grid-template-columns:40px 1fr"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic('coin', 20)}</span><span><span class="t16" style="display:block">적금·목표에서 꺼내기</span><span class="t12 mute">꺼내기 전에 목표에 미치는 영향을 보여드려요</span></span></span>${ic('arrow', 20)}</button>
-  </section>
-  <section class="sec">
-    <div class="sec-h"><div class="t18">선택 항목</div><span class="t10 mute">필수 설정 후 열려요</span></div>
-    <div class="card ${S.fixedSet ? 'c-aura' : 'c-dash'}">
-      <div class="setrow"><span class="ib ${S.fixedSet ? 'ink' : ''}" style="${S.fixedSet ? '' : 'box-shadow:inset 0 0 0 1px var(--g3)'}">${ic(S.fixedSet ? 'spark' : 'lock', 20)}</span><div><div class="t16">소액 적립식 투자${term()}</div><div class="t12 mute">매주 10,000원 · 국내외 지수 ETF</div></div>${S.fixedSet ? '<button class="btn sm" data-act="toast" data-msg="매주 월요일 10,000원 적립식 투자를 예약했어요">시작</button>' : '<span class="tag dash">잠김</span>'}</div>
-      ${termDef('적립식 투자: 정해진 날 같은 금액을 나눠 사는 방식이에요. 가격이 오르내려도 평균 매입가가 고르게 맞춰져요. 원금 손실이 날 수 있어요.')}
-    </div>
-    <button class="card c-paper row between mt12" style="width:100%" data-act="tab" data-tab="benefit"><span><span class="t12 mute" style="display:block">만 27세 · 연소득 2,640만 원 기준</span><span class="t16">받을 수 있는 공제·지원금 4건</span></span>${ic('arrow', 20)}</button>
-    <div class="row g8 mt12">${[['대출과 신용','credit'],['보험과 은퇴','insure']].map(([n]) => `<span class="tag dash mute" style="height:32px;padding:0 14px">${ic('lock', 14)}&nbsp;${n} · 확장 예정</span>`).join('')}</div>
   </section>`;
 }
 
@@ -1637,9 +1679,10 @@ document.addEventListener('click', e => {
     case 'qPrev': if (S.q > 0) { S.q--; render(false); } else { S.ob = 1; render(false); } break;
     case 'togglePrev': S.showPrev = !S.showPrev; render(); break;
     case 'resLink': S.sub = null; S.persona = scores().persona; S.mode = 'app'; S.tab = 'home'; render(false); simpleToast('계좌 6개 · 카드 3개를 연동했어요'); break;
-    case 'resSetup': S.persona = scores().persona; S.mode = 'app'; S.tab = 'plan'; render(false); break;
+    case 'resSetup': S.persona = scores().persona; S.mode = 'app'; S.tab = 'plan'; S.planView = 'rule'; render(false); break;
     case 'rediag': closeSheet(); S.sub = null; S.mode = 'onboard'; S.ob = 1; S.q = 0; render(false); break;
-    case 'tab': closeSheet(); S.mode = 'app'; S.sub = null; S.tab = el.dataset.tab; render(false); break;
+    case 'tab': closeSheet(); S.mode = 'app'; S.sub = null; S.tab = el.dataset.tab; if (el.dataset.pv) S.planView = el.dataset.pv; if (el.dataset.sv) S.spendView = el.dataset.sv; render(false); break;
+    case 'pv': S.planView = v; render(false); break;
     case 'diag': closeSheet(); S.mode = 'app'; S.sub = 'diag'; render(false); break;
     case 'subClose': S.sub = null; render(false); break;
     case 'sheet': openSheet(el.dataset.sheet); break;
@@ -1700,8 +1743,8 @@ document.querySelector('#aiDock [type="submit"]').innerHTML = ic('send', 20);
 
 /* ---------- side panel ---------- */
 function renderPanel() {
-  const cur = S.mode === 'onboard' ? 'ob' + S.ob : S.sub === 'diag' ? 'diag' : S.tab === 'spend' ? 'spend-' + S.spendView : S.tab;
-  const sc = [ ['ob0','진단 시작'], ['ob1','자기평가'], ['ob2','진단 문항'], ['ob3','진단 결과'], ['diag','내 진단 결과'], ['home','홈'], ['spend-analysis','분석 및 조정'], ['spend-report','리포트'], ['plan','플랜'], ['goal','목표'], ['benefit','혜택'] ];
+  const cur = S.mode === 'onboard' ? 'ob' + S.ob : S.sub === 'diag' ? 'diag' : S.tab === 'spend' ? 'spend-' + S.spendView : S.tab === 'plan' ? 'plan-' + S.planView : S.tab;
+  const sc = [ ['ob0','진단 시작'], ['ob1','자기평가'], ['ob2','진단 문항'], ['ob3','진단 결과'], ['diag','내 진단 결과'], ['home','홈'], ['spend-analysis','지출 · 분석'], ['spend-report','지출 · 리포트'], ['plan-budget','플랜 · 예산'], ['plan-bank','플랜 · 통장'], ['plan-rule','플랜 · 자동 규칙'], ['goal','목표'], ['benefit','혜택'] ];
   document.getElementById('navScreens').innerHTML = sc.map(([k, n]) => `<button type="button" class="${cur === k ? 'on' : ''}" data-go="${k}">${n}</button>`).join('');
   document.getElementById('navPersona').innerHTML = Object.entries(PERSONA).map(([k, p]) => `<button type="button" class="${S.persona === k ? 'on' : ''}" data-persona="${k}">${p.name}</button>`).join('');
   document.getElementById('navScen').innerHTML = [ ['pay','결제 발생 → 실시간 피드백'], ['income','외주비 입금 → 배분'], ['settle','더치페이 정산'], ['withdraw','저축 인출 확인'], ['ai','AI 조언 묻기'] ].map(([k, n]) => `<button type="button" data-scen="${k}">${n}</button>`).join('');
@@ -1711,7 +1754,7 @@ document.querySelector('.panel').addEventListener('click', e => {
   if (b.dataset.go) { const g = b.dataset.go;
     if (g === 'diag') { S.mode = 'app'; S.sub = 'diag'; }
     else if (g.startsWith('ob')) { S.mode = 'onboard'; S.ob = +g[2]; }
-    else { S.mode = 'app'; if (g.startsWith('spend')) { S.tab = 'spend'; S.spendView = g.split('-')[1]; } else S.tab = g; }
+    else { S.mode = 'app'; if (g.startsWith('spend')) { S.tab = 'spend'; S.spendView = g.split('-')[1]; } else if (g.startsWith('plan')) { S.tab = 'plan'; S.planView = g.split('-')[1]; } else S.tab = g; }
     render(false); }
   if (b.dataset.persona) { S.persona = b.dataset.persona; S.mode = 'app'; S.tab = 'home'; render(false); }
   const sc = b.dataset.scen;
@@ -1719,8 +1762,8 @@ document.querySelector('.panel').addEventListener('click', e => {
     if (sc === 'pay') { S.tab = 'home'; render(false); payment(); }
     if (sc === 'income') { S.tab = 'home'; S.incomeIn = true; S.allocDone = false; render(false); openSheet('alloc'); }
     if (sc === 'settle') { S.tab = 'home'; S.settled = false; render(false); openSheet('settle'); }
-    if (sc === 'withdraw') { S.tab = 'plan'; render(false); openSheet('withdraw'); }
-    if (sc === 'ai') { S.tab = 'plan'; render(false); ask('오늘 얼마 더 써도 돼?'); }
+    if (sc === 'withdraw') { S.tab = 'plan'; S.planView = 'bank'; render(false); openSheet('withdraw'); }
+    if (sc === 'ai') { S.tab = 'plan'; S.planView = 'budget'; render(false); ask('오늘 얼마 더 써도 돼?'); }
   }
   if (b.id === 'gridBtn') { const g = document.getElementById('gridOv'); g.classList.toggle('on'); b.classList.toggle('on'); }
 });
