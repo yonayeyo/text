@@ -452,9 +452,10 @@ const term = (k, def) => `<button class="term" type="button" data-term aria-labe
 const termDef = def => `<div class="term-def">${def}</div>`;
 
 /* =========================================================
-   diagnosis data — 5 areas × 4 situations, 4 choices (last = 잘 모르겠다)
-   t: k = knowledge (v 1 = correct) · p = practice (v 3/2/1)
-   s: example answer used to fill unanswered items in the demo
+   diagnosis — 5개 영역 × (관심 1 · 지식 1 · 실천 2) = 20문항
+   t: i = 관심(1~4점, 정답 없음) · k = 지식(4지선다 + '잘 모르겠어요', c = 정답) · p = 실천(①→④ = 1~4점)
+   응답 값: 선택지 순서(0~3), 지식 문항의 '잘 모르겠어요' = 4
+   s: 데모에서 답하지 않은 문항을 채우는 예시 응답
    ========================================================= */
 const AREAS = [
   { id:'spend',  no:'01', name:'소비와 지출', now:true },
@@ -463,35 +464,37 @@ const AREAS = [
   { id:'insure', no:'04', name:'보험과 은퇴', now:false },
   { id:'tax',    no:'05', name:'세금과 혜택', now:true },
 ];
+const INTEREST = ['별로 관심이 없다','필요하다고 느끼지만 아직 알아본 적은 없다','가끔 관련 정보를 찾아본다','더 잘하고 싶어서 방법을 적극적으로 찾고 있다'];
 const Q = [
-  { a:0, t:'p', q:'친구들과 저녁을 먹고 카드 결제 알림이 왔어요. 이번 달 남은 예산을 알고 있나요?', o:['대략 금액까지 알고 있다','얼마나 썼는지 감만 있다','확인해 본 적이 없다'], v:[3,2,1], s:1 },
-  { a:0, t:'k', q:'매달 정해진 날 빠져나가는 월세·통신비·구독료는 무엇이라고 부를까요?', o:['변동 지출','고정 지출','비상 지출'], v:[0,1,0], s:1 },
-  { a:0, t:'p', q:'배달 앱을 열었는데 이번 주 배달비가 벌써 3만 원이에요.', o:['정해둔 한도를 넘으면 시키지 않는다','한 번 더 고민해 본다','그냥 주문한다'], v:[3,2,1], s:1 },
-  { a:0, t:'k', q:'월 예산 80만 원 중 20일 동안 54만 원을 썼어요. 남은 10일의 하루 예산은?', o:['1만 원','4만 원','2만 6천 원'], v:[0,0,1], s:2 },
-  { a:1, t:'p', q:'월급이 들어온 날, 저축은 언제 하나요?', o:['들어오자마자 자동이체로','쓰고 남으면 그때','거의 하지 못한다'], v:[3,2,1], s:1 },
-  { a:1, t:'k', q:'같은 금리, 같은 총액이라면 이자를 더 많이 받는 쪽은?', o:['처음에 한 번에 넣는 예금','매달 나눠 넣는 적금','둘이 똑같다'], v:[1,0,0], s:0 },
-  { a:1, t:'k', q:'여러 종목에 나눠 투자하는 ‘분산 투자’의 가장 큰 목적은?', o:['수익을 무조건 높이려고','한 곳에서 손실이 나도 전체 위험을 줄이려고','세금을 줄이려고'], v:[0,1,0], s:1 },
-  { a:1, t:'p', q:'예상하지 못한 보너스 50만 원이 들어왔어요.', o:['목표·비상금에 먼저 나눈다','일부만 저축한다','사고 싶던 것을 산다'], v:[3,2,1], s:1 },
-  { a:2, t:'k', q:'신용점수에 나쁜 영향을 주는 것은?', o:['체크카드를 자주 쓰는 것','내 신용점수를 조회하는 것','카드 대금을 며칠 연체하는 것'], v:[0,0,1], s:2 },
-  { a:2, t:'p', q:'학자금 대출 상환일 알림이 왔어요.', o:['자동이체로 이미 처리된다','생각날 때 직접 낸다','가끔 늦게 낸다'], v:[3,2,1], s:3 },
-  { a:2, t:'k', q:'대출 상품을 비교할 때 가장 먼저 볼 것은?', o:['연 이자율과 총 상환 금액','광고 문구와 혜택','대출 한도'], v:[1,0,0], s:3 },
-  { a:2, t:'p', q:'급하게 50만 원이 필요해졌어요.', o:['모아 둔 비상금을 먼저 쓴다','가족이나 지인에게 빌린다','카드 현금서비스를 쓴다'], v:[3,2,1], s:2 },
-  { a:3, t:'k', q:'실손보험은 어떤 돈을 돌려받는 보험일까요?', o:['실제로 낸 병원비의 일부','사고가 나면 정해진 위로금','그동안 낸 보험료 전부'], v:[1,0,0], s:3 },
-  { a:3, t:'p', q:'부모님이 예전에 보험을 들어 주셨다고 들었어요.', o:['보장 내용을 직접 확인해 봤다','보험 이름만 알고 있다','있는지도 확실하지 않다'], v:[3,2,1], s:2 },
-  { a:3, t:'k', q:'지금 20~30대가 국민연금을 받기 시작하는 나이는?', o:['퇴사하면 바로','가입 10년 뒤 언제든','만 65세 전후'], v:[0,0,1], s:3 },
-  { a:3, t:'p', q:'회사에서 퇴직연금 유형(DB·DC)을 고르라고 해요.', o:['차이를 알아보고 고른다','회사 기본값으로 둔다','아직 신경 써 본 적 없다'], v:[3,2,1], s:3 },
-  { a:4, t:'k', q:'연말정산에서 체크카드가 신용카드보다 유리한 이유는?', o:['소득공제율이 더 높아서','공제 한도가 없어서','포인트가 더 쌓여서'], v:[1,0,0], s:0 },
-  { a:4, t:'p', q:'청년 대상 정부 지원금 공고를 봤어요.', o:['조건을 확인하고 신청한다','저장만 해 둔다','그냥 넘긴다'], v:[3,2,1], s:1 },
-  { a:4, t:'k', q:'카드 사용액이 총급여의 몇 %를 넘어야 소득공제가 시작될까요?', o:['10%','25%','50%'], v:[0,1,0], s:1 },
-  { a:4, t:'p', q:'카드 포인트가 3만 점 쌓여 있어요.', o:['현금으로 바꿔 저축한다','쇼핑할 때 쓴다','쌓여 있는 줄 몰랐다'], v:[3,2,1], s:1 },
+  { a:0, t:'i', q:'한 달 지출과 예산을 관리하는 일에 대해 지금 나와 가장 가까운 것은?', o:INTEREST, s:3 },
+  { a:0, t:'k', q:'월급 250만 원을 받아 고정 지출 120만 원을 내고, 저축 50만 원을 먼저 이체했다. 남은 돈을 30일 동안 나눠 쓴다면 하루에 쓸 수 있는 금액은?', o:['약 17,000 ₩','약 27,000 ₩','약 43,000 ₩','약 83,000 ₩'], c:1, s:1 },
+  { a:0, t:'p', q:'지난 한 달 동안 어디에 얼마를 썼는지 알고 있나요?', o:['거의 모른다','총액만 대략 알고 있다','주요 항목별로 대략 알고 있다','항목별 금액을 직접 확인했다'], s:1 },
+  { a:0, t:'p', q:'한 달 예산을 정해 두고 있나요?', o:['예산을 정하지 않는다','정하지만 대부분 넘긴다','정하고 대체로 지킨다','정하고, 달 중간에도 남은 예산을 확인하며 지킨다'], s:1 },
+  { a:1, t:'i', q:'돈을 모으거나 불리는 일(적금, 주식, 펀드 등)에 대해 지금 나와 가장 가까운 것은?', o:INTEREST, s:2 },
+  { a:1, t:'k', q:'지금 10,000 ₩으로 김밥 4줄을 살 수 있다. 10,000 ₩을 연 이자 2% 통장에 넣어 두었고, 1년 동안 물가가 4% 올랐다. 1년 뒤 이 돈으로 살 수 있는 김밥의 양은?', o:['지금보다 많다','지금과 같다','지금보다 적다','물가와 이자는 서로 관계가 없다'], c:2, s:2 },
+  { a:1, t:'p', q:'수입이 들어오면 저축은 어떻게 하나요?', o:['거의 저축하지 않는다','쓰고 남으면 한다','정한 금액을 먼저 떼어 두지만 자주 꺼내 쓴다','정한 금액을 먼저(또는 자동이체로) 떼어 두고 유지한다'], s:1 },
+  { a:1, t:'p', q:'돈을 모으는 구체적인 목표가 있나요?', o:['없다','막연히 있다','금액이나 기간 중 하나는 정해져 있다','금액과 기간이 정해져 있고 진행 상황을 확인한다'], s:0 },
+  { a:2, t:'i', q:'신용 점수나 대출(학자금, 생활비 대출 등)에 대해 지금 나와 가장 가까운 것은?', o:INTEREST, s:1 },
+  { a:2, t:'k', q:'1,000,000 ₩을 월 1% 복리 이자로 빌렸다. 12개월 동안 한 번도 갚지 않았다면 갚아야 할 돈은?', o:['1,000,000 ₩ 그대로','정확히 1,120,000 ₩','1,120,000 ₩보다 많다','1,120,000 ₩보다 적다'], c:2, s:4 },
+  { a:2, t:'p', q:'내 신용 점수를 알고 있나요?', o:['확인해 본 적이 없다','확인한 적은 있지만 기억나지 않는다','대략 알고 있다','정기적으로 확인하고 관리한다'], s:0 },
+  { a:2, t:'p', q:'카드값, 통신비, 대출 상환금을 제때 내나요?', o:['납부일을 몰라 연체한 적이 있다','납부일은 알지만 잊어서 늦은 적이 있다','대체로 제때 낸다','자동이체로 항상 제때 낸다'], s:2 },
+  { a:3, t:'i', q:'사고·질병에 대비하는 보험이나 노후를 위한 연금에 대해 지금 나와 가장 가까운 것은?', o:INTEREST, s:2 },
+  { a:3, t:'k', q:'감기로 병원에 가서 30,000 ₩을 냈다. 실손보험(실비)에 가입되어 있다면 일어나는 일은?', o:['정해진 진단금을 한꺼번에 받는다','실제로 낸 병원비 중 일부를 돌려받을 수 있다','낸 보험료를 만기에 모두 돌려받는다','은퇴 후 매달 연금을 받는다'], c:1, s:0 },
+  { a:3, t:'p', q:'갑자기 큰 지출(병원비, 수리비 등)이 생기면 어떻게 해결하나요?', o:['카드 할부나 돈을 빌려 해결한다','적금·저축을 깨서 해결한다','다른 생활비를 줄여 해결한다','따로 마련해 둔 비상금으로 해결한다'], s:0 },
+  { a:3, t:'p', q:'내가 가입한 보험이나 연금을 알고 있나요?', o:['가입한 것이 있는지 모른다','가입한 것은 알지만 내용은 모른다','무엇을 보장하는지 대략 알고 있다','보장 내용과 보험료를 확인해 정리해 두었다'], s:1 },
+  { a:4, t:'i', q:'연말정산, 절세, 정부 지원금이나 포인트 혜택에 대해 지금 나와 가장 가까운 것은?', o:INTEREST, s:2 },
+  { a:4, t:'k', q:'올해 카드 사용액이 이미 연말정산 공제 기준(총급여의 25%)을 넘었다. 남은 기간에 어떤 결제 수단을 쓰는 것이 공제에 더 유리할까?', o:['신용카드','체크카드나 현금영수증','어떤 수단이든 같다','기준을 넘으면 더 이상 공제되지 않는다'], c:1, s:1 },
+  { a:4, t:'p', q:'연말정산이나 세금 환급을 어떻게 챙기나요?', o:['해 본 적이 없거나 회사·가족이 알아서 한다','결과(환급액)만 확인한다','공제 항목을 확인하고 필요한 서류를 챙긴다','미리 공제를 고려해 결제 수단과 지출을 조정한다'], s:1 },
+  { a:4, t:'p', q:'청년 대상 지원금이나 금융 혜택(저축 지원 계좌, 월세 지원 등)을 챙기나요?', o:['찾아본 적이 없다','들어본 적은 있지만 확인하지 않았다','내게 해당하는지 확인해 봤다','해당하는 혜택을 신청했거나 이용하고 있다'], s:0 },
 ];
+const UNKNOWN = 4;
 const PERSONA = {
   cog:  { name:'인지우세형', quad:'2사분면', short:'지식 높음 · 실천 낮음', desc:'알고는 있지만 실천으로 잘 이어지지 않아요. 누르면 바로 실행되는 버튼과 자동 실행을 먼저 보여드릴게요.' },
   low:  { name:'저관여형', quad:'3사분면', short:'지식 낮음 · 실천 낮음', desc:'아직 금융이 낯설어요. 설정은 최소로 줄이고, 쉬운 설명과 작은 첫 행동부터 시작해요.' },
   habit:{ name:'습관우세형', quad:'4사분면', short:'지식 낮음 · 실천 높음', desc:'꾸준히 실천하고 있어요. 상품과 선택지를 비교해 판단을 돕는 정보를 먼저 보여드릴게요.' },
   self: { name:'자기관리형', quad:'1사분면', short:'지식 높음 · 실천 높음', desc:'알고, 실천도 하고 있어요. 장기 목표와 투자·연금 같은 다음 영역으로 넓혀 봐요.' },
 };
-const PREV = { k:6.0, p:2.0, date:'2026.06.12' };
+const PREV = { k:6.0, p:2.0, date:'2026.06.12' }; // 6월 진단 (10점 환산)
 
 /* =========================================================
    app data (example user: 지혜, 만 27세, 2026.10.12 기준)
@@ -580,24 +583,36 @@ const D = () => {
 /* =========================================================
    diagnosis scoring
    ========================================================= */
+// 채점 (제안값, 파일럿 후 조정): 지식 = 정답 수(0~5, 3 이상 높음) · 실천 = 실천 10문항 평균(1~4, 2.5 이상 높음)
+const INTERP = {
+  none:  { n:'관심 부재', how:'당장 권하지 않고, 인접 영역을 통해 나중에 연결해요.' },
+  learn: { n:'지식 결핍', how:'판단을 돕는 정보와 함께 작은 행동부터 제안해요.' },
+  gap:   { n:'알지만 못 함', how:'기본 설정과 자동 실행, 즉각 피드백으로 도와드려요.' },
+  good:  { n:'잘하고 있음', how:'다음 단계와 인접 영역으로 넓혀 가요.' },
+};
 function scores() {
   const ans = S.answers.map((a, i) => a == null ? Q[i].s : a);
   const filled = S.answers.filter(a => a == null).length;
-  let kc = 0, kn = 0; const pv = [];
-  const area = AREAS.map(() => ({ known:0, p:[], k:0 }));
-  Q.forEach((q, i) => {
-    const a = ans[i], A = area[q.a];
-    if (a !== 3) A.known++;
-    if (q.t === 'k') { kn++; if (a !== 3 && q.v[a] === 1) { kc++; A.k++; } }
-    else { const sc = a === 3 ? 0 : { 3:10, 2:5, 1:1 }[q.v[a]]; pv.push(sc); A.p.push(sc); }
+  const pv = []; let k = 0, unknown = 0;
+  const areas = AREAS.map((ar, ai) => {
+    const qs = Q.map((q, i) => ({ q, a:ans[i] })).filter(x => x.q.a === ai);
+    const interest = qs.find(x => x.q.t === 'i').a + 1;
+    const kq = qs.find(x => x.q.t === 'k'), know = kq.a === UNKNOWN ? 'unknown' : kq.a === kq.q.c ? 'correct' : 'wrong';
+    const ps = qs.filter(x => x.q.t === 'p').map(x => x.a + 1), practice = (ps[0] + ps[1]) / 2;
+    pv.push(...ps); if (know === 'correct') k++; if (know === 'unknown') unknown++;
+    const interp = practice >= 2.5 ? 'good' : interest < 3 ? 'none' : know === 'correct' ? 'gap' : 'learn';
+    return { ...ar, interest, practice, know, interp };
   });
-  const k = kc / kn * 10, p = pv.reduce((s, x) => s + x, 0) / pv.length;
-  const areas = AREAS.map((ar, i) => ({ ...ar, interest:area[i].known / 4 * 10, practice:area[i].p.reduce((s, x) => s + x, 0) / 2 }));
-  const persona = k >= 5 ? (p >= 5 ? 'self' : 'cog') : (p >= 5 ? 'habit' : 'low');
-  const rec = areas.filter(a => a.now).sort((a, b) => (b.interest - b.practice * .3) - (a.interest - a.practice * .3))[0];
-  return { k, p, areas, persona, rec, filled };
+  const p = pv.reduce((t, x) => t + x, 0) / pv.length;
+  const kHigh = k >= 3, pHigh = p >= 2.5;
+  const persona = kHigh ? (pHigh ? 'self' : 'cog') : (pHigh ? 'habit' : 'low');
+  // 시작 영역: 지금 열린 영역(소비와 지출 → 저축과 투자 → 세금과 혜택 순) 중 관심 3 이상 · 실천 2.5 미만에서 관심이 가장 높은 곳
+  const open = ['spend','save','tax'].map(id => areas.find(a => a.id === id));
+  const cand = open.filter(a => a.interest >= 3 && a.practice < 2.5);
+  const pool = cand.length ? cand : open;
+  const rec = pool.reduce((b, a) => a.interest > b.interest ? a : b, pool[0]);
+  return { k, p, k10:k / 5 * 10, p10:p * 2.5, persona, areas, rec, filled, unknown };
 }
-
 /* =========================================================
    shared viz pieces
    ========================================================= */
@@ -678,30 +693,34 @@ function vSelf() {
 function vQuiz() {
   const q = Q[S.q], sel = S.answers[S.q];
   const short = ['소비와 지출','저축과 투자','대출','보험','세금'];
+  const kind = { i:['Interest','관심','정답이 없어요. 지금 나와 가장 가까운 것을 골라 주세요.'], k:['Situation','지식',''], p:['Practice','실천','지금 실제로 하고 있는 것을 골라 주세요.'] }[q.t];
   const prog = AREAS.map((a, ai) => `<div><div class="ar">${[0,1,2,3].map(j => { const i = ai * 4 + j; return `<i class="${i === S.q ? 'cur' : S.answers[i] != null ? 'done' : ''}"></i>`; }).join('')}</div><div class="nm ${ai === q.a ? 'on' : ''}">${short[ai]}</div></div>`).join('');
   return `<div class="ob-col">
     <div class="top"><button class="ib" style="background:var(--paper)" data-act="qPrev" aria-label="이전 문항">${ic('chevL', 20)}</button>
       <span class="counter">${S.q + 1} / 20</span></div>
     <div class="qprog mt24" aria-label="5개 영역 중 ${AREAS[q.a].name}, ${S.q + 1}번째 문항">${prog}</div>
-    <div class="row g8 mt32" style="margin-top:32px"><span class="eng mute">Situation</span>${AREAS[q.a].now ? '' : '<span class="tag dash mute">확장 예정 영역</span>'}</div>
-    <p class="mt12" style="font-size:20px;line-height:1.45">${q.q}</p>
+    <div class="row g8" style="margin-top:32px"><span class="eng mute">${kind[0]}</span><span class="tag ink">${kind[1]}</span>${AREAS[q.a].now ? '' : '<span class="tag dash mute">확장 예정 영역</span>'}</div>
+    <p class="mt12" style="font-size:${q.q.length > 60 ? 18 : 20}px;line-height:1.5">${q.q}</p>
+    ${kind[2] ? `<p class="t12 mute mt8">${kind[2]}</p>` : ''}
     <div class="stack8 mt24" role="radiogroup" aria-label="선택지">
-      ${q.o.map((o, i) => `<button class="opt ${sel === i ? 'on' : ''}" role="radio" aria-checked="${sel === i}" data-act="ans" data-v="${i}"><span class="lt">${sel === i ? ic('check', 18) : 'ABC'[i]}</span>${o}</button>`).join('')}
-      <button class="opt unk ${sel === 3 ? 'on' : ''}" role="radio" aria-checked="${sel === 3}" data-act="ans" data-v="3"><span class="lt">${sel === 3 ? ic('check', 18) : '?'}</span>잘 모르겠다 · 생각해 본 적 없다</button>
+      ${q.o.map((o, i) => `<button class="opt ${sel === i ? 'on' : ''}" role="radio" aria-checked="${sel === i}" data-act="ans" data-v="${i}"><span class="lt">${sel === i ? ic('check', 18) : 'ABCD'[i]}</span>${o}</button>`).join('')}
+      ${q.t === 'k' ? `<button class="opt unk ${sel === UNKNOWN ? 'on' : ''}" role="radio" aria-checked="${sel === UNKNOWN}" data-act="ans" data-v="${UNKNOWN}"><span class="lt">${sel === UNKNOWN ? ic('check', 18) : '?'}</span>잘 모르겠어요</button>` : ''}
     </div>
-    <p class="t10 mute mt12">‘잘 모르겠다’는 틀린 답이 아니에요. 아직 경험이 적은 영역으로 기록하고, 쉬운 단계부터 추천해요.</p>
+    ${q.t === 'k' ? `<p class="t10 mute mt12">‘잘 모르겠어요’는 틀린 답과 따로 기록해요. 아직 경험이 적은 영역으로 보고, 쉬운 설명부터 보여드려요.</p>` : ''}
     <div class="ob-foot" style="grid-template-columns:1fr 2fr"><button class="btn light" style="height:56px" data-act="qPrev">이전</button>
       <button class="btn" style="height:56px;${sel == null ? 'opacity:.3' : ''}" data-act="qNext" ${sel == null ? 'aria-disabled="true"' : ''}>${S.q === 19 ? '결과 보기' : '다음'}</button></div>
   </div>`;
 }
 const HEAD = { cog:'아는 만큼<br>움직일 차례예요', low:'작은 것 하나부터<br>시작해 봐요', habit:'잘 하고 있어요<br>이제 비교해 볼 차례예요', self:'다음 영역으로<br>넓혀 볼까요' };
 function quadBlock(sc) {
-  const L = p => Math.min(94, Math.max(6, p * 10)), T = k => Math.min(94, Math.max(6, 100 - k * 10));
+  // 기준값 이상은 높음 칸 안(56~94%), 미만은 낮음 칸 안(6~44%)에 놓아 경계선 위에 걸치지 않게 한다
+  const pos = (v, th) => v < th ? 6 + v / th * 38 : 56 + (v - th) / (10 - th) * 38;
+  const L = p => pos(p, 6.25), T = k => 100 - pos(k, 6);
   const tiles = [['cog','인지우세형',''],['self','자기관리형','r'],['low','저관여형','b'],['habit','습관우세형','r b']];
   const f = n => n.toFixed(1).replace('.0', '');
-  const me = [L(S.self.p), T(S.self.k)], dx = [L(sc.p), T(sc.k)], pv = [L(PREV.p), T(PREV.k)];
+  const me = [L(S.self.p), T(S.self.k)], dx = [L(sc.p10), T(sc.k10)], pv = [L(PREV.p), T(PREV.k)];
   const side = x => x > 60 ? `right:${100 - x + 4}%` : `left:${x + 4}%`;
-  return `<div class="quad mt24" role="img" aria-label="내 생각 지식 ${S.self.k} 실천 ${S.self.p}, 진단 지식 ${sc.k.toFixed(1)} 실천 ${sc.p.toFixed(1)}, ${PERSONA[sc.persona].name}">
+  return `<div class="quad mt24" role="img" aria-label="내 생각 지식 ${S.self.k} 실천 ${S.self.p}, 진단 지식 ${sc.k}/5 실천 ${sc.p.toFixed(1)}/4, ${PERSONA[sc.persona].name}">
     ${tiles.map(([k, n, c]) => `<div class="tl- ${c} ${sc.persona === k ? 'on' : ''}"><span>${n}</span>${sc.persona === k ? `<span class="t10" style="opacity:.6">${PERSONA[k].short}</span>` : ''}</div>`).join('')}
     <svg style="position:absolute;inset:0;width:100%;height:100%;overflow:visible" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
       <line x1="${me[0]}" y1="${me[1]}" x2="${dx[0]}" y2="${dx[1]}" stroke="#181818" stroke-width="1.5" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/></svg>
@@ -709,19 +728,18 @@ function quadBlock(sc) {
     <span class="pt" style="left:${me[0]}%;top:${me[1]}%;width:20px;height:20px;border:1.5px dashed var(--ink);background:rgba(252,252,252,.85)"></span>
     <span class="lbl" style="${side(me[0])};top:${me[1]}%">내 생각 ${S.self.k}·${S.self.p}</span>
     <span class="pt" style="left:${dx[0]}%;top:${dx[1]}%;width:20px;height:20px;background:var(--ink);box-shadow:0 0 0 2px var(--paper)"></span>
-    <span class="lbl" style="${side(dx[0])};top:${dx[1]}%">진단 ${f(sc.k)}·${f(sc.p)}</span>
+    <span class="lbl" style="${side(dx[0])};top:${dx[1]}%">진단 ${f(sc.k10)}·${f(sc.p10)}</span>
   </div>
   <div class="row between t10 mute mt8"><span>↑ 금융 지식</span><span>실천 수준 →</span></div>`;
 }
 function vResult() {
   const sc = scores(), P = PERSONA[sc.persona];
-  const gk = sc.k - S.self.k, gp = sc.p - S.self.p, big = Math.abs(gk) >= Math.abs(gp) ? ['지식', gk] : ['실천', gp];
+  const gk = sc.k10 - S.self.k, gp = sc.p10 - S.self.p, big = Math.abs(gk) >= Math.abs(gp) ? ['지식', gk] : ['실천', gp];
+  const diffWord = g => g >= 2 ? '생각보다 높음' : g <= -2 ? '생각보다 낮음' : '생각과 비슷';
   const sg = n => `${n >= 0 ? '+' : '−'}${Math.abs(n).toFixed(1)}`;
-  const gapRow = (label, me, dx) => `<div class="mt16"><div class="row between t12"><span>${label}</span><span class="num">${sg(dx - me)}</span></div>
+  const gapRow = (label, me, dx) => `<div class="mt16"><div class="row between t12"><span>${label}</span><span class="row g8"><span class="tag ${Math.abs(dx - me) >= 2 ? 'ink' : 'line'}">${diffWord(dx - me)}</span><span class="num">${sg(dx - me)}</span></span></div>
     <div class="gaptrack"><span class="bar" style="left:${Math.min(me, dx) * 10}%;width:${Math.abs(dx - me) * 10}%"></span><span class="me" style="left:${me * 10}%"></span><span class="dx" style="left:${dx * 10}%"></span></div></div>`;
-  const ans = S.answers.map((a, i) => a == null ? Q[i].s : a);
-  const unk = AREAS.map((a, ai) => ans.filter((x, i) => Q[i].a === ai && x === 3).length);
-  const most = unk.indexOf(Math.max(...unk));
+  const unkAreas = sc.areas.filter(a => a.know === 'unknown').map(a => a.name);
   return `<div class="top"><span class="tag line" style="--line:#4a4a4a;height:28px;padding:0 12px">진단 완료 · 20문항</span>
     <button class="ib" style="box-shadow:inset 0 0 0 1px #3a3a3a" data-act="ob" data-v="2" aria-label="문항 다시 보기">${ic('refresh', 20)}</button></div>
   <div class="eng mute mt24">Your type · ${P.name}</div>
@@ -730,24 +748,27 @@ function vResult() {
   ${sc.filled ? `<p class="t10 mute mt8">답하지 않은 ${sc.filled}문항은 데모용 예시 응답으로 채웠어요.</p>` : ''}
   ${quadBlock(sc)}
   <button class="chip mt12 ${S.showPrev ? 'on' : ''}" data-act="togglePrev">6월 진단과 비교</button>
-  ${S.showPrev ? `<span class="t10 mute" style="margin-left:8px">6월보다 실천 ${sg(sc.p - PREV.p)}</span>` : ''}
+  ${S.showPrev ? `<span class="t10 mute" style="margin-left:8px">6월보다 실천 ${sg(sc.p10 - PREV.p)}</span>` : ''}
   <div class="res-sheet">
     <div class="card c-light">
       <div class="row between"><span class="eng">Gap</span><span class="row g12 t10 mute"><span class="row g4"><i style="width:10px;height:10px;border-radius:50%;border:1.5px dashed var(--ink);display:inline-block"></i>내 생각</span><span class="row g4"><i style="width:10px;height:10px;border-radius:50%;background:var(--aura);box-shadow:inset 0 0 0 1.5px var(--ink);display:inline-block"></i>진단</span></span></div>
-      <p class="t18 mt12" style="font-size:20px;line-height:1.4">${big[0]}은 생각보다<br>${Math.abs(big[1]).toFixed(1)}점 ${big[1] >= 0 ? '높게' : '낮게'} 나왔어요</p>
-      ${gapRow('금융 지식', S.self.k, sc.k)}${gapRow('실천 수준', S.self.p, sc.p)}
+      <p class="t18 mt12" style="font-size:20px;line-height:1.4">${Math.abs(big[1]) >= 2 ? `${big[0]}은 생각보다<br>${Math.abs(big[1]).toFixed(1)}점 ${big[1] >= 0 ? '높게' : '낮게'} 나왔어요` : '생각한 것과<br>비슷하게 나왔어요'}</p>
+      <p class="t10 mute mt4">지식 ${sc.k}/5문항 정답 · 실천 평균 ${sc.p.toFixed(1)}/4 → 10점으로 환산</p>
+      ${gapRow('금융 지식', S.self.k, sc.k10)}${gapRow('실천 수준', S.self.p, sc.p10)}
     </div>
     <div class="card c-light mt12">
       <div class="row between"><span class="eng">5 Areas</span><span class="row g12 t10 mute"><span class="row g4"><i style="width:10px;height:10px;border-radius:50%;background:var(--aura);display:inline-block"></i>관심도</span><span class="row g4"><i style="width:10px;height:10px;border-radius:50%;background:var(--ink);display:inline-block"></i>실천</span></span></div>
-      <div class="stack4 mt16">${sc.areas.map(a => { const iv = Math.round(a.interest * 10), pv = Math.round(a.practice * 10);
-        return `<div class="bf ${a.now ? '' : 'dim'}"><span class="t10 num" style="text-align:right">${iv}</span><span class="l"><i class="bar" style="width:${Math.max(6, iv)}%;background:var(--aura)"></i></span>
-          <span class="t10" style="text-align:center">${a.name}</span><span><i class="bar" style="display:block;width:${Math.max(6, pv)}%;background:var(--ink)"></i></span><span class="t10 num">${pv}</span></div>`; }).join('')}</div>
-      ${unk[most] ? `<div class="row g8 mt16 t10 mute" style="align-items:flex-start;padding:12px 16px;border-radius:20px;background:var(--g2)"><span style="flex:none">${ic('spark', 14)}</span><span>${AREAS[most].name}에서 ‘잘 모르겠다’를 ${unk[most]}개 골랐어요. 틀린 게 아니라 아직 경험이 적은 영역으로 봤어요. 대출과 신용·보험과 은퇴는 곧 열려요.</span></div>` : ''}
+      <div class="stack8 mt16">${sc.areas.map(a => `<div class="bf ${a.now ? '' : 'dim'}" style="grid-template-columns:22px 1fr 92px 1fr 22px">
+          <span class="t10 num" style="text-align:right">${a.interest}</span><span class="l"><i class="bar" style="width:${a.interest / 4 * 100}%;background:var(--aura)"></i></span>
+          <span style="text-align:center;line-height:1.3"><span class="t10" style="display:block">${a.name}</span><span class="t10 mute">${INTERP[a.interp].n}</span></span>
+          <span><i class="bar" style="display:block;width:${a.practice / 4 * 100}%;background:var(--ink)"></i></span><span class="t10 num">${a.practice % 1 ? a.practice.toFixed(1) : a.practice}</span></div>`).join('')}</div>
+      <div class="row between t10 mute mt12"><span>관심 1~4점 · 3 이상 높음</span><span>실천 1~4점 · 2.5 이상 높음</span></div>
+      ${unkAreas.length ? `<div class="row g8 mt16 t10 mute" style="align-items:flex-start;padding:12px 16px;border-radius:20px;background:var(--g2)"><span style="flex:none">${ic('spark', 14)}</span><span>${unkAreas.join('·')}의 지식 문항에서 ‘잘 모르겠어요’를 골랐어요. 오답과 따로 기록해, 관심이 생길 때 쉬운 설명부터 보여드려요.${sc.areas.some(a => !a.now) ? ' 대출과 신용·보험과 은퇴는 곧 열려요.' : ''}</span></div>` : ''}
     </div>
     <div class="card c-aura mt12">
     <span class="eng">Start here</span>
     <div class="t18 mt8">${sc.rec.name}부터 시작해요</div>
-    <p class="t12 mute mt8">관심도 ${sc.rec.interest.toFixed(0)}점으로 가장 높고, 실천은 ${sc.rec.practice.toFixed(0)}점이라 바로 효과를 볼 수 있어요. 이후 ${sc.rec.id === 'spend' ? '저축과 투자 → 세금과 혜택' : '소비와 지출 → 세금과 혜택'} 순으로 넓혀 갈게요.</p>
+    <p class="t12 mute mt8">관심 ${sc.rec.interest}점 · 실천 ${sc.rec.practice % 1 ? sc.rec.practice.toFixed(1) : sc.rec.practice}점(4점 만점)으로 ‘${INTERP[sc.rec.interp].n}’에 해당해요. ${INTERP[sc.rec.interp].how} 이후 ${['spend','save','tax'].filter(x => x !== sc.rec.id).map(x => AREAS.find(a => a.id === x).name).join(' → ')} 순으로 넓혀 갈게요.</p>
     <div class="stack8 mt16">
       <button class="btn full" data-act="resLink">${ic('link', 20)} 계좌 연동하고 시작</button>
       <button class="btn full" style="background:rgba(252,252,252,.6);color:var(--ink)" data-act="resSetup">기본 설정부터 할게요</button>
