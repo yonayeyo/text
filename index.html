@@ -109,9 +109,7 @@ svg{display:block}
 .na-track>.na-card{flex:0 0 100%;scroll-snap-align:start}
 .na-track.na-swap>.na-card:first-child{animation:naIn .6s cubic-bezier(.2,.8,.2,1) both}
 @keyframes naIn{from{opacity:0;transform:translateX(40px) scale(.98)}to{opacity:1;transform:none}}
-.na-dots{display:flex;justify-content:center;gap:6px;height:6px}
-.na-dots i{width:6px;height:6px;border-radius:50%;background:#DCE9FA;transition:background .25s,width .25s}
-.na-dots i.on{background:#B3D1F5}
+.na-count{font-family:var(--f-num);font-weight:400;letter-spacing:.02em}
 .na-why{display:flex;gap:8px;align-items:flex-start;font-size:12px;font-weight:400;color:var(--g6);padding:0 8px;line-height:1.5}
 .na-star{flex:none;font-family:"Noto Sans Symbols 2","Apple Symbols","Segoe UI Symbol",sans-serif;font-size:14px;line-height:18px}
 /* 월말 예상 카드: 여백·라운드·배경은 다른 카드(c-ink)와 같고, 글자 굵기도 다른 카드와 같은 규칙(본문 500, 숫자 Urbanist 300) */
@@ -852,10 +850,6 @@ function vResult(ctx = 'ob') {
    HOME
    ========================================================= */
 // 행동 추천 카드 (Figma 시안): "행동 추천" + 유형 칩 / 제목 20px / 설명 2줄 / 오른쪽 원형 실행 버튼
-function naDots(el) {
-  const k = Math.round(el.scrollLeft / (el.firstElementChild.offsetWidth + 8));
-  el.parentElement.querySelectorAll('.na-dots i').forEach((d, j) => d.classList.toggle('on', j === k));
-}
 function nextCard() {
   const P = S.persona;
   // 페르소나별 행동 추천 목록(가로로 넘겨 보는 카드). i: 버튼 아이콘 — 알림을 켜는 행동은 알림 추가 아이콘
@@ -886,13 +880,12 @@ function nextCard() {
   }[P];
   // 외주비 배분처럼 추천이 끝나 다음 카드로 넘어갈 때 한 번만 들어오는 인터랙션을 준다
   const swap = S.naSwap; S.naSwap = false;
-  const card = c => `<div class="card c-sky na-card">
-    <div class="na-head"><span>행동 추천</span><button class="na-chip" data-act="diag" aria-label="내 진단 결과 보기">${PERSONA[P].name}</button></div>
+  const card = (c, k) => `<div class="card c-sky na-card">
+    <div class="na-head"><span>행동 추천${recs.length > 1 ? ` <span class="na-count">${k + 1}/${recs.length}</span>` : ''}</span><button class="na-chip" data-act="diag" aria-label="내 진단 결과 보기">${PERSONA[P].name}</button></div>
     <div class="na-body"><div><div class="na-title">${c.t}</div><p class="na-desc">${c.s}</p></div>
       <button class="ib na-go" ${c.act} aria-label="${c.b}">${ic(c.i || 'ur', 22)}</button></div>
   </div>`;
-  return `<div class="na-wrap"><div class="na-track${swap ? ' na-swap' : ''}" onscroll="naDots(this)">${recs.map(card).join('')}</div>
-  ${recs.length > 1 ? `<div class="na-dots" aria-hidden="true">${recs.map((_, k) => `<i class="${k ? '' : 'on'}"></i>`).join('')}</div>` : ''}
+  return `<div class="na-wrap"><div class="na-track${swap ? ' na-swap' : ''}">${recs.map(card).join('')}</div>
   <p class="na-why"><span class="na-star" aria-hidden="true">✦</span><span>${why}</span></p></div>`;
 }
 function sankey() {
