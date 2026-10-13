@@ -933,10 +933,12 @@ function accountsBlock() {
 }
 function vHome() {
   const d = D();
-  // 축 범위: 월말 예상 지출과 예산이 모두 안쪽에 들어오도록 10만 원 단위로 정하고, 눈금은 4개(3칸)로 나눈다
-  const lo = Math.max(0, Math.floor((Math.min(d.projSpend, S.budget) - 50000) / 100000) * 100000);
-  const step = Math.ceil((Math.max(d.projSpend, S.budget) + 50000 - lo) / 3 / 100000) * 100000;
-  const axisMin = lo, axisMax = lo + step * 3, ticks = [0, 1, 2, 3].map(k => lo + step * k);
+  // 축 눈금은 항상 4개: [시작, 예산-10만, 예산, 끝]. 기본은 60만·70만·80만·90만이고,
+  // 월말 예상 지출이 범위를 벗어나면 시작(아래로) 또는 끝(위로)만 10만 원 단위로 넓힌다
+  const B = S.budget;
+  const lo = Math.max(0, Math.min(B - 200000, Math.floor((d.projSpend - 50000) / 100000) * 100000));
+  const hi = Math.max(B + 100000, Math.ceil((d.projSpend + 50000) / 100000) * 100000);
+  const axisMin = lo, axisMax = hi, ticks = [lo, B - 100000, B, hi];
   const ax = v => (v - axisMin) / (axisMax - axisMin) * 100;
   // 월말 예상 (검정 카드) — Figma 시안 값 그대로: 여백 29/27, 라벨 12/400 #8E8E8E, 금액 Urbanist 36/300 + "원 남아요" 16/300,
   // 설명 12/300 흰색 줄간격 16.8, 축은 60만부터 월말 예상 지출까지 6px 막대(오른쪽 끝 둥글게) + 12px 눈금(예산 2px)
@@ -951,7 +953,6 @@ function vHome() {
         <i class="pc-track"></i>
         <i class="pc-bar" style="width:${clampAx(d.projSpend)}%"></i>
         ${ticks.map((v, k) => `<i class="pc-tick ${v === S.budget ? 'budget' : ''}" style="left:${ax(v)}%"></i><span class="pc-lab" style="left:${ax(v)}%;transform:translateX(${k === 0 ? 0 : k === 3 ? -100 : -50}%)">${man(v)}</span>`).join('')}
-        ${ticks.includes(S.budget) ? '' : `<i class="pc-tick budget" style="left:${ax(S.budget)}%"></i>`}
         <i class="pc-spark" style="left:${clampAx(d.projSpend)}%"></i>
       </div>
     </div>`;
