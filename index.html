@@ -229,6 +229,19 @@ svg{display:block}
 .ai-dock .ib{background:rgba(24,24,24,.06);color:var(--ink)}
 .ai-dock .ib.ink{background:var(--ink);color:var(--paper)}
 .ai-dock[hidden]{display:none}
+/* 접힌 상태: 탭바 위 오른쪽 원형 버튼 + 은은하게 흐르는 그라데이션 테두리 → 누르면 입력창으로 펼침 */
+.ai-dock{left:auto;width:calc(100% - 2 * var(--m));transition:width .38s cubic-bezier(.2,.8,.2,1)}
+.ai-dock:not(.open){width:56px}
+.ai-dock:not(.open) > :not(.ai-fab){display:none}
+.ai-dock.open .ai-fab{display:none}
+.ai-fab{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:var(--ink)}
+.ai-dock:not(.open)::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;
+  background:linear-gradient(120deg,#C8E1FF,#FF769C,#FCFCFC,#C8E1FF) 0 0/300% 300%;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
+  animation:aiGlint 4s linear infinite}
+.ai-dock:not(.open){box-shadow:0 4px 16px rgba(200,225,255,.45),0 0 10px rgba(255,118,156,.18)}
+@keyframes aiGlint{to{background-position:300% 0}}
+@media (prefers-reduced-motion:reduce){.ai-dock::before{animation:none}.ai-dock{transition:none}}
 
 /* ---------- sheet & toast ---------- */
 .layer{position:absolute;inset:0;z-index:40;background:rgba(24,24,24,.36);backdrop-filter:blur(6px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
@@ -461,6 +474,7 @@ svg{display:block}
       <main class="view" id="view"></main>
       <div class="halftone"></div>
       <form class="ai-dock" id="aiDock" hidden>
+        <button type="button" class="ai-fab" data-act="aiOpen" aria-label="AI에게 물어보기" aria-expanded="false"></button>
         <button type="button" class="ib" data-act="mic" aria-label="음성으로 묻기"></button>
         <input id="aiInput" placeholder="내 예산·목표 기준으로 물어보세요" autocomplete="off">
         <button type="submit" class="ib ink" aria-label="보내기"></button>
@@ -1700,6 +1714,7 @@ function render(keepScroll = true) {
   document.getElementById('tabbar').innerHTML = TABS.map(([k, n, i]) => `<button class="tab ${S.tab === k ? 'on' : ''}" data-act="tab" data-tab="${k}" aria-label="${n}" ${S.tab === k ? 'aria-current="page"' : ''}>${ic(i, 22)}<span>${n}</span></button>`).join('');
   const dock = document.getElementById('aiDock');
   dock.hidden = !(S.mode === 'app' && !S.sub && (S.tab === 'plan' || (S.tab === 'spend' && S.spendView === 'analysis')));
+  if (dock.hidden) aiDock(false);
   view.style.paddingBottom = S.mode === 'onboard' || S.sub ? (S.ob === 3 || S.sub ? '0' : '24px') : dock.hidden ? '140px' : '200px';
   renderPanel();
 }
@@ -1760,6 +1775,7 @@ document.addEventListener('click', e => {
     case 'rediag': closeSheet(); S.sub = null; S.mode = 'onboard'; S.ob = 1; S.q = 0; render(false); break;
     case 'tab': closeSheet(); S.mode = 'app'; S.sub = null; S.tab = el.dataset.tab; if (el.dataset.pv) S.planView = el.dataset.pv; if (el.dataset.sv) S.spendView = el.dataset.sv; render(false); break;
     case 'pv': S.planView = v; render(false); break;
+    case 'aiOpen': aiDock(true); break;
     case 'diag': closeSheet(); S.mode = 'app'; S.sub = 'diag'; render(false); break;
     case 'subClose': S.sub = null; render(false); break;
     case 'sheet': openSheet(el.dataset.sheet); break;
@@ -1815,8 +1831,12 @@ document.addEventListener('click', e => {
   }
 });
 function ask(q) { if (!q.trim()) return; const r = aiAnswer(q); S.chat.push({ q }, r); if (S.chat.length > 6) S.chat = S.chat.slice(-6); openSheet('ai'); const sh = document.getElementById('sheet'); sh.scrollTop = sh.scrollHeight; }
-document.getElementById('aiDock').addEventListener('submit', e => { e.preventDefault(); const i = document.getElementById('aiInput'); ask(i.value || '오늘 얼마 더 써도 돼?'); i.value = ''; });
+document.getElementById('aiDock').addEventListener('submit', e => { e.preventDefault(); const i = document.getElementById('aiInput'); ask(i.value || '오늘 얼마 더 써도 돼?'); i.value = ''; aiDock(false); });
 document.querySelector('#aiDock [data-act="mic"]').innerHTML = ic('mic', 20);
+document.querySelector('#aiDock .ai-fab').innerHTML = ic('spark', 22);
+// 펼친 입력창은 비어 있는 채로 포커스를 잃거나 질문을 보내면 다시 원형 버튼으로 접는다
+function aiDock(open) { const d = document.getElementById('aiDock'); d.classList.toggle('open', open); d.querySelector('.ai-fab').setAttribute('aria-expanded', open); if (open) setTimeout(() => document.getElementById('aiInput').focus(), 60); }
+document.getElementById('aiDock').addEventListener('focusout', () => setTimeout(() => { const d = document.getElementById('aiDock'); if (!d.contains(document.activeElement) && !document.getElementById('aiInput').value) aiDock(false); }, 120));
 document.querySelector('#aiDock [type="submit"]').innerHTML = ic('send', 20);
 
 /* ---------- side panel ---------- */
