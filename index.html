@@ -94,6 +94,32 @@ svg{display:block}
 .mute{color:var(--mute)}
 .n56{font-family:var(--f-num);font-weight:300;font-size:56px;line-height:1;letter-spacing:-.02em}
 .n48{font-family:var(--f-num);font-weight:300;font-size:48px;line-height:1;letter-spacing:-.01em}
+/* 다음 행동 카드 */
+.na-card{border:.5px solid #C8E1FF}
+.na-wrap{display:grid;gap:8px}
+.na-why{font-size:12px;color:var(--g6);padding:0 8px;line-height:1.5}
+.na-seg{display:flex;gap:3px;height:14px;border-radius:999px;overflow:hidden}
+.na-seg i{display:block;height:100%}
+.na-seg i:last-child{box-shadow:inset 0 0 0 1px rgba(24,24,24,.15);border-radius:0 999px 999px 0}
+.na-legend{display:flex;gap:12px;margin-top:8px;font-size:10px;color:var(--g6);flex-wrap:wrap}
+.na-legend span{display:inline-flex;align-items:center;gap:4px}
+.na-legend i{width:8px;height:8px;border-radius:2px;box-shadow:inset 0 0 0 1px rgba(24,24,24,.15)}
+.na-legend b{font-weight:500;color:var(--ink);font-family:var(--f-num)}
+.na-meter{position:relative;height:10px;border-radius:999px;background:rgba(24,24,24,.08)}
+.na-meter i{position:absolute;inset:0 auto 0 0;border-radius:999px;background:linear-gradient(90deg,#C8E1FF,#FF769C)}
+.na-meter b{position:absolute;top:-4px;width:2px;height:18px;margin-left:-1px;background:var(--ink)}
+.na-chips{display:flex;gap:6px;flex-wrap:wrap}
+.na-chips span{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:999px;background:rgba(252,252,252,.7);font-size:12px}
+.na-chips i{width:12px;height:12px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--ink)}
+.na-cmp{display:grid;gap:8px}
+.na-cmp div{display:grid;grid-template-columns:56px 1fr 36px;align-items:center;gap:8px}
+.na-cmp i{height:10px;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(24,24,24,.15)}
+.na-cmp b{font-weight:500;font-family:var(--f-num);font-size:14px;text-align:right}
+.na-steps{display:flex;align-items:center}
+.na-steps span{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;flex:none}
+.na-steps .done{background:var(--ink);color:var(--paper)}
+.na-steps .next{background:var(--aura);box-shadow:inset 0 0 0 1px var(--ink)}
+.na-steps i{flex:1;height:1.5px;background:var(--ink);opacity:.4}
 /* 월말 예상 카드: 여백·라운드·배경은 다른 카드(c-ink)와 같고, 글자 굵기도 다른 카드와 같은 규칙(본문 500, 숫자 Urbanist 300) */
 .proj-card .pc-label{font-size:12px;color:var(--mute);line-height:17px}
 .proj-card .pc-amount{margin-top:8px;height:48px;display:flex;align-items:baseline}
@@ -830,30 +856,36 @@ function vResult(ctx = 'ob') {
 /* =========================================================
    HOME
    ========================================================= */
-// 유형별 다음 행동: 같은 자리에서 유형마다 다른 행동을, 왜 골랐는지와 함께 보여준다
+// 유형별 다음 행동: 제목 · 한눈에 보이는 작은 그림 · 버튼만 카드에 두고, 유형 설명은 카드 밖 아래 한 줄로
 function nextCard() {
   const P = S.persona;
+  const seg = (parts) => `<div class="na-seg">${parts.map(([n, v, bg]) => `<i style="flex:${v};background:${bg}"></i>`).join('')}</div>
+    <div class="na-legend">${parts.map(([n, v, bg, lab]) => `<span><i style="background:${bg}"></i>${n} <b class="num">${lab}</b></span>`).join('')}</div>`;
+  const meterBar = (p, lab) => `<div class="na-meter"><i style="width:${p}%"></i><b style="left:100%"></b></div><div class="row between t10 mute mt8 num"><span>${lab}</span><span>${p}% / 100%</span></div>`;
   const c = {
     cog:  S.incomeIn && !S.allocDone
-      ? { t:'알바비 320,000원이 들어왔어요', s:'추천대로 나누면 독립 자금이 2개월 빨라져요', b:'한 번에 나누기', act:'data-act="sheet" data-sheet="alloc"' }
-      : { t:'배달 예산 87% 사용', s:'이번 주 남은 배달을 1회로 줄이면 예산 안에 들어와요', b:'주 1회로 제한', act:'data-act="toast" data-msg="배달 앱 결제 시 한도 알림을 켰어요"' },
-    low:  { t:'고정 지출 4건이 맞는지 확인해 주세요', s:'매달 나가는 돈을 알면 하루 예산이 정확해져요 · 1분', b:'확인하기', act:'data-act="tab" data-tab="plan"' },
-    habit:{ t:'지금 적금보다 금리 높은 상품 2개', s:'월 350,000원 기준 1년 이자 최대 +21,100원', b:'비교 보기', act:'data-act="sheet" data-sheet="compare"' },
-    self: { t:'필수 설정 완료 · 투자로 넓혀 볼까요', s:'매주 10,000원 적립식 투자로 시작할 수 있어요', b:'시작하기', act:'data-act="tab" data-tab="plan"' },
+      ? { t:'알바비 320,000원, 이렇게 나눠요', b:'한 번에 나누기', act:'data-act="sheet" data-sheet="alloc"',
+          v:seg([['독립 자금',50,'linear-gradient(90deg,#FF9DB8,#C8E1FF)','16만'],['비상금',30,'#181818','9.6만'],['자유',20,'#FCFCFC','6.4만']]) }
+      : { t:'배달 예산을 거의 다 썼어요', b:'이번 주 1회로 제한', act:'data-act="toast" data-msg="배달 앱 결제 시 한도 알림을 켰어요"', v:meterBar(87, '배달 96,000 / 110,000원') },
+    low:  { t:'고정 지출 4건만 확인해 주세요', b:'1분 만에 확인', act:'data-act="tab" data-tab="plan"',
+            v:`<div class="na-chips">${['월세','통신비','구독','보험'].map(n => `<span><i></i>${n}</span>`).join('')}</div>` },
+    habit:{ t:'더 높은 금리의 적금이 있어요', b:'비교 보기', act:'data-act="sheet" data-sheet="compare"',
+            v:`<div class="na-cmp">${[['지금 적금',3.1,'#FCFCFC'],['A은행',4.2,'#181818']].map(([n, r, bg]) => `<div><span class="t10 mute">${n}</span><i style="width:${r / 4.2 * 100}%;background:${bg}"></i><b class="num">${r}%</b></div>`).join('')}</div>` },
+    self: { t:'필수 설정 끝, 투자로 넓혀요', b:'매주 10,000원 시작', act:'data-act="tab" data-tab="plan"',
+            v:`<div class="na-steps">${['선저축','비상금','예산','고정 지출'].map(n => `<span class="done">${ic('check', 12)}</span>`).join('<i></i>')}<i></i><span class="next">${ic('spark', 12)}</span></div><div class="row between t10 mute mt8"><span>필수 4/4</span><span>다음: 적립식 투자</span></div>` },
   }[P];
   const why = {
-    cog:'알지만 실행이 어려운 인지우세형이라, 한 번 누르면 끝나는 행동을 골랐어요.',
-    low:'이제 시작하는 저관여형이라, 1분 안에 끝나는 작은 행동부터 골랐어요.',
-    habit:'꾸준히 실천하는 습관우세형이라, 더 나은 선택을 돕는 비교 정보를 골랐어요.',
-    self:'알고 실천하는 자기관리형이라, 다음 영역으로 넓히는 행동을 골랐어요.',
+    cog:'알지만 실행이 어려운 ‘인지우세형’은 간편하게 실행할 수 있는 행동을 추천해요.',
+    low:'이제 시작하는 ‘저관여형’은 1분 안에 끝나는 작은 행동을 추천해요.',
+    habit:'꾸준히 실천하는 ‘습관우세형’은 더 나은 선택을 돕는 비교 정보를 추천해요.',
+    self:'알고 실천하는 ‘자기관리형’은 다음 영역으로 넓히는 행동을 추천해요.',
   }[P];
-  return `<div class="card c-sky">
+  return `<div class="na-wrap"><div class="card c-sky na-card">
     <div class="row between"><span class="t12 mute">나에게 맞춘 다음 행동</span><button class="tag ink" data-act="diag" aria-label="내 진단 결과 보기">${PERSONA[P].name} ›</button></div>
     <div class="t16 mt12">${c.t}</div>
-    <div class="t12 mute mt4">${c.s}</div>
-    <div class="row g8 mt16 t10 mute" style="align-items:flex-start"><span style="flex:none;margin-top:1px">${ic('spark', 12)}</span><span>${why}</span></div>
+    <div class="mt16">${c.v}</div>
     <button class="btn sm mt16" ${c.act}>${c.b}</button>
-  </div>`;
+  </div><p class="na-why">${why}</p></div>`;
 }
 function sankey() {
   // 10월(1~12일) 들어온 돈이 어디로 갔는지 한 단계로 보여준다. 모든 띠는 같은 축척.
