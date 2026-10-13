@@ -109,7 +109,12 @@ svg{display:block}
 .na-track>.na-card{flex:0 0 100%;scroll-snap-align:start}
 .na-track.na-swap>.na-card:first-child{animation:naIn .6s cubic-bezier(.2,.8,.2,1) both}
 @keyframes naIn{from{opacity:0;transform:translateX(40px) scale(.98)}to{opacity:1;transform:none}}
-.na-count{font-family:var(--f-num);font-weight:400;letter-spacing:.02em}
+.gs-card{display:flex;flex-direction:column;align-items:stretch;text-align:left}
+.gs-top{font-size:12px;line-height:17px;color:var(--mute)}
+.gs-num{margin-top:8px;font-family:var(--f-num);font-weight:300;font-size:28px;line-height:32px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.gs-won{font-family:var(--f-kr);font-weight:300;font-size:16px;line-height:1;margin-left:4px}
+.gs-foot{margin-top:auto;padding-top:16px;height:32px;display:flex;align-items:center;justify-content:space-between;font-size:10px;color:var(--mute)}
+.gs-foot .glowbar{flex:1}
 .na-why{display:flex;gap:8px;align-items:flex-start;font-size:12px;font-weight:400;color:var(--g6);padding:0 8px;line-height:1.5}
 .na-star{flex:none;font-family:"Noto Sans Symbols 2","Apple Symbols","Segoe UI Symbol",sans-serif;font-size:14px;line-height:18px}
 /* 월말 예상 카드: 여백·라운드·배경은 다른 카드(c-ink)와 같고, 글자 굵기도 다른 카드와 같은 규칙(본문 500, 숫자 Urbanist 300) */
@@ -880,8 +885,10 @@ function nextCard() {
   }[P];
   // 외주비 배분처럼 추천이 끝나 다음 카드로 넘어갈 때 한 번만 들어오는 인터랙션을 준다
   const swap = S.naSwap; S.naSwap = false;
+  // 끝낸 추천(외주비 배분)은 빠지지만 번호는 그대로 유지한다: 2/3, 3/3
+  const doneN = P === 'cog' && !(S.incomeIn && !S.allocDone) ? 1 : 0, total = recs.length + doneN;
   const card = (c, k) => `<div class="card c-sky na-card">
-    <div class="na-head"><span>행동 추천${recs.length > 1 ? ` <span class="na-count">${k + 1}/${recs.length}</span>` : ''}</span><button class="na-chip" data-act="diag" aria-label="내 진단 결과 보기">${PERSONA[P].name}</button></div>
+    <div class="na-head"><span>행동 추천${total > 1 ? ` ${k + 1 + doneN}/${total}` : ''}</span><button class="na-chip" data-act="diag" aria-label="내 진단 결과 보기">${PERSONA[P].name}</button></div>
     <div class="na-body"><div><div class="na-title">${c.t}</div><p class="na-desc">${c.s}</p></div>
       <button class="ib na-go" ${c.act} aria-label="${c.b}">${ic(c.i || 'ur', 22)}</button></div>
   </div>`;
@@ -981,16 +988,17 @@ function vHome() {
         <i class="pc-spark" style="left:${clampAx(d.projSpend)}%"></i>
       </div>
     </div>`;
+  // 독립 자금 · 10월 누적 지출: 상단 라벨 / 숫자 / 하단(그래프·영수증 보기)을 같은 서체·크기·위치로 맞춘다
   const goalAndSpend = `<div class="grid2">
-      <button class="card c-aura" data-act="tab" data-tab="goal" style="text-align:left;display:grid;gap:16px">
-        <span class="t12 mute">독립 자금</span>
-        <span class="n32">${pct(d.goal)}</span>
-        <div class="glowbar"><i style="width:${d.goal * 100}%"></i></div>
+      <button class="card c-aura gs-card" data-act="tab" data-tab="goal">
+        <span class="gs-top">독립 자금</span>
+        <span class="gs-num">${pct(d.goal)}</span>
+        <span class="gs-foot"><span class="glowbar"><i style="width:${d.goal * 100}%"></i></span></span>
       </button>
-      <button class="card c-paper" data-act="tab" data-tab="spend" style="text-align:left;display:grid;gap:16px">
-        <span class="t12 mute">10월 누적 지출</span>
-        <span class="n24 num">${won(S.spent)}<span class="cur t12">₩</span></span>
-        <span class="row between t10 mute"><span>영수증 보기</span>${ic('arrow', 16)}</span>
+      <button class="card c-paper gs-card" data-act="tab" data-tab="spend">
+        <span class="gs-top">10월 누적 지출</span>
+        <span class="gs-num">${won(S.spent)}<span class="gs-won">₩</span></span>
+        <span class="gs-foot"><span>영수증 보기</span>${ic('arrow', 16)}</span>
       </button>
     </div>`;
   const accounts = `<div class="card c-paper">
