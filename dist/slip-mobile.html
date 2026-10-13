@@ -933,12 +933,14 @@ function accountsBlock() {
 }
 function vHome() {
   const d = D();
-  // 축 눈금은 항상 4개: [시작, 예산-10만, 예산, 끝]. 기본은 60만·70만·80만·90만이고,
-  // 월말 예상 지출이 범위를 벗어나면 시작(아래로) 또는 끝(위로)만 10만 원 단위로 넓힌다
-  const B = S.budget;
-  const lo = Math.max(0, Math.min(B - 200000, Math.floor((d.projSpend - 50000) / 100000) * 100000));
-  const hi = Math.max(B + 100000, Math.ceil((d.projSpend + 50000) / 100000) * 100000);
-  const axisMin = lo, axisMax = hi, ticks = [lo, B - 100000, B, hi];
+  // 축 눈금은 항상 10만 원 간격 4개(30만 폭). 기본은 60만·70만·80만·90만이고,
+  // 월말 예상 지출이 범위를 벗어나면 예산이 축 안에 남는 한도에서 창 전체를 10만 원씩 옮긴다
+  const B = S.budget, STEP = 100000;
+  let lo = B - 2 * STEP;
+  if (d.projSpend - 50000 < lo) lo = Math.max(B - 3 * STEP, Math.floor((d.projSpend - 50000) / STEP) * STEP);
+  if (d.projSpend + 50000 > lo + 3 * STEP) lo = Math.min(B, Math.ceil((d.projSpend + 50000) / STEP) * STEP - 3 * STEP);
+  lo = Math.max(0, lo);
+  const axisMin = lo, axisMax = lo + 3 * STEP, ticks = [0, 1, 2, 3].map(k => lo + STEP * k);
   const ax = v => (v - axisMin) / (axisMax - axisMin) * 100;
   // 월말 예상 (검정 카드) — Figma 시안 값 그대로: 여백 29/27, 라벨 12/400 #8E8E8E, 금액 Urbanist 36/300 + "원 남아요" 16/300,
   // 설명 12/300 흰색 줄간격 16.8, 축은 60만부터 월말 예상 지출까지 6px 막대(오른쪽 끝 둥글게) + 12px 눈금(예산 2px)
@@ -949,7 +951,7 @@ function vHome() {
       <div class="pc-amount"><span class="pc-num">${won(d.projSpend)}</span><span class="pc-won">₩</span></div>
       <p class="pc-desc">하루 평균 ${W(Math.round(S.spent / S.day / 100) * 100)}씩 쓰는 중이므로,<br>이 속도면 월말에는 예산보다 ${W(Math.abs(d.proj))} ${under ? '절약할 수 있어요.' : '초과할 수 있어요.'}</p>
       <div class="pc-axis ${under ? 'under' : 'over'}" role="img" aria-label="월말 예상 지출 ${won(d.projSpend)}원, 예산 ${won(S.budget)}원, ${won(Math.abs(d.proj))}원 ${under ? '남음' : '초과'}">
-        <span class="pc-bud" style="left:${ax(S.budget)}%">예산</span>
+        <span class="pc-bud" style="left:${ax(S.budget)}%;transform:translateX(${S.budget === axisMin ? 0 : S.budget === axisMax ? -100 : -50}%)">예산</span>
         <i class="pc-track"></i>
         <i class="pc-bar" style="width:${clampAx(d.projSpend)}%"></i>
         ${ticks.map((v, k) => `<i class="pc-tick ${v === S.budget ? 'budget' : ''}" style="left:${ax(v)}%"></i><span class="pc-lab" style="left:${ax(v)}%;transform:translateX(${k === 0 ? 0 : k === 3 ? -100 : -50}%)">${man(v)}</span>`).join('')}
