@@ -445,8 +445,8 @@ const ic = (n, s = 24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" f
    format
    ========================================================= */
 const won = n => Math.round(n).toLocaleString('ko-KR');
-const W = n => `${won(n)} ₩`;
-const Ws = n => `${n >= 0 ? '+' : '−'}${won(Math.abs(n))} ₩`;
+const W = n => `${won(n)}원`;
+const Ws = n => `${n >= 0 ? '+' : '−'}${won(Math.abs(n))}원`;
 const man = n => `${(n / 10000).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}만`;
 const pct = n => `${Math.round(n * 100)}%`;
 const rng = seed => () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
@@ -470,19 +470,19 @@ const AREAS = [
 const INTEREST = ['별로 관심이 없다','필요하다고 느끼지만 아직 알아본 적은 없다','가끔 관련 정보를 찾아본다','더 잘하고 싶어서 방법을 적극적으로 찾고 있다'];
 const Q = [
   { a:0, t:'i', q:'한 달 지출과 예산을 관리하는 일에 대해 지금 나와 가장 가까운 것은?', o:INTEREST, s:3 },
-  { a:0, t:'k', q:'월급 250만 원을 받아 고정 지출 120만 원을 내고, 저축 50만 원을 먼저 이체했다. 남은 돈을 30일 동안 나눠 쓴다면 하루에 쓸 수 있는 금액은?', o:['약 17,000 ₩','약 27,000 ₩','약 43,000 ₩','약 83,000 ₩'], c:1, s:1 },
+  { a:0, t:'k', q:'월급 250만 원을 받아 고정 지출 120만 원을 내고, 저축 50만 원을 먼저 이체했다. 남은 돈을 30일 동안 나눠 쓴다면 하루에 쓸 수 있는 금액은?', o:['약 17,000원','약 27,000원','약 43,000원','약 83,000원'], c:1, s:1 },
   { a:0, t:'p', q:'지난 한 달 동안 어디에 얼마를 썼는지 알고 있나요?', o:['거의 모른다','총액만 대략 알고 있다','주요 항목별로 대략 알고 있다','항목별 금액을 직접 확인했다'], s:1 },
   { a:0, t:'p', q:'한 달 예산을 정해 두고 있나요?', o:['예산을 정하지 않는다','정하지만 대부분 넘긴다','정하고 대체로 지킨다','정하고, 달 중간에도 남은 예산을 확인하며 지킨다'], s:1 },
   { a:1, t:'i', q:'돈을 모으거나 불리는 일(적금, 주식, 펀드 등)에 대해 지금 나와 가장 가까운 것은?', o:INTEREST, s:2 },
-  { a:1, t:'k', q:'지금 10,000 ₩으로 김밥 4줄을 살 수 있다. 10,000 ₩을 연 이자 2% 통장에 넣어 두었고, 1년 동안 물가가 4% 올랐다. 1년 뒤 이 돈으로 살 수 있는 김밥의 양은?', o:['지금보다 많다','지금과 같다','지금보다 적다','물가와 이자는 서로 관계가 없다'], c:2, s:2 },
+  { a:1, t:'k', q:'지금 10,000원으로 김밥 4줄을 살 수 있다. 10,000원을 연 이자 2% 통장에 넣어 두었고, 1년 동안 물가가 4% 올랐다. 1년 뒤 이 돈으로 살 수 있는 김밥의 양은?', o:['지금보다 많다','지금과 같다','지금보다 적다','물가와 이자는 서로 관계가 없다'], c:2, s:2 },
   { a:1, t:'p', q:'수입이 들어오면 저축은 어떻게 하나요?', o:['거의 저축하지 않는다','쓰고 남으면 한다','정한 금액을 먼저 떼어 두지만 자주 꺼내 쓴다','정한 금액을 먼저(또는 자동이체로) 떼어 두고 유지한다'], s:1 },
   { a:1, t:'p', q:'돈을 모으는 구체적인 목표가 있나요?', o:['없다','막연히 있다','금액이나 기간 중 하나는 정해져 있다','금액과 기간이 정해져 있고 진행 상황을 확인한다'], s:0 },
   { a:2, t:'i', q:'신용 점수나 대출(학자금, 생활비 대출 등)에 대해 지금 나와 가장 가까운 것은?', o:INTEREST, s:1 },
-  { a:2, t:'k', q:'1,000,000 ₩을 월 1% 복리 이자로 빌렸다. 12개월 동안 한 번도 갚지 않았다면 갚아야 할 돈은?', o:['1,000,000 ₩ 그대로','정확히 1,120,000 ₩','1,120,000 ₩보다 많다','1,120,000 ₩보다 적다'], c:2, s:4 },
+  { a:2, t:'k', q:'1,000,000원을 월 1% 복리 이자로 빌렸다. 12개월 동안 한 번도 갚지 않았다면 갚아야 할 돈은?', o:['1,000,000원 그대로','정확히 1,120,000원','1,120,000원보다 많다','1,120,000원보다 적다'], c:2, s:4 },
   { a:2, t:'p', q:'내 신용 점수를 알고 있나요?', o:['확인해 본 적이 없다','확인한 적은 있지만 기억나지 않는다','대략 알고 있다','정기적으로 확인하고 관리한다'], s:0 },
   { a:2, t:'p', q:'카드값, 통신비, 대출 상환금을 제때 내나요?', o:['납부일을 몰라 연체한 적이 있다','납부일은 알지만 잊어서 늦은 적이 있다','대체로 제때 낸다','자동이체로 항상 제때 낸다'], s:2 },
   { a:3, t:'i', q:'사고·질병에 대비하는 보험이나 노후를 위한 연금에 대해 지금 나와 가장 가까운 것은?', o:INTEREST, s:2 },
-  { a:3, t:'k', q:'감기로 병원에 가서 30,000 ₩을 냈다. 실손보험(실비)에 가입되어 있다면 일어나는 일은?', o:['정해진 진단금을 한꺼번에 받는다','실제로 낸 병원비 중 일부를 돌려받을 수 있다','낸 보험료를 만기에 모두 돌려받는다','은퇴 후 매달 연금을 받는다'], c:1, s:0 },
+  { a:3, t:'k', q:'감기로 병원에 가서 30,000원을 냈다. 실손보험(실비)에 가입되어 있다면 일어나는 일은?', o:['정해진 진단금을 한꺼번에 받는다','실제로 낸 병원비 중 일부를 돌려받을 수 있다','낸 보험료를 만기에 모두 돌려받는다','은퇴 후 매달 연금을 받는다'], c:1, s:0 },
   { a:3, t:'p', q:'갑자기 큰 지출(병원비, 수리비 등)이 생기면 어떻게 해결하나요?', o:['카드 할부나 돈을 빌려 해결한다','적금·저축을 깨서 해결한다','다른 생활비를 줄여 해결한다','따로 마련해 둔 비상금으로 해결한다'], s:0 },
   { a:3, t:'p', q:'내가 가입한 보험이나 연금을 알고 있나요?', o:['가입한 것이 있는지 모른다','가입한 것은 알지만 내용은 모른다','무엇을 보장하는지 대략 알고 있다','보장 내용과 보험료를 확인해 정리해 두었다'], s:1 },
   { a:4, t:'i', q:'연말정산, 절세, 정부 지원금이나 포인트 혜택에 대해 지금 나와 가장 가까운 것은?', o:INTEREST, s:2 },
@@ -522,10 +522,10 @@ const REPEATS = {
   week:[ { n:'편의점 커피', c:'카페·간식', k:6, u:2100 }, { n:'배달팁', c:'배달', k:4, u:3000 }, { n:'택시 기본요금', c:'교통', k:1, u:4800 } ],
 };
 const SUGG = [
-  { id:'s1', c:'배달', t:'배달 주 3회 → 2회', sub:'9월 14회 · 평균 15,300 ₩', save:64000 },
+  { id:'s1', c:'배달', t:'배달 주 3회 → 2회', sub:'9월 14회 · 평균 15,300원', save:64000 },
   { id:'s2', c:'쇼핑', t:'장바구니에 하루 두고 결제', sub:'9월 충동 구매 추정 4건', save:31000 },
-  { id:'s3', c:'카페·간식', t:'편의점 커피 → 텀블러 주 2회', sub:'23회 반복 · 회당 2,100 ₩', save:18000 },
-  { id:'s4', c:'구독', t:'겹치는 OTT 하나 해지', sub:'OTT 2개 · 13,500 ₩ / 14,500 ₩', save:13500 },
+  { id:'s3', c:'카페·간식', t:'편의점 커피 → 텀블러 주 2회', sub:'23회 반복 · 회당 2,100원', save:18000 },
+  { id:'s4', c:'구독', t:'겹치는 OTT 하나 해지', sub:'OTT 2개 · 13,500원 / 14,500원', save:13500 },
 ];
 const KEEPABLE = ['배달','쇼핑','카페·간식','구독','여행','자기계발','경조사'];
 const CAT_IC = { '배달':'bag', '쇼핑':'cart', '카페·간식':'coffee', '교통':'bus', '기타':'receipt' };
@@ -644,7 +644,7 @@ function allocBlock() {
     ${circles.map((c, i) => `<circle cx="${off + cx[i]}" cy="60" r="${c.r}" fill="${c.fill}" ${c.stroke ? 'stroke="currentColor" stroke-width="1.5"' : ''}/>
       <text x="${off + cx[i]}" y="64" text-anchor="middle" font-size="12" font-family="Outfit" fill="#181818" style="${c.stroke ? 'fill:currentColor' : ''}">${c.p}%</text>
       <text x="${off + cx[i]}" y="134" text-anchor="middle" font-size="11" fill="currentColor" opacity=".6">${c.n}</text>
-      <text x="${off + cx[i]}" y="148" text-anchor="middle" font-size="11" font-family="Outfit" fill="currentColor">${won(amt * c.p / 100)} ₩</text>`).join('')}
+      <text x="${off + cx[i]}" y="148" text-anchor="middle" font-size="11" font-family="Outfit" fill="currentColor">${won(amt * c.p / 100)}원</text>`).join('')}
   </svg>`;
 }
 
@@ -818,11 +818,11 @@ function nextCard() {
   const P = S.persona;
   const c = {
     cog:  S.incomeIn && !S.allocDone
-      ? { k:'바로 실행', t:'알바비 320,000 ₩이 들어왔어요', s:'추천대로 나누면 독립 자금이 2개월 빨라져요', b:'한 번에 나누기', act:'data-act="sheet" data-sheet="alloc"' }
+      ? { k:'바로 실행', t:'알바비 320,000원이 들어왔어요', s:'추천대로 나누면 독립 자금이 2개월 빨라져요', b:'한 번에 나누기', act:'data-act="sheet" data-sheet="alloc"' }
       : { k:'바로 실행', t:'배달 예산 87% 사용', s:'이번 주 남은 배달을 1회로 줄이면 예산 안에 들어와요', b:'주 1회로 제한', act:'data-act="toast" data-msg="배달 앱 결제 시 한도 알림을 켰어요"' },
     low:  { k:'오늘 할 일 하나', t:'고정 지출 4건이 맞는지 확인해 주세요', s:'매달 나가는 돈을 알면 하루 예산이 정확해져요 · 1분', b:'확인하기', act:'data-act="tab" data-tab="plan"' },
-    habit:{ k:'비교해 보기', t:'지금 적금보다 금리 높은 상품 2개', s:'월 350,000 ₩ 기준 1년 이자 최대 +21,100 ₩', b:'비교 보기', act:'data-act="sheet" data-sheet="compare"' },
-    self: { k:'다음 영역', t:'필수 설정 완료 · 투자로 넓혀 볼까요', s:'매주 10,000 ₩ 적립식 투자로 시작할 수 있어요', b:'시작하기', act:'data-act="tab" data-tab="plan"' },
+    habit:{ k:'비교해 보기', t:'지금 적금보다 금리 높은 상품 2개', s:'월 350,000원 기준 1년 이자 최대 +21,100원', b:'비교 보기', act:'data-act="sheet" data-sheet="compare"' },
+    self: { k:'다음 영역', t:'필수 설정 완료 · 투자로 넓혀 볼까요', s:'매주 10,000원 적립식 투자로 시작할 수 있어요', b:'시작하기', act:'data-act="tab" data-tab="plan"' },
   }[P];
   return `<div class="card c-ink next-card">
     <span class="eng mute">${c.k}</span>
@@ -831,7 +831,7 @@ function nextCard() {
   </div>`;
 }
 function sankey() {
-  // 3단: 들어온 돈 → 용도별 통장 → 쓴 곳. 모든 단이 같은 축척(1px = 약 9,400 ₩)을 씀
+  // 3단: 들어온 돈 → 용도별 통장 → 쓴 곳. 모든 단이 같은 축척(1px = 약 9,400원)을 씀
   const A = S.allocDone ? { bal:[.5,.3,.2], save:[.7,.2,.1], free:[.3,.2,.5] }[S.alloc] : [0, 0, 1];
   const vr = (235000 + (S.spent - 280000)) / 235000;
   const N = {
@@ -898,7 +898,7 @@ function vHome() {
   const axisMin = 600000, axisMax = 900000, ax = v => (v - axisMin) / (axisMax - axisMin) * 100;
   const proj = `<div class="card c-sky">
       <div class="row between"><span class="t12 mute">이 속도면 월말에</span><span class="tag ink">${d.proj >= 0 ? '예산 안' : '초과 위험'}</span></div>
-      <div class="row g8 mt8" style="align-items:baseline"><span class="n32">${Ws(d.proj).replace(' ₩', '')}</span><span class="cur t16">₩</span></div>
+      <div class="row g8 mt8" style="align-items:baseline"><span class="n32">${Ws(d.proj).replace('원', '')}</span><span class="cur t16">₩</span></div>
       <div style="position:relative;height:56px;margin-top:24px" role="img" aria-label="월말 예상 지출 ${won(d.projSpend)}원, 예산 ${won(S.budget)}원">
         <div style="position:absolute;left:0;right:0;top:28px;height:1px;background:#181818;opacity:.5"></div>
         ${[600000,700000,800000,900000].map(v => `<div style="position:absolute;left:${ax(v)}%;top:22px;height:12px;width:1px;background:#181818;opacity:.4"></div><span class="t10 mute num" style="position:absolute;top:40px;left:${ax(v)}%;transform:translateX(${v === 600000 ? 0 : v === 900000 ? -100 : -50}%)">${man(v)}</span>`).join('')}
@@ -927,9 +927,9 @@ function vHome() {
   const flow = `<div class="card c-paper">
       <div class="row between"><span class="eng">Flow</span><span class="t10 mute num">10.01 – 10.12</span></div>
       <div class="mt16">${sankey()}</div>
-      <div class="row between t10 mute mt8"><span>${S.flowSel ? '다시 누르면 전체 흐름' : '통장을 눌러 흐름을 따라가 보세요'}</span><span>단위 1,000 ₩</span></div>
+      <div class="row between t10 mute mt8"><span>${S.flowSel ? '다시 누르면 전체 흐름' : '통장을 눌러 흐름을 따라가 보세요'}</span><span>단위 1,000원</span></div>
       <div class="row g8 mt16">
-        <button class="btn sm" style="flex:1;background:var(--g2);color:var(--ink);font-size:12px;padding:0 12px" data-act="toast" data-msg="내 계좌끼리 옮긴 3건(300,000 ₩)은 지출에서 뺐어요">${ic('check', 16)}내 계좌 간 이체 3건 제외</button>
+        <button class="btn sm" style="flex:1;background:var(--g2);color:var(--ink);font-size:12px;padding:0 12px" data-act="toast" data-msg="내 계좌끼리 옮긴 3건(300,000원)은 지출에서 뺐어요">${ic('check', 16)}내 계좌 간 이체 3건 제외</button>
         ${S.settled ? `<span class="btn sm" style="flex:1;background:var(--g2);color:var(--g6);font-size:12px;padding:0 12px">더치페이 정리 완료</span>` : `<button class="btn sm" style="flex:1;background:var(--aura);color:var(--ink);font-size:12px;padding:0 12px" data-act="sheet" data-sheet="settle">${ic('users', 16)}더치페이 2건 정리</button>`}
       </div>
     </div>`;
@@ -941,7 +941,7 @@ function vHome() {
         <button class="ib glass" data-act="sheet" data-sheet="menu" aria-label="메뉴">${ic('menu', 20)}</button>
       </div>
     </header>
-    ${S.settled ? '' : `<button class="urgent" data-act="sheet" data-sheet="settle"><span class="u-dot"></span><span class="t14 grow">정산할 더치페이 2건</span><span class="t14 num">48,000 ₩</span><span class="btn sm" style="height:36px">정산</span></button>`}
+    ${S.settled ? '' : `<button class="urgent" data-act="sheet" data-sheet="settle"><span class="u-dot"></span><span class="t14 grow">정산할 더치페이 2건</span><span class="t14 num">48,000원</span><span class="btn sm" style="height:36px">정산</span></button>`}
     <section class="hero">
       <div class="t14 mute">✦ 오늘 쓸 수 있는 돈 ✦</div>
       <div class="hero-n"><span class="n56 num">${won(d.daily)}</span><span class="n24">₩</span></div>
@@ -1043,7 +1043,7 @@ function topSpend() {
   };
   const vs = m ? '지난달' : '지난주';
   const si = top.indexOf(sel), sr = r(sel), [sx, sy] = P[si];
-  const bt = `${sel.d >= 0 ? '+' : '−'}${won(Math.abs(sel.d))} ₩ ${vs} 대비`, bw = bt.length * 6.4 + 20;
+  const bt = `${sel.d >= 0 ? '+' : '−'}${won(Math.abs(sel.d))}원 ${vs} 대비`, bw = bt.length * 6.4 + 20;
   const bx = Math.max(0, Math.min(305 - bw, sx - bw / 2)), by = Math.max(0, sy - sr - 16);
   return `<div class="card c-light">
     <div class="row between"><span class="t18" style="font-family:var(--f-num);font-weight:300;font-size:24px">Top spend</span><span class="t10 mute num">${m ? '9.1 – 9.30' : '10.5 – 10.11'}</span></div>
@@ -1115,14 +1115,14 @@ function vSpend() {
       <div class="t14"><span class="stepn">1</span>줄이지 않을 지출 고르기</div>
       <p class="t12 mute mt4">켠 항목은 아래 줄이기 제안에서 빠져요.</p>
       <div class="card c-paper mt12" style="padding:12px 20px">
-        <div class="keeps">${KEEPABLE.map(c => `<div class="kr"><span class="t14">${c}</span><span class="t12 mute num">${won(amtOf(c))} ₩</span>
+        <div class="keeps">${KEEPABLE.map(c => `<div class="kr"><span class="t14">${c}</span><span class="t12 mute num">${won(amtOf(c))}원</span>
           <button class="switch ${S.keeps.has(c) ? 'on' : ''}" data-act="keep" data-v="${c}" role="switch" aria-checked="${S.keeps.has(c)}" aria-label="${c} 줄이지 않기" ${locked ? 'disabled' : ''}></button></div>`).join('')}</div>
       </div>
       <div class="t14 mt24"><span class="stepn">2</span>해 볼 제안 담기</div>
       <p class="t12 mute mt4">지출 기록을 보고 Finpick이 찾은 방법이에요. 해 볼 것만 담으세요.</p>
       <div class="stack8 mt12">
         ${shown.length ? shown.map(s => { const on = S.applied.has(s.id); return `<button class="cut ${on ? 'on' : ''}" data-act="sugg" data-v="${s.id}" aria-pressed="${on}" ${locked ? 'disabled' : ''}>
-          <span class="t14">${s.t}</span><span class="n20" style="grid-row:1/3;grid-column:2;text-align:right">−${won(s.save)}<span class="t10 mute" style="display:block;margin-top:4px">월 ₩</span></span>
+          <span class="t14">${s.t}</span><span class="n20" style="grid-row:1/3;grid-column:2;text-align:right">−${won(s.save)}<span class="t10 mute" style="display:block;margin-top:4px">원 / 월</span></span>
           <span class="pick" style="grid-row:1/3;grid-column:3" aria-hidden="true">${on ? ic('check', 16) : ''}</span>
           <span class="t12 mute">${s.c} · ${s.sub}</span></button>`; }).join('') : '<p class="t14 mute">모든 항목을 줄이지 않기로 했어요.</p>'}
         ${hidden.length ? `<p class="t10 mute">줄이지 않기로 한 ${hidden.map(h => h.c).join('·')} 제안 ${hidden.length}개는 숨겼어요.</p>` : ''}
@@ -1156,10 +1156,10 @@ function halfDonut() {
 }
 function vPlan() {
   const req = [
-    { k:'pre', t:'급여일 선저축', v:'매월 25일 · 300,000 ₩ → 독립 자금 적금', done:true, icn:'calendar', term:'선저축: 월급이 들어오면 쓰기 전에 먼저 저축 계좌로 옮기는 방식이에요. 남은 돈으로 생활하게 돼요.' },
-    { k:'emer', t:'비상금', v:`${W(S.emergency)} / 2,400,000 ₩`, done:true, icn:'shield', term:'비상금: 갑작스러운 병원비·퇴사 같은 상황을 위한 돈이에요. 보통 생활비 3개월치를 권해요.', bar:S.emergency / 2400000 },
-    { k:'budget', t:'월 예산', v:'800,000 ₩ · 매월 1일 시작', done:true, icn:'wallet' },
-    { k:'fixed', t:'고정 지출', v:S.fixedSet ? '4건 · 월 582,000 ₩' : '자동으로 찾은 4건 확인 필요', done:S.fixedSet, icn:'receipt', term:'고정 지출: 월세·통신비·구독료처럼 매달 정해진 날 나가는 돈이에요. 하루 예산 계산에서 미리 빼 둬요.' },
+    { k:'pre', t:'급여일 선저축', v:'매월 25일 · 300,000원 → 독립 자금 적금', done:true, icn:'calendar', term:'선저축: 월급이 들어오면 쓰기 전에 먼저 저축 계좌로 옮기는 방식이에요. 남은 돈으로 생활하게 돼요.' },
+    { k:'emer', t:'비상금', v:`${W(S.emergency)} / 2,400,000원`, done:true, icn:'shield', term:'비상금: 갑작스러운 병원비·퇴사 같은 상황을 위한 돈이에요. 보통 생활비 3개월치를 권해요.', bar:S.emergency / 2400000 },
+    { k:'budget', t:'월 예산', v:'800,000원 · 매월 1일 시작', done:true, icn:'wallet' },
+    { k:'fixed', t:'고정 지출', v:S.fixedSet ? '4건 · 월 582,000원' : '자동으로 찾은 4건 확인 필요', done:S.fixedSet, icn:'receipt', term:'고정 지출: 월세·통신비·구독료처럼 매달 정해진 날 나가는 돈이에요. 하루 예산 계산에서 미리 빼 둬요.' },
   ];
   const doneN = req.filter(r => r.done).length;
   const easy = S.persona === 'low';
@@ -1177,7 +1177,7 @@ function vPlan() {
       ${req.map(r => r.k === 'fixed' && !S.fixedSet ? `<div class="card c-dash">
           <div class="setrow"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(r.icn, 20)}</span><div><div class="t16">${r.t}${term()}</div><div class="t12 mute">${r.v}</div></div><span class="tag dash">미설정</span></div>
           ${termDef(r.term)}
-          <div class="stack8 mt16">${[['월세','450,000','매월 1일'],['통신비','55,000','매월 15일'],['구독 (OTT 2 · 음악)','45,000','매월 각각'],['실손보험','32,000','매월 20일']].map(f => `<div class="row between t12"><span class="row g8">${ic('check', 16)}${f[0]}</span><span class="mute num">${f[1]} ₩ · ${f[2]}</span></div>`).join('')}</div>
+          <div class="stack8 mt16">${[['월세','450,000','매월 1일'],['통신비','55,000','매월 15일'],['구독 (OTT 2 · 음악)','45,000','매월 각각'],['실손보험','32,000','매월 20일']].map(f => `<div class="row between t12"><span class="row g8">${ic('check', 16)}${f[0]}</span><span class="mute num">${f[1]}원 · ${f[2]}</span></div>`).join('')}</div>
           <button class="btn full mt16" data-act="fixedOk">맞아요, 4건 등록</button>
         </div>` : `<div class="card c-paper">
           <div class="setrow"><span class="ib ink">${ic(r.icn, 20)}</span><div><div class="t16">${r.t}${r.term ? term() : ''}</div><div class="t12 mute num">${r.v}</div></div>
@@ -1189,7 +1189,7 @@ function vPlan() {
     </div>
   </section>
   <section class="sec">
-    <div class="sec-h"><div><div class="t12 mute">9월 수입 2,450,000 ₩ · 지출 데이터 기준</div><div class="t18">이렇게 나눠 보면 어때요?</div></div></div>
+    <div class="sec-h"><div><div class="t12 mute">9월 수입 2,450,000원 · 지출 데이터 기준</div><div class="t18">이렇게 나눠 보면 어때요?</div></div></div>
     <div class="card c-sky">
       ${halfDonut()}
       <hr class="hair mt24">
@@ -1214,7 +1214,7 @@ function vPlan() {
   <section class="sec">
     <div class="sec-h"><div class="t18">선택 항목</div><span class="t10 mute">필수 설정 후 열려요</span></div>
     <div class="card ${S.fixedSet ? 'c-aura' : 'c-dash'}">
-      <div class="setrow"><span class="ib ${S.fixedSet ? 'ink' : ''}" style="${S.fixedSet ? '' : 'box-shadow:inset 0 0 0 1px var(--g3)'}">${ic(S.fixedSet ? 'spark' : 'lock', 20)}</span><div><div class="t16">소액 적립식 투자${term()}</div><div class="t12 mute">매주 10,000 ₩ · 국내외 지수 ETF</div></div>${S.fixedSet ? '<button class="btn sm" data-act="toast" data-msg="매주 월요일 10,000 ₩ 적립식 투자를 예약했어요">시작</button>' : '<span class="tag dash">잠김</span>'}</div>
+      <div class="setrow"><span class="ib ${S.fixedSet ? 'ink' : ''}" style="${S.fixedSet ? '' : 'box-shadow:inset 0 0 0 1px var(--g3)'}">${ic(S.fixedSet ? 'spark' : 'lock', 20)}</span><div><div class="t16">소액 적립식 투자${term()}</div><div class="t12 mute">매주 10,000원 · 국내외 지수 ETF</div></div>${S.fixedSet ? '<button class="btn sm" data-act="toast" data-msg="매주 월요일 10,000원 적립식 투자를 예약했어요">시작</button>' : '<span class="tag dash">잠김</span>'}</div>
       ${termDef('적립식 투자: 정해진 날 같은 금액을 나눠 사는 방식이에요. 가격이 오르내려도 평균 매입가가 고르게 맞춰져요. 원금 손실이 날 수 있어요.')}
     </div>
     <button class="card c-paper row between mt12" style="width:100%" data-act="tab" data-tab="benefit"><span><span class="t12 mute" style="display:block">만 27세 · 연소득 2,640만 원 기준</span><span class="t16">받을 수 있는 공제·지원금 4건</span></span>${ic('arrow', 20)}</button>
@@ -1279,7 +1279,7 @@ function vGoal() {
     <div class="row g8 mt24" style="align-items:baseline"><span class="n56" style="font-size:48px">${pct(saved / g.target)}</span></div>
     <div class="row between mt12 t12"><span class="num">${W(saved)}</span><span class="mute num">/ ${W(g.target)}</span></div>
     <div class="glowbar mt12"><i style="width:${saved / g.target * 100}%"></i></div>
-    <div class="row between mt16 t12 mute"><span>월 ${indep ? '350,000' : won(Math.ceil((g.target - g.saved) / 5 / 1000) * 1000)} ₩ 자동이체</span><span>남은 ${W(g.target - saved)}</span></div>
+    <div class="row between mt16 t12 mute"><span>월 ${indep ? '350,000' : won(Math.ceil((g.target - g.saved) / 5 / 1000) * 1000)}원 자동이체</span><span>남은 ${W(g.target - saved)}</span></div>
   </div>
   ${indep ? `
   <section class="sec">
@@ -1292,13 +1292,13 @@ function vGoal() {
     <div class="card c-paper">${pa.svg}
       <div class="row g16 t10 mute mt8" style="flex-wrap:wrap"><span class="row g4"><i style="width:16px;height:2px;background:#181818;display:inline-block"></i>실제 저축</span><span class="row g4"><i style="width:16px;border-top:1px dashed #181818;display:inline-block"></i>계획</span><span class="row g4"><i style="width:16px;border-top:2px dotted #FF769C;display:inline-block"></i>지금 속도 예상</span></div>
       <hr class="hair mt16">
-      <div class="grid2 mt16"><div><div class="t10 mute">9월 목표 적립</div><div class="t14 num mt4">350,000 → 250,000 ₩</div></div><div><div class="t10 mute">차이 원인</div><div class="t14 mt4">배달 +44,000 ₩</div></div></div>
+      <div class="grid2 mt16"><div><div class="t10 mute">9월 목표 적립</div><div class="t14 num mt4">350,000 → 250,000원</div></div><div><div class="t10 mute">차이 원인</div><div class="t14 mt4">배달 +44,000원</div></div></div>
     </div>
   </section>` : `<p class="t12 mute mt16">${g.n}은 아직 중간 목표가 없어요. 금액을 나눠 단계를 만들면 진행이 더 잘 보여요.</p>`}
   <section class="sec">
     <div class="sec-h"><div><div class="t12 mute">챌린지 · 독립 목표 1,284명</div><div class="t18">무지출 데이 주 2회</div></div></div>
     <div class="card c-ink">
-      <div class="row between"><span class="n20 num">2026. 10</span><span class="t12 mute">하루 예산 ${won(Math.round(lim / 100) * 100)} ₩ 기준</span></div>
+      <div class="row between"><span class="n20 num">2026. 10</span><span class="t12 mute">하루 예산 ${won(Math.round(lim / 100) * 100)}원 기준</span></div>
       <div class="cal mt16" role="group" aria-label="10월 소비 달력">${cal}</div>
       <hr class="hair mt16">
       <div class="row between mt12 t12">${[['zero','무지출','var(--paper)'],['ok','적정 소비','var(--sky)'],['over','과소비','var(--rose)']].map(([k, n, c]) => `<span class="row g8"><i class="lg" style="background:${c}"></i>${n}<span class="num mute">${cnt(k)}일</span></span>`).join('')}</div>
@@ -1325,10 +1325,10 @@ function vGoal() {
    ========================================================= */
 function vBenefit() {
   const bens = [
-    { n:'청년 월세 지원', amt:'월 200,000 ₩ · 12개월', y:2400000, c:['y','y','y','c'], tag:'D-18', hot:true },
-    { n:'청년도약계좌 정부기여금', amt:'월 최대 33,000 ₩', y:396000, c:['y','y','n','y'], tag:'가입 가능' },
-    { n:'연말정산 카드 소득공제', amt:'예상 환급 약 180,000 ₩', y:180000, c:['n','y','n','y'], tag:'진행 중' },
-    { n:'K-패스 교통비 환급', amt:'월 약 12,300 ₩ (청년 30%)', y:147600, c:['y','n','n','y'], tag:'받는 중' },
+    { n:'청년 월세 지원', amt:'월 200,000원 · 12개월', y:2400000, c:['y','y','y','c'], tag:'D-18', hot:true },
+    { n:'청년도약계좌 정부기여금', amt:'월 최대 33,000원', y:396000, c:['y','y','n','y'], tag:'가입 가능' },
+    { n:'연말정산 카드 소득공제', amt:'예상 환급 약 180,000원', y:180000, c:['n','y','n','y'], tag:'진행 중' },
+    { n:'K-패스 교통비 환급', amt:'월 약 12,300원 (청년 30%)', y:147600, c:['y','n','n','y'], tag:'받는 중' },
   ];
   const sum = bens.reduce((s, b) => s + b.y, 0);
   const cell = v => `<span class="c"><i class="${v === 'y' ? 'm-yes' : v === 'c' ? 'm-chk' : 'm-na'}"></i></span>`;
@@ -1342,7 +1342,7 @@ function vBenefit() {
   </div>
   ${S.benefitMoved ? '' : `<div class="card c-ink mt12">
     <div class="row between"><span class="eng mute">받은 혜택</span><span class="t10 mute">10.10 입금</span></div>
-    <div class="t16 mt8">K-패스 환급 12,300 ₩이 들어왔어요</div>
+    <div class="t16 mt8">K-패스 환급 12,300원이 들어왔어요</div>
     <p class="t12 mute mt8">생활비 통장에 두면 쓰게 되기 쉬워요. 비상금으로 옮기면 목표에 바로 더해져요.</p>
     <button class="btn light sm mt16" data-act="benMove">비상금으로 옮기기</button>
   </div>`}
@@ -1369,10 +1369,10 @@ function vBenefit() {
         <span class="t10 mute" style="position:absolute;left:0;top:62px">신용 4,800,000</span>
         <span class="t10 mute" style="position:absolute;right:0;top:62px">체크 2,300,000</span>
       </div>
-      <p class="t12 mt16">총급여의 25%(6,600,000 ₩)를 넘긴 500,000 ₩부터 공제돼요.${term()}</p>
+      <p class="t12 mt16">총급여의 25%(6,600,000원)를 넘긴 500,000원부터 공제돼요.${term()}</p>
       ${termDef('소득공제: 세금을 매기는 소득 금액을 줄여 주는 것이에요. 기준을 넘긴 금액에 체크카드는 30%, 신용카드는 15%가 적용돼요.')}
       <div class="grid2 mt16"><div class="card c-glass" style="padding:16px"><div class="t10 mute">신용카드 공제율</div><div class="n24 mt8">15%</div></div><div class="card c-glass" style="padding:16px"><div class="t10 mute">체크카드 공제율</div><div class="n24 mt8">30%</div></div></div>
-      <p class="t12 mute mt12">남은 기간 월 400,000 ₩을 체크카드로 쓰면 환급이 약 34,000 ₩ 늘어나요.</p>
+      <p class="t12 mute mt12">남은 기간 월 400,000원을 체크카드로 쓰면 환급이 약 34,000원 늘어나요.</p>
     </div>
   </section>
   <section class="sec">
@@ -1387,7 +1387,7 @@ function vBenefit() {
     <div class="sec-h"><div class="t18">흩어진 포인트</div><div class="n24">${won(31200 + 1240)}<span class="cur t12">P</span></div></div>
     <div class="card c-paper">
       <div class="stack8">${[['신용카드 포인트','24,500'],['체크카드 캐시백','6,700'],['Finpick 챌린지','1,240']].map(([n, v]) => `<div class="row between t14"><span>${n}</span><span class="num">${v} P</span></div>`).join('')}</div>
-      ${S.pointsMoved ? `<div class="row g8 mt16 t14">${ic('check', 18)} 32,440 ₩을 독립 자금에 넣었어요</div>` : `<button class="btn full mt16" data-act="ptMove">현금으로 바꿔 독립 자금에 넣기</button>`}
+      ${S.pointsMoved ? `<div class="row g8 mt16 t14">${ic('check', 18)} 32,440원을 독립 자금에 넣었어요</div>` : `<button class="btn full mt16" data-act="ptMove">현금으로 바꿔 독립 자금에 넣기</button>`}
     </div>
   </section>
   <section class="sec">
@@ -1405,26 +1405,26 @@ function sheetHTML(name) {
   const head = (t, s) => `${close}<div class="row between"><div><div class="t18">${t}</div>${s ? `<div class="t12 mute">${s}</div>` : ''}</div><button class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)" data-act="closeSheet" aria-label="닫기">${ic('close', 20)}</button></div>`;
   switch (name) {
     case 'noti': return head('알림', '예산 초과 위험·정산·입금일 때만 보내요') + `<div class="stack mt24">
-      <div class="card c-aura"><span class="tag ink">예산 초과 위험</span><div class="t16 mt12">배달 예산의 87%를 썼어요</div><div class="t12 mute mt4">10월 110,000 ₩ 중 96,000 ₩ · 남은 19일</div><div class="glowbar mt12"><i style="width:87%"></i></div></div>
-      ${S.settled ? '' : `<button class="card c-paper" style="text-align:left" data-act="sheet" data-sheet="settle"><span class="tag line">정산</span><div class="t16 mt12">받을 더치페이 2건 · 48,000 ₩</div><div class="t12 mute mt4">10.09 저녁 · 10.11 택시</div></button>`}
-      ${S.allocDone ? '' : `<button class="card c-paper" style="text-align:left" data-act="sheet" data-sheet="alloc"><span class="tag line">입금</span><div class="t16 mt12">알바비 320,000 ₩ 배분 제안</div><div class="t12 mute mt4">10.08 · 한 번에 나누기</div></button>`}
+      <div class="card c-aura"><span class="tag ink">예산 초과 위험</span><div class="t16 mt12">배달 예산의 87%를 썼어요</div><div class="t12 mute mt4">10월 110,000원 중 96,000원 · 남은 19일</div><div class="glowbar mt12"><i style="width:87%"></i></div></div>
+      ${S.settled ? '' : `<button class="card c-paper" style="text-align:left" data-act="sheet" data-sheet="settle"><span class="tag line">정산</span><div class="t16 mt12">받을 더치페이 2건 · 48,000원</div><div class="t12 mute mt4">10.09 저녁 · 10.11 택시</div></button>`}
+      ${S.allocDone ? '' : `<button class="card c-paper" style="text-align:left" data-act="sheet" data-sheet="alloc"><span class="tag line">입금</span><div class="t16 mt12">알바비 320,000원 배분 제안</div><div class="t12 mute mt4">10.08 · 한 번에 나누기</div></button>`}
       <p class="t12 mute">알림 종류는 메뉴 › 알림 설정에서 끌 수 있어요.</p></div>`;
     case 'settle': return head('정산하기', '더치페이 · 대리 결제 정리') + `<div class="stack mt24">
-      ${[['10.09 망원동 저녁','4인 · 64,000 ₩ 내가 결제',[['민지',16000,1],['서준',16000,0],['하은',16000,0]]],['10.11 택시 동승','2인 · 32,000 ₩ 내가 결제',[['도윤',16000,0]]]].map(([t, s, ppl]) => `<div class="card c-paper">
+      ${[['10.09 망원동 저녁','4인 · 64,000원 내가 결제',[['민지',16000,1],['서준',16000,0],['하은',16000,0]]],['10.11 택시 동승','2인 · 32,000원 내가 결제',[['도윤',16000,0]]]].map(([t, s, ppl]) => `<div class="card c-paper">
         <div class="row between"><span class="t16">${t}</span><span class="t12 mute">${s}</span></div>
         <div class="stack8 mt16">${ppl.map(([n, a, got]) => `<div class="row between t14"><span>${n}</span><span class="row g8"><span class="num">${W(a)}</span><span class="tag ${got ? 'ink' : 'dash'}">${got ? '받음' : '대기'}</span></span></div>`).join('')}</div>
       </div>`).join('')}
-      <div class="card c-sky"><div class="t14">정산 처리하면 받을 48,000 ₩을 내 지출에서 빼요</div><div class="t12 mute mt4">오늘 쓸 수 있는 돈이 ${W(Math.floor((S.budget - S.spent + 48000) / d.left / 100) * 100)}으로 바뀌어요</div></div>
-      <p class="t12 mute">내 계좌끼리 옮긴 3건(300,000 ₩)은 자동으로 지출에서 뺐어요.</p>
+      <div class="card c-sky"><div class="t14">정산 처리하면 받을 48,000원을 내 지출에서 빼요</div><div class="t12 mute mt4">오늘 쓸 수 있는 돈이 ${W(Math.floor((S.budget - S.spent + 48000) / d.left / 100) * 100)}으로 바뀌어요</div></div>
+      <p class="t12 mute">내 계좌끼리 옮긴 3건(300,000원)은 자동으로 지출에서 뺐어요.</p>
       <div class="row g8"><button class="btn ghost" style="flex:1" data-act="toast" data-msg="3명에게 송금 요청을 보냈어요">요청 보내기</button><button class="btn" style="flex:1" data-act="settleDo">정산 처리</button></div></div>`;
-    case 'alloc': return head('알바비 나누기', '10.08 입금 · 320,000 ₩') + `<div class="row g8 mt24">${[['bal','균형'],['save','저축 우선'],['free','쓰기 우선']].map(([k, n]) => `<button class="chip ${S.alloc === k ? 'on' : ''}" data-act="alloc" data-v="${k}">${n}</button>`).join('')}</div>
+    case 'alloc': return head('알바비 나누기', '10.08 입금 · 320,000원') + `<div class="row g8 mt24">${[['bal','균형'],['save','저축 우선'],['free','쓰기 우선']].map(([k, n]) => `<button class="chip ${S.alloc === k ? 'on' : ''}" data-act="alloc" data-v="${k}">${n}</button>`).join('')}</div>
       <div class="mt16">${allocBlock()}</div>
       <div class="card c-aura mt16"><div class="t12 mute">독립 자금</div><div class="t16 mt4">${pct(d.goal)} → ${pct((S.goalSaved + 320000 * ({ bal:.5, save:.7, free:.3 }[S.alloc])) / 5000000)}</div></div>
       <button class="btn full mt16" data-act="allocDo">이대로 나누기</button><p class="t12 mute mt12" style="text-align:center">비율은 플랜 › 비정기 수입에서 바꿀 수 있어요</p>`;
     case 'withdraw': {
       const a = S.wAmt, after = S.goalSaved - a; const m0 = Math.ceil((5000000 - S.goalSaved) / 350000), m1 = Math.ceil((5000000 - after) / 350000);
       const dt = k => { const t = new Date(2026, 9 + k, 1); return `${t.getFullYear()}.${String(t.getMonth() + 1).padStart(2, '0')}`; };
-      return head('저축 꺼내기', '독립 자금 적금') + `<div class="row g8 mt24">${[100000,200000,500000].map(v => `<button class="chip ${a === v ? 'on' : ''}" data-act="wAmt" data-v="${v}">${man(v)} ₩</button>`).join('')}</div>
+      return head('저축 꺼내기', '독립 자금 적금') + `<div class="row g8 mt24">${[100000,200000,500000].map(v => `<button class="chip ${a === v ? 'on' : ''}" data-act="wAmt" data-v="${v}">${man(v)} 원</button>`).join('')}</div>
       <div class="card c-paper mt16"><div class="t12 mute">꺼내면 목표가 이렇게 바뀌어요</div>
         <div class="row between mt16"><div><div class="t10 mute">진행률</div><div class="n24 mt4">${pct(S.goalSaved / 5000000)} → ${pct(after / 5000000)}</div></div><div style="text-align:right"><div class="t10 mute">달성 예정</div><div class="n24 mt4">${dt(m1)}</div></div></div>
         <div style="position:relative;height:40px;margin-top:20px"><div style="position:absolute;left:0;right:0;top:16px;height:1px;background:var(--g3)"></div>
@@ -1437,12 +1437,12 @@ function sheetHTML(name) {
     case 'goalAdd': {
       const g = S.gNew, mon = Math.ceil(g.amt / g.months / 1000) * 1000;
       return head('목표 만들기', '유형·금액·기간') + `<div class="t12 mute mt24">유형</div><div class="row g8 mt8" style="flex-wrap:wrap">${['전세 자금','독립','여행','비상금','직접 입력'].map(t => `<button class="chip ${g.type === t ? 'on' : ''}" data-act="gType" data-v="${t}">${t}</button>`).join('')}</div>
-      <div class="t12 mute mt24">금액</div><div class="row g8 mt8" style="flex-wrap:wrap">${[3000000,10000000,30000000].map(v => `<button class="chip ${g.amt === v ? 'on' : ''}" data-act="gAmt" data-v="${v}">${man(v)} ₩</button>`).join('')}</div>
+      <div class="t12 mute mt24">금액</div><div class="row g8 mt8" style="flex-wrap:wrap">${[3000000,10000000,30000000].map(v => `<button class="chip ${g.amt === v ? 'on' : ''}" data-act="gAmt" data-v="${v}">${man(v)} 원</button>`).join('')}</div>
       <div class="t12 mute mt24">기간</div><div class="row g8 mt8">${[[12,'1년'],[24,'2년'],[36,'3년']].map(([v, n]) => `<button class="chip ${g.months === v ? 'on' : ''}" data-act="gMon" data-v="${v}">${n}</button>`).join('')}</div>
-      <div class="card c-sky mt24"><div class="t12 mute">매달 필요한 금액</div><div class="row g8 mt8" style="align-items:baseline"><span class="n32">${won(mon)}</span><span class="cur t16">₩</span></div><p class="t12 mute mt8">중간 목표 4단계를 자동으로 만들어 드려요.${mon > 400000 ? ' 지금 저축 여력(월 약 400,000 ₩)보다 커서 기간을 늘리는 걸 추천해요.' : ''}</p></div>
+      <div class="card c-sky mt24"><div class="t12 mute">매달 필요한 금액</div><div class="row g8 mt8" style="align-items:baseline"><span class="n32">${won(mon)}</span><span class="cur t16">₩</span></div><p class="t12 mute mt8">중간 목표 4단계를 자동으로 만들어 드려요.${mon > 400000 ? ' 지금 저축 여력(월 약 400,000원)보다 커서 기간을 늘리는 걸 추천해요.' : ''}</p></div>
       <button class="btn full mt16" data-act="gCreate">목표 만들기</button>`;
     }
-    case 'compare': return head('적금 비교', '월 350,000 ₩ · 12개월 · 세후 이자 (예시)') + `<div class="stack mt24">${[['지금 쓰는 적금','3.1%',59700,1],['A은행 청년 적금','4.2%',80800,0],['B은행 자유 적금','3.6%',69300,0]].map(([n, r, i, cur]) => `<div class="card ${cur ? 'c-paper' : 'c-sky'}" style="padding:20px 24px"><div class="row between"><span class="t14">${n}</span>${cur ? '<span class="tag line">사용 중</span>' : `<span class="tag ink">+${won(i - 59700)} ₩</span>`}</div><div class="row between mt12" style="align-items:baseline"><span class="n24">${r}</span><span class="t14 num">이자 ${W(i)}</span></div></div>`).join('')}
+    case 'compare': return head('적금 비교', '월 350,000원 · 12개월 · 세후 이자 (예시)') + `<div class="stack mt24">${[['지금 쓰는 적금','3.1%',59700,1],['A은행 청년 적금','4.2%',80800,0],['B은행 자유 적금','3.6%',69300,0]].map(([n, r, i, cur]) => `<div class="card ${cur ? 'c-paper' : 'c-sky'}" style="padding:20px 24px"><div class="row between"><span class="t14">${n}</span>${cur ? '<span class="tag line">사용 중</span>' : `<span class="tag ink">+${won(i - 59700)}원</span>`}</div><div class="row between mt12" style="align-items:baseline"><span class="n24">${r}</span><span class="t14 num">이자 ${W(i)}</span></div></div>`).join('')}
       <p class="t12 mute">금리는 우대 조건(급여이체·카드 실적)을 모두 채웠을 때 기준이에요.</p></div>`;
     case 'menu': return head('메뉴') + `<div class="stack8 mt24"><button class="card c-paper setrow" style="padding:16px 20px;text-align:left" data-act="diag"><span class="ib ink">${ic('spark', 20)}</span><span><span class="t14" style="display:block">내 진단 결과</span><span class="t12 mute">${PERSONA[S.persona].name} · 2026.10.12 진단</span></span>${ic('arrow', 18)}</button>${[['link','연동 계좌·카드 관리','6개 계좌 · 카드 2 · 간편결제 1'],['bell','알림 설정','예산 초과 위험 · 정산 · 입금'],['sliders','기본 설정 바꾸기·해제','선저축 · 비상금 · 예산 · 고정 지출'],['refresh','재진단','마지막 2026.06.12']].map(([i, t, s]) => `<button class="card c-paper setrow" style="padding:16px 20px;text-align:left" data-act="${i === 'refresh' ? 'rediag' : i === 'sliders' ? 'tab' : 'toast'}" data-tab="plan" data-msg="${t} 화면은 데모에서 생략했어요"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(i, 20)}</span><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${s}</span></span>${ic('arrow', 18)}</button>`).join('')}</div>
       <div class="eng mute mt24">테스트 진행자용</div>
@@ -1465,10 +1465,10 @@ function sheetHTML(name) {
 }
 function aiAnswer(q) {
   const d = D();
-  if (/얼마|더 써|오늘|예산/.test(q)) return { a:`오늘은 <b>${W(d.daily)}</b>까지 써도 돼요. 10월 남은 예산은 ${W(d.remain)}, 남은 ${d.left}일 기준이에요. 지금 속도면 월말에 ${W(Math.abs(d.proj))} ${d.proj >= 0 ? '남아요' : '부족해요'}. 다만 배달은 카테고리 예산의 87%라, 이번 주 배달은 1회만 추천해요.`, src:'10월 예산 800,000 ₩ · 연동 카드 3개 지출' };
-  if (/알바|나누|보너스/.test(q)) return { a:`알바비 320,000 ₩은 독립 자금 160,000 ₩ · 비상금 96,000 ₩ · 자유 64,000 ₩으로 나누는 걸 추천해요. 비상금이 목표의 46%라 조금 더 채우면 좋고, 독립 자금은 계획보다 200,000 ₩ 느려서 절반을 넣으면 차이가 줄어요.`, src:'비상금 1,100,000 / 2,400,000 ₩ · 독립 자금 계획 대비 −200,000 ₩' };
-  if (/적금|깨|인출|꺼내/.test(q)) return { a:`꺼낼 수는 있어요. 200,000 ₩을 꺼내면 독립 자금 달성이 2027.06 → 2027.07로 1개월 늦어져요. 급한 지출이라면 비상금(1,100,000 ₩)을 먼저 쓰는 게 목표에 영향이 적어요.`, src:'독립 자금 2,300,000 ₩ · 월 350,000 ₩ 자동이체' };
-  return { a:`지금 가장 효과가 큰 건 배달이에요. 9월에 지난달보다 44,000 ₩ 늘었고, 주 3회를 2회로 줄이면 한 달 64,000 ₩을 아껴 독립 자금이 1개월 빨라져요.`, src:'9월 지출 영수증 · 독립 자금 목표' };
+  if (/얼마|더 써|오늘|예산/.test(q)) return { a:`오늘은 <b>${W(d.daily)}</b>까지 써도 돼요. 10월 남은 예산은 ${W(d.remain)}, 남은 ${d.left}일 기준이에요. 지금 속도면 월말에 ${W(Math.abs(d.proj))} ${d.proj >= 0 ? '남아요' : '부족해요'}. 다만 배달은 카테고리 예산의 87%라, 이번 주 배달은 1회만 추천해요.`, src:'10월 예산 800,000원 · 연동 카드 3개 지출' };
+  if (/알바|나누|보너스/.test(q)) return { a:`알바비 320,000원은 독립 자금 160,000원 · 비상금 96,000원 · 자유 64,000원으로 나누는 걸 추천해요. 비상금이 목표의 46%라 조금 더 채우면 좋고, 독립 자금은 계획보다 200,000원 느려서 절반을 넣으면 차이가 줄어요.`, src:'비상금 1,100,000 / 2,400,000원 · 독립 자금 계획 대비 −200,000원' };
+  if (/적금|깨|인출|꺼내/.test(q)) return { a:`꺼낼 수는 있어요. 200,000원을 꺼내면 독립 자금 달성이 2027.06 → 2027.07로 1개월 늦어져요. 급한 지출이라면 비상금(1,100,000원)을 먼저 쓰는 게 목표에 영향이 적어요.`, src:'독립 자금 2,300,000원 · 월 350,000원 자동이체' };
+  return { a:`지금 가장 효과가 큰 건 배달이에요. 9월에 지난달보다 44,000원 늘었고, 주 3회를 2회로 줄이면 한 달 64,000원을 아껴 독립 자금이 1개월 빨라져요.`, src:'9월 지출 영수증 · 독립 자금 목표' };
 }
 
 /* =========================================================
@@ -1521,7 +1521,7 @@ function reprint(id) { const p = document.getElementById(id); if (!p) return; p.
 function payment() {
   const before = D(); S.spent += 18000; const after = D();
   render();
-  toast(`<div class="row between"><span class="t12" style="color:var(--g4)">방금 결제 · 배달의민족</span><span class="n20">−18,000 ₩</span></div>
+  toast(`<div class="row between"><span class="t12" style="color:var(--g4)">방금 결제 · 배달의민족</span><span class="n20">−18,000원</span></div>
     <div class="grid2 mt12" style="gap:8px">
       <div><div class="t10" style="color:var(--g4)">예산 잔여율</div><div class="t14 num">${pct(1 - before.used)} → ${pct(1 - after.used)}</div></div>
       <div><div class="t10" style="color:var(--g4)">월말 예상 잔액</div><div class="t14 num">${Ws(after.proj)}</div></div>
@@ -1532,7 +1532,7 @@ function payment() {
 }
 function goalBump(amt, label) {
   const b = S.goalSaved; S.goalSaved += amt; render();
-  toast(`<div class="row between"><span class="t12" style="color:var(--g4)">${label}</span><span class="n20">+${won(amt)} ₩</span></div><div class="t14 mt8">독립 자금 ${pct(b / 5000000)} → ${pct(S.goalSaved / 5000000)}</div><div class="glowbar mt12" style="height:6px;background:#333"><i style="width:${S.goalSaved / 50000}%"></i></div>`, 4200);
+  toast(`<div class="row between"><span class="t12" style="color:var(--g4)">${label}</span><span class="n20">+${won(amt)}원</span></div><div class="t14 mt8">독립 자금 ${pct(b / 5000000)} → ${pct(S.goalSaved / 5000000)}</div><div class="glowbar mt12" style="height:6px;background:#333"><i style="width:${S.goalSaved / 50000}%"></i></div>`, 4200);
 }
 
 /* ---------- events ---------- */
@@ -1584,7 +1584,7 @@ document.addEventListener('click', e => {
       S.goals.push({ id, n:g.type, target:g.amt, saved:0, due:`${t.getFullYear()}.${String(t.getMonth() + 1).padStart(2, '0')}` }); S.goalSel = id; closeSheet(); render(); simpleToast(`${g.type} 목표를 만들었어요`); break; }
     case 'cert': S.cert = !S.cert; render(); break;
     case 'like': S.liked.has(+v) ? S.liked.delete(+v) : S.liked.add(+v); render(); break;
-    case 'benMove': S.benefitMoved = true; S.emergency += 12300; render(); simpleToast('12,300 ₩을 비상금으로 옮겼어요'); break;
+    case 'benMove': S.benefitMoved = true; S.emergency += 12300; render(); simpleToast('12,300원을 비상금으로 옮겼어요'); break;
     case 'ptMove': S.pointsMoved = true; goalBump(32440, '포인트 현금 전환'); break;
     case 'topSel': S.topSel = v; render(); break;
     case 'cutApply': { const ch = SUGG.filter(s => !S.keeps.has(s.c) && S.applied.has(s.id) && CUT_CAT[s.id]).map(s => { const c = CUT_CAT[s.id], a = S.cat[c], b = Math.max(0, Math.round((a - s.save) / 1000) * 1000); S.cat[c] = b; return [c, a, b]; });
