@@ -182,6 +182,12 @@ svg{display:block}
 .ib .dot{position:absolute;top:9px;right:10px;width:7px;height:7px;border-radius:50%;background:var(--rose);box-shadow:0 0 0 2px var(--paper)}
 .chip{height:32px;padding:0 14px;border-radius:999px;display:inline-flex;align-items:center;gap:6px;font-size:12px;white-space:nowrap;box-shadow:inset 0 0 0 1px var(--line)}
 .chip.on{background:var(--fg);color:var(--inv);box-shadow:none}
+/* 지출 상단: 밑줄 탭 (화면 폭 전체) + 기간 칩 */
+.utabs{display:flex;margin:16px calc(-1 * var(--m)) 0;box-shadow:inset 0 -2px 0 rgba(128,128,128,.35)}
+.utabs button{flex:1;height:48px;display:grid;place-items:center;font-size:16px;color:var(--mute);position:relative}
+.utabs button.on{color:var(--fg);font-weight:600}
+.utabs button.on::after{content:"";position:absolute;left:12%;right:12%;bottom:0;height:2px;background:var(--fg)}
+.chip.pchip{height:36px;padding:0 18px;font-size:14px}
 .tag{height:22px;padding:0 8px;border-radius:999px;display:inline-flex;align-items:center;font-size:10px;white-space:nowrap}
 .tag.ink{background:var(--fg);color:var(--inv)}
 .tag.line{box-shadow:inset 0 0 0 1px var(--line)}
@@ -1243,10 +1249,10 @@ function vLedger() {
 function vSpend() {
   const m = S.period === 'month', an = S.spendView === 'analysis', ls = S.spendView === 'list';
   const rep = REPEATS[S.period], repSum = rep.reduce((s, r) => s + r.k * r.u, 0);
-  const head = `<header class="top"><div><div class="t18">지출</div><div class="t12 mute">계좌·카드 연동으로 자동 기록돼요</div></div><button class="ib" style="box-shadow:inset 0 0 0 1px #3a3a3a" data-act="sheet" data-sheet="settle" aria-label="정산·대리 결제 정리">${ic('users', 20)}</button></header>
-    <div class="seg mt16" role="tablist">${[['list','내역'],['analysis','분석'],['report','리포트']].map(([k, n]) => `<button class="${S.spendView === k ? 'on' : ''}" data-act="sv" data-v="${k}" role="tab" aria-selected="${S.spendView === k}">${n}</button>`).join('')}</div>
-    ${ls ? '' : `<div class="row between mt12"><div class="row g8"><button class="chip ${m ? '' : 'on'}" data-act="period" data-v="week">주간</button><button class="chip ${m ? 'on' : ''}" data-act="period" data-v="month">월간</button></div>
-    ${an ? '' : `<button class="btn sm" data-act="print" data-v="pReport">${ic('receipt', 18)} 영수증 출력</button>`}</div>`}`;
+  const head = `<header class="top"><div><div class="t18">지출</div><div class="t12 mute">계좌 · 카드 연동으로 자동 기록돼요</div></div></header>
+    <div class="utabs" role="tablist">${[['list','내역'],['analysis','분석'],['report','리포트']].map(([k, n]) => `<button class="${S.spendView === k ? 'on' : ''}" data-act="sv" data-v="${k}" role="tab" aria-selected="${S.spendView === k}">${n}</button>`).join('')}</div>
+    ${ls ? '' : `<div class="row between mt16"><div class="row g8"><button class="chip pchip ${m ? '' : 'on'}" data-act="period" data-v="week">주간</button><button class="chip pchip ${m ? 'on' : ''}" data-act="period" data-v="month">월간</button></div>
+    ${an ? '' : `<button class="chip pchip" data-act="print" data-v="pReport">${ic('receipt', 16)}영수증 출력</button>`}</div>`}`;
   if (ls) return head + vLedger();
   if (!an) return head + printer('pReport', receiptReport()) + `<p class="t12 mute mt16" style="text-align:center">영수증은 매주 월요일, 매월 1일에 자동 발행돼요</p>`;
   return head + `
