@@ -1461,7 +1461,7 @@ function sheetHTML(name) {
       ${S.allocDone ? '' : `<button class="card c-paper" style="text-align:left" data-act="sheet" data-sheet="alloc"><span class="tag line">입금</span><div class="t16 mt12">외주비 320,000원 배분 제안</div><div class="t12 mute mt4">10.08 · 한 번에 나누기</div></button>`}
       <p class="t12 mute">알림 종류는 메뉴 › 알림 설정에서 끌 수 있어요.</p></div>`;
     case 'settle': return head('정산하기', '더치페이 · 대리 결제 정리') + `<div class="stack mt24">
-      ${[['10.09 망원동 저녁','4인 · 64,000원 내가 결제',[['민지',16000,1],['서준',16000,0],['하은',16000,0]]],['10.11 택시 동승','2인 · 32,000원 내가 결제',[['도윤',16000,0]]]].map(([t, s, ppl]) => `<div class="card c-paper">
+      ${[['10.09 망원동 저녁','4인 · 36,000원 내가 결제',[['민지',9000,1],['서준',9000,0],['하은',9000,0]]],['10.11 택시 동승','2인 · 18,000원 내가 결제',[['도윤',9000,0]]]].map(([t, s, ppl]) => `<div class="card c-paper">
         <div class="row between"><span class="t16">${t}</span><span class="t12 mute">${s}</span></div>
         <div class="stack8 mt16">${ppl.map(([n, a, got]) => `<div class="row between t14"><span>${n}</span><span class="row g8"><span class="num">${W(a)}</span><span class="tag ${got ? 'ink' : 'dash'}">${got ? '받음' : '대기'}</span></span></div>`).join('')}</div>
       </div>`).join('')}
