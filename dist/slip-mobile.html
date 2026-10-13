@@ -12,7 +12,7 @@
 <title>Finpick 청년 금융 앱</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@200;300;400&family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600&family=IBM+Plex+Mono:wght@400;500&family=Nanum+Gothic+Coding:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@200;300;400&family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600&family=IBM+Plex+Mono:wght@400;500&family=Nanum+Gothic+Coding:wght@400;700&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
 <style>
 /*
@@ -94,20 +94,25 @@ svg{display:block}
 .mute{color:var(--mute)}
 .n56{font-family:var(--f-num);font-weight:300;font-size:56px;line-height:1;letter-spacing:-.02em}
 .n48{font-family:var(--f-num);font-weight:300;font-size:48px;line-height:1;letter-spacing:-.01em}
-/* 월말 예상 카드 (Figma 시안 값) */
-.card.proj-card{padding:29px 27px;background:#000}
-.proj-card .pc-label{font-size:12px;font-weight:400;color:#8E8E8E;line-height:17px}
-.proj-card .pc-amount{margin-top:8px;height:48px;display:flex;align-items:baseline;gap:0;color:#fff;white-space:pre}
+/* 월말 예상 카드: 여백·라운드·배경은 다른 카드(c-ink)와 같고, 글자 굵기도 다른 카드와 같은 규칙(본문 500, 숫자 Urbanist 300) */
+.proj-card .pc-label{font-size:12px;color:var(--mute);line-height:17px}
+.proj-card .pc-amount{margin-top:8px;height:48px;display:flex;align-items:baseline}
 .proj-card .pc-num{font-family:var(--f-num);font-size:36px;font-weight:300;line-height:48px}
-.proj-card .pc-unit{font-size:16px;font-weight:300;margin-left:9px} /* 시안의 36px 공백 폭 */
-.proj-card .pc-desc{font-size:12px;font-weight:300;line-height:16.8px;color:#fff}
+.proj-card .pc-unit{font-size:16px;margin-left:9px}
+.proj-card .pc-desc{font-size:12px;line-height:16.8px}
 .proj-card .pc-axis{position:relative;height:50px;margin-top:19px;--bar:#ABD1FF}
 .proj-card .pc-axis.over{--bar:#FF9DB8}
-.proj-card .pc-bud{position:absolute;top:0;transform:translateX(-50%);font-size:10px;font-weight:300;line-height:14px;color:#fff}
-.proj-card .pc-bar{position:absolute;left:0;top:22px;height:6px;border-radius:0 8px 8px 0;background:linear-gradient(90deg,rgba(255,255,255,.38) 0%,var(--bar) 100%)}
+.proj-card .pc-bud{position:absolute;top:0;transform:translateX(-50%);font-size:10px;line-height:14px}
+.proj-card .pc-track{position:absolute;left:0;right:0;top:24.25px;height:1.5px;background:rgba(252,252,252,.45)}
+.proj-card .pc-bar{position:absolute;left:0;top:22px;height:6px;border-radius:0 8px 8px 0;background:linear-gradient(90deg,rgba(255,255,255,.38) 0%,var(--bar) 100%);box-shadow:0 0 14px 1px color-mix(in srgb,var(--bar) 55%,transparent)}
 .proj-card .pc-tick{position:absolute;top:19px;width:1px;height:12px;margin-left:-.5px;background:#fff}
 .proj-card .pc-tick.budget{width:2px;margin-left:-1px}
-.proj-card .pc-lab{position:absolute;top:36px;font-size:10px;font-weight:300;line-height:14px;color:#929292;white-space:nowrap}
+.proj-card .pc-lab{position:absolute;top:36px;font-size:10px;line-height:14px;color:var(--mute);white-space:nowrap}
+.proj-card .pc-spark{position:absolute;top:25px;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,#fff 0 2px,var(--bar) 3.5px,color-mix(in srgb,var(--bar) 40%,transparent) 7px,transparent 16px)}
+.proj-card .pc-spark::before,.proj-card .pc-spark::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+.proj-card .pc-spark::before{width:36px;height:2px;background:linear-gradient(90deg,transparent,var(--bar),#fff,var(--bar),transparent)}
+.proj-card .pc-spark::after{width:2px;height:36px;background:linear-gradient(180deg,transparent,var(--bar),#fff,var(--bar),transparent)}
 .n32{font-family:var(--f-num);font-weight:300;font-size:32px;line-height:1;letter-spacing:-.01em}
 .n24{font-family:var(--f-num);font-weight:400;font-size:24px;line-height:1}
 .n20{font-family:var(--f-num);font-weight:400;font-size:20px;line-height:1}
@@ -929,8 +934,10 @@ function vHome() {
       <p class="pc-desc">하루 평균 ${W(avg)}씩 쓰는 중이므로<br>월말 예상 지출은 ${W(d.projSpend)} / 예산 ${W(S.budget)}이 돼요</p>
       <div class="pc-axis ${under ? 'under' : 'over'}" role="img" aria-label="월말 예상 지출 ${won(d.projSpend)}원, 예산 ${won(S.budget)}원, ${won(Math.abs(d.proj))}원 ${under ? '남음' : '초과'}">
         <span class="pc-bud" style="left:${ax(S.budget)}%">예산</span>
+        <i class="pc-track"></i>
         <i class="pc-bar" style="width:${clampAx(d.projSpend)}%"></i>
         ${[600000,700000,800000,900000].map(v => `<i class="pc-tick ${v === S.budget ? 'budget' : ''}" style="left:${ax(v)}%"></i><span class="pc-lab" style="left:${ax(v)}%;transform:translateX(${v === 600000 ? 0 : v === 900000 ? -100 : -50}%)">${man(v)}</span>`).join('')}
+        <i class="pc-spark" style="left:${clampAx(d.projSpend)}%"></i>
       </div>
     </div>`;
   const goalAndSpend = `<div class="grid2">
