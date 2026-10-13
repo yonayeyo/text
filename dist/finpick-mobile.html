@@ -103,7 +103,15 @@ svg{display:block}
 .na-title{font-size:20px;line-height:28px;color:#181818}
 .na-desc{margin-top:5px;font-size:12px;line-height:16.8px;color:#646464}
 .ib.na-go{width:44px;height:44px;background:#181818;color:#fff}
-.na-wrap{display:grid;gap:8px;margin-bottom:8px}
+.na-wrap{display:grid;gap:8px;margin-bottom:8px;min-width:0}
+.na-track{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;min-width:0}
+.na-track::-webkit-scrollbar{display:none}
+.na-track>.na-card{flex:0 0 100%;scroll-snap-align:start}
+.na-track.na-swap>.na-card:first-child{animation:naIn .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes naIn{from{opacity:0;transform:translateX(40px) scale(.98)}to{opacity:1;transform:none}}
+.na-dots{display:flex;justify-content:center;gap:6px;height:6px}
+.na-dots i{width:6px;height:6px;border-radius:50%;background:#DCE9FA;transition:background .25s,width .25s}
+.na-dots i.on{background:#B3D1F5}
 .na-why{display:flex;gap:8px;align-items:flex-start;font-size:12px;font-weight:400;color:var(--g6);padding:0 8px;line-height:1.5}
 .na-star{flex:none;font-family:"Noto Sans Symbols 2","Apple Symbols","Segoe UI Symbol",sans-serif;font-size:14px;line-height:18px}
 /* 월말 예상 카드: 여백·라운드·배경은 다른 카드(c-ink)와 같고, 글자 굵기도 다른 카드와 같은 규칙(본문 500, 숫자 Urbanist 300) */
@@ -443,6 +451,7 @@ const IC = {
   minus:'<path d="M5 12h14"/>',
   arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
   ur:'<path d="M7 17 17 7M9 7h8v8"/>',
+  bellplus:'<path d="M14.5 4.6A6 6 0 0 0 6 10v6l-1.5 2h15L18 16v-3"/><path d="M10 20.5a2 2 0 0 0 4 0"/><path d="M18.5 3v6M15.5 6h6"/>',
   check:'<path d="m5 12.5 4.5 4.5L19 7.5"/>',
   mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>',
   send:'<path d="M12 19V5M6 11l6-6 6 6"/>',
@@ -843,15 +852,31 @@ function vResult(ctx = 'ob') {
    HOME
    ========================================================= */
 // 행동 추천 카드 (Figma 시안): "행동 추천" + 유형 칩 / 제목 20px / 설명 2줄 / 오른쪽 원형 실행 버튼
+function naDots(el) {
+  const k = Math.round(el.scrollLeft / (el.firstElementChild.offsetWidth + 8));
+  el.parentElement.querySelectorAll('.na-dots i').forEach((d, j) => d.classList.toggle('on', j === k));
+}
 function nextCard() {
   const P = S.persona;
-  const c = {
-    cog:  S.incomeIn && !S.allocDone
-      ? { t:'외주비 320,000원 분할', s:'독립 자금 5 : 비상금 3 : 자유 2<br>추천대로 나누면 목표 달성이 2개월 빨라져요', b:'한 번에 나누기', act:'data-act="sheet" data-sheet="alloc"' }
-      : { t:'배달 이번 주 1회로 제한', s:'배달 예산 87% 사용 · 남은 14,000원<br>한도를 걸면 결제 전에 알려드려요', b:'이번 주 1회로 제한', act:'data-act="toast" data-msg="배달 앱 결제 시 한도 알림을 켰어요"' },
-    low:  { t:'고정 지출 4건 확인', s:'월세 · 통신비 · 구독 · 보험<br>맞는지만 보면 1분이면 끝나요', b:'1분 만에 확인', act:'data-act="tab" data-tab="plan"' },
-    habit:{ t:'금리 4.2% 적금 비교', s:'지금 적금 3.1%보다 1.1%p 높아요<br>월 35만 원 기준 1년 이자 +21,100원', b:'비교 보기', act:'data-act="sheet" data-sheet="compare"' },
-    self: { t:'적립식 투자 시작', s:'필수 설정 4/4 완료<br>매주 10,000원부터 넓혀 볼 수 있어요', b:'시작하기', act:'data-act="tab" data-tab="plan"' },
+  // 페르소나별 행동 추천 목록(가로로 넘겨 보는 카드). i: 버튼 아이콘 — 알림을 켜는 행동은 알림 추가 아이콘
+  const recs = {
+    cog: [
+      ...(S.incomeIn && !S.allocDone ? [{ t:'외주비 320,000원 분할', s:'독립 자금 5 : 비상금 3 : 자유 2<br>추천대로 나누면 목표 달성이 2개월 빨라져요', b:'한 번에 나누기', act:'data-act="sheet" data-sheet="alloc"' }] : []),
+      { t:'배달 이번 주 1회로 제한', s:'배달 예산 87% 사용 · 남은 14,000원<br>한도를 걸면 결제 전에 알려드려요', b:'배달 한도 알림 켜기', i:'bellplus', act:'data-act="toast" data-msg="배달 앱 결제 시 한도 알림을 켰어요"' },
+      { t:'안 쓰는 구독 2건 정리', s:'최근 3개월 사용 기록 없음 · 월 17,800원<br>해지하면 1년에 213,600원 아낄 수 있어요', b:'구독 확인', act:'data-act="tab" data-tab="plan"' },
+    ],
+    low: [
+      { t:'고정 지출 4건 확인', s:'월세 · 통신비 · 구독 · 보험<br>맞는지만 보면 1분이면 끝나요', b:'1분 만에 확인', act:'data-act="tab" data-tab="plan"' },
+      { t:'예산 80% 알림 켜기', s:'켜 두기만 하면 따로 볼 필요 없어요<br>넘기 전에 한 번만 알려드려요', b:'예산 알림 켜기', i:'bellplus', act:'data-act="toast" data-msg="예산 80% 알림을 켰어요"' },
+    ],
+    habit: [
+      { t:'금리 4.2% 적금 비교', s:'지금 적금 3.1%보다 1.1%p 높아요<br>월 35만 원 기준 1년 이자 +21,100원', b:'비교 보기', act:'data-act="sheet" data-sheet="compare"' },
+      { t:'카드 실적 12만 원 남음', s:'이번 달 실적을 채우면 할인 8,000원<br>고정 지출 결제 카드를 바꿔 보세요', b:'카드 확인', act:'data-act="tab" data-tab="benefit"' },
+    ],
+    self: [
+      { t:'적립식 투자 시작', s:'필수 설정 4/4 완료<br>매주 10,000원부터 넓혀 볼 수 있어요', b:'시작하기', act:'data-act="tab" data-tab="plan"' },
+      { t:'청년도약계좌 조건 확인', s:'소득 조건 충족 · 정부 기여금 최대 월 33,000원<br>5년 뒤 목돈 마련에 유리해요', b:'조건 보기', act:'data-act="tab" data-tab="benefit"' },
+    ],
   }[P];
   const why = {
     cog:'‘인지우세형’에게는 간편하게 실행할 수 있는 행동을 추천해요',
@@ -859,11 +884,16 @@ function nextCard() {
     habit:'‘습관우세형’에게는 더 나은 선택을 돕는 비교 정보를 추천해요',
     self:'‘자기관리형’에게는 다음 영역으로 넓히는 행동을 추천해요',
   }[P];
-  return `<div class="na-wrap"><div class="card c-sky na-card">
+  // 외주비 배분처럼 추천이 끝나 다음 카드로 넘어갈 때 한 번만 들어오는 인터랙션을 준다
+  const swap = S.naSwap; S.naSwap = false;
+  const card = c => `<div class="card c-sky na-card">
     <div class="na-head"><span>행동 추천</span><button class="na-chip" data-act="diag" aria-label="내 진단 결과 보기">${PERSONA[P].name}</button></div>
     <div class="na-body"><div><div class="na-title">${c.t}</div><p class="na-desc">${c.s}</p></div>
-      <button class="ib na-go" ${c.act} aria-label="${c.b}">${ic('ur', 22)}</button></div>
-  </div><p class="na-why"><span class="na-star" aria-hidden="true">✦</span><span>${why}</span></p></div>`;
+      <button class="ib na-go" ${c.act} aria-label="${c.b}">${ic(c.i || 'ur', 22)}</button></div>
+  </div>`;
+  return `<div class="na-wrap"><div class="na-track${swap ? ' na-swap' : ''}" onscroll="naDots(this)">${recs.map(card).join('')}</div>
+  ${recs.length > 1 ? `<div class="na-dots" aria-hidden="true">${recs.map((_, k) => `<i class="${k ? '' : 'on'}"></i>`).join('')}</div>` : ''}
+  <p class="na-why"><span class="na-star" aria-hidden="true">✦</span><span>${why}</span></p></div>`;
 }
 function sankey() {
   // 10월(1~12일) 들어온 돈이 어디로 갔는지 한 단계로 보여준다. 모든 띠는 같은 축척.
@@ -1613,7 +1643,7 @@ document.addEventListener('click', e => {
     case 'mic': simpleToast('음성 입력은 데모에서 지원하지 않아요'); break;
     case 'settleDo': S.settled = true; S.spent -= 36000; closeSheet(); render(); simpleToast(`정산 처리 · 오늘 쓸 수 있는 돈 ${W(D().daily)}`); break;
     case 'alloc': S.alloc = v; render(); refreshSheet(); break;
-    case 'allocDo': { const r = { bal:.5, save:.7, free:.3 }[S.alloc]; S.allocDone = true; S.incomeIn = false; S.emergency += 320000 * ({ bal:.3, save:.2, free:.2 }[S.alloc]); closeSheet(); goalBump(320000 * r, '외주비 배분 완료'); break; }
+    case 'allocDo': { const r = { bal:.5, save:.7, free:.3 }[S.alloc]; S.allocDone = true; S.naSwap = true; S.incomeIn = false; S.emergency += 320000 * ({ bal:.3, save:.2, free:.2 }[S.alloc]); closeSheet(); goalBump(320000 * r, '외주비 배분 완료'); break; }
     case 'sv': S.spendView = v; render(false); break;
     case 'period': S.period = v; S.topSel = null; render(); break;
     case 'print': reprint(v); break;
