@@ -348,11 +348,18 @@ svg{display:block}
 .ld b{font-family:var(--f-num);font-weight:400;font-size:11px;line-height:1}
 .ld i{font-style:normal;font-size:9px;line-height:1;color:rgba(24,24,24,.62)}
 .ld.fut{background:none;box-shadow:inset 0 0 0 1px rgba(128,128,128,.18)}.ld.fut b{color:var(--mute)}
-.ld.l0{background:#FCFCFC;box-shadow:inset 0 0 0 1px rgba(24,24,24,.08)}
-.ld.l1,.lg.l1{background:#E6F0FD}.ld.l2,.lg.l2{background:#C8E1FF}.ld.l3,.lg.l3{background:#FFC4D4}.ld.l4,.lg.l4{background:#FF8FAE}
-.ld.today{box-shadow:inset 0 0 0 1.5px #181818}
+.ld.l0{--cb:var(--paper);color:var(--fg);border:1.5px solid transparent;padding:4.5px 0 4.5px 5.5px;
+  background:linear-gradient(var(--cb),var(--cb)) padding-box,linear-gradient(120deg,#C8E1FF,#FF769C,#FCFCFC,#C8E1FF) border-box;background-size:100% 100%,300% 300%;
+  box-shadow:0 0 10px rgba(200,225,255,.55),0 0 4px rgba(255,118,156,.35);animation:ldGlint 3.2s linear infinite}
+.screen.dark .ld.l0{--cb:#232323}
+.ld.l0 i{color:inherit;font-family:"Noto Sans Symbols 2","Apple Symbols","Segoe UI Symbol",sans-serif;font-size:13px;filter:drop-shadow(0 0 3px rgba(200,225,255,.9))}
+@keyframes ldGlint{to{background-position:0 0,300% 0}}
+@media (prefers-reduced-motion:reduce){.ld.l0{animation:none}}
+.ld.l1,.lg.l1{background:#C8E1FF}.ld.l2,.lg.l2{background:#E6F0FD}.ld.l3,.lg.l3{background:#FFC4D4}.ld.l4,.lg.l4{background:#FF8FAE}
+.ld.today{background:none;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--fg)}.ld.today i{color:var(--mute)}
 .ld.sel{box-shadow:0 0 0 2px var(--fg);position:relative;z-index:1}
-.lg{display:inline-block;width:12px;height:12px;border-radius:4px}
+.lg{display:inline-block;width:12px;height:12px;border-radius:4px;font-style:normal}
+.lg.l0z{display:inline-grid;place-items:center;font-size:8px;line-height:1;font-family:"Noto Sans Symbols 2","Apple Symbols",sans-serif;border:1px solid #C8E1FF;box-shadow:0 0 6px rgba(200,225,255,.6)}
 .lrow{display:grid;grid-template-columns:36px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(128,128,128,.18)}
 .lrow:last-child{border-bottom:0}.lrow .ib{width:36px;height:36px;background:rgba(128,128,128,.16);color:inherit}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);row-gap:8px;justify-items:center}
@@ -1211,7 +1218,7 @@ function vLedger() {
   const cells = ['일','월','화','수','목','금','토'].map(w => `<span class="wd">${w}</span>`).join('') + '<span></span>'.repeat(4)
     + Array.from({ length:31 }, (_, i) => { const d = i + 1, a = amt(d), sel = S.ledDay === d;
       return a == null ? `<span class="ld fut"><b>${d}</b></span>`
-        : `<button class="ld ${lv(a)}${sel ? ' sel' : ''}${d === 12 ? ' today' : ''}" data-act="ledDay" data-v="${d}" aria-pressed="${sel}" aria-label="10월 ${d}일 ${a ? won(a) + '원' : '무지출'}"><b>${d}</b><i>${a ? short(a) : d === 12 ? '오늘' : '무지출'}</i></button>`; }).join('');
+        : `<button class="ld ${d === 12 ? 'today' : lv(a)}${sel ? ' sel' : ''}" data-act="ledDay" data-v="${d}" aria-pressed="${sel}" aria-label="10월 ${d}일 ${a ? won(a) + '원' : '무지출'}"><b>${d}</b><i${a || d === 12 ? '' : ' aria-hidden="true"'}>${a ? short(a) : d === 12 ? '오늘' : '✦'}</i></button>`; }).join('');
   const d = S.ledDay, a = amt(d), tx = OCT_TX[d] || [], wd = ['일','월','화','수','목','금','토'][(d + 3) % 7];
   const diff = a - lim;
   const rows = tx.map(([t, n, c, v, memo]) => `<div class="lrow"><span class="ib">${ic(CAT_IC[c] || 'receipt', 18)}</span>
@@ -1223,7 +1230,7 @@ function vLedger() {
         <div class="t10 mute" style="text-align:right;line-height:1.6">무지출 ${zeroN}일<br>하루 예산 초과 ${overN}일</div></div>
       <div class="ledcal mt16" role="group" aria-label="10월 지출 달력">${cells}</div>
       <div class="row between mt16 t10 mute"><span>하루 예산 ${won(lim)}원 기준</span>
-        <span class="row g4">적게<i class="lg l1"></i><i class="lg l2"></i><i class="lg l3"></i><i class="lg l4"></i>많이</span></div>
+        <span class="row g8"><span class="row g4"><i class="lg l0z">✦</i>무지출</span><span class="row g4">적게<i class="lg l1"></i><i class="lg l2"></i><i class="lg l3"></i><i class="lg l4"></i>많이</span></span></div>
     </div>
   </section>
   <section class="sec">
