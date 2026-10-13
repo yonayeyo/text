@@ -12,6 +12,7 @@
 <title>Finpick 청년 금융 앱</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols+2&text=%E2%9C%A6&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@200;300;400&family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600&family=IBM+Plex+Mono:wght@400;500&family=Nanum+Gothic+Coding:wght@400;700&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
 <style>
@@ -104,14 +105,14 @@ svg{display:block}
 .ib.na-go{width:44px;height:44px;background:#181818;color:#fff}
 .na-wrap{display:grid;gap:8px}
 .na-why{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--g6);padding:0 8px;line-height:1.5}
-.na-why svg{flex:none;margin-top:1px}
+.na-star{flex:none;font-family:"Noto Sans Symbols 2","Apple Symbols","Segoe UI Symbol",sans-serif;font-size:14px;line-height:18px}
 /* 월말 예상 카드: 여백·라운드·배경은 다른 카드(c-ink)와 같고, 글자 굵기도 다른 카드와 같은 규칙(본문 500, 숫자 Urbanist 300) */
 .proj-card .pc-label{font-size:12px;color:var(--mute);line-height:17px}
 .proj-card .pc-amount{margin-top:8px;height:48px;display:flex;align-items:baseline}
 .proj-card .pc-num{font-family:var(--f-num);font-size:36px;font-weight:300;line-height:48px}
 .proj-card .pc-desc{font-size:12px;line-height:16.8px;color:#BEBEBE}
 .proj-card .pc-won{font-family:var(--f-kr);font-size:24px;font-weight:300;margin-left:12px}
-.proj-card .pc-axis{position:relative;height:50px;margin-top:0;--bar:#ABD1FF}
+.proj-card .pc-axis{position:relative;height:50px;margin-top:16px;--bar:#ABD1FF}
 .proj-card .pc-axis.over{--bar:#FF9DB8}
 .proj-card .pc-bud{position:absolute;top:0;transform:translateX(-50%);font-size:10px;line-height:14px}
 .proj-card .pc-track{position:absolute;left:0;right:0;top:24.25px;height:1.5px;background:rgba(252,252,252,.45)}
@@ -861,8 +862,8 @@ function nextCard() {
   return `<div class="na-wrap"><div class="card c-sky na-card">
     <div class="na-head"><span>행동 추천</span><button class="na-chip" data-act="diag" aria-label="내 진단 결과 보기">${PERSONA[P].name}</button></div>
     <div class="na-body"><div><div class="na-title">${c.t}</div><p class="na-desc">${c.s}</p></div>
-      <button class="ib na-go" ${c.act} aria-label="${c.b}">${ic('ur', 16)}</button></div>
-  </div><p class="na-why"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5c.8 6.3 3.4 8.9 10 9.8v1.4c-6.6.9-9.2 3.5-10 9.8h-.1c-.8-6.3-3.4-8.9-10-9.8v-1.4c6.6-.9 9.2-3.5 10-9.8z" fill="currentColor"/></svg><span>${why}</span></p></div>`;
+      <button class="ib na-go" ${c.act} aria-label="${c.b}">${ic('ur', 22)}</button></div>
+  </div><p class="na-why"><span class="na-star" aria-hidden="true">✦</span><span>${why}</span></p></div>`;
 }
 function sankey() {
   // 10월(1~12일) 들어온 돈이 어디로 갔는지 한 단계로 보여준다. 모든 띠는 같은 축척.
