@@ -937,7 +937,7 @@ function vHome() {
   // 월말 예상 지출이 범위를 벗어나면 예산이 축 안에 남는 한도에서 창 전체를 10만 원씩 옮긴다
   const B = S.budget, STEP = 100000;
   let lo = B - 2 * STEP;
-  if (d.projSpend - 50000 < lo) lo = Math.max(B - 3 * STEP, Math.floor((d.projSpend - 50000) / STEP) * STEP);
+  if (d.projSpend < lo) lo = Math.max(B - 3 * STEP, Math.floor(d.projSpend / STEP) * STEP);
   if (d.projSpend + 50000 > lo + 3 * STEP) lo = Math.min(B, Math.ceil((d.projSpend + 50000) / STEP) * STEP - 3 * STEP);
   lo = Math.max(0, lo);
   const axisMin = lo, axisMax = lo + 3 * STEP, ticks = [0, 1, 2, 3].map(k => lo + STEP * k);
@@ -993,7 +993,7 @@ function vHome() {
         <button class="ib glass" data-act="sheet" data-sheet="menu" aria-label="메뉴">${ic('menu', 20)}</button>
       </div>
     </header>
-    ${S.settled ? '' : `<button class="urgent" data-act="sheet" data-sheet="settle"><span class="u-dot"></span><span class="t14 grow">정산할 더치페이 2건</span><span class="t14 num">48,000원</span><span class="btn sm" style="height:36px">정산</span></button>`}
+    ${S.settled ? '' : `<button class="urgent" data-act="sheet" data-sheet="settle"><span class="u-dot"></span><span class="t14 grow">정산할 더치페이 2건</span><span class="t14 num">36,000원</span><span class="btn sm" style="height:36px">정산</span></button>`}
     <section class="hero">
       <div class="t14 mute">✦ 오늘 쓸 수 있는 돈 ✦</div>
       <div class="hero-n"><span class="n56 num">${won(d.daily)}</span><span class="n24">₩</span></div>
@@ -1457,7 +1457,7 @@ function sheetHTML(name) {
   switch (name) {
     case 'noti': return head('알림', '예산 초과 위험·정산·입금일 때만 보내요') + `<div class="stack mt24">
       <div class="card c-aura"><span class="tag ink">예산 초과 위험</span><div class="t16 mt12">배달 예산의 87%를 썼어요</div><div class="t12 mute mt4">10월 110,000원 중 96,000원 · 남은 19일</div><div class="glowbar mt12"><i style="width:87%"></i></div></div>
-      ${S.settled ? '' : `<button class="card c-paper" style="text-align:left" data-act="sheet" data-sheet="settle"><span class="tag line">정산</span><div class="t16 mt12">받을 더치페이 2건 · 48,000원</div><div class="t12 mute mt4">10.09 저녁 · 10.11 택시</div></button>`}
+      ${S.settled ? '' : `<button class="card c-paper" style="text-align:left" data-act="sheet" data-sheet="settle"><span class="tag line">정산</span><div class="t16 mt12">받을 더치페이 2건 · 36,000원</div><div class="t12 mute mt4">10.09 저녁 · 10.11 택시</div></button>`}
       ${S.allocDone ? '' : `<button class="card c-paper" style="text-align:left" data-act="sheet" data-sheet="alloc"><span class="tag line">입금</span><div class="t16 mt12">외주비 320,000원 배분 제안</div><div class="t12 mute mt4">10.08 · 한 번에 나누기</div></button>`}
       <p class="t12 mute">알림 종류는 메뉴 › 알림 설정에서 끌 수 있어요.</p></div>`;
     case 'settle': return head('정산하기', '더치페이 · 대리 결제 정리') + `<div class="stack mt24">
@@ -1465,7 +1465,7 @@ function sheetHTML(name) {
         <div class="row between"><span class="t16">${t}</span><span class="t12 mute">${s}</span></div>
         <div class="stack8 mt16">${ppl.map(([n, a, got]) => `<div class="row between t14"><span>${n}</span><span class="row g8"><span class="num">${W(a)}</span><span class="tag ${got ? 'ink' : 'dash'}">${got ? '받음' : '대기'}</span></span></div>`).join('')}</div>
       </div>`).join('')}
-      <div class="card c-sky"><div class="t14">정산 처리하면 받을 48,000원을 내 지출에서 빼요</div><div class="t12 mute mt4">오늘 쓸 수 있는 돈이 ${W(Math.floor((S.budget - S.spent + 48000) / d.left / 100) * 100)}으로 바뀌어요</div></div>
+      <div class="card c-sky"><div class="t14">정산 처리하면 받을 36,000원을 내 지출에서 빼요</div><div class="t12 mute mt4">오늘 쓸 수 있는 돈이 ${W(Math.floor((S.budget - S.spent + 36000) / d.left / 100) * 100)}으로 바뀌어요</div></div>
       <p class="t12 mute">내 계좌끼리 옮긴 3건(300,000원)은 자동으로 지출에서 뺐어요.</p>
       <div class="row g8"><button class="btn ghost" style="flex:1" data-act="toast" data-msg="3명에게 송금 요청을 보냈어요">요청 보내기</button><button class="btn" style="flex:1" data-act="settleDo">정산 처리</button></div></div>`;
     case 'alloc': return head('외주비 나누기', '10.08 입금 · 320,000원') + `<div class="row g8 mt24">${[['bal','균형'],['save','저축 우선'],['free','쓰기 우선']].map(([k, n]) => `<button class="chip ${S.alloc === k ? 'on' : ''}" data-act="alloc" data-v="${k}">${n}</button>`).join('')}</div>
@@ -1611,7 +1611,7 @@ document.addEventListener('click', e => {
     case 'closeSheet': closeSheet(); break;
     case 'toast': closeSheet(); simpleToast(el.dataset.msg); break;
     case 'mic': simpleToast('음성 입력은 데모에서 지원하지 않아요'); break;
-    case 'settleDo': S.settled = true; S.spent -= 48000; closeSheet(); render(); simpleToast(`정산 처리 · 오늘 쓸 수 있는 돈 ${W(D().daily)}`); break;
+    case 'settleDo': S.settled = true; S.spent -= 36000; closeSheet(); render(); simpleToast(`정산 처리 · 오늘 쓸 수 있는 돈 ${W(D().daily)}`); break;
     case 'alloc': S.alloc = v; render(); refreshSheet(); break;
     case 'allocDo': { const r = { bal:.5, save:.7, free:.3 }[S.alloc]; S.allocDone = true; S.incomeIn = false; S.emergency += 320000 * ({ bal:.3, save:.2, free:.2 }[S.alloc]); closeSheet(); goalBump(320000 * r, '외주비 배분 완료'); break; }
     case 'sv': S.spendView = v; render(false); break;
@@ -1647,7 +1647,7 @@ document.addEventListener('click', e => {
       closeSheet(); S.sub = null; S.mode = 'app';
       if (v === 'pay') { S.tab = 'home'; render(false); payment(); }
       if (v === 'income') { S.tab = 'home'; S.incomeIn = true; S.allocDone = false; render(false); openSheet('alloc'); }
-      if (v === 'settle') { if (S.settled) { S.settled = false; S.spent += 48000; } S.tab = 'home'; render(false); }
+      if (v === 'settle') { if (S.settled) { S.settled = false; S.spent += 36000; } S.tab = 'home'; render(false); }
       if (v === 'reset') { log('--- 처음부터 다시 ---'); location.reload(); }
       break;
     case 'logCopy': { const txt = logText(); const sel = () => { const r = document.createRange(); r.selectNodeContents(document.getElementById('logBox')); const g = getSelection(); g.removeAllRanges(); g.addRange(r); simpleToast('기록을 선택했어요. 길게 눌러 복사하세요'); };
