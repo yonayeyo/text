@@ -103,7 +103,7 @@ svg{display:block}
 .na-title{font-size:20px;line-height:28px;color:#181818}
 .na-desc{margin-top:5px;font-size:12px;line-height:16.8px;color:#646464}
 .ib.na-go{width:44px;height:44px;background:#181818;color:#fff}
-.na-wrap{display:grid;gap:8px}
+.na-wrap{display:grid;gap:8px;margin-bottom:8px}
 .na-why{display:flex;gap:8px;align-items:flex-start;font-size:12px;font-weight:400;color:var(--g6);padding:0 8px;line-height:1.5}
 .na-star{flex:none;font-family:"Noto Sans Symbols 2","Apple Symbols","Segoe UI Symbol",sans-serif;font-size:14px;line-height:18px}
 /* 월말 예상 카드: 여백·라운드·배경은 다른 카드(c-ink)와 같고, 글자 굵기도 다른 카드와 같은 규칙(본문 500, 숫자 Urbanist 300) */
@@ -992,7 +992,7 @@ function vHome() {
       <div class="t12 mute">10월 남은 예산 ${W(d.remain)} · ${d.left}일</div>
       ${meter(d.used, d.time)}
     </section>
-    <div class="stack" style="margin-top:40px">
+    <div class="stack" style="margin-top:32px">
       ${order.join('')}
     </div>`;
 }
