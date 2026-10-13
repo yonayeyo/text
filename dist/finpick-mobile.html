@@ -12,7 +12,7 @@
 <title>Finpick 청년 금융 앱</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400&family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600&family=IBM+Plex+Mono:wght@400;500&family=Nanum+Gothic+Coding:wght@400;700&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@200;300;400&family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600&family=IBM+Plex+Mono:wght@400;500&family=Nanum+Gothic+Coding:wght@400;700&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
 <style>
 /*
@@ -21,7 +21,7 @@
   · spacing scale (4pt): 4 / 8 / 12 / 16 / 24 / 32 / 40
       – inside a group 8 · between cards 12 · card padding 24 · between sections 40
   · type scale (hierarchy by size, single weight 500):
-      Pretendard 18 / 16 / 14 / 12 / 10 · numerals (Nexa → Outfit) 56 / 32 / 24 · display (Altersick → Bodoni Moda) 17 / 34
+      Pretendard 18 / 16 / 14 / 12 / 10 · numerals (Urbanist) 56 / 32 / 24 · display (Altersick → Bodoni Moda) 17 / 34
       line-height 1.45 for Korean text, 1 for numerals
   · radius: card 32 (corner smoothing) · sheet 32 · button & chip 999 · icon button = circle
   · icons: 24 box, 1.5px line
@@ -32,7 +32,7 @@
   --sky:#C8E1FF; --rose:#FF769C;
   --aura:linear-gradient(120deg,#FFD6E2 0%,#E7DDF7 45%,#C8E1FF 100%);
   --f-kr:"Pretendard Variable","Pretendard","Noto Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;
-  --f-num:"Nexa","Outfit","Pretendard Variable",system-ui,sans-serif;
+  --f-num:"Urbanist","Pretendard Variable",system-ui,sans-serif;
   --f-disp:"Altersick","Bodoni Moda",Didot,"Times New Roman",serif;
   --f-mono:"IBM Plex Mono","Nanum Gothic Coding",ui-monospace,Menlo,monospace;
   --m:20px; --gut:12px; --r:32px;
@@ -642,9 +642,9 @@ function allocBlock() {
   return `<svg viewBox="0 0 305 150" width="100%" role="img" aria-label="알바비 배분: ${parts.map(p => `${p[0]} ${p[1]}%`).join(', ')}">
     <defs><linearGradient id="gAura" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF769C" stop-opacity=".7"/><stop offset="1" stop-color="#C8E1FF"/></linearGradient></defs>
     ${circles.map((c, i) => `<circle cx="${off + cx[i]}" cy="60" r="${c.r}" fill="${c.fill}" ${c.stroke ? 'stroke="currentColor" stroke-width="1.5"' : ''}/>
-      <text x="${off + cx[i]}" y="64" text-anchor="middle" font-size="12" font-family="Outfit" fill="#181818" style="${c.stroke ? 'fill:currentColor' : ''}">${c.p}%</text>
+      <text x="${off + cx[i]}" y="64" text-anchor="middle" font-size="12" font-family="Urbanist" fill="#181818" style="${c.stroke ? 'fill:currentColor' : ''}">${c.p}%</text>
       <text x="${off + cx[i]}" y="134" text-anchor="middle" font-size="11" fill="currentColor" opacity=".6">${c.n}</text>
-      <text x="${off + cx[i]}" y="148" text-anchor="middle" font-size="11" font-family="Outfit" fill="currentColor">${won(amt * c.p / 100)}원</text>`).join('')}
+      <text x="${off + cx[i]}" y="148" text-anchor="middle" font-size="11" font-family="Urbanist" fill="currentColor">${won(amt * c.p / 100)}원</text>`).join('')}
   </svg>`;
 }
 
@@ -750,7 +750,7 @@ function radar(sc) {
     ${[1,2,3,4].map(v => `<polygon points="${poly(Array(n).fill(v))}" fill="none" stroke="#181818" stroke-opacity="${v === 4 ? .18 : .08}"/>`).join('')}
     <polygon points="${poly(Array(n).fill(2.5))}" fill="none" stroke="#181818" stroke-opacity=".35" stroke-dasharray="3 3"/>
     ${sc.areas.map((a, i) => { const [x, y] = pt(i, 4); return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#181818" stroke-opacity=".1"/>`; }).join('')}
-    ${[1,2,3,4].map(v => `<text x="${cx + 3}" y="${(cy - R * v / 4 + 9).toFixed(1)}" font-size="8" fill="#9C9C9C" font-family="Outfit">${v}</text>`).join('')}
+    ${[1,2,3,4].map(v => `<text x="${cx + 3}" y="${(cy - R * v / 4 + 9).toFixed(1)}" font-size="8" fill="#9C9C9C" font-family="Urbanist">${v}</text>`).join('')}
     <polygon points="${poly(sc.areas.map(a => a.interest))}" fill="url(#rdA)" stroke="#FF769C" stroke-opacity=".6" stroke-width="1"/>
     <polygon points="${poly(sc.areas.map(a => a.practice))}" fill="#181818" fill-opacity=".08" stroke="#181818" stroke-width="2" stroke-linejoin="round"/>
     ${sc.areas.map((a, i) => { const [x, y] = pt(i, a.practice); return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.5" fill="#181818"/>`; }).join('')}
@@ -872,11 +872,11 @@ function sankey() {
       ? `<rect x="${n.x + .75}" y="${n.y + .75}" width="${BW - 1.5}" height="${n.h - 1.5}" rx="${(BW - 1.5) / 2}" fill="#FCFCFC" stroke="#181818" stroke-width="1.5" stroke-dasharray="2.5 2.5"/>`
       : `<rect x="${n.x}" y="${n.y}" width="${BW}" height="${n.h}" rx="${BW / 2}" fill="#181818"/>`;
     let lab;
-    if (n.c < 2 && n.h >= 34) lab = `<text x="${n.x + 16}" y="${n.y + 16}" font-size="12" fill="#181818">${n.n}</text><text x="${n.x + 16}" y="${n.y + 30}" font-size="10" fill="#606060" font-family="Outfit">${kw(n.v)}</text>`;
+    if (n.c < 2 && n.h >= 34) lab = `<text x="${n.x + 16}" y="${n.y + 16}" font-size="12" fill="#181818">${n.n}</text><text x="${n.x + 16}" y="${n.y + 30}" font-size="10" fill="#606060" font-family="Urbanist">${kw(n.v)}</text>`;
     else {
       let ly = n.y + n.h / 2 + 4;
       if (n.c === 2) { const p = lastY[lastY.length - 1]; if (p != null && ly - p < 15) ly = p + 15; lastY.push(ly); }
-      lab = `<text x="${n.x + 16}" y="${ly}" font-size="12" fill="#181818">${n.n} <tspan font-size="10" fill="#606060" font-family="Outfit">${kw(n.v)}</tspan></text>`;
+      lab = `<text x="${n.x + 16}" y="${ly}" font-size="12" fill="#181818">${n.n} <tspan font-size="10" fill="#606060" font-family="Urbanist">${kw(n.v)}</tspan></text>`;
     }
     const hit = n.c < 2 ? `<rect x="${n.x - 4}" y="${n.y - 4}" width="64" height="${n.h + 8}" fill="transparent"/>` : '';
     return `<g ${n.c < 2 ? `data-act="flow" data-v="${i}" style="cursor:pointer" role="button" aria-pressed="${sel === i}" aria-label="${n.n} ${won(n.v)}원 흐름 보기"` : ''} opacity="${dim ? .35 : 1}">${hit}${bar}${lab}</g>`;
@@ -1058,7 +1058,7 @@ function topSpend() {
         return `<g data-act="topSel" data-v="${i.c}" style="cursor:pointer" role="button" aria-pressed="${i === sel}" aria-label="${i.c} ${won(i.a)}원 자세히">
           <circle cx="${x}" cy="${y}" r="${r(i)}" fill="transparent"/>
           <text x="${x}" y="${y - (big ? 14 : 8)}" text-anchor="middle" font-size="${big ? 12 : 11}" fill="${c}" opacity=".75">${i.c}</text>
-          <text x="${x}" y="${y + (big ? 16 : 10)}" text-anchor="middle" font-size="${big ? 24 : 15}" font-family="Outfit" font-weight="300" fill="${c}">${won(i.a)}<tspan font-size="${big ? 12 : 9}" dx="2">₩</tspan></text></g>`; }).join('')}
+          <text x="${x}" y="${y + (big ? 16 : 10)}" text-anchor="middle" font-size="${big ? 24 : 15}" font-family="Urbanist" font-weight="300" fill="${c}">${won(i.a)}<tspan font-size="${big ? 12 : 9}" dx="2">₩</tspan></text></g>`; }).join('')}
       <rect x="${bx}" y="${by}" width="${bw}" height="24" rx="12" fill="url(#bdg)"/>
       <text x="${bx + bw / 2}" y="${by + 16}" text-anchor="middle" font-size="11" fill="#181818">${bt}</text>
     </svg>
@@ -1078,7 +1078,7 @@ function diverging() {
     ${items.map((i, k) => { const y = 6 + k * 30, w = Math.abs(i.d) / max * (half - 8); const up = i.d > 0;
       return `<text x="0" y="${y + 12}" font-size="12" fill="#181818">${i.c}</text>
       <rect x="${up ? mid : mid - w}" y="${y}" width="${w}" height="16" rx="8" fill="url(#${up ? 'dvU' : 'dvD'})"/>
-      <text x="${up ? mid + w + 6 : mid - w - 6}" y="${y + 12}" font-size="10" font-family="Outfit" fill="#181818" text-anchor="${up ? 'start' : 'end'}">${up ? '+' : '−'}${man(Math.abs(i.d))}</text>`; }).join('')}
+      <text x="${up ? mid + w + 6 : mid - w - 6}" y="${y + 12}" font-size="10" font-family="Urbanist" fill="#181818" text-anchor="${up ? 'start' : 'end'}">${up ? '+' : '−'}${man(Math.abs(i.d))}</text>`; }).join('')}
   </svg>`;
 }
 function vSpend() {
@@ -1150,7 +1150,7 @@ function halfDonut() {
     return `<path d="${d}" stroke="${c}" stroke-width="${sw}" fill="none" stroke-linecap="round"/>`; }).join('');
   return `<svg viewBox="0 0 305 130" width="100%" role="img" aria-label="월 수입 배분 제안: 고정 지출 24%, 생활비 33%, 저축 35%, 여유 8%">
     <defs><linearGradient id="hd" x1="0" x2="1"><stop offset="0" stop-color="#FF769C"/><stop offset="1" stop-color="#C8E1FF"/></linearGradient></defs>${arcs}
-    <text x="${cx}" y="104" text-anchor="middle" font-size="34" font-family="Outfit" font-weight="300" fill="#181818">35%</text>
+    <text x="${cx}" y="104" text-anchor="middle" font-size="34" font-family="Urbanist" font-weight="300" fill="#181818">35%</text>
     <text x="${cx}" y="124" text-anchor="middle" font-size="11" fill="#606060">저축 비율</text></svg>
     <div class="grid2 mt16" style="gap:8px 12px">${parts.map(([n, p, c]) => `<div class="row g8 t12"><i style="width:10px;height:10px;border-radius:50%;display:inline-block;background:${c.startsWith('url') ? 'var(--aura)' : c}"></i><span style="flex:1">${n}</span><span class="num">${p}%</span></div>`).join('')}</div>`;
 }
@@ -1236,7 +1236,7 @@ function stairs(saved) {
       return `<rect x="${x}" y="${y}" width="${sw}" height="${h}" rx="16" fill="${done ? '#181818' : 'none'}" stroke="${done ? 'none' : '#9C9C9C'}" ${done ? '' : 'stroke-dasharray="3 3"'}/>
         ${now ? `<clipPath id="sc${i}"><rect x="${x}" y="${y}" width="${sw}" height="${h}" rx="16"/></clipPath><rect x="${x}" y="${y + h * (1 - p)}" width="${sw}" height="${h * p}" fill="url(#st)" clip-path="url(#sc${i})"/>` : ''}
         <text x="${x + 10}" y="${y - 22}" font-size="10" fill="${now ? '#181818' : '#606060'}">${i + 1}단계${now ? ' · 지금' : ''}</text>
-        <text x="${x + 10}" y="${y - 8}" font-size="12" font-family="Outfit" fill="#181818">${man(s.a)}</text>
+        <text x="${x + 10}" y="${y - 8}" font-size="12" font-family="Urbanist" fill="#181818">${man(s.a)}</text>
         <text x="${x + sw / 2}" y="${base + 18}" font-size="10" text-anchor="middle" fill="#606060">${s.n}</text>
         ${done ? `<path d="M${x + sw / 2 - 6} ${base - 14} l4 4 8-8" stroke="#FCFCFC" stroke-width="1.5" fill="none"/>` : ''}`; }).join('')}
   </svg>`;
@@ -1252,14 +1252,14 @@ function planActual() {
   const planNow = 5000000 * gi / (n - 1), gap = S.goalSaved - planNow;
   return { gap, svg:`<svg viewBox="0 0 305 176" width="100%" role="img" aria-label="계획 대비 실제 누적 저축. 현재 계획보다 ${won(Math.abs(gap))}원 ${gap < 0 ? '부족' : '앞섬'}">
     <defs><linearGradient id="pa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C8E1FF" stop-opacity=".9"/><stop offset="1" stop-color="#C8E1FF" stop-opacity="0"/></linearGradient></defs>
-    ${[0,2500000,5000000].map(v => `<line x1="40" x2="298" y1="${Y(v)}" y2="${Y(v)}" stroke="#181818" stroke-opacity=".12" stroke-width=".75"/><text x="34" y="${Y(v) + 3}" font-size="9" text-anchor="end" fill="#606060" font-family="Outfit">${v ? man(v) : 0}</text>`).join('')}
+    ${[0,2500000,5000000].map(v => `<line x1="40" x2="298" y1="${Y(v)}" y2="${Y(v)}" stroke="#181818" stroke-opacity=".12" stroke-width=".75"/><text x="34" y="${Y(v) + 3}" font-size="9" text-anchor="end" fill="#606060" font-family="Urbanist">${v ? man(v) : 0}</text>`).join('')}
     <path d="${smooth(act)} L${last[0]} 150 L40 150Z" fill="url(#pa)"/>
     <line x1="${X(0)}" y1="${Y(0)}" x2="${X(n - 1)}" y2="${Y(5000000)}" stroke="#181818" stroke-dasharray="4 4" stroke-width="1"/>
     <path d="${smooth(proj)}" fill="none" stroke="#FF769C" stroke-width="1.5" stroke-dasharray="1 4" stroke-linecap="round"/>
     <path d="${smooth(act)}" fill="none" stroke="#181818" stroke-width="2"/>
     <circle cx="${last[0]}" cy="${last[1]}" r="5" fill="#181818"/><circle cx="${last[0]}" cy="${last[1]}" r="10" fill="none" stroke="#181818" stroke-opacity=".25"/>
     <line x1="${last[0]}" x2="${last[0]}" y1="${Y(planNow)}" y2="${last[1]}" stroke="#181818" stroke-width="1"/>
-    ${[0, gi, n - 1].map(i => `<text x="${X(i)}" y="168" font-size="9" text-anchor="${i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle'}" fill="#606060" font-family="Outfit">${L.months[i]}</text>`).join('')}
+    ${[0, gi, n - 1].map(i => `<text x="${X(i)}" y="168" font-size="9" text-anchor="${i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle'}" fill="#606060" font-family="Urbanist">${L.months[i]}</text>`).join('')}
   </svg>` };
 }
 function vGoal() {
