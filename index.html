@@ -99,33 +99,12 @@ svg{display:block}
 .na-wrap{display:grid;gap:8px}
 .na-why{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--g6);padding:0 8px;line-height:1.5}
 .na-why svg{flex:none;margin-top:1px}
-.na-dots{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
-.na-dots i{aspect-ratio:1;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(24,24,24,.15)}
-.na-arrow{color:var(--g6);display:grid;place-items:center}
-.na-legend{display:flex;gap:12px;margin-top:8px;font-size:10px;color:var(--g6);flex-wrap:wrap}
-.na-legend span{display:inline-flex;align-items:center;gap:4px}
-.na-legend i{width:8px;height:8px;border-radius:2px;box-shadow:inset 0 0 0 1px rgba(24,24,24,.15)}
-.na-legend b{font-weight:500;color:var(--ink);font-family:var(--f-num)}
-.na-chips{display:flex;gap:6px;flex-wrap:wrap}
-.na-chips span{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:999px;background:rgba(252,252,252,.7);font-size:12px}
-.na-chips i{width:12px;height:12px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--ink)}
-.na-cmp{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px}
-.na-cmp div{display:grid;gap:4px}
-.na-cmp div:last-child{text-align:right}
-.na-cmp b{font-weight:300;font-family:var(--f-num);font-size:32px;line-height:1}
-.na-cmp div:first-child b{color:var(--g6)}
-.na-steps{display:flex;align-items:center}
-.na-steps span{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;flex:none}
-.na-steps .done{background:var(--ink);color:var(--paper)}
-.na-steps .next{background:var(--aura);box-shadow:inset 0 0 0 1px var(--ink)}
-.na-steps i{flex:1;height:1.5px;background:var(--ink);opacity:.4}
 /* 월말 예상 카드: 여백·라운드·배경은 다른 카드(c-ink)와 같고, 글자 굵기도 다른 카드와 같은 규칙(본문 500, 숫자 Urbanist 300) */
 .proj-card .pc-label{font-size:12px;color:var(--mute);line-height:17px}
-.proj-card .pc-amount{margin-top:8px;height:48px;display:flex;align-items:baseline}
-.proj-card .pc-num{font-family:var(--f-num);font-size:36px;font-weight:300;line-height:48px}
+.proj-card .pc-amount{margin-top:4px;height:44px;display:flex;align-items:baseline}
+.proj-card .pc-num{font-family:var(--f-num);font-size:36px;font-weight:300;line-height:44px}
 .proj-card .pc-unit{font-size:16px;margin-left:9px}
-.proj-card .pc-desc{font-size:12px;line-height:16.8px}
-.proj-card .pc-axis{position:relative;height:50px;margin-top:19px;--bar:#ABD1FF}
+.proj-card .pc-axis{position:relative;height:50px;margin-top:12px;--bar:#ABD1FF}
 .proj-card .pc-axis.over{--bar:#FF9DB8}
 .proj-card .pc-bud{position:absolute;top:0;transform:translateX(-50%);font-size:10px;line-height:14px}
 .proj-card .pc-track{position:absolute;left:0;right:0;top:24.25px;height:1.5px;background:rgba(252,252,252,.45)}
@@ -855,24 +834,16 @@ function vResult(ctx = 'ob') {
 /* =========================================================
    HOME
    ========================================================= */
-// 유형별 다음 행동: 제목 · 한눈에 보이는 작은 그림 · 버튼만 카드에 두고, 유형 설명은 카드 밖 아래 한 줄로
+// 유형별 다음 행동: 제목 한 줄 · 핵심 정보 한 줄 · 버튼만 두고, 유형 설명은 카드 밖 아래 한 줄로
 function nextCard() {
   const P = S.persona;
-  // 점 10개 = 100%. 막대 그래프 대신 점으로 비율을 보여준다
-  const dots = (parts) => `<div class="na-dots">${parts.flatMap(([n, v, bg]) => Array.from({ length:Math.round(v / 10) }, () => `<i style="background:${bg}"></i>`)).join('')}</div>
-    <div class="na-legend">${parts.map(([n, v, bg, lab]) => `<span><i style="background:${bg}"></i>${n} <b class="num">${lab}</b></span>`).join('')}</div>`;
   const c = {
     cog:  S.incomeIn && !S.allocDone
-      ? { t:'외주비 320,000원, 이렇게 나눠요', b:'한 번에 나누기', act:'data-act="sheet" data-sheet="alloc"',
-          v:dots([['독립 자금',50,'linear-gradient(135deg,#FF9DB8,#C8E1FF)','16만'],['비상금',30,'#181818','9.6만'],['자유',20,'#FCFCFC','6.4만']]) }
-      : { t:'배달 예산을 거의 다 썼어요', b:'이번 주 1회로 제한', act:'data-act="toast" data-msg="배달 앱 결제 시 한도 알림을 켰어요"',
-          v:dots([['쓴 금액',90,'linear-gradient(135deg,#C8E1FF,#FF769C)','96,000원 (87%)'],['남은 금액',10,'#FCFCFC','14,000원']]) },
-    low:  { t:'고정 지출 4건만 확인해 주세요', b:'1분 만에 확인', act:'data-act="tab" data-tab="plan"',
-            v:`<div class="na-chips">${['월세','통신비','구독','보험'].map(n => `<span><i></i>${n}</span>`).join('')}</div>` },
-    habit:{ t:'더 높은 금리의 적금이 있어요', b:'비교 보기', act:'data-act="sheet" data-sheet="compare"',
-            v:`<div class="na-cmp"><div><span class="t10 mute">지금 적금</span><b class="num">3.1%</b></div><span class="na-arrow">${ic('arrow', 20)}</span><div><span class="t10 mute">A은행 청년 적금</span><b class="num">4.2%</b></div></div><div class="t10 mute mt8">월 350,000원 · 1년 기준 이자 +21,100원</div>` },
-    self: { t:'필수 설정 끝, 투자로 넓혀요', b:'매주 10,000원 시작', act:'data-act="tab" data-tab="plan"',
-            v:`<div class="na-steps">${['선저축','비상금','예산','고정 지출'].map(n => `<span class="done">${ic('check', 12)}</span>`).join('<i></i>')}<i></i><span class="next">${ic('spark', 12)}</span></div><div class="row between t10 mute mt8"><span>필수 4/4</span><span>다음: 적립식 투자</span></div>` },
+      ? { t:'외주비 320,000원이 들어왔어요', s:'독립 자금 · 비상금 · 자유 5 : 3 : 2로 나눠요', b:'한 번에 나누기', act:'data-act="sheet" data-sheet="alloc"' }
+      : { t:'배달 예산 87% 사용', s:'남은 14,000원 · 이번 주 1회면 충분해요', b:'이번 주 1회로 제한', act:'data-act="toast" data-msg="배달 앱 결제 시 한도 알림을 켰어요"' },
+    low:  { t:'고정 지출 4건만 확인해 주세요', s:'월세 · 통신비 · 구독 · 보험', b:'1분 만에 확인', act:'data-act="tab" data-tab="plan"' },
+    habit:{ t:'금리 4.2% 적금이 있어요', s:'지금 3.1% · 1년 이자 +21,100원', b:'비교 보기', act:'data-act="sheet" data-sheet="compare"' },
+    self: { t:'필수 설정 4/4 완료', s:'다음은 매주 10,000원 적립식 투자', b:'시작하기', act:'data-act="tab" data-tab="plan"' },
   }[P];
   const why = {
     cog:'알지만 실행이 어려운 ‘인지우세형’은 간편하게 실행할 수 있는 행동을 추천해요.',
@@ -883,7 +854,7 @@ function nextCard() {
   return `<div class="na-wrap"><div class="card c-sky na-card">
     <div class="row between"><span class="t12 mute">나에게 맞춘 다음 행동</span><button class="tag ink" data-act="diag" aria-label="내 진단 결과 보기">${PERSONA[P].name} ›</button></div>
     <div class="t16 mt12">${c.t}</div>
-    <div class="mt16">${c.v}</div>
+    <div class="t12 mute mt4">${c.s}</div>
     <button class="btn sm mt16" ${c.act}>${c.b}</button>
   </div><p class="na-why"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5c.8 6.3 3.4 8.9 10 9.8v1.4c-6.6.9-9.2 3.5-10 9.8h-.1c-.8-6.3-3.4-8.9-10-9.8v-1.4c6.6-.9 9.2-3.5 10-9.8z" fill="currentColor"/></svg><span>${why}</span></p></div>`;
 }
@@ -953,26 +924,16 @@ function accountsBlock() {
       <i style="flex:none;width:10px;height:10px;border-radius:3px;margin-top:4px;background:${ACC_FILL[a.k]};${a.k === 'emer' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}"></i>
       <span style="min-width:0"><span class="t12" style="display:block">${a.n} <span class="t10 mute num">${pct(a.a / total)}</span></span><span class="t12 num mute">${W(a.a)}</span></span></div>`).join('')}</div>`;
 }
-// 도넛: 독립 자금 달성률
-function donut(v) {
-  const r = 30, c = 2 * Math.PI * r;
-  return `<svg width="76" height="76" viewBox="0 0 76 76" role="img" aria-label="독립 자금 ${pct(v)} 달성" style="flex:none">
-    <defs><linearGradient id="dnG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF769C"/><stop offset="1" stop-color="#C8E1FF"/></linearGradient></defs>
-    <circle cx="38" cy="38" r="${r}" fill="none" stroke="rgba(24,24,24,.08)" stroke-width="8"/>
-    <circle cx="38" cy="38" r="${r}" fill="none" stroke="url(#dnG)" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(c * v).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 38 38)"/>
-    <text x="38" y="43" text-anchor="middle" font-size="16" font-family="Urbanist" font-weight="300" fill="#181818">${pct(v)}</text></svg>`;
-}
 function vHome() {
   const d = D();
   const axisMin = 600000, axisMax = 900000, ax = v => (v - axisMin) / (axisMax - axisMin) * 100;
   // 월말 예상 (검정 카드) — Figma 시안 값 그대로: 여백 29/27, 라벨 12/400 #8E8E8E, 금액 Urbanist 36/300 + "원 남아요" 16/300,
   // 설명 12/300 흰색 줄간격 16.8, 축은 60만부터 월말 예상 지출까지 6px 막대(오른쪽 끝 둥글게) + 12px 눈금(예산 2px)
-  const under = d.proj >= 0, avg = Math.round(S.spent / S.day / 100) * 100;
+  const under = d.proj >= 0;
   const clampAx = v => Math.max(0, Math.min(100, ax(v)));
   const proj = `<div class="card c-ink proj-card">
       <div class="pc-label">지금 속도로 쓰면 10월 말에</div>
       <div class="pc-amount"><span class="pc-num">${won(Math.abs(d.proj))}</span> <span class="pc-unit">원 ${under ? '남아요' : '초과예요'}</span></div>
-      <p class="pc-desc">하루 평균 ${W(avg)}씩 쓰는 중이므로<br>월말 예상 지출은 ${W(d.projSpend)} / 예산 ${W(S.budget)}이 돼요</p>
       <div class="pc-axis ${under ? 'under' : 'over'}" role="img" aria-label="월말 예상 지출 ${won(d.projSpend)}원, 예산 ${won(S.budget)}원, ${won(Math.abs(d.proj))}원 ${under ? '남음' : '초과'}">
         <span class="pc-bud" style="left:${ax(S.budget)}%">예산</span>
         <i class="pc-track"></i>
@@ -984,8 +945,8 @@ function vHome() {
   const goalAndSpend = `<div class="grid2">
       <button class="card c-aura" data-act="tab" data-tab="goal" style="text-align:left;display:grid;gap:16px">
         <span class="t12 mute">독립 자금</span>
-        ${donut(d.goal)}
-        <span class="t10 mute num">${man(S.goalSaved)} / 500만 원</span>
+        <span class="n32">${pct(d.goal)}</span>
+        <div class="glowbar"><i style="width:${d.goal * 100}%"></i></div>
       </button>
       <button class="card c-paper" data-act="tab" data-tab="spend" style="text-align:left;display:grid;gap:16px">
         <span class="t12 mute">10월 누적 지출</span>
