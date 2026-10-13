@@ -342,6 +342,19 @@ svg{display:block}
 .setrow{display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center}
 .stepper{display:flex;align-items:center;gap:8px}
 .stepper button{width:28px;height:28px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--line);font-size:14px;display:grid;place-items:center}
+.ledcal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.ledcal .wd{font-size:10px;color:var(--mute);text-align:center;padding-bottom:4px}
+.ld{aspect-ratio:1/1.08;border-radius:12px;display:flex;flex-direction:column;justify-content:space-between;padding:6px 0 6px 7px;text-align:left;background:var(--g2);color:#181818}
+.ld b{font-family:var(--f-num);font-weight:400;font-size:11px;line-height:1}
+.ld i{font-style:normal;font-size:9px;line-height:1;color:rgba(24,24,24,.62)}
+.ld.fut{background:none;box-shadow:inset 0 0 0 1px rgba(128,128,128,.18)}.ld.fut b{color:var(--mute)}
+.ld.l0{background:#FCFCFC;box-shadow:inset 0 0 0 1px rgba(24,24,24,.08)}
+.ld.l1,.lg.l1{background:#E6F0FD}.ld.l2,.lg.l2{background:#C8E1FF}.ld.l3,.lg.l3{background:#FFC4D4}.ld.l4,.lg.l4{background:#FF8FAE}
+.ld.today{box-shadow:inset 0 0 0 1.5px #181818}
+.ld.sel{box-shadow:0 0 0 2px var(--fg);position:relative;z-index:1}
+.lg{display:inline-block;width:12px;height:12px;border-radius:4px}
+.lrow{display:grid;grid-template-columns:36px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(128,128,128,.18)}
+.lrow:last-child{border-bottom:0}.lrow .ib{width:36px;height:36px;background:rgba(128,128,128,.16);color:inherit}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);row-gap:8px;justify-items:center}
 .cal .wd{font-size:10px;color:var(--mute);padding-bottom:4px}
 .cal .d{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-num);font-size:13px;font-variant-numeric:tabular-nums}
@@ -556,7 +569,7 @@ const MONTH_ITEMS = [ // 9월
   { c:'구독', q:4, a:45000, d:0 },
   { c:'자기계발', q:1, a:40000, d:0 },
 ];
-const WEEK_DAYS = [['MON','월',21500],['TUE','화',0],['WED','수',34800],['THU','목',21700],['FRI','금',48000],['SAT','토',25500],['SUN','일',11500]];
+const WEEK_DAYS = [['MON','월',21500],['TUE','화',0],['WED','수',34800],['THU','목',21700],['FRI','금',48000],['SAT','토',25000],['SUN','일',12000]];
 const WEEK_ITEMS = [
   { c:'배달', q:3, a:62000, d:15000 }, { c:'쇼핑', q:2, a:35000, d:-18000 }, { c:'기타', q:5, a:27000, d:-7000 },
   { c:'카페·간식', q:9, a:21000, d:-4000 }, { c:'교통', q:10, a:18000, d:2000 },
@@ -572,10 +585,22 @@ const SUGG = [
   { id:'s4', c:'구독', t:'겹치는 OTT 하나 해지', sub:'OTT 2개 · 13,500원 / 14,500원', save:13500 },
 ];
 const KEEPABLE = ['배달','쇼핑','카페·간식','구독','여행','자기계발','경조사'];
-const CAT_IC = { '배달':'bag', '쇼핑':'cart', '카페·간식':'coffee', '교통':'bus', '기타':'receipt' };
+const CAT_IC = { '배달':'bag', '외식':'bag', '쇼핑':'cart', '카페·간식':'coffee', '교통':'bus', '기타':'receipt' };
 const CUT_CAT = { s1:'배달', s2:'쇼핑', s3:'카페·간식' };
 // 10월 일별 지출 (1–11일) · 하루 예산 800,000 / 31 ≈ 25,800
-const OCT_DAILY = [38000,0,41000,38000,21500,0,34800,21700,48000,25500,11500];
+const OCT_DAILY = [38000,0,41000,38000,21500,0,34800,21700,48000,25000,12000];
+// 10월 일별 결제 내역 (가계부) — [시간, 사용처, 카테고리, 금액, 메모]. 날짜별 합계 = OCT_DAILY
+const OCT_TX = {
+  1:[['08:42','지하철','교통',2800],['09:10','스타벅스','카페·간식',5800],['19:30','배달의민족 · 치킨','배달',23000],['22:15','GS25','카페·간식',6400]],
+  3:[['12:20','성수 브런치','외식',16500],['14:05','카페 어니언','카페·간식',6500],['16:40','무신사','쇼핑',18000]],
+  4:[['13:10','올리브영','쇼핑',14200],['18:50','요기요 · 마라탕','배달',19500],['21:30','CU','카페·간식',4300]],
+  5:[['08:35','지하철 · 버스','교통',4200],['08:50','편의점 커피','카페·간식',2100],['12:30','회사 앞 백반','외식',9000],['15:20','메가커피','카페·간식',2000],['18:40','따릉이','교통',1000],['19:10','다이소','기타',3200]],
+  7:[['08:38','지하철','교통',2800],['08:52','편의점 커피','카페·간식',2100],['13:00','쿠팡 · 생필품','쇼핑',8900],['20:10','배달의민족 · 떡볶이','배달',21000]],
+  8:[['08:55','편의점 커피','카페·간식',2100],['12:25','김밥 · 라면','외식',9500],['22:40','택시 기본요금','교통',4800],['23:10','코인노래방','기타',5300]],
+  9:[['08:40','지하철','교통',2800],['08:51','편의점 커피','카페·간식',2100],['16:00','디저트 카페','카페·간식',3100],['19:40','망원동 저녁 · 4인 결제','외식',40000,'dutch']],
+  10:[['14:30','카페','카페·간식',4000],['19:00','배달의민족 · 피자','배달',21000]],
+  11:[['23:20','택시 동승 · 2인 결제','교통',12000,'dutch']],
+};
 const ACCOUNTS = [
   { n:'적금', a:5000000, k:'save' }, { n:'투자', a:2500000, k:'inv' }, { n:'독립 자금', a:2300000, k:'goal' },
   { n:'생활비', a:1240000, k:'life' }, { n:'비상금', a:1100000, k:'emer' }, { n:'경조사비', a:260000, k:'evt' },
@@ -600,7 +625,7 @@ const S = {
   tab:'home', persona:'cog',
   spent:280000, budget:800000, day:12, days:31,
   settled:false, incomeIn:true, allocDone:false, alloc:'bal',
-  spendView:'analysis', planView:'budget', period:'month', keeps:new Set(['여행','자기계발','경조사']), applied:new Set(),
+  spendView:'list', planView:'budget', ledDay:12, period:'month', keeps:new Set(['여행','자기계발','경조사']), applied:new Set(),
   fixedSet:false, ratioOk:false, ratioEdit:false,
   cat:{ '식비':250000, '배달':150000, '카페·간식':100000, '교통':90000, '쇼핑':120000, '기타':90000 },
   goalSaved:2300000, emergency:1100000, wAmt:200000,
@@ -1176,13 +1201,47 @@ function diverging() {
       <text x="${up ? mid + w + 6 : mid - w - 6}" y="${y + 12}" font-size="10" font-family="Urbanist" fill="#181818" text-anchor="${up ? 'start' : 'end'}">${up ? '+' : '−'}${man(Math.abs(i.d))}</text>`; }).join('')}
   </svg>`;
 }
+/* 내역: 10월 지출 히트맵 달력 + 날짜별 결제 내역 (가계부) */
+function vLedger() {
+  const lim = Math.round(S.budget / S.days / 100) * 100;            // 하루 예산 ≈ 25,800원
+  const amt = d => d <= 11 ? OCT_DAILY[d - 1] : d === 12 ? 0 : null;
+  const lv = a => a == null ? 'fut' : a === 0 ? 'l0' : a <= lim / 2 ? 'l1' : a <= lim ? 'l2' : a <= lim * 1.5 ? 'l3' : 'l4';
+  const short = a => a >= 10000 ? (a / 10000).toFixed(1).replace(/\.0$/, '') + '만' : (a / 1000).toFixed(1).replace(/\.0$/, '') + '천';
+  const zeroN = OCT_DAILY.filter(a => a === 0).length, overN = OCT_DAILY.filter(a => a > lim).length;
+  const cells = ['일','월','화','수','목','금','토'].map(w => `<span class="wd">${w}</span>`).join('') + '<span></span>'.repeat(4)
+    + Array.from({ length:31 }, (_, i) => { const d = i + 1, a = amt(d), sel = S.ledDay === d;
+      return a == null ? `<span class="ld fut"><b>${d}</b></span>`
+        : `<button class="ld ${lv(a)}${sel ? ' sel' : ''}${d === 12 ? ' today' : ''}" data-act="ledDay" data-v="${d}" aria-pressed="${sel}" aria-label="10월 ${d}일 ${a ? won(a) + '원' : '무지출'}"><b>${d}</b><i>${a ? short(a) : d === 12 ? '오늘' : '무지출'}</i></button>`; }).join('');
+  const d = S.ledDay, a = amt(d), tx = OCT_TX[d] || [], wd = ['일','월','화','수','목','금','토'][(d + 3) % 7];
+  const diff = a - lim;
+  const rows = tx.map(([t, n, c, v, memo]) => `<div class="lrow"><span class="ib">${ic(CAT_IC[c] || 'receipt', 18)}</span>
+      <div><div class="t14">${n}</div><div class="t10 mute">${t} · ${c}${memo === 'dutch' ? ` · ${S.settled ? '더치페이 정산 완료' : '더치페이 받을 돈 있음'}` : ''}</div></div>
+      <span class="t14 num">${won(v)}원</span></div>`).join('');
+  return `<section class="mt16">
+    <div class="card c-paper">
+      <div class="row between"><div><div class="t12 mute">10월 생활비 지출</div><div class="row g8 mt4" style="align-items:baseline"><span class="n24">${won(S.spent)}</span><span class="cur t12">₩</span></div></div>
+        <div class="t10 mute" style="text-align:right;line-height:1.6">무지출 ${zeroN}일<br>하루 예산 초과 ${overN}일</div></div>
+      <div class="ledcal mt16" role="group" aria-label="10월 지출 달력">${cells}</div>
+      <div class="row between mt16 t10 mute"><span>하루 예산 ${won(lim)}원 기준</span>
+        <span class="row g4">적게<i class="lg l1"></i><i class="lg l2"></i><i class="lg l3"></i><i class="lg l4"></i>많이</span></div>
+    </div>
+  </section>
+  <section class="sec">
+    <div class="sec-h"><div><div class="t12 mute">10월 ${d}일 ${wd}요일${d === 12 ? ' · 오늘' : ''}</div><div class="t18">${a ? won(a) + '원' : d === 12 ? '아직 쓴 돈이 없어요' : '무지출 데이'}</div></div>
+      ${a ? `<span class="tag ${diff > 0 ? 'dash' : 'line'}">하루 예산보다 ${won(Math.abs(diff))}원 ${diff > 0 ? '더' : '덜'}</span>` : ''}</div>
+    ${tx.length ? `<div class="card c-paper" style="padding:8px 20px">${rows}</div>`
+      : `<div class="card c-paper"><p class="t14">${d === 12 ? `오늘 쓸 수 있는 돈은 ${W(D().daily)}이에요.` : '✦ 이날은 한 푼도 쓰지 않았어요.'}</p></div>`}
+    <p class="t10 mute mt12">계좌·카드 결제를 자동으로 기록해요. 월세 같은 고정 지출과 내 계좌 간 이체는 빠져 있어요.</p>
+  </section>`;
+}
 function vSpend() {
-  const m = S.period === 'month', an = S.spendView === 'analysis';
+  const m = S.period === 'month', an = S.spendView === 'analysis', ls = S.spendView === 'list';
   const rep = REPEATS[S.period], repSum = rep.reduce((s, r) => s + r.k * r.u, 0);
   const head = `<header class="top"><div><div class="t18">지출</div><div class="t12 mute">계좌·카드 연동으로 자동 기록돼요</div></div><button class="ib" style="box-shadow:inset 0 0 0 1px #3a3a3a" data-act="sheet" data-sheet="settle" aria-label="정산·대리 결제 정리">${ic('users', 20)}</button></header>
-    <div class="seg mt16" role="tablist"><button class="${an ? 'on' : ''}" data-act="sv" data-v="analysis">분석</button><button class="${an ? '' : 'on'}" data-act="sv" data-v="report">리포트</button></div>
-    <div class="row between mt12"><div class="row g8"><button class="chip ${m ? '' : 'on'}" data-act="period" data-v="week">주간</button><button class="chip ${m ? 'on' : ''}" data-act="period" data-v="month">월간</button></div>
-    ${an ? '' : `<button class="btn sm" data-act="print" data-v="pReport">${ic('receipt', 18)} 영수증 출력</button>`}</div>`;
+    <div class="seg mt16" role="tablist">${[['list','내역'],['analysis','분석'],['report','리포트']].map(([k, n]) => `<button class="${S.spendView === k ? 'on' : ''}" data-act="sv" data-v="${k}" role="tab" aria-selected="${S.spendView === k}">${n}</button>`).join('')}</div>
+    ${ls ? '' : `<div class="row between mt12"><div class="row g8"><button class="chip ${m ? '' : 'on'}" data-act="period" data-v="week">주간</button><button class="chip ${m ? 'on' : ''}" data-act="period" data-v="month">월간</button></div>
+    ${an ? '' : `<button class="btn sm" data-act="print" data-v="pReport">${ic('receipt', 18)} 영수증 출력</button>`}</div>`}`;
+  if (ls) return head + vLedger();
   if (!an) return head + printer('pReport', receiptReport()) + `<p class="t12 mute mt16" style="text-align:center">영수증은 매주 월요일, 매월 1일에 자동 발행돼요</p>`;
   return head + `
     <section class="mt16">${topSpend()}</section>
@@ -1693,6 +1752,7 @@ document.addEventListener('click', e => {
     case 'alloc': S.alloc = v; render(); refreshSheet(); break;
     case 'allocDo': { const r = { bal:.5, save:.7, free:.3 }[S.alloc]; S.allocDone = true; S.naSwap = true; S.incomeIn = false; S.emergency += 320000 * ({ bal:.3, save:.2, free:.2 }[S.alloc]); closeSheet(); goalBump(320000 * r, '외주비 배분 완료'); break; }
     case 'sv': S.spendView = v; render(false); break;
+    case 'ledDay': S.ledDay = +v; render(false); break;
     case 'period': S.period = v; S.topSel = null; render(); break;
     case 'print': reprint(v); break;
     case 'keep': S.keeps.has(v) ? S.keeps.delete(v) : S.keeps.add(v); render(); break;
@@ -1744,7 +1804,7 @@ document.querySelector('#aiDock [type="submit"]').innerHTML = ic('send', 20);
 /* ---------- side panel ---------- */
 function renderPanel() {
   const cur = S.mode === 'onboard' ? 'ob' + S.ob : S.sub === 'diag' ? 'diag' : S.tab === 'spend' ? 'spend-' + S.spendView : S.tab === 'plan' ? 'plan-' + S.planView : S.tab;
-  const sc = [ ['ob0','진단 시작'], ['ob1','자기평가'], ['ob2','진단 문항'], ['ob3','진단 결과'], ['diag','내 진단 결과'], ['home','홈'], ['spend-analysis','지출 · 분석'], ['spend-report','지출 · 리포트'], ['plan-budget','플랜 · 예산'], ['plan-bank','플랜 · 통장'], ['plan-rule','플랜 · 자동 규칙'], ['goal','목표'], ['benefit','혜택'] ];
+  const sc = [ ['ob0','진단 시작'], ['ob1','자기평가'], ['ob2','진단 문항'], ['ob3','진단 결과'], ['diag','내 진단 결과'], ['home','홈'], ['spend-list','지출 · 내역'], ['spend-analysis','지출 · 분석'], ['spend-report','지출 · 리포트'], ['plan-budget','플랜 · 예산'], ['plan-bank','플랜 · 통장'], ['plan-rule','플랜 · 자동 규칙'], ['goal','목표'], ['benefit','혜택'] ];
   document.getElementById('navScreens').innerHTML = sc.map(([k, n]) => `<button type="button" class="${cur === k ? 'on' : ''}" data-go="${k}">${n}</button>`).join('');
   document.getElementById('navPersona').innerHTML = Object.entries(PERSONA).map(([k, p]) => `<button type="button" class="${S.persona === k ? 'on' : ''}" data-persona="${k}">${p.name}</button>`).join('');
   document.getElementById('navScen').innerHTML = [ ['pay','결제 발생 → 실시간 피드백'], ['income','외주비 입금 → 배분'], ['settle','더치페이 정산'], ['withdraw','저축 인출 확인'], ['ai','AI 조언 묻기'] ].map(([k, n]) => `<button type="button" data-scen="${k}">${n}</button>`).join('');
