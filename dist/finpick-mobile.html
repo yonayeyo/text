@@ -234,12 +234,12 @@ svg{display:block}
 .ai-dock:not(.open){width:56px}
 .ai-dock:not(.open) > :not(.ai-fab){display:none}
 .ai-dock.open .ai-fab{display:none}
-.ai-fab{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:var(--ink)}
+.ai-fab{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:var(--paper)}
 .ai-dock:not(.open)::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;
-  background:linear-gradient(120deg,#C8E1FF,#FF769C,#FCFCFC,#C8E1FF) 0 0/300% 300%;
+  background:linear-gradient(120deg,#FF769C,#C8E1FF,#FF769C,#FFB3C7,#FF769C) 0 0/300% 300%;
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
   animation:aiGlint 4s linear infinite}
-.ai-dock:not(.open){box-shadow:0 4px 16px rgba(200,225,255,.45),0 0 10px rgba(255,118,156,.18)}
+.ai-dock:not(.open){background:var(--ink);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:inset 0 0 12px rgba(0,0,0,.6),0 4px 14px rgba(255,118,156,.22)}
 @keyframes aiGlint{to{background-position:300% 0}}
 @media (prefers-reduced-motion:reduce){.ai-dock::before{animation:none}.ai-dock{transition:none}}
 
@@ -510,6 +510,7 @@ const IC = {
   close:'<path d="M6 6l12 12M18 6 6 18"/>',
   lock:'<rect x="5" y="10" width="14" height="10" rx="2.5"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10"/>',
   users:'<circle cx="9" cy="8" r="3.2"/><path d="M3 19c.8-3.2 3.2-5 6-5s5.2 1.8 6 5M16 5a3 3 0 0 1 0 6M18 14c1.6.6 2.6 2.4 3 5"/>',
+  aichat:'<path d="M10.5 6.5A7 7 0 1 1 5.55 18.45L3.2 20.6l.72-4.71A7 7 0 0 1 10.5 6.5z"/><path d="M8.2 13.6h.01M12.8 13.6h.01" stroke-width="2.4"/><path d="M18.6 1.8c.32 2.2 1.18 3.06 3.4 3.4-2.22.32-3.08 1.18-3.4 3.4-.32-2.22-1.18-3.08-3.4-3.4 2.22-.34 3.08-1.2 3.4-3.4z" fill="currentColor"/>',
   spark:'<path d="M12 3c.6 4.6 2.4 6.4 7 7-4.6.6-6.4 2.4-7 7-.6-4.6-2.4-6.4-7-7 4.6-.6 6.4-2.4 7-7z"/>',
   refresh:'<path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/>',
   link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
@@ -1833,7 +1834,7 @@ document.addEventListener('click', e => {
 function ask(q) { if (!q.trim()) return; const r = aiAnswer(q); S.chat.push({ q }, r); if (S.chat.length > 6) S.chat = S.chat.slice(-6); openSheet('ai'); const sh = document.getElementById('sheet'); sh.scrollTop = sh.scrollHeight; }
 document.getElementById('aiDock').addEventListener('submit', e => { e.preventDefault(); const i = document.getElementById('aiInput'); ask(i.value || '오늘 얼마 더 써도 돼?'); i.value = ''; aiDock(false); });
 document.querySelector('#aiDock [data-act="mic"]').innerHTML = ic('mic', 20);
-document.querySelector('#aiDock .ai-fab').innerHTML = ic('spark', 22);
+document.querySelector('#aiDock .ai-fab').innerHTML = ic('aichat', 26);
 // 펼친 입력창은 비어 있는 채로 포커스를 잃거나 질문을 보내면 다시 원형 버튼으로 접는다
 function aiDock(open) { const d = document.getElementById('aiDock'); d.classList.toggle('open', open); d.querySelector('.ai-fab').setAttribute('aria-expanded', open); if (open) setTimeout(() => document.getElementById('aiInput').focus(), 60); }
 document.getElementById('aiDock').addEventListener('focusout', () => setTimeout(() => { const d = document.getElementById('aiDock'); if (!d.contains(document.activeElement) && !document.getElementById('aiInput').value) aiDock(false); }, 120));
