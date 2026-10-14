@@ -85,6 +85,12 @@ svg{display:block}
   -webkit-mask-image:linear-gradient(transparent,rgba(0,0,0,.55) 70%,#000);mask-image:linear-gradient(transparent,rgba(0,0,0,.55) 70%,#000);opacity:.55}
 .screen.dark .halftone{background-image:radial-gradient(circle,#FCFCFC 1px,transparent 1.4px);opacity:.25}
 .screen.nonav .halftone{display:none}
+/* 도트 무늬는 화면에 고정하지 않고 스크롤 맨 끝(콘텐츠 아래)에 붙인다 */
+.halftone{display:none}
+.ht-end{margin:0 calc(-1 * var(--m));pointer-events:none;
+  background-image:radial-gradient(circle,var(--ink) 1.1px,transparent 1.5px);background-size:5px 5px;
+  -webkit-mask-image:linear-gradient(transparent,rgba(0,0,0,.55) 55%,#000);mask-image:linear-gradient(transparent,rgba(0,0,0,.55) 55%,#000);opacity:.55}
+.screen.dark .ht-end{background-image:radial-gradient(circle,#FCFCFC 1px,transparent 1.4px);opacity:.25}
 .keeps{display:grid;gap:4px}
 .keeps .kr{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;min-height:40px}
 .pick{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 1.5px var(--g4);flex:none}
@@ -418,8 +424,19 @@ svg{display:block}
 .lrow:last-child{border-bottom:0}.lrow .ib{width:36px;height:36px;background:rgba(128,128,128,.16);color:inherit}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);row-gap:8px;justify-items:center}
 /* 챌린지 달력: 칸 = 날짜, 아래 점 = 참여한 챌린지별 성공(흰 점) */
-.ms-card{background:#EBEBEA;box-shadow:none}
-.ms-box{border-radius:20px;padding:14px 16px;background:#FCFCFC}.ms-box.now{background:var(--sky)}
+.ms-box{border-radius:20px;padding:14px 16px;background:var(--g2)}.ms-box.now{background:var(--sky)}
+.sb{position:relative;padding-top:34px}
+.sb-row{display:flex;gap:4px}
+.sb-seg{min-width:0}
+.sb-track{height:12px;border-radius:999px;background:var(--g2);overflow:hidden;position:relative}
+.sb-track.done{background:#181818}
+.sb-track i{position:absolute;inset:0 auto 0 0;border-radius:999px;background:linear-gradient(90deg,#C8E1FF,#FF769C)}
+.sb-amt{margin-top:8px;font-family:var(--f-num);font-size:12px;text-align:right;color:var(--ink)}
+.sb-name{margin-top:2px;font-size:10px;color:var(--g4);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-name.now{color:var(--ink)}
+.sb-now{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.sb-now span{font-size:11px;font-weight:600;background:#181818;color:#FCFCFC;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.sb-now::after{content:"";width:1.5px;height:8px;background:#181818}
 .ccal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px 4px}
 .ccal .wd{font-size:10px;color:var(--mute);text-align:center}
 .ccal .cd{height:46px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:#2A2A2A}
@@ -1564,63 +1581,19 @@ function vPlan() {
    GOAL (목표 · 챌린지)
    ========================================================= */
 /* 중간 목표 길: 아래 왼쪽에서 위 오른쪽으로 오르는 한 줄의 길 위에 단계 점을 찍고, 지금 위치까지 길을 색으로 채운다 */
-function milestones(saved) {
-  // 길 모양은 참고 곡선 그대로: 0에서 가파르게 올라 언덕 → 완만히 내려가 골짜기 → 끝까지 가파르게 오른다
-  const sx = .168, sy = .158, X = x => 18 + x * sx, Y = y => 12 + y * sy;   // 원본 1550×1440 좌표 → 화면 좌표
-  const SEG = [[[0, 1440], [140, 1000], [290, 783], [405, 783]], [[405, 783], [560, 783], [700, 963], [860, 963]], [[860, 963], [1100, 950], [1350, 450], [1550, 0]]]
-    .map(b => b.map(([x, y]) => [X(x), Y(y)]));
-  const bez = (b, t) => { const m = 1 - t; return [0, 1].map(k => m * m * m * b[0][k] + 3 * m * m * t * b[1][k] + 3 * m * t * t * b[2][k] + t * t * t * b[3][k]); };
-  // 길이 기준으로 고르게 샘플링 → 금액 비율만큼 길 위의 위치를 찾는다 (시작점 = 0원, 끝점 = 목표 금액)
-  const pts = SEG.flatMap((b, i) => Array.from({ length:120 }, (_, j) => bez(b, j / 120)).concat(i === SEG.length - 1 ? [b[3]] : []));
-  const len = [0]; for (let i = 1; i < pts.length; i++) len.push(len[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
-  const L = len[len.length - 1], goal = STAGES[STAGES.length - 1].a;
-  const idxAt = d => { let i = len.findIndex(v => v >= d); return i < 0 ? pts.length - 1 : i; };
-  const f = v => v.map(n => n.toFixed(1)).join(' ');
-  const poly = k => 'M' + pts.slice(0, k + 1).map(f).join('L');
-  const road = poly(pts.length - 1);
-  const P = STAGES.map(st => pts[idxAt(L * st.a / goal)]);
+/* 중간 목표 막대: 단계마다 금액 구간만큼 폭을 나눈 한 줄 막대. 지난 단계 = 검정, 지금 단계 = 채운 만큼 그라데이션, 남은 단계 = 회색 */
+function stageBar(saved) {
+  const goal = STAGES[STAGES.length - 1].a;
   let cur = STAGES.findIndex(s => saved < s.a); if (cur < 0) cur = STAGES.length - 1;
-  // 지금 위치. 다음 단계 점과 겹치지 않게 최소 26px 앞에서 멈춘다
-  let k = idxAt(L * Math.min(saved, goal) / goal);
-  while (k > 0 && Math.hypot(pts[k][0] - P[cur][0], pts[k][1] - P[cur][1]) < 26) k--;
-  const now = pts[k], done = poly(k);
-  // '지금' 라벨은 길의 오른쪽 아래 바깥(진행 방향의 수직)에. 오른쪽 끝에 닿으면 왼쪽 위로
-  const a0 = pts[Math.max(0, k - 3)], a1 = pts[Math.min(pts.length - 1, k + 3)], tx = a1[0] - a0[0], ty = a1[1] - a0[1], tl = Math.hypot(tx, ty) || 1;
-  let lab = [now[0] - ty / tl * 26, now[1] + tx / tl * 26 + 5, 'start'];
-  if (lab[0] + 80 > 300) lab = [now[0] + ty / tl * 26, now[1] - tx / tl * 26 + 5, 'end'];
-  lab = [+lab[0].toFixed(1), +lab[1].toFixed(1), lab[2]];
-  const nodes = STAGES.map((st, i) => { const [x, y] = P[i], ok = saved >= st.a, last = i === STAGES.length - 1;
-    return `${ok ? `<circle cx="${x}" cy="${y}" r="7.5" fill="#181818"/>` : `<circle cx="${x}" cy="${y}" r="${last ? 10 : 8.5}" fill="#FCFCFC" stroke="#181818" stroke-width="2"/>`}
-      <text x="${last ? x - 16 : x}" y="${last ? y + 4 : y - 18}" text-anchor="${last ? 'end' : 'middle'}" font-size="11" font-family="Urbanist" fill="#7A7A7A">${man(st.a)}</text>
-      ${ok && Math.hypot(x - now[0], y - now[1]) > 60 ? `<text x="${x - 6}" y="${y + 26}" font-size="11" fill="#7A7A7A">${i + 1} ${st.n}</text>` : ''}`; }).join('');
-  return `<svg viewBox="0 0 300 262" width="100%" role="img" aria-label="중간 목표 ${STAGES.length}단계 중 ${cur + 1}단계, 지금 ${man(saved)}">
-    <defs><linearGradient id="msG" gradientUnits="userSpaceOnUse" x1="${pts[0][0]}" y1="${pts[0][1]}" x2="${now[0]}" y2="${now[1]}"><stop offset="0" stop-color="#C9C6F5"/><stop offset="1" stop-color="#F4A3BF"/></linearGradient>
-    <filter id="msB" filterUnits="userSpaceOnUse" x="0" y="0" width="300" height="262"><feGaussianBlur stdDeviation="7"/></filter>
-    <radialGradient id="msN"><stop offset="0" stop-color="#E7A6FF" stop-opacity=".7"/><stop offset="1" stop-color="#E7A6FF" stop-opacity="0"/></radialGradient></defs>
-    <path d="${road}" fill="none" stroke="#FCFCFC" stroke-width="28" stroke-linecap="round"/>
-    ${k ? `<path d="${done}" fill="none" stroke="url(#msG)" stroke-width="22" stroke-linecap="round" filter="url(#msB)" opacity=".9"/>
-    <path d="${done}" fill="none" stroke="url(#msG)" stroke-width="14" stroke-linecap="round" opacity=".85"/>` : ''}
-    <circle cx="${pts[0][0]}" cy="${pts[0][1]}" r="4" fill="#181818"/><text x="${pts[0][0] + 12}" y="${pts[0][1] + 4}" font-size="11" font-family="Urbanist" fill="#7A7A7A">0</text>
-    ${nodes}
-    <circle cx="${now[0]}" cy="${now[1]}" r="22" fill="url(#msN)"/>
-    <circle cx="${now[0]}" cy="${now[1]}" r="12" fill="#FCFCFC"/><circle cx="${now[0]}" cy="${now[1]}" r="8" fill="#181818"/>
-    <text x="${lab[0]}" y="${lab[1]}" text-anchor="${lab[2]}" font-size="13" font-weight="600" fill="#181818">지금 ${man(saved)}</text></svg>`;
-}
-function stairs(saved) {
-  const W_ = 305, base = 176, sw = (W_ - 12) / 4;
-  let cur = STAGES.findIndex(s => saved < s.a); if (cur < 0) cur = 3;
-  return `<svg viewBox="0 0 305 200" width="100%" role="img" aria-label="중간 목표 4단계 중 ${cur + 1}단계 진행 중">
-    <defs><linearGradient id="st" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#C8E1FF"/><stop offset="1" stop-color="#FF769C"/></linearGradient></defs>
-    ${STAGES.map((s, i) => { const h = 30 + i * 32, x = i * (sw + 4), y = base - h; const prev = i ? STAGES[i - 1].a : 0;
-      const p = Math.max(0, Math.min(1, (saved - prev) / (s.a - prev)));
-      const done = i < cur, now = i === cur;
-      return `<rect x="${x}" y="${y}" width="${sw}" height="${h}" rx="16" fill="${done ? '#181818' : 'none'}" stroke="${done ? 'none' : '#9C9C9C'}" ${done ? '' : 'stroke-dasharray="3 3"'}/>
-        ${now ? `<clipPath id="sc${i}"><rect x="${x}" y="${y}" width="${sw}" height="${h}" rx="16"/></clipPath><rect x="${x}" y="${y + h * (1 - p)}" width="${sw}" height="${h * p}" fill="url(#st)" clip-path="url(#sc${i})"/>` : ''}
-        <text x="${x + 10}" y="${y - 22}" font-size="10" fill="${now ? '#181818' : '#606060'}">${i + 1}단계${now ? ' · 지금' : ''}</text>
-        <text x="${x + 10}" y="${y - 8}" font-size="12" font-family="Urbanist" fill="#181818">${man(s.a)}</text>
-        <text x="${x + sw / 2}" y="${base + 18}" font-size="10" text-anchor="middle" fill="#606060">${s.n}</text>
-        ${done ? `<path d="M${x + sw / 2 - 6} ${base - 14} l4 4 8-8" stroke="#FCFCFC" stroke-width="1.5" fill="none"/>` : ''}`; }).join('')}
-  </svg>`;
+  const segs = STAGES.map((st, i) => { const from = i ? STAGES[i - 1].a : 0, w = (st.a - from) / goal * 100;
+    const fill = Math.max(0, Math.min(1, (saved - from) / (st.a - from)));
+    return `<div class="sb-seg" style="flex:${w} 1 0">
+      <div class="sb-track ${fill >= 1 ? 'done' : ''}">${fill > 0 && fill < 1 ? `<i style="width:${fill * 100}%"></i>` : ''}</div>
+      <div class="sb-amt num">${man(st.a)}</div><div class="sb-name ${i === cur ? 'now' : ''}">${i + 1} ${st.n}</div></div>`; }).join('');
+  const nowX = Math.min(100, saved / goal * 100);
+  return `<div class="sb" role="img" aria-label="중간 목표 ${STAGES.length}단계 중 ${cur + 1}단계, 지금 ${man(saved)}">
+    <div class="sb-now" style="left:${nowX}%"><span>지금 ${man(saved)}</span></div>
+    <div class="sb-row">${segs}</div></div>`;
 }
 function planActual() {
   const L = GOAL_LINE, n = L.months.length, X = i => 40 + i / (n - 1) * 258, Y = v => 150 - v / 5000000 * 130;
@@ -1737,10 +1710,9 @@ function vGoal() {
   ${indep ? `
   <section class="sec">
     <div class="sec-h"><div><div class="t18">지금 ${ms.cur + 1}단계, 다음은 ${ms.next ? ms.next.n : '목표 달성'}</div><div class="sec-d">중간 목표 · ${STAGES[ms.cur].n}까지 ${W(Math.max(0, STAGES[ms.cur].a - saved))} 남았어요</div></div></div>
-    <div class="card ms-card">
-      <div class="row between"><span class="t14">단계별 길</span><span class="t12 mute">${STAGES.length}단계 중 ${ms.cur + 1}단계</span></div>
-      <div class="mt8">${milestones(saved)}</div>
-      <div class="grid2 mt12" style="gap:8px">
+    <div class="card c-paper">
+      ${stageBar(saved)}
+      <div class="grid2 mt24" style="gap:8px">
         <div class="ms-box now"><div class="t12 mute">지금 단계</div><div class="t14 mt4">${ms.cur + 1} · ${STAGES[ms.cur].n}</div><div class="t10 mute mt4">${man(STAGES[ms.cur].a)} · ${ms.due}까지</div></div>
         <div class="ms-box"><div class="t12 mute">다음 단계</div><div class="t14 mt4">${ms.next ? `${ms.cur + 2} · ${ms.next.n}` : '목표 달성'}</div><div class="t10 mute mt4">${ms.next ? `${man(ms.next.a)} · 월 35만 자동이체` : ''}</div></div>
       </div>
@@ -1938,7 +1910,8 @@ function render(keepScroll = true) {
   const dock = document.getElementById('aiDock');
   dock.hidden = !(S.mode === 'app' && !S.sub && (S.tab === 'plan' || (S.tab === 'spend' && S.spendView === 'analysis')));
   if (dock.hidden) aiDock(false);
-  view.style.paddingBottom = S.mode === 'onboard' || S.sub ? (S.ob === 3 || S.sub ? '0' : '24px') : dock.hidden ? '140px' : '200px';
+  view.style.paddingBottom = S.mode === 'onboard' || S.sub ? (S.ob === 3 || S.sub ? '0' : '24px') : '0';
+  if (S.mode === 'app' && !S.sub) { const h = document.createElement('div'); h.className = 'ht-end'; h.style.height = (dock.hidden ? 140 : 200) + 'px'; h.style.marginTop = '24px'; view.append(h); view.scrollTop = st; }
   renderPanel();
 }
 // Safari는 theme-color 값 변경만으로는 상단 색을 다시 칠하지 않을 때가 있어, 태그를 새로 넣고 고정 레이어 배경도 함께 바꾼다
