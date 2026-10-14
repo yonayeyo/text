@@ -415,6 +415,8 @@ svg{display:block}
 .lrow:last-child{border-bottom:0}.lrow .ib{width:36px;height:36px;background:rgba(128,128,128,.16);color:inherit}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);row-gap:8px;justify-items:center}
 /* 챌린지 달력: 칸 = 날짜, 아래 점 = 참여한 챌린지별 성공(흰 점) */
+.ms-card{background:#EBEBEA;box-shadow:none}
+.ms-box{border-radius:20px;padding:14px 16px;background:#FCFCFC}.ms-box.now{background:var(--sky)}
 .ccal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px 4px}
 .ccal .wd{font-size:10px;color:var(--mute);text-align:center}
 .ccal .cd{height:46px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:#2A2A2A}
@@ -1552,6 +1554,39 @@ function vPlan() {
 /* =========================================================
    GOAL (목표 · 챌린지)
    ========================================================= */
+/* 중간 목표 길: 아래 왼쪽에서 위 오른쪽으로 오르는 한 줄의 길 위에 단계 점을 찍고, 지금 위치까지 길을 색으로 채운다 */
+function milestones(saved) {
+  const P = [[34, 228], [116, 176], [200, 136], [262, 44]];          // 단계 1~4 위치
+  let cur = STAGES.findIndex(s => saved < s.a); if (cur < 0) cur = STAGES.length - 1;
+  // 점들을 지나는 부드러운 곡선(Catmull-Rom → 3차 베지어)
+  const seg = i => { const p0 = P[i - 1] || P[i], p1 = P[i], p2 = P[i + 1], p3 = P[i + 2] || p2;
+    return [p1, [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6], [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6], p2]; };
+  const lerp = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+  const split = (b, t) => { const ab = lerp(b[0], b[1], t), bc = lerp(b[1], b[2], t), cd = lerp(b[2], b[3], t), abc = lerp(ab, bc, t), bcd = lerp(bc, cd, t); return [b[0], ab, abc, lerp(abc, bcd, t)]; };
+  const f = v => v.map(n => n.toFixed(1)).join(' ');
+  const C = b => `C${f(b[1])} ${f(b[2])} ${f(b[3])}`;
+  const road = `M${f(P[0])}` + P.slice(1).map((_, i) => C(seg(i))).join('');
+  // 지금 위치: 이전 단계 금액 → 현재 단계 금액 사이 비율만큼 해당 구간 위에
+  const prevA = cur ? STAGES[cur - 1].a : 0, frac = cur ? Math.max(0, Math.min(1, (saved - prevA) / (STAGES[cur].a - prevA))) : 0;
+  const part = cur ? split(seg(cur - 1), frac) : null, now = cur ? part[3] : P[0];
+  const done = `M${f(P[0])}` + Array.from({ length:Math.max(0, cur - 1) }, (_, i) => C(seg(i))).join('') + (part ? C(part) : '');
+  const nodes = STAGES.map((st, i) => { const [x, y] = P[i], ok = saved >= st.a, last = i === STAGES.length - 1;
+    const hidden = !ok && Math.hypot(x - now[0], y - now[1]) < 20;   // 지금 점과 겹치면 빈 원은 생략(금액 라벨만)
+    return `${hidden ? '' : ok ? `<circle cx="${x}" cy="${y}" r="7.5" fill="#181818"/>` : `<circle cx="${x}" cy="${y}" r="${last ? 10 : 8.5}" fill="#FCFCFC" stroke="#181818" stroke-width="2"/>`}
+      <text x="${x - (last ? 14 : 4)}" y="${y - 16}" text-anchor="end" font-size="11" font-family="Urbanist" fill="#7A7A7A">${man(st.a)}</text>
+      ${ok ? `<text x="${x + 10}" y="${y + 24}" font-size="11" fill="#7A7A7A">${i + 1} ${st.n}</text>` : ''}`; }).join('');
+  return `<svg viewBox="0 0 300 262" width="100%" role="img" aria-label="중간 목표 ${STAGES.length}단계 중 ${cur + 1}단계, 지금 ${man(saved)}">
+    <defs><linearGradient id="msG" gradientUnits="userSpaceOnUse" x1="${P[0][0]}" y1="${P[0][1]}" x2="${now[0]}" y2="${now[1]}"><stop offset="0" stop-color="#C9C6F5"/><stop offset="1" stop-color="#F4A3BF"/></linearGradient>
+    <filter id="msB" filterUnits="userSpaceOnUse" x="0" y="0" width="300" height="262"><feGaussianBlur stdDeviation="7"/></filter>
+    <radialGradient id="msN"><stop offset="0" stop-color="#E7A6FF" stop-opacity=".7"/><stop offset="1" stop-color="#E7A6FF" stop-opacity="0"/></radialGradient></defs>
+    <path d="${road}" fill="none" stroke="#FCFCFC" stroke-width="28" stroke-linecap="round"/>
+    ${cur ? `<path d="${done}" fill="none" stroke="url(#msG)" stroke-width="22" stroke-linecap="round" filter="url(#msB)" opacity=".9"/>
+    <path d="${done}" fill="none" stroke="url(#msG)" stroke-width="14" stroke-linecap="round" opacity=".85"/>` : ''}
+    ${nodes}
+    <circle cx="${now[0]}" cy="${now[1]}" r="22" fill="url(#msN)"/>
+    <circle cx="${now[0]}" cy="${now[1]}" r="12" fill="#FCFCFC"/><circle cx="${now[0]}" cy="${now[1]}" r="8" fill="#181818"/>
+    <text x="${now[0] + 18}" y="${now[1] + 26}" font-size="13" font-weight="600" fill="#181818">지금 ${man(saved)}</text></svg>`;
+}
 function stairs(saved) {
   const W_ = 305, base = 176, sw = (W_ - 12) / 4;
   let cur = STAGES.findIndex(s => saved < s.a); if (cur < 0) cur = 3;
@@ -1658,6 +1693,9 @@ function vGoal() {
   const g = S.goals.find(x => x.id === S.goalSel) || S.goals[0];
   const indep = g.id === 'indep'; const saved = indep ? S.goalSaved : g.saved;
   const pa = planActual(); const d = D();
+  const msCur = (() => { const i = STAGES.findIndex(st => saved < st.a); return i < 0 ? STAGES.length - 1 : i; })();
+  const msMonths = Math.max(1, Math.ceil((STAGES[msCur].a - saved) / 350000)), msDate = new Date(2026, 9 + msMonths, 1);
+  const ms = { cur:msCur, next:STAGES[msCur + 1], due:`${msDate.getFullYear()}년 ${msDate.getMonth() + 1}월` };
   // 도전 탭: 목표(모으는 돈) · 챌린지(골라서 참여·인증·리그) · 소통(절약 팁·정책 정보)
   const gv = S.goalView;
   const head = `<header class="top"><div><div class="ph-title">도전</div><div class="ph-sub">목표 3개 · 챌린지 ${S.chalOn.length}개 참여 중</div></div></header>
@@ -1679,9 +1717,15 @@ function vGoal() {
   </div>
   ${indep ? `
   <section class="sec">
-    <div class="sec-h"><div><div class="t18">지금 2단계, 다음은 보증금 전액</div><div class="sec-d">중간 목표</div></div></div>
-    ${stairs(saved)}
-    <p class="t12 mute mt8">2단계까지 ${W(Math.max(0, 2500000 - saved))} 남았어요. 이번 달 예산을 지키면 ${W(Math.max(0, d.proj))}을 더 보탤 수 있어요.</p>
+    <div class="sec-h"><div><div class="t18">지금 ${ms.cur + 1}단계, 다음은 ${ms.next ? ms.next.n : '목표 달성'}</div><div class="sec-d">중간 목표 · ${STAGES[ms.cur].n}까지 ${W(Math.max(0, STAGES[ms.cur].a - saved))} 남았어요</div></div></div>
+    <div class="card ms-card">
+      <div class="row between"><span class="t14">단계별 길</span><span class="t12 mute">${STAGES.length}단계 중 ${ms.cur + 1}단계</span></div>
+      <div class="mt8">${milestones(saved)}</div>
+      <div class="grid2 mt12" style="gap:8px">
+        <div class="ms-box now"><div class="t12 mute">지금 단계</div><div class="t14 mt4">${ms.cur + 1} · ${STAGES[ms.cur].n}</div><div class="t10 mute mt4">${man(STAGES[ms.cur].a)} · ${ms.due}까지</div></div>
+        <div class="ms-box"><div class="t12 mute">다음 단계</div><div class="t14 mt4">${ms.next ? `${ms.cur + 2} · ${ms.next.n}` : '목표 달성'}</div><div class="t10 mute mt4">${ms.next ? `${man(ms.next.a)} · 월 35만 자동이체` : ''}</div></div>
+      </div>
+    </div>
   </section>
   <section class="sec">
     <div class="sec-h"><div><div class="t18">계획보다 ${W(Math.abs(Math.round(pa.gap)))} ${pa.gap < 0 ? '느려요' : '빨라요'}</div><div class="sec-d">계획 대비 실제</div></div></div>
