@@ -332,7 +332,7 @@ svg{display:block}
 .slot::after{content:"";position:absolute;left:13.9px;right:13.9px;top:23.5px;height:7.44px;border-radius:22px;border:1px solid #CACACA;
   background:linear-gradient(180deg,#909090 0%,#1F1F1F 27%,#5E5E5E 64%,#F3F3F3 89%,#767676 100%)}
 @keyframes blink{50%{opacity:.2}}
-.feed{margin:-25.5px 20px 0;overflow:hidden;padding-bottom:12px;position:relative;z-index:2}
+.feed{margin:-25.5px 20px 0;clip-path:inset(0 -100vw -100vh);padding-bottom:12px;position:relative;z-index:2}
 .feed::before{content:"";position:absolute;left:0;right:0;top:0;height:26px;background:linear-gradient(rgba(0,0,0,.22),transparent);z-index:2;pointer-events:none}
 .paper{background:linear-gradient(90deg,#F1F1F1,#FCFCFC 6%,#FCFCFC 94%,#F1F1F1);color:var(--ink);font-family:var(--f-mono);font-size:12px;line-height:1.6;padding:36px 20px 24px;position:relative;--mute:#7A7A7A;--line:#CFCFCF}
 .paper::after{content:"";position:absolute;left:0;right:0;bottom:-10px;height:10px;background:conic-gradient(from -45deg at bottom,#FCFCFC 90deg,transparent 0) 50%/12px 100%}
@@ -342,7 +342,10 @@ svg{display:block}
 .paper{transform-origin:50% 0}
 .tear-line{position:absolute;left:0;right:0;top:11px;display:flex;align-items:center;gap:8px;padding:0 10px;color:var(--mute);font:inherit;font-size:10px;letter-spacing:.04em;white-space:nowrap}
 .tear-line::before,.tear-line::after{content:"";flex:1;border-top:1px dashed var(--line)}
-.printer.torn .feed{overflow:visible}
+.printer.torn .feed{clip-path:none}
+/* 휘어질 때 접히는 쪽에 옅은 그림자 */
+.paper::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;opacity:var(--bend,0);
+  background:linear-gradient(calc(90deg * var(--bd,1)),rgba(0,0,0,.12),transparent 45%,rgba(255,255,255,.25))}
 .printer.torn .feed::before{opacity:0}
 .printer.torn .paper{-webkit-mask:conic-gradient(from 135deg at top,#000 90deg,transparent 0) 50% 0/10px 6px repeat-x,linear-gradient(#000 0 0) 0 5px/100% calc(100% - 5px) no-repeat;
   mask:conic-gradient(from 135deg at top,#000 90deg,transparent 0) 50% 0/10px 6px repeat-x,linear-gradient(#000 0 0) 0 5px/100% calc(100% - 5px) no-repeat}
@@ -1972,16 +1975,35 @@ const simpleToast = m => toast(`<div class="row g12"><span class="ib" style="bac
 // 영수증 뜯기: 옆으로 끌면 따라 기울고, 충분히 당기면 뜯겨 떨어진 뒤 '출력하기' 버튼으로 돌아간다
 function tearOff(id, dx) {
   const pr = document.getElementById(id), pa = pr && pr.querySelector('.paper'); if (!pa || pr.classList.contains('torn')) return;
-  const dir = dx < 0 ? -1 : 1, quick = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  pr.classList.remove('printing'); pr.classList.add('torn');
-  pa.style.transition = 'transform .6s cubic-bezier(.45,0,.75,.4), opacity .6s ease-in';
-  requestAnimationFrame(() => { pa.style.transform = `translate(${dir * 160}px, 220px) rotate(${dir * 14}deg)`; pa.style.opacity = '0'; });
-  setTimeout(() => { S.printed.delete(id); S.torn = id; render(true); S.torn = null; }, quick ? 0 : 600);
+  const d = dx < 0 ? -1 : 1, a0 = bendS.pa === pa ? bendS.cur : 0, quick = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  bendStop(); pr.classList.remove('printing'); pr.classList.add('torn');
+  const done = () => { S.printed.delete(id); S.torn = id; render(true); S.torn = null; };
+  if (quick) return done();
+  // 종이처럼 흔들리며 떨어진다: 휘어짐(skew)과 기울기가 번갈아 바뀌고 점점 투명해짐
+  const f = (x, y, r, k, o) => ({ transform: `translate(${d * x}px, ${y}px) rotate(${d * r}deg) perspective(900px) rotateY(${d * k * .5}deg) skewX(${d * k}deg)`, opacity: o });
+  pa.animate([
+    { transform: bendTf(a0), opacity: 1 },
+    { ...f(36, 18, 6, Math.abs(a0) * .4, 1), offset: .18 },
+    { ...f(78, 70, -3, -8, .95), offset: .42 },
+    { ...f(112, 150, 9, 7, .7), offset: .7 },
+    f(140, 250, 2, -5, 0)
+  ], { duration: 950, easing: 'cubic-bezier(.35,.05,.6,1)', fill: 'forwards' }).onfinish = done;
 }
+// 끌면 출구에 붙은 윗변은 고정된 채 아래쪽이 손가락을 따라 휘어지고, 놓으면 스프링처럼 흔들리며 돌아온다
+const bendS = { pa: null, cur: 0, vel: 0, to: 0, raf: 0 };
+const bendTf = a => `perspective(900px) rotateY(${a * .5}deg) skewX(${a}deg)`;
+function bendTick() {
+  const b = bendS; if (!b.pa) return;
+  b.vel = (b.vel + (b.to - b.cur) * .14) * .78; b.cur += b.vel;
+  b.pa.style.transform = bendTf(b.cur); b.pa.style.setProperty('--bend', (Math.abs(b.cur) / 30).toFixed(3)); b.pa.style.setProperty('--bd', b.cur < 0 ? -1 : 1);
+  if (b.to === 0 && Math.abs(b.cur) < .05 && Math.abs(b.vel) < .05) { b.pa.style.transform = ''; b.pa.style.removeProperty('--bend'); b.pa = null; b.raf = 0; return; }
+  b.raf = requestAnimationFrame(bendTick);
+}
+function bendStop() { cancelAnimationFrame(bendS.raf); bendS.raf = 0; bendS.pa = null; bendS.cur = bendS.vel = bendS.to = 0; }
 let tearDrag = null;
 document.addEventListener('pointerdown', e => {
   const f = e.target.closest('.printer .feed'); if (!f || f.parentNode.classList.contains('torn')) return;
-  tearDrag = { f, pa: f.querySelector('.paper'), x: e.clientX, y: e.clientY, dx: 0, on: false };
+  tearDrag = { f, pa: f.querySelector('.paper'), x: e.clientX, y: e.clientY, gy: Math.max(90, e.clientY - f.getBoundingClientRect().top), dx: 0, on: false };
 });
 document.addEventListener('pointermove', e => {
   const t = tearDrag; if (!t) return;
@@ -1989,16 +2011,17 @@ document.addEventListener('pointermove', e => {
   if (!t.on) {
     if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { tearDrag = null; return; }
     if (Math.abs(dx) < 8) return;
-    t.on = true; t.f.parentNode.classList.remove('printing'); t.pa.style.transition = 'none';
+    t.on = true; t.f.parentNode.classList.remove('printing');
+    if (bendS.pa !== t.pa) { bendStop(); bendS.pa = t.pa; }
+    if (!bendS.raf) bendS.raf = requestAnimationFrame(bendTick);
   }
-  t.dx = dx; const k = Math.sign(dx) * Math.min(Math.abs(dx), 140);
-  t.pa.style.transform = `translateX(${k * .35}px) rotate(${k * .045}deg)`;
+  t.dx = dx; bendS.to = Math.max(-28, Math.min(28, Math.atan(dx * .85 / t.gy) * 180 / Math.PI));
 });
 const tearEnd = () => {
   const t = tearDrag; tearDrag = null; if (!t || !t.on) return;
   t.f.dataset.dragged = '1'; setTimeout(() => delete t.f.dataset.dragged, 0);
   if (Math.abs(t.dx) > 70) return tearOff(t.f.parentNode.id, t.dx);
-  t.pa.style.transition = 'transform .35s cubic-bezier(.3,1.4,.5,1)'; t.pa.style.transform = '';
+  bendS.to = 0; if (!bendS.raf) bendS.raf = requestAnimationFrame(bendTick);
 };
 document.addEventListener('pointerup', tearEnd); document.addEventListener('pointercancel', tearEnd);
 function reprint(id) { const p = document.getElementById(id); if (!p) return; p.classList.remove('printing'); void p.offsetWidth; p.classList.add('printing'); }
