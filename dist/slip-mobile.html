@@ -1253,8 +1253,12 @@ function topSpend() {
   const bt = `${sel.d >= 0 ? '+' : '−'}${won(Math.abs(sel.d))}원 ${vs} 대비`, bw = bt.length * 6.4 + 20;
   const bx = Math.max(0, Math.min(305 - bw, sx - bw / 2)), by = Math.max(0, sy - sr - 16);
   // 그려진 원·배지의 실제 범위에 맞춰 viewBox를 잡아 카드 안에서 가운데 오게
-  const X0 = Math.min(bx, ...top.map((i, k) => P[k][0] - r(i))), X1 = Math.max(bx + bw, ...top.map((i, k) => P[k][0] + r(i)));
-  const Y0 = Math.min(by, ...top.map((i, k) => P[k][1] - r(i))), Y1 = Math.max(...top.map((i, k) => P[k][1] + r(i)));
+  // 선택이 바뀌어도 그래픽이 움직이지 않도록, 모든 항목의 선택 테두리(+6)와 배지 위치를 다 포함한 고정 범위를 쓴다
+  const badge = k => { const it = top[k], t = `${it.d >= 0 ? '+' : '−'}${won(Math.abs(it.d))}원 ${vs} 대비`, w = t.length * 6.4 + 20;
+    return [Math.max(0, Math.min(305 - w, P[k][0] - w / 2)), Math.max(0, P[k][1] - r(it) - 16), w]; };
+  const B = top.map((_, k) => badge(k));
+  const X0 = Math.min(...B.map(b => b[0]), ...top.map((i, k) => P[k][0] - r(i) - 7)), X1 = Math.max(...B.map(b => b[0] + b[2]), ...top.map((i, k) => P[k][0] + r(i) + 7));
+  const Y0 = Math.min(...B.map(b => b[1]), ...top.map((i, k) => P[k][1] - r(i) - 7)), Y1 = Math.max(...top.map((i, k) => P[k][1] + r(i) + 7));
   const vb = `${(X0 - 4).toFixed(1)} ${(Y0 - 4).toFixed(1)} ${(X1 - X0 + 8).toFixed(1)} ${(Y1 - Y0 + 8).toFixed(1)}`;
   return `<div class="card c-light">
     <div class="row between"><span class="t18" style="font-family:var(--f-num);font-weight:300;font-size:24px">Top spend</span><span class="t10 mute num">${m ? '9.1 – 9.30' : '10.5 – 10.11'}</span></div>
