@@ -1033,9 +1033,9 @@ function sankey() {
   });
   const sel = S.flowSel, on = l => !sel || l[0] === sel || l[1] === sel;
   // 이미 나간 돈(지출·저축·비상금)은 컬러, 아직 남은 돈만 흑백
-  const dk = S.tab === 'spend';   // 지출 탭(다크 화면)에서는 글자·막대를 밝게, 흐름은 한 톤 낮게
+  const dk = S.tab === 'spend';   // 지출 탭(다크 화면)에서는 글자·막대만 밝게. 흐름 색은 밝은 화면과 같게(투명도 없이)
   const INK = dk ? '#F2F2F2' : '#181818', SUB = dk ? '#9C9C9C' : '#606060';
-  const fill = { fix:'url(#skF)', use:'url(#skU)', save:'url(#skA)', emer:'url(#skE)', left:dk ? '#5C5C5C' : '#E6E6E6' };
+  const fill = { fix:'url(#skF)', use:'url(#skU)', save:'url(#skA)', emer:'url(#skE)', left:dk ? '#4A4A4A' : '#E6E6E6' };
   const ord = Object.fromEntries(ids.map((id, n) => [id, n]));
   const yOut = new Map(), yIn = new Map();
   [...L].sort((a, b) => ord[a[0]] - ord[b[0]] || ord[a[1]] - ord[b[1]]).forEach(l => { yOut.set(l, N[l[0]].y + N[l[0]].so); N[l[0]].so += l[2] * k; });
@@ -1043,7 +1043,7 @@ function sankey() {
   const links = L.map(l => {
     const [f, t, v] = l, s0 = N[f], d = N[t], w = v * k;
     const x0 = s0.x + BW, x1 = d.x, y0 = yOut.get(l), y1 = yIn.get(l), m = (x0 + x1) / 2;
-    return `<path d="M${x0} ${y0} C${m} ${y0} ${m} ${y1} ${x1} ${y1} L${x1} ${y1 + w} C${m} ${y1 + w} ${m} ${y0 + w} ${x0} ${y0 + w}Z" fill="${fill[t]}" opacity="${on(l) ? (dk ? .5 : .95) : (dk ? .12 : .2)}"/>`;
+    return `<path d="M${x0} ${y0} C${m} ${y0} ${m} ${y1} ${x1} ${y1} L${x1} ${y1 + w} C${m} ${y1 + w} ${m} ${y0 + w} ${x0} ${y0 + w}Z" fill="${fill[t]}" opacity="${on(l) ? .95 : .2}"/>`;
   }).join('');
   const nodes = ids.map(i => {
     const n = N[i], dim = sel && sel !== i && !L.some(l => on(l) && (l[0] === i || l[1] === i));
