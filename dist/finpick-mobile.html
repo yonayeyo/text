@@ -1329,7 +1329,7 @@ function vSpend() {
 /* =========================================================
    PLAN (기본 설정)
    ========================================================= */
-/* 카테고리별 예산 꽃잎 차트: 꽃잎 하나 = 카테고리. 바깥(회색) = 이번 달 예산, 안쪽(밝은 색) = 쓴 비율(면적 기준).
+/* 카테고리별 예산 방사형 차트: 조각 하나 = 카테고리. 바깥(회색) = 이번 달 예산, 안쪽(밝은 색) = 쓴 비율(면적 기준).
    오늘까지 지난 날짜 비율보다 빨리 쓰는 카테고리는 분홍으로 표시 */
 function catSpent() {
   const m = {}; Object.keys(S.cat).forEach(k => m[k] = 0);
@@ -1339,34 +1339,34 @@ function catSpent() {
 }
 function catPetals() {
   const cats = Object.keys(S.cat), sp = catSpent(), pace = S.day / S.days, n = cats.length;
-  const C = 160, R = 148, R0 = 30, IN = 7, sel = S.catSel;
+  // 비율은 참고 이미지 기준: 모서리 둥글기 ≈ 반지름의 8%, 가운데 빈 원 ≈ 13%, 조각 사이 틈 ≈ 2px
+  const C = 160, R = 150, R0 = 20, IN = 12, sel = S.catSel;
   const pt = (r, a) => [(C + r * Math.sin(a)).toFixed(1), (C - r * Math.cos(a)).toFixed(1)];
   // 모서리를 둥글게: 안쪽으로 IN만큼 줄인 부채꼴을 같은 색 두꺼운 테두리(둥근 이음)로 그린다
-  // 꽃잎 사이 간격을 반지름과 상관없이 일정한 px로: 안쪽·바깥 호마다 각도 여백을 따로 계산
-  const sector = (r1, r2, a0, a1) => { const g1 = (IN + 2) / r1, g2 = (IN + 2) / r2;
+  // 조각 사이 간격을 반지름과 상관없이 일정한 px로: 안쪽·바깥 호마다 각도 여백을 따로 계산
+  const sector = (r1, r2, a0, a1) => { const g1 = (IN + .9) / r1, g2 = (IN + .9) / r2;
     const [x0, y0] = pt(r2, a0 + g2), [x1, y1] = pt(r2, a1 - g2), [x2, y2] = pt(r1, a1 - g1), [x3, y3] = pt(r1, a0 + g1);
     return `M${x0} ${y0}A${r2} ${r2} 0 0 1 ${x1} ${y1}L${x2} ${y2}A${r1} ${r1} 0 0 0 ${x3} ${y3}Z`; };
   const petals = cats.map((k, i) => {
     const a0 = i / n * 2 * Math.PI, a1 = (i + 1) / n * 2 * Math.PI, am = (a0 + a1) / 2;
     const p = sp[k] / S.cat[k], fast = p > pace, rf = Math.sqrt(R0 * R0 + Math.min(1, p) * (R * R - R0 * R0));
     const outer = sector(R0 + IN, R - IN, a0, a1), inner = rf - IN > R0 + IN + 2 ? sector(R0 + IN, rf - IN, a0, a1) : '';
-    // 라벨이 경계에 걸치지 않게: 바깥 회색 띠가 충분하면 띠 가운데(밝은 글자), 아니면 채움 안쪽(어두운 글자)
-    const onFill = R - rf < 40, rl = onFill ? (R0 + rf) / 2 + 12 : (rf + R) / 2, [lx, ly] = pt(rl, am), dim = sel && sel !== k;
-    const tc = onFill ? '#181818' : '#E6E6E6', sc = onFill ? '#606060' : '#9C9C9C';
+    // 라벨은 참고 이미지처럼 같은 반지름(바깥 쪽 72%)에 검정 글자로
+    const rl = R * .72, [lx, ly] = pt(rl, am), dim = sel && sel !== k, tc = '#232323', sc = '#2E2E2E';
     return `<g data-act="catSel" data-v="${k}" style="cursor:pointer" opacity="${dim ? .4 : 1}" role="button" aria-label="${k} 예산 ${won(S.cat[k])}원 중 ${won(sp[k])}원 사용 (${pct(p)})">
       <path d="${outer}" fill="url(#ptO)" stroke="url(#ptO)" stroke-width="${IN * 2}" stroke-linejoin="round"/>
       ${inner ? `<path d="${inner}" fill="url(#${fast ? 'ptP' : 'ptI'})" stroke="url(#${fast ? 'ptP' : 'ptI'})" stroke-width="${IN * 2}" stroke-linejoin="round"/>` : ''}
-      <text x="${lx}" y="${+ly - 2}" text-anchor="middle" font-family="Urbanist" font-size="22" font-weight="400" fill="${tc}">${Math.round(p * 100)}<tspan font-size="12">%</tspan></text>
-      <text x="${lx}" y="${+ly + 15}" text-anchor="middle" font-size="11" fill="${sc}">${k}</text></g>`;
+      <text x="${lx}" y="${+ly - 1}" text-anchor="middle" font-size="15" font-weight="600" fill="${tc}">${Math.round(p * 100)}<tspan font-size="10" font-weight="500">%</tspan></text>
+      <text x="${lx}" y="${+ly + 12}" text-anchor="middle" font-size="10" font-weight="500" fill="${sc}">${k}</text></g>`;
   }).join('');
   const s1 = sel && S.cat[sel] != null ? sel : null;
   return `<svg viewBox="0 0 320 320" width="100%" role="img" aria-label="카테고리별 예산 사용률">
-    <defs><linearGradient id="ptO" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5A5A5A"/><stop offset="1" stop-color="#3C3B40"/></linearGradient>
+    <defs><linearGradient id="ptO" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#626262"/><stop offset="1" stop-color="#4E4D53"/></linearGradient>
     <linearGradient id="ptI" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F1ECE8"/><stop offset="1" stop-color="#DCD8EC"/></linearGradient>
     <linearGradient id="ptP" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE3EB"/><stop offset="1" stop-color="#FF9DB8"/></linearGradient></defs>
     ${petals}</svg>
     <div class="row between t12 mt16" style="min-height:18px">${s1 ? `<span>${s1}</span><span class="num">${won(sp[s1])} <span class="mute">/ ${won(S.cat[s1])}원</span></span>`
-      : `<span class="mute">꽃잎을 누르면 금액을 보여드려요</span><span class="mute num">오늘까지 ${pct(pace)}</span>`}</div>
+      : `<span class="mute">항목을 누르면 금액을 보여드려요</span><span class="mute num">오늘까지 ${pct(pace)}</span>`}</div>
     <div class="row g16 t10 mute mt12"><span class="row g4"><i class="pt-lg" style="background:#4A4A4E"></i>예산</span><span class="row g4"><i class="pt-lg" style="background:#E8E4EC"></i>쓴 돈</span><span class="row g4"><i class="pt-lg" style="background:#FFB3C7"></i>날짜보다 빨리 쓰는 중</span></div>`;
 }
 function halfDonut() {
