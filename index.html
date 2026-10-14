@@ -1339,8 +1339,8 @@ function catSpent() {
 }
 function catPetals() {
   const cats = Object.keys(S.cat), sp = catSpent(), pace = S.day / S.days, n = cats.length;
-  // 비율은 참고 이미지 기준: 모서리 둥글기 ≈ 반지름의 8%, 가운데 빈 원 ≈ 13%, 조각 사이 틈 ≈ 2px
-  const C = 160, R = 150, R0 = 20, IN = 12, sel = S.catSel;
+  // 비율은 참고 이미지 기준: 모서리 둥글기 ≈ 반지름의 8%, 가운데 빈 원 ≈ 11%, 조각 사이 틈 ≈ 2px
+  const C = 160, R = 150, R0 = 16.5, IN = 12, sel = S.catSel;
   const pt = (r, a) => [(C + r * Math.sin(a)).toFixed(1), (C - r * Math.cos(a)).toFixed(1)];
   // 모서리를 둥글게: 안쪽으로 IN만큼 줄인 부채꼴을 같은 색 두꺼운 테두리(둥근 이음)로 그린다
   // 조각 사이 간격을 반지름과 상관없이 일정한 px로: 안쪽·바깥 호마다 각도 여백을 따로 계산
@@ -1351,8 +1351,8 @@ function catPetals() {
     const a0 = i / n * 2 * Math.PI, a1 = (i + 1) / n * 2 * Math.PI, am = (a0 + a1) / 2;
     const p = sp[k] / S.cat[k], fast = p > pace, rf = Math.sqrt(R0 * R0 + Math.min(1, p) * (R * R - R0 * R0));
     const outer = sector(R0 + IN, R - IN, a0, a1), inner = rf - IN > R0 + IN + 2 ? sector(R0 + IN, rf - IN, a0, a1) : '';
-    // 라벨은 참고 이미지처럼 같은 반지름(바깥 쪽 72%)에 검정 글자로
-    const rl = R * .72, [lx, ly] = pt(rl, am), dim = sel && sel !== k, tc = '#232323', sc = '#2E2E2E';
+    // 라벨은 같은 반지름(바깥 쪽 78%)에 검정 글자로
+    const rl = R * .78, [lx, ly] = pt(rl, am), dim = sel && sel !== k, tc = '#232323', sc = '#2E2E2E';
     return `<g data-act="catSel" data-v="${k}" style="cursor:pointer" opacity="${dim ? .4 : 1}" role="button" aria-label="${k} 예산 ${won(S.cat[k])}원 중 ${won(sp[k])}원 사용 (${pct(p)})">
       <path d="${outer}" fill="url(#ptO)" stroke="url(#ptO)" stroke-width="${IN * 2}" stroke-linejoin="round"/>
       ${inner ? `<path d="${inner}" fill="url(#${fast ? 'ptP' : 'ptI'})" stroke="url(#${fast ? 'ptP' : 'ptI'})" stroke-width="${IN * 2}" stroke-linejoin="round"/>` : ''}
@@ -1361,13 +1361,13 @@ function catPetals() {
   }).join('');
   const s1 = sel && S.cat[sel] != null ? sel : null;
   return `<svg viewBox="0 0 320 320" width="100%" role="img" aria-label="카테고리별 예산 사용률">
-    <defs><linearGradient id="ptO" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#626262"/><stop offset="1" stop-color="#4E4D53"/></linearGradient>
-    <linearGradient id="ptI" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F1ECE8"/><stop offset="1" stop-color="#DCD8EC"/></linearGradient>
-    <linearGradient id="ptP" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE3EB"/><stop offset="1" stop-color="#FF9DB8"/></linearGradient></defs>
+    <defs><linearGradient id="ptO" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#727272"/><stop offset="1" stop-color="#5E5D62"/></linearGradient>
+    <linearGradient id="ptI" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EEECEA"/><stop offset="1" stop-color="#DFDDE5"/></linearGradient>
+    <linearGradient id="ptP" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6E6EA"/><stop offset="1" stop-color="#EBB3C2"/></linearGradient></defs>
     ${petals}</svg>
     <div class="row between t12 mt16" style="min-height:18px">${s1 ? `<span>${s1}</span><span class="num">${won(sp[s1])} <span class="mute">/ ${won(S.cat[s1])}원</span></span>`
       : `<span class="mute">항목을 누르면 금액을 보여드려요</span><span class="mute num">오늘까지 ${pct(pace)}</span>`}</div>
-    <div class="row g16 t10 mute mt12"><span class="row g4"><i class="pt-lg" style="background:#4A4A4E"></i>예산</span><span class="row g4"><i class="pt-lg" style="background:#E8E4EC"></i>쓴 돈</span><span class="row g4"><i class="pt-lg" style="background:#FFB3C7"></i>날짜보다 빨리 쓰는 중</span></div>`;
+    <div class="row g16 t10 mute mt12"><span class="row g4"><i class="pt-lg" style="background:#68676C"></i>예산</span><span class="row g4"><i class="pt-lg" style="background:#E8E4EC"></i>쓴 돈</span><span class="row g4"><i class="pt-lg" style="background:#EDBCC9"></i>날짜보다 빨리 쓰는 중</span></div>`;
 }
 function halfDonut() {
   const parts = [ ['고정 지출',24,'#181818'], ['생활비',33,'#606060'], ['저축',35,'url(#hd)'], ['여유',8,'#DEDEDE'] ];
