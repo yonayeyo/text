@@ -74,7 +74,10 @@ svg{display:block}
 .statusbar{position:absolute;top:0;left:0;right:0;height:54px;background:linear-gradient(var(--page) 78%,transparent);padding:16px 30px 0 40px;display:flex;justify-content:space-between;font-size:16px;z-index:30;pointer-events:none;color:var(--fg)}
 .island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:124px;height:36px;border-radius:999px;background:#000;z-index:31}
 .screen{--page:var(--bg)}.screen.dark{--page:var(--ink);background:var(--ink)}
-.view{position:absolute;inset:0;z-index:1;overflow-y:auto;scrollbar-width:none;padding:59px var(--m) 160px;color:var(--fg);background:transparent}
+/* 탭 화면 최상단(머리말 + 세부 탭)은 스크롤해도 위에 고정 */
+.shead{position:sticky;top:calc(-1 * var(--vt));z-index:5;margin:calc(-1 * var(--vt)) calc(-1 * var(--m)) 0;padding:var(--vt) var(--m) 0;background:var(--page)}
+.shead .utabs{background:var(--page)}
+.view{--vt:59px;position:absolute;inset:0;z-index:1;overflow-y:auto;scrollbar-width:none;padding:var(--vt) var(--m) 160px;color:var(--fg);background:transparent}
 .view::-webkit-scrollbar{display:none}
 .screen.dark{--fg:var(--paper);--inv:var(--ink);--mute:var(--g4);--line:#3A3A3A;--surface:#222}
 .halftone{position:absolute;left:0;right:0;bottom:0;height:150px;pointer-events:none;z-index:0;
@@ -463,7 +466,7 @@ svg{display:block}
   .island,.statusbar>*{display:none!important}
   /* iOS Safari는 화면 맨 위에 붙은 position:fixed 요소의 단색 배경을 읽어 상단(상태바) 색을 정한다 */
   .statusbar{position:fixed;top:0;left:0;right:0;height:calc(env(safe-area-inset-top,0px) + 4px);padding:0;background:none;background-color:var(--bg)}
-  .view{padding-top:calc(env(safe-area-inset-top,0px) + 4px);overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  .view{--vt:calc(env(safe-area-inset-top,0px) + 4px);padding-top:var(--vt);overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
   /* 하단 여백: 홈 인디케이터가 있는 기기는 안전 영역과 일부 겹치게(34 → 20px), 홈 버튼 기기는 12px */
   .screen{--nav-gap:max(12px, calc(env(safe-area-inset-bottom,0px) - 14px))}
   .tabbar{bottom:var(--nav-gap)}
@@ -1030,7 +1033,9 @@ function sankey() {
   });
   const sel = S.flowSel, on = l => !sel || l[0] === sel || l[1] === sel;
   // 이미 나간 돈(지출·저축·비상금)은 컬러, 아직 남은 돈만 흑백
-  const fill = { fix:'url(#skF)', use:'url(#skU)', save:'url(#skA)', emer:'url(#skE)', left:'#E6E6E6' };
+  const dk = S.tab === 'spend';   // 지출 탭(다크 화면)에서는 글자·막대를 밝게, 흐름은 한 톤 낮게
+  const INK = dk ? '#F2F2F2' : '#181818', SUB = dk ? '#9C9C9C' : '#606060';
+  const fill = { fix:'url(#skF)', use:'url(#skU)', save:'url(#skA)', emer:'url(#skE)', left:dk ? '#5C5C5C' : '#E6E6E6' };
   const ord = Object.fromEntries(ids.map((id, n) => [id, n]));
   const yOut = new Map(), yIn = new Map();
   [...L].sort((a, b) => ord[a[0]] - ord[b[0]] || ord[a[1]] - ord[b[1]]).forEach(l => { yOut.set(l, N[l[0]].y + N[l[0]].so); N[l[0]].so += l[2] * k; });
@@ -1038,17 +1043,17 @@ function sankey() {
   const links = L.map(l => {
     const [f, t, v] = l, s0 = N[f], d = N[t], w = v * k;
     const x0 = s0.x + BW, x1 = d.x, y0 = yOut.get(l), y1 = yIn.get(l), m = (x0 + x1) / 2;
-    return `<path d="M${x0} ${y0} C${m} ${y0} ${m} ${y1} ${x1} ${y1} L${x1} ${y1 + w} C${m} ${y1 + w} ${m} ${y0 + w} ${x0} ${y0 + w}Z" fill="${fill[t]}" opacity="${on(l) ? .95 : .2}"/>`;
+    return `<path d="M${x0} ${y0} C${m} ${y0} ${m} ${y1} ${x1} ${y1} L${x1} ${y1 + w} C${m} ${y1 + w} ${m} ${y0 + w} ${x0} ${y0 + w}Z" fill="${fill[t]}" opacity="${on(l) ? (dk ? .5 : .95) : (dk ? .12 : .2)}"/>`;
   }).join('');
   const nodes = ids.map(i => {
     const n = N[i], dim = sel && sel !== i && !L.some(l => on(l) && (l[0] === i || l[1] === i));
     const bar = n.open
-      ? `<rect x="${n.x + .75}" y="${n.y + .75}" width="${BW - 1.5}" height="${n.h - 1.5}" rx="${(BW - 1.5) / 2}" fill="#FCFCFC" stroke="#181818" stroke-width="1.5" stroke-dasharray="2.5 2.5"/>`
-      : `<rect x="${n.x}" y="${n.y}" width="${BW}" height="${n.h}" rx="${BW / 2}" fill="#181818"/>`;
+      ? `<rect x="${n.x + .75}" y="${n.y + .75}" width="${BW - 1.5}" height="${n.h - 1.5}" rx="${(BW - 1.5) / 2}" fill="${dk ? '#232323' : '#FCFCFC'}" stroke="${INK}" stroke-width="1.5" stroke-dasharray="2.5 2.5"/>`
+      : `<rect x="${n.x}" y="${n.y}" width="${BW}" height="${n.h}" rx="${BW / 2}" fill="${INK}"/>`;
     const left = n.c === 0, tx = left ? n.x - 8 : n.x + 16, anc = left ? ' text-anchor="end"' : '', two = n.h >= 30, cy = n.y + n.h / 2;
     const lab = two
-      ? `<text x="${tx}" y="${n.y + 15}"${anc} font-size="12" fill="#181818">${n.n}</text><text x="${tx}" y="${n.y + 29}"${anc} font-size="11" fill="#606060" font-family="Urbanist">${mw(n.v)}</text>`
-      : `<text x="${tx}" y="${cy + 4}"${anc} font-size="12" fill="#181818">${n.n} <tspan font-size="11" fill="#606060" font-family="Urbanist">${mw(n.v)}</tspan></text>`;
+      ? `<text x="${tx}" y="${n.y + 15}"${anc} font-size="12" fill="${INK}">${n.n}</text><text x="${tx}" y="${n.y + 29}"${anc} font-size="11" fill="${SUB}" font-family="Urbanist">${mw(n.v)}</text>`
+      : `<text x="${tx}" y="${cy + 4}"${anc} font-size="12" fill="${INK}">${n.n} <tspan font-size="11" fill="${SUB}" font-family="Urbanist">${mw(n.v)}</tspan></text>`;
     return `<g data-act="flow" data-v="${i}" style="cursor:pointer" role="button" aria-pressed="${sel === i}" aria-label="${n.n} ${won(n.v)}원 흐름 보기" opacity="${dim ? .35 : 1}"><rect x="${n.c ? n.x - 4 : 0}" y="${n.y - 4}" width="${n.c ? 112 : n.x + BW + 4}" height="${n.h + 8}" fill="transparent"/>${bar}${lab}</g>`;
   }).join('');
   return `<svg viewBox="0 0 305 ${H + TOP + 4}" width="100%" role="img" aria-label="10월 들어온 돈 ${ids.filter(i => !N[i].c).map(i => `${N[i].n} ${won(N[i].v)}원`).join(', ')}이 ${ids.filter(i => N[i].c).map(i => `${N[i].n} ${won(N[i].v)}원`).join(', ')}으로 나뉨">
@@ -1080,9 +1085,8 @@ function accountsCard(home) {
 }
 function flowCard(home) {
   return `<div class="card c-paper">
-      ${home ? `<button class="row between" style="width:100%;text-align:left" data-act="tab" data-tab="spend" data-sv="analysis"><span class="t14">10월 돈의 흐름</span><span class="row g4 t10 mute num">10.01 – 10.12${ic('arrow', 14)}</span></button>`
-        : `<div class="row between"><span class="t14">10월 돈의 흐름</span><span class="t10 mute num">10.01 – 10.${S.day}</span></div>`}
-      <div class="mt16">${sankey()}</div>
+      ${home ? `<button class="row between" style="width:100%;text-align:left" data-act="tab" data-tab="spend" data-sv="analysis"><span class="t14">10월 돈의 흐름</span><span class="row g4 t10 mute num">10.01 – 10.${S.day}${ic('arrow', 14)}</span></button>` : ''}
+      <div class="${home ? 'mt16' : ''}">${sankey()}</div>
       <div class="row between t10 mute mt8"><span>${S.flowSel ? '다시 누르면 전체 흐름' : '항목을 눌러 흐름을 따라가 보세요'}</span><span>금액 단위 만 원</span></div>
       ${home ? '' : `<div class="row g8 mt16">
         <button class="btn sm" style="flex:1;background:var(--g2);color:var(--ink);font-size:12px;padding:0 12px" data-act="toast" data-msg="내 계좌끼리 옮긴 3건(300,000원)은 지출에서 뺐어요">${ic('check', 16)}내 계좌 간 이체 3건 제외</button>
@@ -1339,7 +1343,7 @@ function vSpend() {
       </div>
     </section>
     <section class="sec">
-      <div class="sec-h"><div><div class="t18">10월 돈의 흐름</div><div class="sec-d">들어온 돈이 어디로 갔나</div></div></div>
+      <div class="sec-h"><div><div class="t18">10월 돈의 흐름</div><div class="sec-d">들어온 돈이 어디로 갔나 · 10.01 – 10.${S.day}</div></div></div>
       ${flowCard(false)}
     </section>
     <button class="card c-sky row between mt24" style="width:100%;text-align:left" data-act="tab" data-tab="plan" data-pv="budget"><span><span class="t12 mute" style="display:block">줄일 곳이 보였다면</span><span class="t16">플랜에서 다음 달 예산에 반영하기</span></span>${ic('arrow', 20)}</button>`;
@@ -1597,7 +1601,7 @@ function vChal() {
   const cells = ['일','월','화','수','목','금','토'].map(w => `<span class="wd">${w}</span>`).join('') + (S.calOpen ? '<span></span>'.repeat(4) : '')
     + days.map(d => { const k = state(d);
       return `<span class="cd ${k}" aria-label="10월 ${d}일 ${pick.map(c => `${c.s} ${done(c, d) == null ? '' : done(c, d) ? '성공' : '실패'}`).join(', ')}"><b>${d}</b>
-        <i>${d <= 12 ? pick.map(c => `<u class="${done(c, d) ? 'y' : ''}"></u>`).join('') : ''}</i></span>`; }).join('');
+        <i>${d <= T ? pick.map(c => `<u class="${done(c, d) ? 'y' : ''}"></u>`).join('') : ''}</i></span>`; }).join('');
   const L = LEAGUE[S.league], meCnt = 11 + S.chalCert.size;
   const rows = S.league === 'all' ? [...L.rows.map(([n, c], i) => [i + 1, n, c, false]), ['…'], [L.me[0], '지혜 (나)', meCnt, true]]
     : [...L.rows, ['지혜 (나)', meCnt, true]].sort((a, b) => b[1] - a[1]).map(([n, c, me], i) => [i + 1, n, c, !!me]);
@@ -1845,6 +1849,8 @@ function render(keepScroll = true) {
   if (S.mode === 'onboard') view.innerHTML = [vIntro, vSelf, vQuiz, vResult][S.ob]();
   else if (S.sub === 'diag') view.innerHTML = vResult('app');
   else view.innerHTML = { home:vHome, spend:vSpend, plan:vPlan, goal:vGoal, benefit:vBenefit }[S.tab]();
+  if (S.mode === 'app' && !S.sub) { const h = view.querySelector(':scope > header.top');
+    if (h) { const w = document.createElement('div'); w.className = 'shead'; h.before(w); w.append(h); const t = w.nextElementSibling; if (t && t.classList.contains('utabs')) w.append(t); } }
   view.scrollTop = st;
   // 행동 추천: 보던 카드 위치를 유지하고, 추천을 끝낸 직후에는 다음 카드로 부드럽게 넘긴다
   const tr = view.querySelector('.na-track');
