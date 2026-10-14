@@ -343,15 +343,12 @@ svg{display:block}
 .tear-line{position:absolute;left:0;right:0;top:11px;display:flex;align-items:center;gap:8px;padding:0 10px;color:var(--mute);font:inherit;font-size:10px;letter-spacing:.04em;white-space:nowrap}
 .tear-line::before,.tear-line::after{content:"";flex:1;border-top:1px dashed var(--line)}
 .printer.torn .feed{clip-path:none}
-/* 휘어질 때 접히는 쪽에 옅은 그림자 */
-.paper::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;opacity:var(--bend,0);
-  background:linear-gradient(calc(90deg * var(--bd,1)),rgba(0,0,0,.12),transparent 45%,rgba(255,255,255,.25))}
 .printer.torn .feed::before{opacity:0}
 .printer.torn .paper{-webkit-mask:conic-gradient(from 135deg at top,#000 90deg,transparent 0) 50% 0/10px 6px repeat-x,linear-gradient(#000 0 0) 0 5px/100% calc(100% - 5px) no-repeat;
   mask:conic-gradient(from 135deg at top,#000 90deg,transparent 0) 50% 0/10px 6px repeat-x,linear-gradient(#000 0 0) 0 5px/100% calc(100% - 5px) no-repeat}
 .pr-go.pr-in{animation:prIn .35s ease-out both}
 @keyframes prIn{from{opacity:0;transform:translateY(-6px)}}
-.screen .btn.pr-go{display:flex;width:fit-content;margin:16px auto 0;padding:0 32px;gap:8px;background:#000;color:#FCFCFC;box-shadow:inset 0 0 0 1px #3A3A3A}
+.screen .btn.pr-go{display:flex;width:fit-content;margin:16px auto 0;padding:0 28px;gap:6px;font-size:14px;background:#000;color:#FCFCFC;box-shadow:inset 0 0 0 1px #3A3A3A}
 @keyframes feed{from{transform:translateY(-100%)}to{transform:none}}
 @media (prefers-reduced-motion:reduce){.printer.printing .paper{animation:none}.toast,.layer,.sheet{transition:none}}
 .p-c{text-align:center}
@@ -1230,7 +1227,7 @@ function vHome() {
 function printer(id, inner) {
   // 처음에는 입구와 '출력하기' 버튼만. 누르면 출력되고, 이후에는 '재출력'으로 다시 출력
   if (!S.printed.has(id)) return `<div class="printer" id="${id}"><div class="slot"></div>
-    <button class="btn pr-go${S.torn === id ? ' pr-in' : ''}" data-act="printGo" data-v="${id}">${ic('receipt', 18)}출력하기</button></div>`;
+    <button class="btn pr-go${S.torn === id ? ' pr-in' : ''}" data-act="printGo" data-v="${id}">${ic('receipt', 16)}출력하기</button></div>`;
   return `<div class="printer" id="${id}"><div class="slot"></div><div class="feed"><article class="paper"><button class="tear-line" data-act="tear" data-v="${id}">옆으로 당겨서 뜯기</button>${inner}</article></div></div>`;
 }
 function receiptReport() {
@@ -1403,7 +1400,7 @@ function vSpend() {
     ${ls ? '' : `<div class="row between"><div class="row g8"><button class="chip pchip ${m ? '' : 'on'}" data-act="period" data-v="week">주간</button><button class="chip pchip ${m ? 'on' : ''}" data-act="period" data-v="month">월간</button></div>
 </div>`}`;
   if (ls) return head + vLedger();
-  if (!an) return head + printer('pReport', receiptReport()) + (S.printed.has('pReport') ? `<p class="t12 mute mt16" style="text-align:center">영수증은 매주 월요일, 매월 1일에 자동 발행돼요</p>` : '');
+  if (!an) return head + printer('pReport-' + S.period, receiptReport()) + (S.printed.has('pReport-' + S.period) ? `<p class="t12 mute mt16" style="text-align:center">영수증은 매주 월요일, 매월 1일에 자동 발행돼요</p>` : '');
   return head + `
     <section style="margin-top:14px">${topSpend()}</section>
     <section class="sec">
@@ -1975,35 +1972,24 @@ const simpleToast = m => toast(`<div class="row g12"><span class="ib" style="bac
 // 영수증 뜯기: 옆으로 끌면 따라 기울고, 충분히 당기면 뜯겨 떨어진 뒤 '출력하기' 버튼으로 돌아간다
 function tearOff(id, dx) {
   const pr = document.getElementById(id), pa = pr && pr.querySelector('.paper'); if (!pa || pr.classList.contains('torn')) return;
-  const d = dx < 0 ? -1 : 1, a0 = bendS.pa === pa ? bendS.cur : 0, quick = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  bendStop(); pr.classList.remove('printing'); pr.classList.add('torn');
+  const d = dx < 0 ? -1 : 1, from = pa.style.transform || 'none', quick = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  pr.classList.remove('printing'); pa.style.transition = 'none'; pr.classList.add('torn');
   const done = () => { S.printed.delete(id); S.torn = id; render(true); S.torn = null; };
   if (quick) return done();
   // 종이처럼 흔들리며 떨어진다: 휘어짐(skew)과 기울기가 번갈아 바뀌고 점점 투명해짐
   const f = (x, y, r, k, o) => ({ transform: `translate(${d * x}px, ${y}px) rotate(${d * r}deg) perspective(900px) rotateY(${d * k * .5}deg) skewX(${d * k}deg)`, opacity: o });
   pa.animate([
-    { transform: bendTf(a0), opacity: 1 },
-    { ...f(36, 18, 6, Math.abs(a0) * .4, 1), offset: .18 },
+    { transform: from, opacity: 1 },
+    { ...f(36, 18, 6, 4, 1), offset: .18 },
     { ...f(78, 70, -3, -8, .95), offset: .42 },
     { ...f(112, 150, 9, 7, .7), offset: .7 },
     f(140, 250, 2, -5, 0)
   ], { duration: 950, easing: 'cubic-bezier(.35,.05,.6,1)', fill: 'forwards' }).onfinish = done;
 }
-// 끌면 출구에 붙은 윗변은 고정된 채 아래쪽이 손가락을 따라 휘어지고, 놓으면 스프링처럼 흔들리며 돌아온다
-const bendS = { pa: null, cur: 0, vel: 0, to: 0, raf: 0 };
-const bendTf = a => `perspective(900px) rotateY(${a * .5}deg) skewX(${a}deg)`;
-function bendTick() {
-  const b = bendS; if (!b.pa) return;
-  b.vel = (b.vel + (b.to - b.cur) * .14) * .78; b.cur += b.vel;
-  b.pa.style.transform = bendTf(b.cur); b.pa.style.setProperty('--bend', (Math.abs(b.cur) / 30).toFixed(3)); b.pa.style.setProperty('--bd', b.cur < 0 ? -1 : 1);
-  if (b.to === 0 && Math.abs(b.cur) < .05 && Math.abs(b.vel) < .05) { b.pa.style.transform = ''; b.pa.style.removeProperty('--bend'); b.pa = null; b.raf = 0; return; }
-  b.raf = requestAnimationFrame(bendTick);
-}
-function bendStop() { cancelAnimationFrame(bendS.raf); bendS.raf = 0; bendS.pa = null; bendS.cur = bendS.vel = bendS.to = 0; }
 let tearDrag = null;
 document.addEventListener('pointerdown', e => {
   const f = e.target.closest('.printer .feed'); if (!f || f.parentNode.classList.contains('torn')) return;
-  tearDrag = { f, pa: f.querySelector('.paper'), x: e.clientX, y: e.clientY, gy: Math.max(90, e.clientY - f.getBoundingClientRect().top), dx: 0, on: false };
+  tearDrag = { f, pa: f.querySelector('.paper'), x: e.clientX, y: e.clientY, dx: 0, on: false };
 });
 document.addEventListener('pointermove', e => {
   const t = tearDrag; if (!t) return;
@@ -2011,17 +1997,16 @@ document.addEventListener('pointermove', e => {
   if (!t.on) {
     if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { tearDrag = null; return; }
     if (Math.abs(dx) < 8) return;
-    t.on = true; t.f.parentNode.classList.remove('printing');
-    if (bendS.pa !== t.pa) { bendStop(); bendS.pa = t.pa; }
-    if (!bendS.raf) bendS.raf = requestAnimationFrame(bendTick);
+    t.on = true; t.f.parentNode.classList.remove('printing'); t.pa.style.transition = 'none';
   }
-  t.dx = dx; bendS.to = Math.max(-28, Math.min(28, Math.atan(dx * .85 / t.gy) * 180 / Math.PI));
+  t.dx = dx; const k = Math.sign(dx) * Math.min(Math.abs(dx), 140);
+  t.pa.style.transform = `translateX(${k * .35}px) rotate(${k * .045}deg)`;
 });
 const tearEnd = () => {
   const t = tearDrag; tearDrag = null; if (!t || !t.on) return;
   t.f.dataset.dragged = '1'; setTimeout(() => delete t.f.dataset.dragged, 0);
   if (Math.abs(t.dx) > 70) return tearOff(t.f.parentNode.id, t.dx);
-  bendS.to = 0; if (!bendS.raf) bendS.raf = requestAnimationFrame(bendTick);
+  t.pa.style.transition = 'transform .35s cubic-bezier(.3,1.4,.5,1)'; t.pa.style.transform = '';
 };
 document.addEventListener('pointerup', tearEnd); document.addEventListener('pointercancel', tearEnd);
 function reprint(id) { const p = document.getElementById(id); if (!p) return; p.classList.remove('printing'); void p.offsetWidth; p.classList.add('printing'); }
