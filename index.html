@@ -111,6 +111,9 @@ svg{display:block}
 /* 화면 오른쪽 여백까지 넓혀 다음 카드 끝이 보이게 */
 .na-track{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;min-width:0;margin:0 calc(-1 * var(--m));padding:0 var(--m);scroll-padding:0 var(--m)}
 .na-track::-webkit-scrollbar{display:none}
+.na-dots{display:flex;justify-content:center;gap:6px;height:6px}
+.na-dots i{width:6px;height:6px;border-radius:50%;background:#DCE9FA;transition:background .25s}
+.na-dots i.on{background:#A9CBF5}
 .pt-lg{display:inline-block;width:10px;height:10px;border-radius:3px}
 .na-track>.na-card{flex:0 0 100%;scroll-snap-align:start}
 .na-track::after{content:"";flex:0 0 1px}
@@ -131,7 +134,7 @@ svg{display:block}
 .proj-card .pc-label{font-size:12px;color:var(--mute);line-height:17px}
 .proj-card .pc-amount{margin-top:8px;height:48px;display:flex;align-items:baseline}
 .proj-card .pc-num{font-family:var(--f-num);font-size:36px;font-weight:300;line-height:48px}
-.proj-card .pc-desc{font-size:12px;line-height:16.8px;color:#BEBEBE}
+.proj-card .pc-desc{font-size:12px;line-height:16.8px;font-weight:400;color:#BEBEBE}
 .proj-card .pc-won{font-family:var(--f-kr);font-size:24px;font-weight:300;margin-left:12px}
 .proj-card .pc-axis{position:relative;height:50px;margin-top:16px;--bar:#ABD1FF}
 .proj-card .pc-axis.over{--bar:#FF9DB8}
@@ -967,6 +970,11 @@ function vResult(ctx = 'ob') {
    HOME
    ========================================================= */
 // 행동 추천 카드 (Figma 시안): "행동 추천" + 유형 칩 / 제목 20px / 설명 2줄 / 오른쪽 원형 실행 버튼
+// 행동 추천 카드를 넘기면 아래 점(∙ ∙ ∙)도 함께 바뀐다
+function naDots(el) {
+  const k = Math.round(el.scrollLeft / (el.firstElementChild.offsetWidth + 12)); S.naIdx = k;
+  el.parentElement.querySelectorAll('.na-dots i').forEach((d, j) => d.classList.toggle('on', j === k));
+}
 function nextCard() {
   const P = S.persona;
   // 페르소나별 행동 추천 목록(가로로 넘겨 보는 카드). i: 버튼 아이콘 — 알림을 켜는 행동은 알림 추가 아이콘
@@ -1004,7 +1012,8 @@ function nextCard() {
     <div class="na-body"><div><div class="na-title">${c.t}</div><p class="na-desc">${c.s}</p></div>
       ${c.done ? `<span class="ib na-go done" aria-label="${c.b}">${ic('check', 22)}</span>` : `<button class="ib na-go" ${c.act} aria-label="${c.b}">${ic(c.i || 'ur', 22)}</button>`}</div>
   </div>`;
-  return `<div class="na-wrap"><div class="na-track" onscroll="S.naIdx = Math.round(this.scrollLeft / (this.firstElementChild.offsetWidth + 12))">${recs.map(card).join('')}</div>
+  return `<div class="na-wrap"><div class="na-track" onscroll="naDots(this)">${recs.map(card).join('')}</div>
+  ${total > 1 ? `<div class="na-dots" aria-hidden="true">${recs.map((_, k) => `<i class="${k === (S.naIdx || 0) ? 'on' : ''}"></i>`).join('')}</div>` : ''}
   <p class="na-why"><span class="na-star" aria-hidden="true">✦</span><span>${why}</span></p></div>`;
 }
 function sankey() {
@@ -1115,7 +1124,7 @@ function vHome() {
   const proj = `<div class="card c-ink proj-card">
       <div class="pc-label">월말 예상 지출</div>
       <div class="pc-amount"><span class="pc-num">${won(d.projSpend)}</span><span class="pc-won">₩</span></div>
-      <p class="pc-desc">하루 평균 ${W(Math.round(S.spent / S.day / 100) * 100)}씩 쓰는 중이므로,<br>이 속도면 월말에는 예산보다 ${W(Math.abs(d.proj))} ${under ? '절약할 수 있어요.' : '초과할 수 있어요.'}</p>
+      <p class="pc-desc">하루 평균 ${W(Math.round(S.spent / S.day / 100) * 100)}씩 쓰는 중이므로,<br>월말에는 예산보다 ${W(Math.abs(d.proj))} ${under ? '절약할 수 있어요' : '초과할 수 있어요'}</p>
       <div class="pc-axis ${under ? 'under' : 'over'}" role="img" aria-label="월말 예상 지출 ${won(d.projSpend)}원, 예산 ${won(S.budget)}원, ${won(Math.abs(d.proj))}원 ${under ? '남음' : '초과'}">
         <span class="pc-bud" style="left:${ax(S.budget)}%;transform:translateX(${S.budget === axisMin ? 0 : S.budget === axisMax ? -100 : -50}%)">예산</span>
         <i class="pc-track"></i>
