@@ -993,7 +993,7 @@ function sankey() {
   };
   Object.values(N).forEach(n => n.v = 0);
   L.forEach(([f, t, v]) => { N[f].v += v; N[t].v += v; });
-  const ids = Object.keys(N).filter(i => N[i].v > 0), H = 262, TOP = 22, GAP = 14, X = [0, 200], BW = 8;
+  const ids = Object.keys(N).filter(i => N[i].v > 0), H = 262, TOP = 22, GAP = 14, X = [58, 196], BW = 8;  // 왼쪽 열 라벨은 막대 바깥(왼쪽)에
   const mw = v => `${Math.round(v / 10000)}만`;
   const rightN = ids.filter(i => N[i].c === 1).length;
   const k = (H - GAP * (rightN - 1)) / ids.filter(i => N[i].c === 0).reduce((t, i) => t + N[i].v, 0);
@@ -1004,7 +1004,8 @@ function sankey() {
     col.forEach(i => { Object.assign(N[i], { x:X[c], y, h:Math.max(3, N[i].v * k), so:0, to:0 }); y += N[i].h + GAP; });
   });
   const sel = S.flowSel, on = l => !sel || l[0] === sel || l[1] === sel;
-  const fill = { fix:'#D4D4D4', use:'#E4E4E4', left:'#EFEFEF', save:'url(#skA)', emer:'url(#skR)' };
+  // 이미 나간 돈(지출·저축·비상금)은 컬러, 아직 남은 돈만 흑백
+  const fill = { fix:'url(#skF)', use:'url(#skU)', save:'url(#skA)', emer:'url(#skE)', left:'#E6E6E6' };
   const ord = Object.fromEntries(ids.map((id, n) => [id, n]));
   const yOut = new Map(), yIn = new Map();
   [...L].sort((a, b) => ord[a[0]] - ord[b[0]] || ord[a[1]] - ord[b[1]]).forEach(l => { yOut.set(l, N[l[0]].y + N[l[0]].so); N[l[0]].so += l[2] * k; });
@@ -1019,16 +1020,18 @@ function sankey() {
     const bar = n.open
       ? `<rect x="${n.x + .75}" y="${n.y + .75}" width="${BW - 1.5}" height="${n.h - 1.5}" rx="${(BW - 1.5) / 2}" fill="#FCFCFC" stroke="#181818" stroke-width="1.5" stroke-dasharray="2.5 2.5"/>`
       : `<rect x="${n.x}" y="${n.y}" width="${BW}" height="${n.h}" rx="${BW / 2}" fill="#181818"/>`;
-    const tx = n.x + 16, two = n.h >= 30, cy = n.y + n.h / 2;
+    const left = n.c === 0, tx = left ? n.x - 8 : n.x + 16, anc = left ? ' text-anchor="end"' : '', two = n.h >= 30, cy = n.y + n.h / 2;
     const lab = two
-      ? `<text x="${tx}" y="${n.y + 15}" font-size="12" fill="#181818">${n.n}</text><text x="${tx}" y="${n.y + 29}" font-size="11" fill="#606060" font-family="Urbanist">${mw(n.v)}</text>`
-      : `<text x="${tx}" y="${cy + 4}" font-size="12" fill="#181818">${n.n} <tspan font-size="11" fill="#606060" font-family="Urbanist">${mw(n.v)}</tspan></text>`;
-    return `<g data-act="flow" data-v="${i}" style="cursor:pointer" role="button" aria-pressed="${sel === i}" aria-label="${n.n} ${won(n.v)}원 흐름 보기" opacity="${dim ? .35 : 1}"><rect x="${n.x - 4}" y="${n.y - 4}" width="${n.c ? 105 : 64}" height="${n.h + 8}" fill="transparent"/>${bar}${lab}</g>`;
+      ? `<text x="${tx}" y="${n.y + 15}"${anc} font-size="12" fill="#181818">${n.n}</text><text x="${tx}" y="${n.y + 29}"${anc} font-size="11" fill="#606060" font-family="Urbanist">${mw(n.v)}</text>`
+      : `<text x="${tx}" y="${cy + 4}"${anc} font-size="12" fill="#181818">${n.n} <tspan font-size="11" fill="#606060" font-family="Urbanist">${mw(n.v)}</tspan></text>`;
+    return `<g data-act="flow" data-v="${i}" style="cursor:pointer" role="button" aria-pressed="${sel === i}" aria-label="${n.n} ${won(n.v)}원 흐름 보기" opacity="${dim ? .35 : 1}"><rect x="${n.c ? n.x - 4 : 0}" y="${n.y - 4}" width="${n.c ? 112 : n.x + BW + 4}" height="${n.h + 8}" fill="transparent"/>${bar}${lab}</g>`;
   }).join('');
   return `<svg viewBox="0 0 305 ${H + TOP + 4}" width="100%" role="img" aria-label="10월 들어온 돈 ${ids.filter(i => !N[i].c).map(i => `${N[i].n} ${won(N[i].v)}원`).join(', ')}이 ${ids.filter(i => N[i].c).map(i => `${N[i].n} ${won(N[i].v)}원`).join(', ')}으로 나뉨">
-    <defs><linearGradient id="skA" x1="0" x2="1"><stop offset="0" stop-color="#E6F0FF"/><stop offset="1" stop-color="#C8E1FF"/></linearGradient>
-    <linearGradient id="skR" x1="0" x2="1"><stop offset="0" stop-color="#FFE3EB"/><stop offset="1" stop-color="#FFB8CB"/></linearGradient></defs>
-    <text x="0" y="10" font-size="10" fill="#9C9C9C">들어온 돈</text><text x="${X[1]}" y="10" font-size="10" fill="#9C9C9C">간 곳</text>
+    <defs><linearGradient id="skF" x1="0" x2="1"><stop offset="0" stop-color="#FFE3EB"/><stop offset="1" stop-color="#FF9DB8"/></linearGradient>
+    <linearGradient id="skU" x1="0" x2="1"><stop offset="0" stop-color="#FFF0F4"/><stop offset="1" stop-color="#FFC9D7"/></linearGradient>
+    <linearGradient id="skA" x1="0" x2="1"><stop offset="0" stop-color="#E6F0FF"/><stop offset="1" stop-color="#A9CBF5"/></linearGradient>
+    <linearGradient id="skE" x1="0" x2="1"><stop offset="0" stop-color="#EEF4FF"/><stop offset="1" stop-color="#C8E1FF"/></linearGradient></defs>
+    <text x="${X[0] + BW}" y="10" text-anchor="end" font-size="10" fill="#9C9C9C">들어온 돈</text><text x="${X[1]}" y="10" font-size="10" fill="#9C9C9C">간 곳</text>
     ${links}${nodes}</svg>`;
 }
 // 용도별 통장: 통합 자산 총액과, 그 안에서 각 통장이 차지하는 비율(한 줄 막대) + 잔액 목록
