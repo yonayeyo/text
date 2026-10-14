@@ -278,8 +278,7 @@ svg{display:block}
 .meter .bars i{width:2px;background:var(--ink);border-radius:1px}
 .meter .bars i.off{background:var(--g3)}
 .meter .bars i.now{width:3px;background:var(--sky);box-shadow:0 0 8px 2px rgba(200,225,255,.9)}
-.meter .lbl{display:flex;justify-content:space-between;margin-top:8px;position:relative;height:14px}
-.meter .lbl .used{position:absolute;top:0;white-space:nowrap;color:var(--fg)}
+.meter .lbl{display:flex;justify-content:space-between;margin-top:8px}
 .meter .mk{position:absolute;top:-20px;white-space:nowrap}
 .glowbar{height:12px;border-radius:999px;background:rgba(24,24,24,.08);position:relative}
 .glowbar i{position:absolute;inset:0 auto 0 0;border-radius:999px;background:linear-gradient(90deg,#C8E1FF,#FF769C)}
@@ -737,14 +736,12 @@ function scores() {
    ========================================================= */
 function meter(used, time) {
   const n = 64, u = Math.round(used * n), t = Math.min(n - 1, Math.round(time * n));
+  const proj = D().projSpend / S.budget;   // 예상 = 이 속도면 월말에 예산의 몇 %를 쓰는지
   let s = ''; for (let i = 0; i < n; i++) s += `<i class="${i === t ? 'now' : i < u ? '' : 'off'}" style="${i % 8 === 0 ? 'width:3px' : ''}"></i>`;
-  // 라벨은 게이지 위치에 붙인다: 위 = 오늘(하늘색 눈금), 아래 = 쓴 돈(검정 막대 끝). 양 끝에 가까우면 끝에 맞춰 정렬하고 겹치는 끝 라벨은 숨긴다
-  const at = (x, lo = 12, hi = 88) => x < lo ? 'left:0' : x > hi ? 'right:0' : `left:${x}%;transform:translateX(-50%)`;
-  const tx = t / (n - 1) * 100, ux = Math.min(100, used * 100);
-  return `<div class="meter" role="img" aria-label="예산 ${won(S.budget)}원 중 ${won(S.spent)}원 사용, 오늘은 한 달 중 ${S.day}일째">
-    <span class="mk t10 mute" style="${at(tx, 6, 94)}">오늘 ▾</span>
+  return `<div class="meter" role="img" aria-label="예산 ${pct(used)} 사용, 월말 예상 ${pct(proj)}">
+    <span class="mk t10 mute" style="left:${t / (n - 1) * 100}%;transform:translateX(-50%)">오늘 ▾</span>
     <div class="bars">${s}</div>
-    <div class="lbl t10 mute num">${ux < 16 ? '' : '<span>0</span>'}<span class="used" style="${at(ux, 16, 80)}">쓴 돈 ${won(S.spent)}</span>${ux > 80 ? '' : `<span style="margin-left:auto">${won(S.budget)}</span>`}</div>
+    <div class="lbl t10 mute num"><span>0</span><span>사용 ${pct(used)} · 예상 ${pct(proj)}</span><span>${won(S.budget)}</span></div>
   </div>`;
 }
 function allocBlock() {
