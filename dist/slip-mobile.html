@@ -1556,25 +1556,28 @@ function vPlan() {
    ========================================================= */
 /* 중간 목표 길: 아래 왼쪽에서 위 오른쪽으로 오르는 한 줄의 길 위에 단계 점을 찍고, 지금 위치까지 길을 색으로 채운다 */
 function milestones(saved) {
-  const P = [[34, 228], [116, 176], [200, 136], [262, 44]];          // 단계 1~4 위치
+  const P = [[44, 228], [114, 170], [198, 150], [262, 48]];          // 단계 1~4 위치 (오르막 → 숨 고르는 평지 → 급경사)
   let cur = STAGES.findIndex(s => saved < s.a); if (cur < 0) cur = STAGES.length - 1;
   // 점들을 지나는 부드러운 곡선(Catmull-Rom → 3차 베지어)
   const seg = i => { const p0 = P[i - 1] || P[i], p1 = P[i], p2 = P[i + 1], p3 = P[i + 2] || p2;
-    return [p1, [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6], [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6], p2]; };
+    const k = 1 / 3.2;   // 곡선 장력: 클수록 크게 휘어진다
+    return [p1, [p1[0] + (p2[0] - p0[0]) * k, p1[1] + (p2[1] - p0[1]) * k], [p2[0] - (p3[0] - p1[0]) * k, p2[1] - (p3[1] - p1[1]) * k], p2]; };
   const lerp = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
   const split = (b, t) => { const ab = lerp(b[0], b[1], t), bc = lerp(b[1], b[2], t), cd = lerp(b[2], b[3], t), abc = lerp(ab, bc, t), bcd = lerp(bc, cd, t); return [b[0], ab, abc, lerp(abc, bcd, t)]; };
   const f = v => v.map(n => n.toFixed(1)).join(' ');
   const C = b => `C${f(b[1])} ${f(b[2])} ${f(b[3])}`;
   const road = `M${f(P[0])}` + P.slice(1).map((_, i) => C(seg(i))).join('');
   // 지금 위치: 이전 단계 금액 → 현재 단계 금액 사이 비율만큼 해당 구간 위에
-  const prevA = cur ? STAGES[cur - 1].a : 0, frac = cur ? Math.max(0, Math.min(1, (saved - prevA) / (STAGES[cur].a - prevA))) : 0;
+  const prevA = cur ? STAGES[cur - 1].a : 0;
+  let frac = cur ? Math.max(0, Math.min(1, (saved - prevA) / (STAGES[cur].a - prevA))) : 0;
+  // 다음 단계 점과 겹치지 않도록 지금 점은 그 점에서 최소 26px 떨어진 곳까지만 나아간다
+  if (cur) { const tgt = P[cur]; while (frac > 0 && Math.hypot(split(seg(cur - 1), frac)[3][0] - tgt[0], split(seg(cur - 1), frac)[3][1] - tgt[1]) < 26) frac -= .01; }
   const part = cur ? split(seg(cur - 1), frac) : null, now = cur ? part[3] : P[0];
   const done = `M${f(P[0])}` + Array.from({ length:Math.max(0, cur - 1) }, (_, i) => C(seg(i))).join('') + (part ? C(part) : '');
   const nodes = STAGES.map((st, i) => { const [x, y] = P[i], ok = saved >= st.a, last = i === STAGES.length - 1;
-    const hidden = !ok && Math.hypot(x - now[0], y - now[1]) < 20;   // 지금 점과 겹치면 빈 원은 생략(금액 라벨만)
-    return `${hidden ? '' : ok ? `<circle cx="${x}" cy="${y}" r="7.5" fill="#181818"/>` : `<circle cx="${x}" cy="${y}" r="${last ? 10 : 8.5}" fill="#FCFCFC" stroke="#181818" stroke-width="2"/>`}
-      <text x="${x - (last ? 14 : 4)}" y="${y - 16}" text-anchor="end" font-size="11" font-family="Urbanist" fill="#7A7A7A">${man(st.a)}</text>
-      ${ok ? `<text x="${x + 10}" y="${y + 24}" font-size="11" fill="#7A7A7A">${i + 1} ${st.n}</text>` : ''}`; }).join('');
+    return `${ok ? `<circle cx="${x}" cy="${y}" r="7.5" fill="#181818"/>` : `<circle cx="${x}" cy="${y}" r="${last ? 10 : 8.5}" fill="#FCFCFC" stroke="#181818" stroke-width="2"/>`}
+      <text x="${last ? x - 16 : x}" y="${last ? y + 4 : y - 18}" text-anchor="${last ? 'end' : 'middle'}" font-size="11" font-family="Urbanist" fill="#7A7A7A">${man(st.a)}</text>
+      ${ok ? `<text x="${x - 6}" y="${y + 26}" font-size="11" fill="#7A7A7A">${i + 1} ${st.n}</text>` : ''}`; }).join('');
   return `<svg viewBox="0 0 300 262" width="100%" role="img" aria-label="중간 목표 ${STAGES.length}단계 중 ${cur + 1}단계, 지금 ${man(saved)}">
     <defs><linearGradient id="msG" gradientUnits="userSpaceOnUse" x1="${P[0][0]}" y1="${P[0][1]}" x2="${now[0]}" y2="${now[1]}"><stop offset="0" stop-color="#C9C6F5"/><stop offset="1" stop-color="#F4A3BF"/></linearGradient>
     <filter id="msB" filterUnits="userSpaceOnUse" x="0" y="0" width="300" height="262"><feGaussianBlur stdDeviation="7"/></filter>
@@ -1585,7 +1588,7 @@ function milestones(saved) {
     ${nodes}
     <circle cx="${now[0]}" cy="${now[1]}" r="22" fill="url(#msN)"/>
     <circle cx="${now[0]}" cy="${now[1]}" r="12" fill="#FCFCFC"/><circle cx="${now[0]}" cy="${now[1]}" r="8" fill="#181818"/>
-    <text x="${now[0] + 18}" y="${now[1] + 26}" font-size="13" font-weight="600" fill="#181818">지금 ${man(saved)}</text></svg>`;
+    <text x="${now[0] + 20}" y="${now[1] + 22}" font-size="13" font-weight="600" fill="#181818">지금 ${man(saved)}</text></svg>`;
 }
 function stairs(saved) {
   const W_ = 305, base = 176, sw = (W_ - 12) / 4;
