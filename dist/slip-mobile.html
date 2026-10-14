@@ -324,12 +324,13 @@ svg{display:block}
 .glowbar{height:12px;border-radius:999px;background:rgba(24,24,24,.08);position:relative}
 .glowbar i{position:absolute;inset:0 auto 0 0;border-radius:999px;background:linear-gradient(90deg,#C8E1FF,#FF769C)}
 .glowbar i::after{content:"";position:absolute;inset:-6px;border-radius:999px;background:inherit;filter:blur(10px);opacity:.75;z-index:-1}
+.glowbar.flat i::after{display:none}
 
 /* ---------- receipt ---------- */
 .printer{margin-top:24px}
 /* 영수증 입구(Figma 372×57): 금속 바깥 틀 + 반투명 안쪽 판 + 가운데 출구 선. 종이는 출구 선 가운데에서 나온다 */
-.slot{height:57px;border-radius:12px;position:relative;z-index:1;border:2px solid #CACACA;
-  background:linear-gradient(180deg,#909090 0%,#F3F3F3 21%,#666464 75%,#767676 100%)}
+.slot{height:57px;border-radius:12px;position:relative;z-index:1;border:2px solid transparent;
+  background:linear-gradient(180deg,#909090 0%,#F3F3F3 21%,#666464 75%,#767676 100%) padding-box,linear-gradient(180deg,#CACACA 0%,#686A69 50%,#5E5E5E 100%) border-box}
 .slot::before{content:"";position:absolute;left:4.4px;right:4.4px;top:2.25px;height:48.9px;border-radius:7px;
   background:linear-gradient(180deg,rgba(177,176,176,.7) 0%,rgba(233,233,233,.7) 27%,rgba(212,212,212,.7) 84%,rgba(185,183,183,.7) 100%)}
 .slot::after{content:"";position:absolute;left:13.9px;right:13.9px;top:23.5px;height:7.44px;border-radius:22px;border:1px solid #CACACA;
@@ -1508,7 +1509,7 @@ function vPlan() {
   <div class="card c-ink mt16">
     <div class="row between"><span class="t12 mute">10월 예산</span><span class="t10 mute num">10.01 – 10.31</span></div>
     <div class="row g8 mt8" style="align-items:baseline"><span class="n32">${won(S.budget)}</span><span class="cur t16">₩</span></div>
-    <div class="glowbar mt16" style="height:8px;background:#333"><i style="width:${Math.min(100, d.used * 100)}%"></i></div>
+    <div class="glowbar flat mt16" style="height:8px;background:#333"><i style="width:${Math.min(100, d.used * 100)}%"></i></div>
     <div class="grid2 mt16" style="gap:12px">
       <div><div class="t10 mute">지금까지 쓴 돈</div><div class="n20 mt4">${won(S.spent)}</div></div>
       <div><div class="t10 mute">오늘 쓸 수 있는 돈</div><div class="n20 mt4">${won(d.daily)}</div></div>
