@@ -278,8 +278,9 @@ svg{display:block}
 .meter .bars i{width:2px;background:var(--ink);border-radius:1px}
 .meter .bars i.off{background:var(--g3)}
 .meter .bars i.now{width:3px;background:var(--sky);box-shadow:0 0 8px 2px rgba(200,225,255,.9)}
-.meter .lbl{display:flex;justify-content:space-between;margin-top:8px}
-.meter .mk{position:absolute;top:-20px;transform:translateX(-50%);white-space:nowrap}
+.meter .lbl{display:flex;justify-content:space-between;margin-top:8px;position:relative;height:14px}
+.meter .lbl .used{position:absolute;top:0;white-space:nowrap;color:var(--fg)}
+.meter .mk{position:absolute;top:-20px;white-space:nowrap}
 .glowbar{height:12px;border-radius:999px;background:rgba(24,24,24,.08);position:relative}
 .glowbar i{position:absolute;inset:0 auto 0 0;border-radius:999px;background:linear-gradient(90deg,#C8E1FF,#FF769C)}
 .glowbar i::after{content:"";position:absolute;inset:-6px;border-radius:999px;background:inherit;filter:blur(10px);opacity:.75;z-index:-1}
@@ -737,12 +738,13 @@ function scores() {
 function meter(used, time) {
   const n = 64, u = Math.round(used * n), t = Math.min(n - 1, Math.round(time * n));
   let s = ''; for (let i = 0; i < n; i++) s += `<i class="${i === t ? 'now' : i < u ? '' : 'off'}" style="${i % 8 === 0 ? 'width:3px' : ''}"></i>`;
-  // '사용 %·경과 %' 대신 금액으로: 오늘까지 써도 되는 돈(예산 × 지난 날 비율)과 실제 쓴 돈의 차이
-  const fair = Math.round(S.budget * time / 100) * 100, gap = fair - Math.round(S.budget * used);
-  return `<div class="meter" role="img" aria-label="오늘까지 적정 지출 ${won(fair)}원, 쓴 돈 ${won(S.budget * used)}원">
-    <span class="mk t10 mute" style="left:${t / (n - 1) * 100}%">오늘 ▾</span>
+  // 라벨은 게이지 위치에 붙인다: 위 = 오늘(하늘색 눈금), 아래 = 쓴 돈(검정 막대 끝). 양 끝에 가까우면 끝에 맞춰 정렬하고 겹치는 끝 라벨은 숨긴다
+  const at = (x, lo = 12, hi = 88) => x < lo ? 'left:0' : x > hi ? 'right:0' : `left:${x}%;transform:translateX(-50%)`;
+  const tx = t / (n - 1) * 100, ux = Math.min(100, used * 100);
+  return `<div class="meter" role="img" aria-label="예산 ${won(S.budget)}원 중 ${won(S.spent)}원 사용, 오늘은 한 달 중 ${S.day}일째">
+    <span class="mk t10 mute" style="${at(tx, 6, 94)}">오늘 ▾</span>
     <div class="bars">${s}</div>
-    <div class="lbl t10 mute num"><span>0</span><span>오늘까지 적정 지출보다 ${won(Math.abs(gap))}원 ${gap >= 0 ? '덜' : '더'} 썼어요</span><span>${won(S.budget)}</span></div>
+    <div class="lbl t10 mute num">${ux < 16 ? '' : '<span>0</span>'}<span class="used" style="${at(ux, 16, 80)}">쓴 돈 ${won(S.spent)}</span>${ux > 80 ? '' : `<span style="margin-left:auto">${won(S.budget)}</span>`}</div>
   </div>`;
 }
 function allocBlock() {
