@@ -219,8 +219,9 @@ svg{display:block}
 .utabs button{flex:1;height:40px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:7px;font-size:14px;font-weight:400;line-height:17px;color:var(--mute);position:relative}
 .utabs button.on{color:var(--fg);font-weight:600}
 /* 밑줄은 하나만 두고 위치(--i)를 옮겨서, 세부 탭을 넘길 때 손가락을 따라 미끄러지게 */
-.utabs::after{content:"";position:absolute;bottom:0;height:2px;background:var(--fg);width:calc(80% / 3);left:calc((var(--i,0) + .1) * 100% / 3);transition:left .22s cubic-bezier(.3,.7,.3,1)}
+.utabs::after{content:"";position:absolute;bottom:0;height:2px;background:var(--fg);width:calc(80% / 3);left:calc((var(--i,0) + .1) * 100% / 3);transition:left .34s cubic-bezier(.3,.7,.3,1)}
 .utabs.drag::after{transition:none}
+.sub-ghost{position:absolute;left:0;right:0;padding:0 var(--m);display:flow-root;pointer-events:none}
 .utabs + .row,.shead + .row{margin-top:14px}
 .chip.pchip{height:28px;padding:0 12px;font-size:12px;gap:4px;box-shadow:none;border:.5px solid var(--line)}
 .screen.dark .chip.pchip{border-color:#595959}
@@ -1928,17 +1929,25 @@ const SUBS = { spend:['spendView', ['list','analysis','report']], plan:['planVie
 const subPanes = () => [...view.children].filter(c => !c.classList.contains('shead'));
 const setPanes = (els, x, t) => els.forEach(e => { e.style.transition = t ? `transform ${t}` : 'none'; e.style.transform = x ? `translateX(${x}px)` : ''; });
 let swipe = null, swiped = false;
-function goSub(ni, dir, from) {
-  // 이전 화면을 밀어내지 않고 바로 바꾼 뒤, 새 화면이 넘긴 방향에서 짧게(36px) 들어오게 해 어지럽지 않게
+function goSub(ni, dir, from, d = 0) {
+  // 페이지 넘김: 이전 화면(복제본)이 밀려 나가는 동시에 새 화면이 옆에서 이어 들어온다
   const [k, l] = SUBS[S.tab]; if (ni < 0 || ni >= l.length || l[ni] === S[k]) return;
+  const old = subPanes().filter(e => !e.classList.contains('sub-ghost') && !e.classList.contains('ht-end'));
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, w = view.clientWidth;
+  let ghost = null;
+  if (!reduce && old.length) {
+    ghost = document.createElement('div'); ghost.className = 'sub-ghost';
+    ghost.style.top = (old[0].offsetTop - parseFloat(getComputedStyle(old[0]).marginTop) - view.scrollTop) + 'px';
+    old.forEach(e => { const c = e.cloneNode(true); c.style.transform = ''; c.style.transition = ''; c.removeAttribute('id'); c.querySelectorAll('[id]').forEach(x => x.removeAttribute('id')); ghost.append(c); });
+  }
   S[k] = l[ni]; render(false);
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const ut = view.querySelector('.utabs'), ne = subPanes();
+  if (reduce) return;
+  const ut = view.querySelector('.utabs'), ne = subPanes(), ease = '.34s cubic-bezier(.25,.8,.25,1)';
   if (ut) { ut.classList.add('drag'); ut.style.setProperty('--i', from); void ut.offsetWidth; ut.classList.remove('drag'); ut.style.setProperty('--i', ni); }
-  ne.forEach(e => { e.style.transition = 'none'; e.style.transform = `translateX(${dir * 36}px)`; e.style.opacity = '0'; });
-  void view.offsetWidth;
-  ne.forEach(e => { e.style.transition = 'transform .2s cubic-bezier(.2,.7,.3,1), opacity .16s linear'; e.style.transform = ''; e.style.opacity = ''; });
-  setTimeout(() => ne.forEach(e => { e.style.transition = ''; }), 220);
+  if (ghost) { ghost.style.transform = `translateX(${d}px)`; view.append(ghost); }
+  setPanes(ne, dir * w + d); void view.offsetWidth;
+  setPanes(ne, 0, ease); if (ghost) { ghost.style.transition = `transform ${ease}`; ghost.style.transform = `translateX(${-dir * w}px)`; }
+  setTimeout(() => { ne.forEach(e => { e.style.transition = ''; }); ghost && ghost.remove(); }, 360);
 }
 function swStart(x, y, tg) {
   if (S.mode !== 'app' || S.sub || !SUBS[S.tab] || !view.contains(tg)) return;
@@ -1965,7 +1974,7 @@ function swEnd() {
   const s = swipe; swipe = null; if (!s || !s.on) return;
   swiped = true; setTimeout(() => { swiped = false; }, 50);
   const dir = s.dx < 0 ? 1 : -1, ni = s.i + dir;
-  if (Math.abs(s.dx) > s.w * .2 && ni >= 0 && ni < s.n) return goSub(ni, dir, s.i - s.dx / s.w);
+  if (Math.abs(s.dx) > s.w * .2 && ni >= 0 && ni < s.n) return goSub(ni, dir, s.i - s.dx / s.w, s.dx);
   setPanes(s.els, 0, '.3s cubic-bezier(.2,.7,.3,1)');
   if (s.ut) { s.ut.classList.remove('drag'); s.ut.style.setProperty('--i', s.i); }
 }
