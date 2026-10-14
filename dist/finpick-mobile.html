@@ -278,7 +278,7 @@ svg{display:block}
 .meter .bars i{width:2px;background:var(--ink);border-radius:1px}
 .meter .bars i.off{background:var(--g3)}
 .meter .bars i.now{width:3px;background:var(--sky);box-shadow:0 0 8px 2px rgba(200,225,255,.9)}
-.meter .lbl{position:relative;height:14px;margin-top:8px}
+.meter .lbl{position:relative;display:flex;height:14px;margin-top:8px}
 .meter .lbl .tk{position:absolute;top:0;white-space:nowrap}
 .meter .mk{position:absolute;top:-20px;white-space:nowrap}
 .glowbar{height:12px;border-radius:999px;background:rgba(24,24,24,.08);position:relative}
@@ -740,14 +740,12 @@ function meter(used) {
   const n = 64, proj = D().projSpend / S.budget;
   const u = Math.max(1, Math.round(used * n)), pi = Math.min(n - 1, Math.max(u, Math.round(proj * n) - 1));
   let s = ''; for (let i = 0; i < n; i++) s += `<i class="${i === pi ? 'now' : i < u ? '' : 'off'}" style="${i % 8 === 0 ? 'width:3px' : ''}"></i>`;
-  const x = i => i / (n - 1) * 100;
-  // 라벨은 해당 눈금에 붙이고, 양 끝에 가까우면 끝에 맞춰 정렬
-  const at = v => v < 8 ? 'left:0' : v > 92 ? 'right:0' : `left:${v}%;transform:translateX(-50%)`;
-  const ux = x(u - 1), px = x(pi);
-  return `<div class="meter" role="img" aria-label="예산 ${won(S.budget)}원 중 ${pct(used)} 사용, 월말 예상 ${pct(proj)}">
-    <span class="mk t10 mute" style="${ux < 12 ? 'left:0' : `left:${ux}%;transform:translateX(calc(-100% + 4px))`}">오늘 ▾</span>
+  // 아래 줄: 0 · (검정 끝 아래) 오늘 · 사용% · 예산. 오늘 라벨이 양 끝에 가까우면 끝 라벨을 숨기고 끝에 맞춘다
+  const ux = (u - 1) / (n - 1) * 100;
+  const at = ux < 12 ? 'left:0' : ux > 88 ? 'right:0' : `left:${ux}%;transform:translateX(-50%)`;
+  return `<div class="meter" role="img" aria-label="예산 ${won(S.budget)}원 중 오늘까지 ${pct(used)} 사용, 월말 예상 ${pct(proj)}">
     <div class="bars">${s}</div>
-    <div class="lbl t10 num"><span class="tk" style="${at(ux)}">사용 ${pct(used)}</span><span class="tk mute" style="${at(px)}">예상 ${pct(proj)}</span></div>
+    <div class="lbl t10 mute num">${ux < 12 ? '' : '<span>0</span>'}<span class="tk" style="${at}">오늘 · ${pct(used)}</span>${ux > 88 ? '' : `<span style="margin-left:auto">${won(S.budget)}</span>`}</div>
   </div>`;
 }
 function allocBlock() {
