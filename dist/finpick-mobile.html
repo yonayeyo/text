@@ -139,11 +139,12 @@ svg{display:block}
 /* 월말 예상 카드: 여백·라운드·배경은 다른 카드(c-ink)와 같고, 글자 굵기도 다른 카드와 같은 규칙(본문 500, 숫자 Urbanist 300) */
 /* 라벨은 작은 하늘색 알약 안에 */
 .proj-card .pc-label{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;background:#CFE3FF;color:#181818;font-size:10px;line-height:1}
-.proj-card .pc-amount{margin-top:8px;height:48px;display:flex;align-items:baseline}
+/* 라벨 ↔ 숫자 ↔ 설명 ↔ 그래프: 보이는 글자 기준 간격 14px로 동일 */
+.proj-card .pc-amount{margin-top:3px;height:48px;display:flex;align-items:baseline}
 .proj-card .pc-num{font-family:var(--f-num);font-size:36px;font-weight:300;line-height:48px}
-.proj-card .pc-desc{font-size:12px;line-height:16.8px;font-weight:400;color:#BEBEBE}
+.proj-card .pc-desc{margin-top:1px;font-size:12px;line-height:16.8px;font-weight:400;color:#BEBEBE}
 .proj-card .pc-won{font-family:var(--f-kr);font-size:24px;font-weight:300;margin-left:12px}
-.proj-card .pc-axis{position:relative;height:50px;margin-top:16px;--bar:#ABD1FF}
+.proj-card .pc-axis{position:relative;height:50px;margin-top:9px;--bar:#ABD1FF}
 .proj-card .pc-axis.over{--bar:#FF9DB8}
 .proj-card .pc-bud{position:absolute;top:0;transform:translateX(-50%);font-size:10px;line-height:14px}
 .proj-card .pc-track{position:absolute;left:0;right:0;top:24.25px;height:1.5px;background:rgba(252,252,252,.45)}
