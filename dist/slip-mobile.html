@@ -244,11 +244,16 @@ svg{display:block}
 
 /* ---------- nav & AI dock ---------- */
 .tabbar{position:absolute;left:var(--m);right:var(--m);bottom:24px;height:64px;padding:8px;border-radius:999px;z-index:20;display:flex;justify-content:space-between;align-items:center;
-  background:rgba(24,24,24,.78);backdrop-filter:blur(22px) saturate(160%);-webkit-backdrop-filter:blur(22px) saturate(160%);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),inset 0 1px 0 rgba(255,255,255,.18)}
+  /* 유리: 흐림(포그)은 줄이고 굴절·반사광을 살린다. 크롬은 SVG 굴절 필터, 사파리는 흐림+채도로 */
+  background:linear-gradient(180deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.03) 45%,rgba(255,255,255,0) 60%,rgba(255,255,255,.07) 100%),rgba(22,22,24,.52);
+  -webkit-backdrop-filter:blur(7px) saturate(190%) contrast(1.08);backdrop-filter:url(#glassRefract) blur(6px) saturate(190%) contrast(1.08);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -1px 0 rgba(255,255,255,.14),inset 0 0 0 .5px rgba(255,255,255,.28),inset 0 10px 18px -12px rgba(255,255,255,.35),0 10px 28px rgba(0,0,0,.22)}
 .tab{height:48px;min-width:48px;border-radius:999px;display:flex;align-items:center;justify-content:center;gap:6px;color:var(--paper);font-size:14px;padding:0 10px;transition:background .25s}
 .tab span{display:none}
-.tab.on{background:var(--paper);color:var(--ink);padding:0 18px}
+.tab.on{color:#fff;padding:0 18px;position:relative;
+  background:radial-gradient(120% 90% at 30% 0%,rgba(255,255,255,.42),rgba(255,255,255,.12) 55%,rgba(255,255,255,.06)),rgba(255,255,255,.1);
+  -webkit-backdrop-filter:blur(4px) brightness(1.25) saturate(160%);backdrop-filter:blur(4px) brightness(1.25) saturate(160%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.75),inset 0 -1px 0 rgba(255,255,255,.2),inset 0 0 0 .5px rgba(255,255,255,.45),0 4px 14px rgba(0,0,0,.18)}
 .tab.on span{display:inline}
 .screen.nonav .tabbar,.screen.nonav .ai-dock{display:none}
 .ai-dock{position:absolute;left:var(--m);right:var(--m);bottom:100px;height:56px;padding:8px;border-radius:999px;z-index:19;display:flex;align-items:center;gap:8px;
@@ -553,6 +558,9 @@ svg{display:block}
         <input id="aiInput" placeholder="내 예산·목표 기준으로 물어보세요" autocomplete="off">
         <button type="submit" class="ib ink" aria-label="보내기"></button>
       </form>
+      <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="glassRefract" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.03" numOctaves="2" seed="7" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
       <nav class="tabbar" id="tabbar"></nav>
       <div class="toast" id="toast" role="status" aria-live="polite"><div class="toast-in" id="toastIn"></div></div>
       <div class="layer" id="layer"><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
