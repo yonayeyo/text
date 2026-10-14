@@ -278,7 +278,8 @@ svg{display:block}
 .meter .bars i{width:2px;background:var(--ink);border-radius:1px}
 .meter .bars i.off{background:var(--g3)}
 .meter .bars i.now{width:3px;background:var(--sky);box-shadow:0 0 8px 2px rgba(200,225,255,.9)}
-.meter .lbl{display:flex;justify-content:space-between;margin-top:8px}
+.meter .lbl{position:relative;height:14px;margin-top:8px}
+.meter .lbl .tk{position:absolute;top:0;white-space:nowrap}
 .meter .mk{position:absolute;top:-20px;white-space:nowrap}
 .glowbar{height:12px;border-radius:999px;background:rgba(24,24,24,.08);position:relative}
 .glowbar i{position:absolute;inset:0 auto 0 0;border-radius:999px;background:linear-gradient(90deg,#C8E1FF,#FF769C)}
@@ -734,14 +735,19 @@ function scores() {
 /* =========================================================
    shared viz pieces
    ========================================================= */
-function meter(used, time) {
-  const n = 64, u = Math.round(used * n), t = Math.min(n - 1, Math.round(time * n));
-  const proj = D().projSpend / S.budget;   // 예상 = 이 속도면 월말에 예산의 몇 %를 쓰는지
-  let s = ''; for (let i = 0; i < n; i++) s += `<i class="${i === t ? 'now' : i < u ? '' : 'off'}" style="${i % 8 === 0 ? 'width:3px' : ''}"></i>`;
-  return `<div class="meter" role="img" aria-label="예산 ${pct(used)} 사용, 월말 예상 ${pct(proj)}">
-    <span class="mk t10 mute" style="left:${t / (n - 1) * 100}%;transform:translateX(-50%)">오늘 ▾</span>
+function meter(used) {
+  // 검정 = 지금까지 쓴 돈(끝 = 오늘), 파란 눈금 = 이 속도면 월말에 도달할 지점(예상)
+  const n = 64, proj = D().projSpend / S.budget;
+  const u = Math.max(1, Math.round(used * n)), pi = Math.min(n - 1, Math.max(u, Math.round(proj * n) - 1));
+  let s = ''; for (let i = 0; i < n; i++) s += `<i class="${i === pi ? 'now' : i < u ? '' : 'off'}" style="${i % 8 === 0 ? 'width:3px' : ''}"></i>`;
+  const x = i => i / (n - 1) * 100;
+  // 라벨은 해당 눈금에 붙이고, 양 끝에 가까우면 끝에 맞춰 정렬
+  const at = v => v < 8 ? 'left:0' : v > 92 ? 'right:0' : `left:${v}%;transform:translateX(-50%)`;
+  const ux = x(u - 1), px = x(pi);
+  return `<div class="meter" role="img" aria-label="예산 ${won(S.budget)}원 중 ${pct(used)} 사용, 월말 예상 ${pct(proj)}">
+    <span class="mk t10 mute" style="${ux < 12 ? 'left:0' : `left:${ux}%;transform:translateX(calc(-100% + 4px))`}">오늘 ▾</span>
     <div class="bars">${s}</div>
-    <div class="lbl t10 mute num"><span>0</span><span>사용 ${pct(used)} · 예상 ${pct(proj)}</span><span>${won(S.budget)}</span></div>
+    <div class="lbl t10 num"><span class="tk" style="${at(ux)}">사용 ${pct(used)}</span><span class="tk mute" style="${at(px)}">예상 ${pct(proj)}</span></div>
   </div>`;
 }
 function allocBlock() {
@@ -1114,7 +1120,7 @@ function vHome() {
       <div class="t14 mute">✦ 오늘 쓸 수 있는 돈 ✦</div>
       <div class="hero-n"><span class="n56 num">${won(d.daily)}</span><span class="n24">₩</span></div>
       <div class="t12 mute">10월 남은 예산 ${W(d.remain)} · ${d.left}일</div>
-      ${meter(d.used, d.time)}
+      ${meter(d.used)}
     </section>
     <div class="stack" style="margin-top:32px">
       ${order.join('')}
