@@ -215,10 +215,12 @@ svg{display:block}
 /* 페이지 머리말(지출·플랜·목표·혜택 공통) + 밑줄 탭(화면 폭 전체) + 기간 칩 */
 .ph-title{font-size:18px;font-weight:500;line-height:26px}
 .ph-sub{font-size:12px;font-weight:400;line-height:17px;color:var(--mute)}
-.utabs{display:flex;margin:0 calc(-1 * var(--m)) 0;box-shadow:inset 0 -2px 0 var(--line)}
+.utabs{display:flex;margin:0 calc(-1 * var(--m)) 0;box-shadow:inset 0 -2px 0 var(--line);position:relative}
 .utabs button{flex:1;height:40px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:7px;font-size:14px;font-weight:400;line-height:17px;color:var(--mute);position:relative}
 .utabs button.on{color:var(--fg);font-weight:600}
-.utabs button.on::after{content:"";position:absolute;left:10%;right:10%;bottom:0;height:2px;background:var(--fg)}
+/* 밑줄은 하나만 두고 위치(--i)를 옮겨서, 세부 탭을 넘길 때 손가락을 따라 미끄러지게 */
+.utabs::after{content:"";position:absolute;bottom:0;height:2px;background:var(--fg);width:calc(80% / 3);left:calc((var(--i,0) + .1) * 100% / 3);transition:left .22s cubic-bezier(.3,.7,.3,1)}
+.utabs.drag::after{transition:none}
 .utabs + .row,.shead + .row{margin-top:14px}
 .chip.pchip{height:28px;padding:0 12px;font-size:12px;gap:4px;box-shadow:none;border:.5px solid var(--line)}
 .screen.dark .chip.pchip{border-color:#595959}
@@ -1921,6 +1923,62 @@ const SCREEN_NAME = k => ({ ob0:'진단 시작', ob1:'자기평가', ob2:'진단
 const TABS = [ ['home','홈','home'], ['spend','지출','bars'], ['plan','플랜','sliders'], ['goal','도전','flag'], ['benefit','혜택','gift'] ];
 const screen = document.getElementById('screen'), view = document.getElementById('view');
 let lastKey = '';
+// 세부 탭(지출·계획·목표): 본문을 좌우로 밀어 넘기고, 탭 밑줄도 같이 따라 움직인다
+const SUBS = { spend:['spendView', ['list','analysis','report']], plan:['planView', ['budget','bank','rule']], goal:['goalView', ['goal','chal','comm']] };
+const subPanes = () => [...view.children].filter(c => !c.classList.contains('shead'));
+const setPanes = (els, x, t) => els.forEach(e => { e.style.transition = t ? `transform ${t}` : 'none'; e.style.transform = x ? `translateX(${x}px)` : ''; });
+let swipe = null, swiped = false, subBusy = false;
+function goSub(ni, dir, els) {
+  const [k, l] = SUBS[S.tab]; if (subBusy || ni < 0 || ni >= l.length || l[ni] === S[k]) return;
+  const w = view.clientWidth, ut = view.querySelector('.utabs');
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { S[k] = l[ni]; return render(false); }
+  subBusy = true; els = els || subPanes();
+  if (ut) { ut.classList.remove('drag'); ut.style.setProperty('--i', ni); }
+  setPanes(els, -dir * w, '.22s cubic-bezier(.4,0,.8,.6)');
+  setTimeout(() => {
+    S[k] = l[ni]; render(false);
+    const ne = subPanes(); setPanes(ne, dir * w); void view.offsetWidth;
+    setPanes(ne, 0, '.3s cubic-bezier(.2,.7,.3,1)');
+    setTimeout(() => { ne.forEach(e => { e.style.transition = ''; }); subBusy = false; }, 320);
+  }, 220);
+}
+function swStart(x, y, tg) {
+  if (subBusy || S.mode !== 'app' || S.sub || !SUBS[S.tab] || !view.contains(tg)) return;
+  if (tg.closest('.shead, .printer .feed, input, textarea, select')) return;
+  for (let e = tg; e && e !== view; e = e.parentElement) if (e.scrollWidth > e.clientWidth + 1 && /auto|scroll/.test(getComputedStyle(e).overflowX)) return;
+  swipe = { x, y, dx: 0, on: false };
+}
+function swMove(x, y, ev) {
+  const s = swipe; if (!s) return;
+  const dx = x - s.x, dy = y - s.y;
+  if (!s.on) {
+    if (Math.abs(dy) > 10 && Math.abs(dy) >= Math.abs(dx)) { swipe = null; return; }
+    if (Math.abs(dx) < 10 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+    const [k, l] = SUBS[S.tab];
+    Object.assign(s, { on: true, i: l.indexOf(S[k]), n: l.length, els: subPanes(), ut: view.querySelector('.utabs'), w: view.clientWidth });
+    s.ut && s.ut.classList.add('drag');
+  }
+  if (ev.cancelable) ev.preventDefault();
+  s.dx = dx; const edge = (dx > 0 && s.i === 0) || (dx < 0 && s.i === s.n - 1), d = edge ? dx / 3 : dx;
+  setPanes(s.els, d);
+  s.ut && s.ut.style.setProperty('--i', s.i - (edge ? 0 : d / s.w));
+}
+function swEnd() {
+  const s = swipe; swipe = null; if (!s || !s.on) return;
+  swiped = true; setTimeout(() => { swiped = false; }, 50);
+  const dir = s.dx < 0 ? 1 : -1, ni = s.i + dir;
+  if (Math.abs(s.dx) > s.w * .2 && ni >= 0 && ni < s.n) return goSub(ni, dir, s.els);
+  setPanes(s.els, 0, '.3s cubic-bezier(.2,.7,.3,1)');
+  if (s.ut) { s.ut.classList.remove('drag'); s.ut.style.setProperty('--i', s.i); }
+}
+view.addEventListener('touchstart', e => { const t = e.touches[0]; e.touches.length === 1 ? swStart(t.clientX, t.clientY, e.target) : (swipe = null); }, { passive: true });
+view.addEventListener('touchmove', e => { const t = e.touches[0]; swMove(t.clientX, t.clientY, e); }, { passive: false });
+view.addEventListener('touchend', swEnd); view.addEventListener('touchcancel', swEnd);
+view.addEventListener('mousedown', e => { if (e.button === 0) swStart(e.clientX, e.clientY, e.target); });
+document.addEventListener('mousemove', e => swipe && swMove(e.clientX, e.clientY, e));
+document.addEventListener('mouseup', swEnd);
+document.addEventListener('click', e => { if (swiped) { e.stopPropagation(); e.preventDefault(); } }, true);
+function subTap(v) { const [k, l] = SUBS[S.tab], i = l.indexOf(S[k]), ni = l.indexOf(v); if (ni !== i) goSub(ni, ni > i ? 1 : -1); }
 function render(keepScroll = true) {
   const key = S.mode === 'onboard' ? 'ob' + S.ob : S.sub ? 'sub' + S.sub : 'tab' + S.tab;
   const st = keepScroll && key === lastKey ? view.scrollTop : 0;
@@ -1931,7 +1989,8 @@ function render(keepScroll = true) {
   else if (S.sub === 'diag') view.innerHTML = vResult('app');
   else view.innerHTML = { home:vHome, spend:vSpend, plan:vPlan, goal:vGoal, benefit:vBenefit }[S.tab]();
   if (S.mode === 'app' && !S.sub) { const h = view.querySelector(':scope > header.top');
-    if (h) { const w = document.createElement('div'); w.className = 'shead'; h.before(w); w.append(h); const t = w.nextElementSibling; if (t && t.classList.contains('utabs')) w.append(t); } }
+    if (h) { const w = document.createElement('div'); w.className = 'shead'; h.before(w); w.append(h); const t = w.nextElementSibling; if (t && t.classList.contains('utabs')) w.append(t); }
+    const ut = view.querySelector('.utabs'); if (ut) ut.style.setProperty('--i', [...ut.children].findIndex(b => b.classList.contains('on'))); }
   view.scrollTop = st;
   // 행동 추천: 보던 카드 위치를 유지하고, 추천을 끝낸 직후에는 다음 카드로 부드럽게 넘긴다
   const tr = view.querySelector('.na-track');
@@ -2041,8 +2100,8 @@ document.addEventListener('click', e => {
     case 'resSetup': S.persona = scores().persona; S.mode = 'app'; S.tab = 'plan'; S.planView = 'rule'; render(false); break;
     case 'rediag': closeSheet(); S.sub = null; S.mode = 'onboard'; S.ob = 1; S.q = 0; render(false); break;
     case 'tab': closeSheet(); S.mode = 'app'; S.sub = null; S.tab = el.dataset.tab; if (el.dataset.pv) S.planView = el.dataset.pv; if (el.dataset.sv) S.spendView = el.dataset.sv; if (el.dataset.gv) S.goalView = el.dataset.gv; render(false); break;
-    case 'pv': S.planView = v; render(false); break;
-    case 'gv': S.goalView = v; render(false); break;
+    case 'pv': subTap(v); break;
+    case 'gv': subTap(v); break;
     case 'aiOpen': aiDock(true); break;
     case 'diag': closeSheet(); S.mode = 'app'; S.sub = 'diag'; render(false); break;
     case 'subClose': S.sub = null; render(false); break;
@@ -2053,7 +2112,7 @@ document.addEventListener('click', e => {
     case 'settleDo': S.settled = true; S.spent -= 36000; closeSheet(); render(); simpleToast(`정산 처리 · 오늘 쓸 수 있는 돈 ${W(D().daily)}`); break;
     case 'alloc': S.alloc = v; render(); refreshSheet(); break;
     case 'allocDo': { const r = { bal:.5, save:.7, free:.3 }[S.alloc]; S.allocDone = true; S.naIdx = 1; S.naSlide = true; S.incomeIn = false; S.emergency += 320000 * ({ bal:.3, save:.2, free:.2 }[S.alloc]); closeSheet(); goalBump(320000 * r, '외주비 배분 완료'); break; }
-    case 'sv': S.spendView = v; render(false); break;
+    case 'sv': subTap(v); break;
     case 'ledDay': S.ledDay = +v; render(false); break;
     case 'period': S.period = v; S.topSel = null; render(); break;
     case 'tear': if (!el.closest('.feed').dataset.dragged) tearOff(v, 1); break;
