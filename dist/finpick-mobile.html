@@ -1927,23 +1927,21 @@ let lastKey = '';
 const SUBS = { spend:['spendView', ['list','analysis','report']], plan:['planView', ['budget','bank','rule']], goal:['goalView', ['goal','chal','comm']] };
 const subPanes = () => [...view.children].filter(c => !c.classList.contains('shead'));
 const setPanes = (els, x, t) => els.forEach(e => { e.style.transition = t ? `transform ${t}` : 'none'; e.style.transform = x ? `translateX(${x}px)` : ''; });
-let swipe = null, swiped = false, subBusy = false;
-function goSub(ni, dir, els) {
-  const [k, l] = SUBS[S.tab]; if (subBusy || ni < 0 || ni >= l.length || l[ni] === S[k]) return;
-  const w = view.clientWidth, ut = view.querySelector('.utabs');
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { S[k] = l[ni]; return render(false); }
-  subBusy = true; els = els || subPanes();
-  if (ut) { ut.classList.remove('drag'); ut.style.setProperty('--i', ni); }
-  setPanes(els, -dir * w, '.22s cubic-bezier(.4,0,.8,.6)');
-  setTimeout(() => {
-    S[k] = l[ni]; render(false);
-    const ne = subPanes(); setPanes(ne, dir * w); void view.offsetWidth;
-    setPanes(ne, 0, '.3s cubic-bezier(.2,.7,.3,1)');
-    setTimeout(() => { ne.forEach(e => { e.style.transition = ''; }); subBusy = false; }, 320);
-  }, 220);
+let swipe = null, swiped = false;
+function goSub(ni, dir, from) {
+  // 이전 화면을 밀어내지 않고 바로 바꾼 뒤, 새 화면이 넘긴 방향에서 짧게(36px) 들어오게 해 어지럽지 않게
+  const [k, l] = SUBS[S.tab]; if (ni < 0 || ni >= l.length || l[ni] === S[k]) return;
+  S[k] = l[ni]; render(false);
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const ut = view.querySelector('.utabs'), ne = subPanes();
+  if (ut) { ut.classList.add('drag'); ut.style.setProperty('--i', from); void ut.offsetWidth; ut.classList.remove('drag'); ut.style.setProperty('--i', ni); }
+  ne.forEach(e => { e.style.transition = 'none'; e.style.transform = `translateX(${dir * 36}px)`; e.style.opacity = '0'; });
+  void view.offsetWidth;
+  ne.forEach(e => { e.style.transition = 'transform .2s cubic-bezier(.2,.7,.3,1), opacity .16s linear'; e.style.transform = ''; e.style.opacity = ''; });
+  setTimeout(() => ne.forEach(e => { e.style.transition = ''; }), 220);
 }
 function swStart(x, y, tg) {
-  if (subBusy || S.mode !== 'app' || S.sub || !SUBS[S.tab] || !view.contains(tg)) return;
+  if (S.mode !== 'app' || S.sub || !SUBS[S.tab] || !view.contains(tg)) return;
   if (tg.closest('.shead, .printer .feed, input, textarea, select')) return;
   for (let e = tg; e && e !== view; e = e.parentElement) if (e.scrollWidth > e.clientWidth + 1 && /auto|scroll/.test(getComputedStyle(e).overflowX)) return;
   swipe = { x, y, dx: 0, on: false };
@@ -1967,7 +1965,7 @@ function swEnd() {
   const s = swipe; swipe = null; if (!s || !s.on) return;
   swiped = true; setTimeout(() => { swiped = false; }, 50);
   const dir = s.dx < 0 ? 1 : -1, ni = s.i + dir;
-  if (Math.abs(s.dx) > s.w * .2 && ni >= 0 && ni < s.n) return goSub(ni, dir, s.els);
+  if (Math.abs(s.dx) > s.w * .2 && ni >= 0 && ni < s.n) return goSub(ni, dir, s.i - s.dx / s.w);
   setPanes(s.els, 0, '.3s cubic-bezier(.2,.7,.3,1)');
   if (s.ut) { s.ut.classList.remove('drag'); s.ut.style.setProperty('--i', s.i); }
 }
@@ -1978,7 +1976,7 @@ view.addEventListener('mousedown', e => { if (e.button === 0) swStart(e.clientX,
 document.addEventListener('mousemove', e => swipe && swMove(e.clientX, e.clientY, e));
 document.addEventListener('mouseup', swEnd);
 document.addEventListener('click', e => { if (swiped) { e.stopPropagation(); e.preventDefault(); } }, true);
-function subTap(v) { const [k, l] = SUBS[S.tab], i = l.indexOf(S[k]), ni = l.indexOf(v); if (ni !== i) goSub(ni, ni > i ? 1 : -1); }
+function subTap(v) { const [k, l] = SUBS[S.tab], i = l.indexOf(S[k]), ni = l.indexOf(v); if (ni !== i) goSub(ni, ni > i ? 1 : -1, i); }
 function render(keepScroll = true) {
   const key = S.mode === 'onboard' ? 'ob' + S.ob : S.sub ? 'sub' + S.sub : 'tab' + S.tab;
   const st = keepScroll && key === lastKey ? view.scrollTop : 0;
