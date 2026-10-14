@@ -1556,42 +1556,46 @@ function vPlan() {
    ========================================================= */
 /* 중간 목표 길: 아래 왼쪽에서 위 오른쪽으로 오르는 한 줄의 길 위에 단계 점을 찍고, 지금 위치까지 길을 색으로 채운다 */
 function milestones(saved) {
-  // 길의 곡률은 참고 이미지 기준: 단계마다 완만한 S자로 이어지고, 마지막 구간은 크게 꺾여 가파르게 오른다
-  const Q = [[24, 236], [112, 184], [196, 128], [272, 24]], NI = [0, 1, 2, 3];
-  const P = NI.map(i => Q[i]);
-  let cur = STAGES.findIndex(s => saved < s.a); if (cur < 0) cur = STAGES.length - 1;
-  // 이미지처럼 점마다 눕듯이 지나가는 물결형: 손잡이를 가로로 길게(구간 가로폭의 55%), 세로는 짧게(20%)
-  const seg = i => { const p1 = Q[i], p2 = Q[i + 1], dx = p2[0] - p1[0], dy = p2[1] - p1[1], last = i === Q.length - 2;
-    return last ? [p1, [p1[0] + dx * .7, p1[1] + dy * .05], [p2[0] - dx * .2, p2[1] - dy * .65], p2]
-      : [p1, [p1[0] + dx * .55, p1[1] + dy * .15], [p2[0] - dx * .55, p2[1] - dy * .15], p2]; };
-  const lerp = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
-  const split = (b, t) => { const ab = lerp(b[0], b[1], t), bc = lerp(b[1], b[2], t), cd = lerp(b[2], b[3], t), abc = lerp(ab, bc, t), bcd = lerp(bc, cd, t); return [b[0], ab, abc, lerp(abc, bcd, t)]; };
+  // 길 모양은 참고 곡선 그대로: 0에서 가파르게 올라 언덕 → 완만히 내려가 골짜기 → 끝까지 가파르게 오른다
+  const sx = .168, sy = .158, X = x => 18 + x * sx, Y = y => 12 + y * sy;   // 원본 1550×1440 좌표 → 화면 좌표
+  const SEG = [[[0, 1440], [140, 1000], [290, 783], [405, 783]], [[405, 783], [560, 783], [700, 963], [860, 963]], [[860, 963], [1100, 950], [1350, 450], [1550, 0]]]
+    .map(b => b.map(([x, y]) => [X(x), Y(y)]));
+  const bez = (b, t) => { const m = 1 - t; return [0, 1].map(k => m * m * m * b[0][k] + 3 * m * m * t * b[1][k] + 3 * m * t * t * b[2][k] + t * t * t * b[3][k]); };
+  // 길이 기준으로 고르게 샘플링 → 금액 비율만큼 길 위의 위치를 찾는다 (시작점 = 0원, 끝점 = 목표 금액)
+  const pts = SEG.flatMap((b, i) => Array.from({ length:120 }, (_, j) => bez(b, j / 120)).concat(i === SEG.length - 1 ? [b[3]] : []));
+  const len = [0]; for (let i = 1; i < pts.length; i++) len.push(len[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  const L = len[len.length - 1], goal = STAGES[STAGES.length - 1].a;
+  const idxAt = d => { let i = len.findIndex(v => v >= d); return i < 0 ? pts.length - 1 : i; };
   const f = v => v.map(n => n.toFixed(1)).join(' ');
-  const C = b => `C${f(b[1])} ${f(b[2])} ${f(b[3])}`;
-  const road = `M${f(Q[0])}` + Q.slice(1).map((_, i) => C(seg(i))).join('');
-  // 지금 위치: 이전 단계 → 현재 단계 사이 금액 비율 u를 통과점 구간 위의 위치로 바꾼다
-  const prevA = cur ? STAGES[cur - 1].a : 0, a = cur ? NI[cur - 1] : 0, b = cur ? NI[cur] : 0;
-  let u = cur ? a + (b - a) * Math.max(0, Math.min(1, (saved - prevA) / (STAGES[cur].a - prevA))) : 0;
-  const at = u => { const i = Math.min(Q.length - 2, Math.floor(u)); return { i, t:u - i, pt:split(seg(i), u - i)[3] }; };
-  // 다음 단계 점과 겹치지 않도록 지금 점은 그 점에서 최소 26px 떨어진 곳까지만 나아간다
-  if (cur) while (u > a && Math.hypot(at(u).pt[0] - P[cur][0], at(u).pt[1] - P[cur][1]) < 26) u -= .01;
-  const pos = at(u), now = cur ? pos.pt : P[0];
-  const done = cur ? `M${f(Q[0])}` + Array.from({ length:pos.i }, (_, i) => C(seg(i))).join('') + C(split(seg(pos.i), pos.t)) : '';
+  const poly = k => 'M' + pts.slice(0, k + 1).map(f).join('L');
+  const road = poly(pts.length - 1);
+  const P = STAGES.map(st => pts[idxAt(L * st.a / goal)]);
+  let cur = STAGES.findIndex(s => saved < s.a); if (cur < 0) cur = STAGES.length - 1;
+  // 지금 위치. 다음 단계 점과 겹치지 않게 최소 26px 앞에서 멈춘다
+  let k = idxAt(L * Math.min(saved, goal) / goal);
+  while (k > 0 && Math.hypot(pts[k][0] - P[cur][0], pts[k][1] - P[cur][1]) < 26) k--;
+  const now = pts[k], done = poly(k);
+  // '지금' 라벨은 길의 오른쪽 아래 바깥(진행 방향의 수직)에. 오른쪽 끝에 닿으면 왼쪽 위로
+  const a0 = pts[Math.max(0, k - 3)], a1 = pts[Math.min(pts.length - 1, k + 3)], tx = a1[0] - a0[0], ty = a1[1] - a0[1], tl = Math.hypot(tx, ty) || 1;
+  let lab = [now[0] - ty / tl * 26, now[1] + tx / tl * 26 + 5, 'start'];
+  if (lab[0] + 80 > 300) lab = [now[0] + ty / tl * 26, now[1] - tx / tl * 26 + 5, 'end'];
+  lab = [+lab[0].toFixed(1), +lab[1].toFixed(1), lab[2]];
   const nodes = STAGES.map((st, i) => { const [x, y] = P[i], ok = saved >= st.a, last = i === STAGES.length - 1;
     return `${ok ? `<circle cx="${x}" cy="${y}" r="7.5" fill="#181818"/>` : `<circle cx="${x}" cy="${y}" r="${last ? 10 : 8.5}" fill="#FCFCFC" stroke="#181818" stroke-width="2"/>`}
       <text x="${last ? x - 16 : x}" y="${last ? y + 4 : y - 18}" text-anchor="${last ? 'end' : 'middle'}" font-size="11" font-family="Urbanist" fill="#7A7A7A">${man(st.a)}</text>
-      ${ok ? `<text x="${x - 6}" y="${y + 26}" font-size="11" fill="#7A7A7A">${i + 1} ${st.n}</text>` : ''}`; }).join('');
+      ${ok && Math.hypot(x - now[0], y - now[1]) > 60 ? `<text x="${x - 6}" y="${y + 26}" font-size="11" fill="#7A7A7A">${i + 1} ${st.n}</text>` : ''}`; }).join('');
   return `<svg viewBox="0 0 300 262" width="100%" role="img" aria-label="중간 목표 ${STAGES.length}단계 중 ${cur + 1}단계, 지금 ${man(saved)}">
-    <defs><linearGradient id="msG" gradientUnits="userSpaceOnUse" x1="${P[0][0]}" y1="${P[0][1]}" x2="${now[0]}" y2="${now[1]}"><stop offset="0" stop-color="#C9C6F5"/><stop offset="1" stop-color="#F4A3BF"/></linearGradient>
+    <defs><linearGradient id="msG" gradientUnits="userSpaceOnUse" x1="${pts[0][0]}" y1="${pts[0][1]}" x2="${now[0]}" y2="${now[1]}"><stop offset="0" stop-color="#C9C6F5"/><stop offset="1" stop-color="#F4A3BF"/></linearGradient>
     <filter id="msB" filterUnits="userSpaceOnUse" x="0" y="0" width="300" height="262"><feGaussianBlur stdDeviation="7"/></filter>
     <radialGradient id="msN"><stop offset="0" stop-color="#E7A6FF" stop-opacity=".7"/><stop offset="1" stop-color="#E7A6FF" stop-opacity="0"/></radialGradient></defs>
     <path d="${road}" fill="none" stroke="#FCFCFC" stroke-width="28" stroke-linecap="round"/>
-    ${cur ? `<path d="${done}" fill="none" stroke="url(#msG)" stroke-width="22" stroke-linecap="round" filter="url(#msB)" opacity=".9"/>
+    ${k ? `<path d="${done}" fill="none" stroke="url(#msG)" stroke-width="22" stroke-linecap="round" filter="url(#msB)" opacity=".9"/>
     <path d="${done}" fill="none" stroke="url(#msG)" stroke-width="14" stroke-linecap="round" opacity=".85"/>` : ''}
+    <circle cx="${pts[0][0]}" cy="${pts[0][1]}" r="4" fill="#181818"/><text x="${pts[0][0] + 12}" y="${pts[0][1] + 4}" font-size="11" font-family="Urbanist" fill="#7A7A7A">0</text>
     ${nodes}
     <circle cx="${now[0]}" cy="${now[1]}" r="22" fill="url(#msN)"/>
     <circle cx="${now[0]}" cy="${now[1]}" r="12" fill="#FCFCFC"/><circle cx="${now[0]}" cy="${now[1]}" r="8" fill="#181818"/>
-    <text x="${now[0] > 190 ? now[0] - 18 : now[0] + 20}" y="${now[0] > 190 ? now[1] - 16 : now[1] + 22}" text-anchor="${now[0] > 190 ? 'end' : 'start'}" font-size="13" font-weight="600" fill="#181818">지금 ${man(saved)}</text></svg>`;
+    <text x="${lab[0]}" y="${lab[1]}" text-anchor="${lab[2]}" font-size="13" font-weight="600" fill="#181818">지금 ${man(saved)}</text></svg>`;
 }
 function stairs(saved) {
   const W_ = 305, base = 176, sw = (W_ - 12) / 4;
