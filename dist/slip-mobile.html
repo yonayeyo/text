@@ -105,10 +105,15 @@ svg{display:block}
 .na-desc{margin-top:5px;font-size:12px;line-height:16.8px;color:#646464}
 .ib.na-go{width:44px;height:44px;background:#181818;color:#fff}
 .na-wrap{display:grid;gap:8px;margin-bottom:8px;min-width:0}
-.na-track{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;min-width:0}
+/* 화면 오른쪽 여백까지 넓혀 다음 카드 끝이 보이게 */
+.na-track{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;min-width:0;margin:0 calc(-1 * var(--m));padding:0 var(--m);scroll-padding:0 var(--m)}
 .na-track::-webkit-scrollbar{display:none}
 .na-track>.na-card{flex:0 0 100%;scroll-snap-align:start}
-.na-track.na-swap>.na-card:first-child{animation:naIn .6s cubic-bezier(.2,.8,.2,1) both}
+.na-track::after{content:"";flex:0 0 1px}
+.card.na-done{background:#F1F1F1;box-shadow:inset 0 0 0 .5px #DEDEDE}
+.na-done .na-title{color:var(--g6)}.na-done .na-desc{color:var(--g4)}
+.na-chip.done{gap:3px;border-color:var(--g4);color:var(--g6)}
+.ib.na-go.done{background:#FCFCFC;color:var(--g6);box-shadow:inset 0 0 0 1px var(--g3)}
 @keyframes naIn{from{opacity:0;transform:translateX(40px) scale(.98)}to{opacity:1;transform:none}}
 .gs-card{display:flex;flex-direction:column;align-items:stretch;text-align:left}
 .gs-top{font-size:12px;line-height:17px;color:var(--mute)}
@@ -939,9 +944,11 @@ function vResult(ctx = 'ob') {
 function nextCard() {
   const P = S.persona;
   // 페르소나별 행동 추천 목록(가로로 넘겨 보는 카드). i: 버튼 아이콘 — 알림을 켜는 행동은 알림 추가 아이콘
+  const AR = { bal:[.5,.3,.2], save:[.7,.2,.1], free:[.3,.2,.5] }[S.alloc];
   const recs = {
     cog: [
-      ...(S.incomeIn && !S.allocDone ? [{ t:'외주비 320,000원 분할', s:'독립 자금 5 : 비상금 3 : 자유 2<br>추천대로 나누면 목표 달성이 2개월 빨라져요', b:'한 번에 나누기', act:'data-act="sheet" data-sheet="alloc"' }] : []),
+      ...(S.allocDone ? [{ done:true, t:'외주비 320,000원 분할', s:`독립 자금 ${AR[0] * 10} : 비상금 ${AR[1] * 10} : 자유 ${AR[2] * 10}로 나눴어요<br>독립 자금에 ${won(320000 * AR[0])}원을 더했어요`, b:'완료한 추천' }]
+        : S.incomeIn ? [{ t:'외주비 320,000원 분할', s:'독립 자금 5 : 비상금 3 : 자유 2<br>추천대로 나누면 목표 달성이 2개월 빨라져요', b:'한 번에 나누기', act:'data-act="sheet" data-sheet="alloc"' }] : []),
       { t:'배달 이번 주 1회로 제한', s:'배달 예산 87% 사용 · 남은 14,000원<br>한도를 걸면 결제 전에 알려드려요', b:'배달 한도 알림 켜기', i:'bellplus', act:'data-act="toast" data-msg="배달 앱 결제 시 한도 알림을 켰어요"' },
       { t:'안 쓰는 구독 2건 정리', s:'최근 3개월 사용 기록 없음 · 월 17,800원<br>해지하면 1년에 213,600원 아낄 수 있어요', b:'구독 확인', act:'data-act="tab" data-tab="plan" data-pv="rule"' },
     ],
@@ -964,16 +971,14 @@ function nextCard() {
     habit:'‘습관우세형’에게는 더 나은 선택을 돕는 비교 정보를 추천해요',
     self:'‘자기관리형’에게는 다음 영역으로 넓히는 행동을 추천해요',
   }[P];
-  // 외주비 배분처럼 추천이 끝나 다음 카드로 넘어갈 때 한 번만 들어오는 인터랙션을 준다
-  const swap = S.naSwap; S.naSwap = false;
-  // 끝낸 추천(외주비 배분)은 빠지지만 번호는 그대로 유지한다: 2/3, 3/3
-  const doneN = P === 'cog' && !(S.incomeIn && !S.allocDone) ? 1 : 0, total = recs.length + doneN;
-  const card = (c, k) => `<div class="card c-sky na-card">
-    <div class="na-head"><span>행동 추천${total > 1 ? ` ${k + 1 + doneN}/${total}` : ''}</span><button class="na-chip" data-act="diag" aria-label="내 진단 결과 보기">${PERSONA[P].name}</button></div>
+  // 완료한 추천은 남겨 두고 회색 카드 + '완료' 표시. 다음 카드 끝이 살짝 보여 넘겨 볼 수 있음을 알린다
+  const total = recs.length;
+  const card = (c, k) => `<div class="card ${c.done ? 'na-done' : 'c-sky'} na-card">
+    <div class="na-head"><span>행동 추천${total > 1 ? ` ${k + 1}/${total}` : ''}</span>${c.done ? `<span class="na-chip done">${ic('check', 10)}완료</span>` : `<button class="na-chip" data-act="diag" aria-label="내 진단 결과 보기">${PERSONA[P].name}</button>`}</div>
     <div class="na-body"><div><div class="na-title">${c.t}</div><p class="na-desc">${c.s}</p></div>
-      <button class="ib na-go" ${c.act} aria-label="${c.b}">${ic(c.i || 'ur', 22)}</button></div>
+      ${c.done ? `<span class="ib na-go done" aria-label="${c.b}">${ic('check', 22)}</span>` : `<button class="ib na-go" ${c.act} aria-label="${c.b}">${ic(c.i || 'ur', 22)}</button>`}</div>
   </div>`;
-  return `<div class="na-wrap"><div class="na-track${swap ? ' na-swap' : ''}">${recs.map(card).join('')}</div>
+  return `<div class="na-wrap"><div class="na-track" onscroll="S.naIdx = Math.round(this.scrollLeft / (this.firstElementChild.offsetWidth + 12))">${recs.map(card).join('')}</div>
   <p class="na-why"><span class="na-star" aria-hidden="true">✦</span><span>${why}</span></p></div>`;
 }
 function sankey() {
@@ -1730,6 +1735,10 @@ function render(keepScroll = true) {
   else if (S.sub === 'diag') view.innerHTML = vResult('app');
   else view.innerHTML = { home:vHome, spend:vSpend, plan:vPlan, goal:vGoal, benefit:vBenefit }[S.tab]();
   view.scrollTop = st;
+  // 행동 추천: 보던 카드 위치를 유지하고, 추천을 끝낸 직후에는 다음 카드로 부드럽게 넘긴다
+  const tr = view.querySelector('.na-track');
+  if (tr && S.naIdx) { const x = S.naIdx * (tr.firstElementChild.offsetWidth + 12);
+    if (S.naSlide) { S.naSlide = false; setTimeout(() => tr.scrollTo({ left:x, behavior:'smooth' }), 350); } else tr.scrollLeft = x; }
   if (key !== lastKey) log('화면 ' + SCREEN_NAME(key));
   // 휴대폰에서는 Safari 상단(상태바)·하단 영역이 페이지 배경색을 따르므로 화면 색과 맞춘다
   setPageColor('#FAFAFA'); // 휴대폰 상단(상태바)은 모든 화면에서 #FAFAFA로 통일
@@ -1807,7 +1816,7 @@ document.addEventListener('click', e => {
     case 'mic': simpleToast('음성 입력은 데모에서 지원하지 않아요'); break;
     case 'settleDo': S.settled = true; S.spent -= 36000; closeSheet(); render(); simpleToast(`정산 처리 · 오늘 쓸 수 있는 돈 ${W(D().daily)}`); break;
     case 'alloc': S.alloc = v; render(); refreshSheet(); break;
-    case 'allocDo': { const r = { bal:.5, save:.7, free:.3 }[S.alloc]; S.allocDone = true; S.naSwap = true; S.incomeIn = false; S.emergency += 320000 * ({ bal:.3, save:.2, free:.2 }[S.alloc]); closeSheet(); goalBump(320000 * r, '외주비 배분 완료'); break; }
+    case 'allocDo': { const r = { bal:.5, save:.7, free:.3 }[S.alloc]; S.allocDone = true; S.naIdx = 1; S.naSlide = true; S.incomeIn = false; S.emergency += 320000 * ({ bal:.3, save:.2, free:.2 }[S.alloc]); closeSheet(); goalBump(320000 * r, '외주비 배분 완료'); break; }
     case 'sv': S.spendView = v; render(false); break;
     case 'ledDay': S.ledDay = +v; render(false); break;
     case 'period': S.period = v; S.topSel = null; render(); break;
