@@ -1352,7 +1352,8 @@ function catPetals() {
     const p = sp[k] / S.cat[k], fast = p > pace, rf = Math.sqrt(R0 * R0 + Math.min(1, p) * (R * R - R0 * R0));
     const outer = sector(R0 + IN, R - IN, a0, a1), inner = rf - IN > R0 + IN + 2 ? sector(R0 + IN, rf - IN, a0, a1) : '';
     // 라벨은 같은 반지름(바깥 쪽 78%)에 검정 글자로
-    const rl = R * .78, [lx, ly] = pt(rl, am), dim = sel && sel !== k, tc = '#232323', sc = '#2E2E2E';
+    // 채움의 바깥 모서리에 글자가 걸치면 채움 안쪽으로 옮긴다
+    const rb = R * .78, rl = Math.abs(rf - rb) < 18 ? rf - 26 : rb, [lx, ly] = pt(rl, am), dim = sel && sel !== k, tc = '#232323', sc = '#2E2E2E';
     return `<g data-act="catSel" data-v="${k}" style="cursor:pointer" opacity="${dim ? .4 : 1}" role="button" aria-label="${k} 예산 ${won(S.cat[k])}원 중 ${won(sp[k])}원 사용 (${pct(p)})">
       <path d="${outer}" fill="url(#ptO)" stroke="url(#ptO)" stroke-width="${IN * 2}" stroke-linejoin="round"/>
       ${inner ? `<path d="${inner}" fill="url(#${fast ? 'ptP' : 'ptI'})" stroke="url(#${fast ? 'ptP' : 'ptI'})" stroke-width="${IN * 2}" stroke-linejoin="round"/>` : ''}
