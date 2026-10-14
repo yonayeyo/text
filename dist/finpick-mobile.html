@@ -202,7 +202,7 @@ svg{display:block}
 .btn.ghost{background:transparent;color:inherit;box-shadow:inset 0 0 0 1px currentColor}
 .btn.sm{height:36px;padding:0 16px;font-size:14px}
 .btn.full{width:100%}
-.screen.dark .btn:not(.light):not(.ghost){background:var(--paper);color:var(--ink)}
+.screen.dark .btn:not(.light):not(.ghost):not(.pr-go){background:var(--paper);color:var(--ink)}
 .c-ink .btn:not(.ghost){background:var(--paper);color:var(--ink)}
 .screen.dark .c-ink .btn:not(.ghost){background:var(--ink);color:var(--paper)}
 .ib{width:40px;height:40px;border-radius:50%;display:inline-grid;place-items:center;flex:none;position:relative}
@@ -337,7 +337,7 @@ svg{display:block}
 .paper{background:linear-gradient(90deg,#F1F1F1,#FCFCFC 6%,#FCFCFC 94%,#F1F1F1);color:var(--ink);font-family:var(--f-mono);font-size:12px;line-height:1.6;padding:36px 20px 24px;position:relative;--mute:#7A7A7A;--line:#CFCFCF}
 .paper::after{content:"";position:absolute;left:0;right:0;bottom:-10px;height:10px;background:conic-gradient(from -45deg at bottom,#FCFCFC 90deg,transparent 0) 50%/12px 100%}
 .printer.printing .paper{animation:feed 2.2s cubic-bezier(.33,.1,.25,1) both}
-.pr-go{margin-top:16px;gap:8px}
+.screen .btn.pr-go{display:flex;width:fit-content;margin:16px auto 0;padding:0 32px;gap:8px;background:#000;color:#FCFCFC;box-shadow:inset 0 0 0 1px #3A3A3A}
 @keyframes feed{from{transform:translateY(-100%)}to{transform:none}}
 @media (prefers-reduced-motion:reduce){.printer.printing .paper{animation:none}.toast,.layer,.sheet{transition:none}}
 .p-c{text-align:center}
@@ -1216,7 +1216,7 @@ function vHome() {
 function printer(id, inner) {
   // 처음에는 입구와 '출력하기' 버튼만. 누르면 출력되고, 이후에는 '재출력'으로 다시 출력
   if (!S.printed.has(id)) return `<div class="printer" id="${id}"><div class="slot"></div>
-    <button class="btn full pr-go" data-act="printGo" data-v="${id}">${ic('receipt', 18)}출력하기</button></div>`;
+    <button class="btn pr-go" data-act="printGo" data-v="${id}">${ic('receipt', 18)}출력하기</button></div>`;
   return `<div class="printer" id="${id}"><div class="slot"></div><div class="feed"><article class="paper">${inner}</article></div></div>`;
 }
 function receiptReport() {
@@ -1389,7 +1389,7 @@ function vSpend() {
     ${ls ? '' : `<div class="row between"><div class="row g8"><button class="chip pchip ${m ? '' : 'on'}" data-act="period" data-v="week">주간</button><button class="chip pchip ${m ? 'on' : ''}" data-act="period" data-v="month">월간</button></div>
     ${an || !S.printed.has('pReport') ? '' : `<button class="cal-tg t12" data-act="print" data-v="pReport">${ic('refresh', 14)}재출력</button>`}</div>`}`;
   if (ls) return head + vLedger();
-  if (!an) return head + printer('pReport', receiptReport()) + `<p class="t12 mute mt16" style="text-align:center">영수증은 매주 월요일, 매월 1일에 자동 발행돼요</p>`;
+  if (!an) return head + printer('pReport', receiptReport()) + (S.printed.has('pReport') ? `<p class="t12 mute mt16" style="text-align:center">영수증은 매주 월요일, 매월 1일에 자동 발행돼요</p>` : '');
   return head + `
     <section style="margin-top:14px">${topSpend()}</section>
     <section class="sec">
@@ -1938,7 +1938,7 @@ function render(keepScroll = true) {
   dock.hidden = !(S.mode === 'app' && !S.sub && (S.tab === 'plan' || (S.tab === 'spend' && S.spendView === 'analysis')));
   if (dock.hidden) aiDock(false);
   view.style.paddingBottom = S.mode === 'onboard' || S.sub ? (S.ob === 3 || S.sub ? '0' : '24px') : '0';
-  if (S.mode === 'app' && !S.sub) { const h = document.createElement('div'); h.className = 'ht-end'; h.style.height = (dock.hidden ? 140 : 200) + 'px'; h.style.marginTop = '24px'; view.append(h); view.scrollTop = st; }
+  if (S.mode === 'app' && !S.sub) { const h = document.createElement('div'); h.className = 'ht-end'; h.style.height = (dock.hidden ? 140 : 200) + 'px'; h.style.marginTop = '24px'; view.append(h); const gap = view.clientHeight - (h.getBoundingClientRect().bottom - view.getBoundingClientRect().top + view.scrollTop); if (gap > 0) h.style.marginTop = (24 + gap) + 'px'; view.scrollTop = st; }
   renderPanel();
 }
 // Safari는 theme-color 값 변경만으로는 상단 색을 다시 칠하지 않을 때가 있어, 태그를 새로 넣고 고정 레이어 배경도 함께 바꾼다
