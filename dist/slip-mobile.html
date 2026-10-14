@@ -1400,7 +1400,7 @@ function vSpend() {
   const m = S.period === 'month', an = S.spendView === 'analysis', ls = S.spendView === 'list';
   const rep = REPEATS[S.period], repSum = rep.reduce((s, r) => s + r.k * r.u, 0);
   const head = `<header class="top"><div><div class="ph-title">지출</div><div class="ph-sub">계좌 · 카드 연동으로 자동 기록돼요</div></div></header>
-    <div class="utabs" role="tablist">${[['list','내역'],['analysis','분석'],['report','리포트']].map(([k, n]) => `<button class="${S.spendView === k ? 'on' : ''}" data-act="sv" data-v="${k}" role="tab" aria-selected="${S.spendView === k}">${n}</button>`).join('')}</div>
+    <div class="utabs" role="tablist">${[['list','가계부'],['analysis','분석'],['report','리포트']].map(([k, n]) => `<button class="${S.spendView === k ? 'on' : ''}" data-act="sv" data-v="${k}" role="tab" aria-selected="${S.spendView === k}">${n}</button>`).join('')}</div>
     ${ls ? '' : `<div class="row between"><div class="row g8"><button class="chip pchip ${m ? '' : 'on'}" data-act="period" data-v="week">주간</button><button class="chip pchip ${m ? 'on' : ''}" data-act="period" data-v="month">월간</button></div>
 </div>`}`;
   if (ls) return head + vLedger();
@@ -2186,7 +2186,7 @@ document.querySelector('#aiDock [type="submit"]').innerHTML = ic('send', 20);
 /* ---------- side panel ---------- */
 function renderPanel() {
   const cur = S.mode === 'onboard' ? 'ob' + S.ob : S.sub === 'diag' ? 'diag' : S.tab === 'spend' ? 'spend-' + S.spendView : S.tab === 'plan' ? 'plan-' + S.planView : S.tab === 'goal' ? 'goal-' + S.goalView : S.tab;
-  const sc = [ ['ob0','진단 시작'], ['ob1','자기평가'], ['ob2','진단 문항'], ['ob3','진단 결과'], ['diag','내 진단 결과'], ['home','홈'], ['spend-list','지출 · 내역'], ['spend-analysis','지출 · 분석'], ['spend-report','지출 · 리포트'], ['plan-budget','플랜 · 예산'], ['plan-bank','플랜 · 통장'], ['plan-rule','플랜 · 자동 규칙'], ['goal-goal','도전 · 목표'], ['goal-chal','도전 · 챌린지'], ['goal-comm','도전 · 소통'], ['benefit','혜택'] ];
+  const sc = [ ['ob0','진단 시작'], ['ob1','자기평가'], ['ob2','진단 문항'], ['ob3','진단 결과'], ['diag','내 진단 결과'], ['home','홈'], ['spend-list','지출 · 가계부'], ['spend-analysis','지출 · 분석'], ['spend-report','지출 · 리포트'], ['plan-budget','플랜 · 예산'], ['plan-bank','플랜 · 통장'], ['plan-rule','플랜 · 자동 규칙'], ['goal-goal','도전 · 목표'], ['goal-chal','도전 · 챌린지'], ['goal-comm','도전 · 소통'], ['benefit','혜택'] ];
   document.getElementById('navScreens').innerHTML = sc.map(([k, n]) => `<button type="button" class="${cur === k ? 'on' : ''}" data-go="${k}">${n}</button>`).join('');
   document.getElementById('navPersona').innerHTML = Object.entries(PERSONA).map(([k, p]) => `<button type="button" class="${S.persona === k ? 'on' : ''}" data-persona="${k}">${p.name}</button>`).join('');
   document.getElementById('navScen').innerHTML = [ ['pay','결제 발생 → 실시간 피드백'], ['income','외주비 입금 → 배분'], ['settle','더치페이 정산'], ['withdraw','저축 인출 확인'], ['ai','AI 조언 묻기'] ].map(([k, n]) => `<button type="button" data-scen="${k}">${n}</button>`).join('');
