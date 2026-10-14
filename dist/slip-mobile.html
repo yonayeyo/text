@@ -737,10 +737,12 @@ function scores() {
 function meter(used, time) {
   const n = 64, u = Math.round(used * n), t = Math.min(n - 1, Math.round(time * n));
   let s = ''; for (let i = 0; i < n; i++) s += `<i class="${i === t ? 'now' : i < u ? '' : 'off'}" style="${i % 8 === 0 ? 'width:3px' : ''}"></i>`;
-  return `<div class="meter" role="img" aria-label="예산 ${pct(used)} 사용, 한 달 ${pct(time)} 경과">
-    <span class="mk t10 mute" style="left:${t / (n - 1) * 100}%">오늘 ${S.day}일 ▾</span>
+  // '사용 %·경과 %' 대신 금액으로: 오늘까지 써도 되는 돈(예산 × 지난 날 비율)과 실제 쓴 돈의 차이
+  const fair = Math.round(S.budget * time / 100) * 100, gap = fair - Math.round(S.budget * used);
+  return `<div class="meter" role="img" aria-label="오늘까지 적정 지출 ${won(fair)}원, 쓴 돈 ${won(S.budget * used)}원">
+    <span class="mk t10 mute" style="left:${t / (n - 1) * 100}%">오늘 ▾</span>
     <div class="bars">${s}</div>
-    <div class="lbl t10 mute num"><span>0</span><span>사용 ${pct(used)} · 경과 ${pct(time)}</span><span>${won(S.budget)}</span></div>
+    <div class="lbl t10 mute num"><span>0</span><span>오늘까지 적정 지출보다 ${won(Math.abs(gap))}원 ${gap >= 0 ? '덜' : '더'} 썼어요</span><span>${won(S.budget)}</span></div>
   </div>`;
 }
 function allocBlock() {
