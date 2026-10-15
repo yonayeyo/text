@@ -325,6 +325,9 @@ svg{display:block}
 .glowbar i{position:absolute;inset:0 auto 0 0;border-radius:999px;background:linear-gradient(90deg,#C8E1FF,#FF769C)}
 .glowbar i::after{content:"";position:absolute;inset:-6px;border-radius:999px;background:inherit;filter:blur(10px);opacity:.75;z-index:-1}
 .glowbar.flat i::after{display:none}
+/* 플랜-예산 상단 요약: 카드 없이 화면 바탕 위에 가볍게 */
+.bsum{margin-top:24px;padding:0 4px}
+.bsum-g{gap:14px 12px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
 
 /* ---------- receipt ---------- */
 .printer{margin-top:24px}
@@ -1506,11 +1509,11 @@ function vPlan() {
   <div class="utabs" role="tablist">${[['budget','예산'],['bank','통장'],['rule','자동 규칙']].map(([k, n]) => `<button class="${pv === k ? 'on' : ''}" data-act="pv" data-v="${k}" role="tab" aria-selected="${pv === k}">${n}</button>`).join('')}</div>`;
   // 예산: 이번 달 예산 현황 · 카테고리별 배분 · 줄이기 계획
   if (pv === 'budget') return head + `
-  <div class="card c-ink mt16">
+  <div class="bsum">
     <div class="row between"><span class="t12 mute">10월 예산</span><span class="t10 mute num">10.01 – 10.31</span></div>
     <div class="row g8 mt8" style="align-items:baseline"><span class="n32">${won(S.budget)}</span><span class="cur t16">₩</span></div>
-    <div class="glowbar flat mt16" style="height:8px;background:#333"><i style="width:${Math.min(100, d.used * 100)}%"></i></div>
-    <div class="grid2 mt16" style="gap:12px">
+    <div class="glowbar flat mt16" style="height:6px"><i style="width:${Math.min(100, d.used * 100)}%"></i></div>
+    <div class="grid2 bsum-g">
       <div><div class="t10 mute">지금까지 쓴 돈</div><div class="n20 mt4">${won(S.spent)}</div></div>
       <div><div class="t10 mute">오늘 쓸 수 있는 돈</div><div class="n20 mt4">${won(d.daily)}</div></div>
       <div><div class="t10 mute">월말 예상 지출</div><div class="n20 mt4">${won(d.projSpend)}</div></div>
