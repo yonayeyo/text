@@ -1080,7 +1080,7 @@ function vResult(ctx = 'ob') {
       ? `<button class="btn full" data-act="tab" data-tab="${recTab}">${sc.rec.name} 화면으로 가기</button>
       <button class="btn full" style="background:rgba(252,252,252,.6);color:var(--ink)" data-act="rediag">${ic('refresh', 18)} 다시 진단하기</button>`
       : `<button class="btn full" data-act="resLink">${ic('link', 20)} 계좌 연동하고 시작</button>
-      <button class="btn full" style="background:rgba(252,252,252,.6);color:var(--ink)" data-act="resSetup">기본 설정부터 할게요</button>`}
+      <button class="btn full" style="background:rgba(252,252,252,.6);color:var(--ink)" data-act="resBrowse">둘러보기만 할게요</button>`}
     </div>
   </div>
   <div class="row mt24 t12 mute" style="padding:0 4px;justify-content:center;gap:8px">${ic('refresh', 16)}<span>3개월마다 재진단해 변화를 비교해요 · 다음 2027.01.15</span></div>
@@ -2404,6 +2404,7 @@ document.addEventListener('click', e => {
     case 'qPrev': if (S.q > 0) { S.q--; render(false); } else { S.ob = 1; render(false); } break;
     case 'togglePrev': S.showPrev = !S.showPrev; render(); break;
     case 'resLink': S.persona = scores().persona; S.focus = null; S.mode = 'app'; S.tab = 'home'; S.sub = 'link'; render(false); break;
+    case 'resBrowse': S.persona = scores().persona; S.focus = null; S.sub = null; S.mode = 'app'; S.tab = 'home'; S.linked = false; render(false); break;
     case 'resSetup': S.persona = scores().persona; S.mode = 'app'; S.tab = 'plan'; S.planView = 'rule'; render(false); break;
     case 'rediag': closeSheet(); S.sub = null; S.mode = 'onboard'; S.ob = 1; S.q = 0; render(false); break;
     case 'explore': { const a = viewArea(); a && S.explored.add(a); if (el.dataset.sv) S.spendView = el.dataset.sv; if (el.dataset.pv) S.planView = el.dataset.pv; render(false); break; }
