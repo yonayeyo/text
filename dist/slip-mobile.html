@@ -325,6 +325,11 @@ svg{display:block}
 .glowbar i{position:absolute;inset:0 auto 0 0;border-radius:999px;background:linear-gradient(90deg,#C8E1FF,#FF769C)}
 .glowbar i::after{content:"";position:absolute;inset:-6px;border-radius:999px;background:inherit;filter:blur(10px);opacity:.75;z-index:-1}
 .glowbar.flat i::after{display:none}
+.goal-row{width:100%;text-align:left;display:flex;flex-direction:column;align-items:flex-start}
+.use-row{overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px;flex-wrap:nowrap}
+.use-row::-webkit-scrollbar{display:none}
+.sm-chip{height:32px;padding:0 12px;font-size:12px;flex:none}
+.empty-card{text-align:center;padding:32px 24px;display:flex;flex-direction:column;align-items:center}
 /* 지금 집중할 영역 (홈) · 탭 제목 옆 단계 표시 · 탭바 점 */
 .focus-strip{width:100%;display:flex;align-items:center;gap:12px;padding:14px 20px;text-align:left;margin-top:16px}
 .fs-txt{display:grid;gap:2px;flex:none}
@@ -769,9 +774,12 @@ const OCT_TX = {
   14:[['08:42','지하철','교통',2800],['12:10','김치찌개','외식',9000],['18:30','다이소','기타',4200],['20:40','배달의민족 · 족발','배달',29000]],
 };
 const ACCOUNTS = [
-  { n:'적금', a:5000000, k:'save' }, { n:'투자', a:2500000, k:'inv' }, { n:'독립 자금', a:2300000, k:'goal' },
-  { n:'생활비', a:1240000, k:'life' }, { n:'비상금', a:1100000, k:'emer' }, { n:'경조사비', a:260000, k:'evt' },
+  { n:'적금', a:5000000, k:'save', raw:'A은행 정기적금 ··3381' }, { n:'투자', a:2500000, k:'inv', raw:'B증권 위탁계좌 ··0927' }, { n:'독립 자금', a:2300000, k:'goal', raw:'C은행 자유적금 ··1150' },
+  { n:'생활비', a:1240000, k:'life', raw:'C은행 입출금 ··7710' }, { n:'비상금', a:1100000, k:'emer', raw:'D은행 파킹통장 ··4412' }, { n:'경조사비', a:260000, k:'evt', raw:'A은행 입출금 ··5098' },
 ];
+// 계좌 용도는 사용자가 정한다(원칙 1): Finpick은 이름·거래를 보고 추측만 하고, 연동할 때 사용자가 확인·변경
+const USES = ['적금','투자','독립 자금','생활비','비상금','경조사비','여행','기타'];
+const useOf = a => S.acctUse[a.k] || a.n;
 const GOAL_LINE = { // 독립 자금 누적 (26.02 → 27.06, 17 points)
   months:['26.02','26.03','26.04','26.05','26.06','26.07','26.08','26.09','26.10','26.11','26.12','27.01','27.02','27.03','27.04','27.05','27.06'],
   actual:[0,300000,650000,1000000,1300000,1500000,1800000,2050000,2300000],
@@ -788,8 +796,8 @@ const TIPS = [
    state
    ========================================================= */
 const S = {
-  mode:'onboard', ob:0, q:0, answers:Array(20).fill(null), self:{ k:8, p:3 }, showPrev:true,
-  tab:'home', persona:'cog', focus:null, bitesDone:new Set(), biteOpen:{}, autoOn:new Set(), planMore:false,
+  mode:'onboard', ob:0, q:0, answers:Array(20).fill(null), self:{ k:8, p:3 }, showPrev:false,
+  tab:'home', persona:'cog', focus:null, linked:true, acctUse:{}, bitesDone:new Set(), biteOpen:{}, autoOn:new Set(), planMore:false,
   spent:348400, budget:800000, day:15, days:31,
   settled:false, incomeIn:true, allocDone:false, alloc:'bal',
   spendView:'list', planView:'budget', goalView:'goal', ledDay:15, period:'month', keeps:new Set(['여행','자기계발','경조사']), applied:new Set(),
@@ -955,7 +963,7 @@ function vQuiz() {
   </div>`;
 }
 const HEAD = { cog:'아는 만큼<br>움직일 차례예요', low:'작은 것 하나부터<br>시작해 봐요', habit:'잘 하고 있어요<br>이제 비교해 볼 차례예요', self:'다음 영역으로<br>넓혀 볼까요' };
-function quadBlock(sc) {
+function quadBlock(sc, prev = S.showPrev) {
   // 기준값 이상은 높음 칸 안(56~94%), 미만은 낮음 칸 안(6~44%)에 놓아 경계선 위에 걸치지 않게 한다
   const pos = (v, th) => v < th ? 6 + v / th * 38 : 56 + (v - th) / (10 - th) * 38;
   const L = p => pos(p, 6.25), T = k => 100 - pos(k, 6);
@@ -967,7 +975,7 @@ function quadBlock(sc) {
     ${tiles.map(([k, n, c]) => `<div class="tl- ${c} ${sc.persona === k ? 'on' : ''}"><span>${n}</span>${sc.persona === k ? `<span class="t10" style="opacity:.6">${PERSONA[k].short}</span>` : ''}</div>`).join('')}
     <svg style="position:absolute;inset:0;width:100%;height:100%;overflow:visible" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
       <line x1="${me[0]}" y1="${me[1]}" x2="${dx[0]}" y2="${dx[1]}" stroke="#181818" stroke-width="1.5" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/></svg>
-    ${S.showPrev ? `<span class="pt" style="left:${pv[0]}%;top:${pv[1]}%;width:12px;height:12px;border:1.5px dashed var(--g4)"></span><span class="lbl" style="${side(pv[0])};top:${pv[1]}%;background:transparent;color:var(--g4);padding:0">6월</span>` : ''}
+    ${prev ? `<span class="pt" style="left:${pv[0]}%;top:${pv[1]}%;width:12px;height:12px;border:1.5px dashed var(--g4)"></span><span class="lbl" style="${side(pv[0])};top:${pv[1]}%;background:transparent;color:var(--g4);padding:0">6월</span>` : ''}
     <span class="pt" style="left:${me[0]}%;top:${me[1]}%;width:20px;height:20px;border:1.5px dashed var(--ink);background:rgba(252,252,252,.85)"></span>
     <span class="lbl" style="${side(me[0])};top:${me[1]}%">내 생각 ${S.self.k}·${S.self.p}</span>
     <span class="pt" style="left:${dx[0]}%;top:${dx[1]}%;width:20px;height:20px;background:var(--ink);box-shadow:0 0 0 2px var(--paper)"></span>
@@ -1025,9 +1033,9 @@ function vResult(ctx = 'ob') {
   <h1 class="ob-title mt8">${HEAD[sc.persona]}</h1>
   <p class="t12 mute mt12">${P.desc}</p>
   ${sc.filled ? `<p class="t10 mute mt8">답하지 않은 ${sc.filled}문항은 데모용 예시 응답으로 채웠어요.</p>` : ''}
-  ${quadBlock(sc)}
-  <button class="chip mt12 ${S.showPrev ? 'on' : ''}" data-act="togglePrev">6월 진단과 비교</button>
-  ${S.showPrev ? `<span class="t10 mute" style="margin-left:8px">6월보다 실천 ${sg(sc.p10 - PREV.p)}</span>` : ''}
+  ${quadBlock(sc, app && S.showPrev)}
+  ${app ? `<button class="chip mt12 ${S.showPrev ? 'on' : ''}" data-act="togglePrev">6월 진단과 비교</button>
+  ${S.showPrev ? `<span class="t10 mute" style="margin-left:8px">6월보다 실천 ${sg(sc.p10 - PREV.p)}</span>` : ''}` : ''}
   <div class="res-sheet">
     <div class="card c-light">
       <div class="row between"><span class="eng">Gap</span><span class="row g12 t10 mute"><span class="row g4"><i style="width:10px;height:10px;border-radius:50%;border:1.5px dashed var(--ink);display:inline-block"></i>내 생각</span><span class="row g4"><i style="width:10px;height:10px;border-radius:50%;background:var(--aura);box-shadow:inset 0 0 0 1.5px var(--ink);display:inline-block"></i>진단</span></span></div>
@@ -1047,7 +1055,7 @@ function vResult(ctx = 'ob') {
       <button class="btn full" style="background:rgba(252,252,252,.6);color:var(--ink)" data-act="resSetup">기본 설정부터 할게요</button>`}
     </div>
   </div>
-  <div class="row mt24 t12 mute" style="padding:0 4px;justify-content:center;gap:8px">${ic('refresh', 16)}<span>3개월마다 재진단해 변화를 비교해요 · 다음 2027.01.12</span></div>
+  <div class="row mt24 t12 mute" style="padding:0 4px;justify-content:center;gap:8px">${ic('refresh', 16)}<span>3개월마다 재진단해 변화를 비교해요 · 다음 2027.01.15</span></div>
   </div>`;
 }
 
@@ -1165,12 +1173,12 @@ function sankey() {
 const ACC_FILL = { save:'linear-gradient(90deg,#C8E1FF,#E3EEFF)', goal:'linear-gradient(90deg,#FF9DB8,#C8E1FF)', inv:'#DEDEDE', life:'#181818', emer:'repeating-linear-gradient(-45deg,#181818 0 1.5px,#FCFCFC 1.5px 4.5px)', evt:'#606060' };
 function accountsBlock() {
   const total = ACCOUNTS.reduce((t, a) => t + a.a, 0);
-  return `<div class="row g4 mt12" style="height:28px;border-radius:999px;overflow:hidden" role="img" aria-label="통합 자산 ${won(total)}원 중 ${ACCOUNTS.map(a => `${a.n} ${pct(a.a / total)}`).join(', ')}">
+  return `<div class="row g4 mt12" style="height:28px;border-radius:999px;overflow:hidden" role="img" aria-label="통합 자산 ${won(total)}원 중 ${ACCOUNTS.map(a => `${useOf(a)} ${pct(a.a / total)}`).join(', ')}">
       ${ACCOUNTS.map(a => `<i style="display:block;height:100%;flex:${a.a} 1 0;min-width:4px;background:${ACC_FILL[a.k]}"></i>`).join('')}
     </div>
     <div class="grid2 mt16" style="gap:12px 16px">${ACCOUNTS.map(a => `<div class="row g8" style="align-items:flex-start">
       <i style="flex:none;width:10px;height:10px;border-radius:3px;margin-top:4px;background:${ACC_FILL[a.k]};${a.k === 'emer' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}"></i>
-      <span style="min-width:0"><span class="t12" style="display:block">${a.n} <span class="t10 mute num">${pct(a.a / total)}</span></span><span class="t12 num mute">${W(a.a)}</span></span></div>`).join('')}</div>`;
+      <span style="min-width:0"><span class="t12" style="display:block">${useOf(a)} <span class="t10 mute num">${pct(a.a / total)}</span></span><span class="t12 num mute">${W(a.a)}</span></span></div>`).join('')}</div>`;
 }
 function accountsCard(home) {
   return `<div class="card c-paper">
@@ -1191,6 +1199,42 @@ function flowCard(home) {
       </div>`}
     </div>`;
 }
+/* =========================================================
+   계좌 연동 · 용도 확인 (흐름 ④): 찾은 계좌마다 용도를 사용자가 확인하거나 바꾼다
+   ========================================================= */
+function vLink() {
+  const total = ACCOUNTS.reduce((t, a) => t + a.a, 0);
+  return `<div class="top"><button class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)" data-act="subClose" aria-label="뒤로">${ic('chevL', 20)}</button><span class="t14">계좌 연동</span><span style="width:40px"></span></div>
+  <div class="t12 mute mt24">계좌 ${ACCOUNTS.length}개를 찾았어요 · ${W(total)}</div>
+  <h1 class="t18 mt8" style="font-size:22px;line-height:1.4">각 계좌를 어디에 쓰고 있나요?</h1>
+  <p class="t12 mute mt8">나눠 둔 그대로 존중할게요. 계좌 이름과 거래를 보고 짐작한 용도를 먼저 골라 뒀어요. 다르면 바꿔 주세요.</p>
+  <div class="stack8 mt24">${ACCOUNTS.map(a => `<div class="card c-paper" style="padding:16px 20px">
+    <div class="row between"><span class="t14">${a.raw}</span><span class="t12 num mute">${W(a.a)}</span></div>
+    <div class="row g8 mt12 use-row">${USES.map(u => `<button class="chip sm-chip ${useOf(a) === u ? 'on' : ''}" data-act="acctUse" data-k="${a.k}" data-v="${u}">${u}${u === a.n && !S.acctUse[a.k] ? '<span class="t10" style="opacity:.6;margin-left:4px">추천</span>' : ''}</button>`).join('')}</div>
+  </div>`).join('')}</div>
+  <p class="t10 mute mt16">용도는 플랜 › 통장에서 언제든 바꿀 수 있어요. 예산과 자동 규칙은 이 용도를 기준으로 제안해요.</p>
+  <button class="btn full mt24" data-act="linkDone">이 용도로 시작하기</button>`;
+}
+// 연동 전(둘러보기): 데이터가 없는 상태를 그대로 보여 주고, 연동 없이 해 볼 수 있는 것을 안내
+function vEmpty() {
+  const T = { home:['', ''], spend:['지출', '계좌 · 카드 연동으로 자동 기록돼요'], plan:['플랜', '예산 · 통장 · 자동 규칙'], goal:['도전', '목표 · 챌린지 · 소통'] }[S.tab];
+  const msg = { home:['계좌를 연동하면<br>오늘 쓸 수 있는 돈을 알려 드려요', '예산 · 지출 · 목표가 연동한 계좌 기준으로 채워져요.'],
+    spend:['연동하면 결제 내역이<br>자동으로 기록돼요', '가계부 · 분석 · 영수증 리포트는 연동 후에 열려요.'],
+    plan:['연동하면 통장 용도에 맞춰<br>예산과 자동 규칙을 제안해요', '계좌마다 용도를 직접 정한 뒤 시작해요.'],
+    goal:['연동하면 목표 통장 잔액으로<br>진행률을 보여 드려요', '챌린지는 연동 후 결제 기록으로 인증돼요.'] }[S.tab];
+  const head = S.tab === 'home' ? `<header class="top"><div style="display:grid;gap:2px;line-height:1.3"><span class="t12" style="color:var(--g4)">Hello</span><span class="t14">10월 ${S.day}일 ${'일월화수목금토'[(S.day + 3) % 7]}요일</span></div>
+      <button class="ib glass" data-act="sheet" data-sheet="menu" aria-label="메뉴">${ic('menu', 20)}</button></header>${focusStrip()}`
+    : `<header class="top"><div><div class="ph-title">${T[0]}${areaTag(S.tab)}</div><div class="ph-sub">${T[1]}</div></div></header>`;
+  return head + `<div class="card c-dash mt16 empty-card">
+      ${S.tab === 'home' ? `<div class="t14 mute">✦ 오늘 쓸 수 있는 돈 ✦</div><div class="n56 num mute" style="opacity:.35">—</div>` : `<span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic('link', 20)}</span>`}
+      <div class="t18 mt16" style="line-height:1.4">${msg[0]}</div>
+      <p class="t12 mute mt8">${msg[1]}</p>
+      <button class="btn mt24" data-act="linkStart">${ic('link', 18)}계좌 연동하기</button>
+    </div>
+    ${S.tab === 'home' ? `<section class="sec"><div class="sec-h"><div><div class="t18">연동 전에도 할 수 있어요</div><div class="sec-d">계좌 없이 둘러보기</div></div></div>
+      <div class="stack8">${[['spark', '내 진단 결과 보기', '유형과 시작 영역', 'data-act="diag"'], ['spark', '한 입 금융', '인플레이션 · 복리 · 세후 이자', 'data-act="sheet" data-sheet="bites"'], ['gift', '받을 수 있는 혜택 확인', '나이·소득 조건만으로 볼 수 있어요', 'data-act="tab" data-tab="benefit"']].map(([i, t, d, a]) => `<button class="card c-paper setrow" style="padding:16px 20px;text-align:left" ${a}><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(i, 20)}</span><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${d}</span></span>${ic('arrow', 18)}</button>`).join('')}</div></section>` : ''}`;
+}
+
 /* =========================================================
    관심 기반 진입(원칙 4): 진단에서 추천한 영역부터 집중하고 인접 영역은 '다음 단계'로 보여 준다
    ========================================================= */
@@ -1306,18 +1350,11 @@ function vHome() {
       </div>
     </div>`;
   // 독립 자금 · 10월 누적 지출: 상단 라벨 / 숫자 / 하단(그래프·영수증 보기)을 같은 서체·크기·위치로 맞춘다
-  const goalAndSpend = `<div class="grid2">
-      <button class="card c-aura gs-card" data-act="tab" data-tab="goal" data-gv="goal">
-        <span class="gs-top">독립 자금</span>
-        <span class="gs-num">${pct(d.goal)}</span>
-        <span class="gs-foot"><span class="glowbar"><i style="width:${d.goal * 100}%"></i></span></span>
-      </button>
-      <button class="card c-paper gs-card" data-act="tab" data-tab="spend" data-sv="report">
-        <span class="gs-top">10월 누적 지출</span>
-        <span class="gs-num">${won(S.spent)}<span class="gs-won">₩</span></span>
-        <span class="gs-foot"><span>영수증 보기</span>${ic('arrow', 16)}</span>
-      </button>
-    </div>`;
+  // 예산 상태는 '오늘 쓸 수 있는 돈'(위)과 '월말 예상'(검정 카드) 두 곳에서만 보여 준다. 누적 지출 카드·미터는 겹쳐서 뺐다
+  const goalAndSpend = `<button class="card c-aura goal-row" data-act="tab" data-tab="goal" data-gv="goal">
+        <span class="row between" style="width:100%"><span class="gs-top">독립 자금</span><span class="row g4 t10 mute">${W(S.goalSaved)} / 500만 원${ic('arrow', 14)}</span></span>
+        <span class="row g16 mt8" style="width:100%;align-items:center"><span class="gs-num" style="flex:none;margin:0">${pct(d.goal)}</span><span class="glowbar" style="flex:1;height:8px"><i style="width:${d.goal * 100}%"></i></span></span>
+      </button>`;
   // 홈은 요약만: 통장 → 플랜·통장, 돈의 흐름 → 지출·분석 (상세와 정리 버튼은 해당 탭에)
   const accounts = accountsCard(true);
   const flow = flowCard(true);
@@ -1336,7 +1373,6 @@ function vHome() {
       <div class="t14 mute">✦ 오늘 쓸 수 있는 돈 ✦</div>
       <div class="hero-n"><span class="n56 num">${won(d.daily)}</span><span class="n24">₩</span></div>
       <div class="t12 mute">10월 남은 예산 ${W(d.remain)} · ${d.left}일</div>
-      ${meter(d.used)}
     </section>
     <div class="stack" style="margin-top:32px">
       ${order.join('')}
@@ -1401,7 +1437,7 @@ function receiptReport() {
       <div class="p-row"><span>${S.fixedSet ? '☑' : '☐'} 고정 지출 등록</span><span>${S.fixedSet ? '완료' : '필수 · 미설정'}</span></div>
       <div class="p-row"><span>☐ 소액 적립식 투자</span><span>선택</span></div>
       <div class="p-row"><span>→ 인접 영역</span><span>세금과 혜택</span></div>
-      <div style="font-size:10px;color:var(--mute)">청년 월세 지원 신청 마감 D-18</div>
+      <div style="font-size:10px;color:var(--mute)">청년 월세 지원 신청 마감 D-15</div>
     </div>
     <button class="p-btn" data-act="tab" data-tab="benefit">혜택 탭으로 →</button>
     <hr class="p-rule">
@@ -1894,7 +1930,7 @@ function vGoal() {
    ========================================================= */
 function vBenefit() {
   const bens = [
-    { n:'청년 월세 지원', amt:'월 200,000원 · 12개월', y:2400000, c:['y','y','y','c'], tag:'D-18', hot:true },
+    { n:'청년 월세 지원', amt:'월 200,000원 · 12개월', y:2400000, c:['y','y','y','c'], tag:'D-15', hot:true },
     { n:'청년도약계좌 정부기여금', amt:'월 최대 33,000원', y:396000, c:['y','y','n','y'], tag:'가입 가능' },
     { n:'연말정산 카드 소득공제', amt:'예상 환급 약 180,000원', y:180000, c:['n','y','n','y'], tag:'진행 중' },
     { n:'K-패스 교통비 환급', amt:'월 약 12,300원 (청년 30%)', y:147600, c:['y','n','n','y'], tag:'받는 중' },
@@ -1947,7 +1983,7 @@ function vBenefit() {
   <section class="sec">
     <div class="sec-h"><div class="t18">신청 일정</div></div>
     <div class="tl">
-      <div class="it hot"><div class="row between"><span class="t14">청년 월세 지원 2차 접수 마감</span><span class="t12 num">10.30</span></div><div class="t12 mute">D-18 · 임대차계약서·주민등록등본 필요</div></div>
+      <div class="it hot"><div class="row between"><span class="t14">청년 월세 지원 2차 접수 마감</span><span class="t12 num">10.30</span></div><div class="t12 mute">D-15 · 임대차계약서·주민등록등본 필요</div></div>
       <div class="it"><div class="row between"><span class="t14">청년도약계좌 11월 가입 신청</span><span class="t12 num">11.03 – 11.14</span></div><div class="t12 mute">정부기여금은 매달 납입액에 따라 붙어요</div></div>
       <div class="it"><div class="row between"><span class="t14">연말정산 간소화 서비스</span><span class="t12 num">01.15</span></div><div class="t12 mute">카드 사용액·월세 공제 자료 자동 수집</div></div>
     </div>
@@ -1974,7 +2010,7 @@ function sheetHTML(name) {
   const head = (t, s) => `${close}<div class="row between"><div><div class="t18">${t}</div>${s ? `<div class="t12 mute">${s}</div>` : ''}</div><button class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)" data-act="closeSheet" aria-label="닫기">${ic('close', 20)}</button></div>`;
   switch (name) {
     case 'noti': return head('알림', '예산 초과 위험·정산·입금일 때만 보내요') + `<div class="stack mt24">
-      <div class="card c-aura"><span class="tag ink">예산 초과 위험</span><div class="t16 mt12">배달 예산의 87%를 썼어요</div><div class="t12 mute mt4">10월 110,000원 중 96,000원 · 남은 19일</div><div class="glowbar mt12"><i style="width:87%"></i></div></div>
+      <div class="card c-aura"><span class="tag ink">예산 초과 위험</span><div class="t16 mt12">배달 예산의 ${pct(catSpent()['배달'] / S.cat['배달'])}를 썼어요</div><div class="t12 mute mt4">10월 ${W(S.cat['배달'])} 중 ${W(catSpent()['배달'])} · 남은 ${d.left}일</div><div class="glowbar mt12"><i style="width:${Math.min(100, catSpent()['배달'] / S.cat['배달'] * 100)}%"></i></div></div>
       ${S.settled ? '' : `<button class="card c-paper" style="text-align:left" data-act="sheet" data-sheet="settle"><span class="tag line">정산</span><div class="t16 mt12">받을 더치페이 2건 · 36,000원</div><div class="t12 mute mt4">10.09 저녁 · 10.11 택시</div></button>`}
       ${S.allocDone ? '' : `<button class="card c-paper" style="text-align:left" data-act="sheet" data-sheet="alloc"><span class="tag line">입금</span><div class="t16 mt12">외주비 320,000원 배분 제안</div><div class="t12 mute mt4">10.08 · 한 번에 나누기</div></button>`}
       <p class="t12 mute">알림 종류는 메뉴 › 알림 설정에서 끌 수 있어요.</p></div>`;
@@ -1993,8 +2029,19 @@ function sheetHTML(name) {
     case 'withdraw': {
       const a = S.wAmt, after = S.goalSaved - a; const m0 = Math.ceil((5000000 - S.goalSaved) / 350000), m1 = Math.ceil((5000000 - after) / 350000);
       const dt = k => { const t = new Date(2026, 9 + k, 1); return `${t.getFullYear()}.${String(t.getMonth() + 1).padStart(2, '0')}`; };
+      const daily2 = Math.floor((d.remain - a) / d.left / 100) * 100, budgetOk = d.remain - a > 0;
       return head('저축 꺼내기', '독립 자금 적금') + `<div class="row g8 mt24">${[100000,200000,500000].map(v => `<button class="chip ${a === v ? 'on' : ''}" data-act="wAmt" data-v="${v}">${man(v)} 원</button>`).join('')}</div>
-      <div class="card c-paper mt16"><div class="t12 mute">꺼내면 목표가 이렇게 바뀌어요</div>
+      <div class="t14 mt24">꺼내기 전에, 이런 방법도 있어요</div>
+      <div class="stack8 mt12">
+        <div class="card c-aura" style="padding:18px 20px"><div class="row between"><span class="t14">비상금에서 쓰기</span><span class="tag ink">목표 영향 없음</span></div>
+          <p class="t12 mute mt8">비상금 ${W(S.emergency)}은 이런 때 쓰려고 모아 둔 돈이에요. ${S.emergency >= a ? `${W(a)}을 쓰면 ${W(S.emergency - a)}이 남고, 매월 25일 자동 적립으로 다시 채워져요.` : '이번 금액에는 조금 모자라요.'}</p>
+          ${S.emergency >= a ? `<button class="btn sm mt12" data-act="wEmer">비상금에서 ${W(a)} 쓰기</button>` : ''}</div>
+        <div class="card c-paper" style="padding:18px 20px"><div class="row between"><span class="t14">이번 달 예산에서 마련하기</span>${budgetOk ? `<span class="tag line">하루 ${W(d.daily)} → ${W(Math.max(0, daily2))}</span>` : ''}</div>
+          <p class="t12 mute mt8">${budgetOk ? `남은 예산 ${W(d.remain)}에서 ${W(a)}을 빼면 남은 ${d.left}일 동안 하루 ${W(Math.max(0, daily2))}씩 쓸 수 있어요.` : `남은 예산 ${W(d.remain)}보다 큰 금액이라 예산만으로는 어려워요.`}</p>
+          ${budgetOk ? `<button class="btn sm ghost mt12" data-act="wBudget">예산에서 마련하기</button>` : ''}</div>
+      </div>
+      <p class="t10 mute mt12" style="line-height:1.6">목표 돈을 지키려고 카드 할부나 대출을 쓰면 이자 때문에 더 비싸져요. 급한 지출이라면 비상금부터 쓰는 게 좋아요.</p>
+      <div class="card c-paper mt24"><div class="t12 mute">그래도 꺼내면 목표가 이렇게 바뀌어요</div>
         <div class="row between mt16"><div><div class="t10 mute">진행률</div><div class="n24 mt4">${pct(S.goalSaved / 5000000)} → ${pct(after / 5000000)}</div></div><div style="text-align:right"><div class="t10 mute">달성 예정</div><div class="n24 mt4">${dt(m1)}</div></div></div>
         <div style="position:relative;height:40px;margin-top:20px"><div style="position:absolute;left:0;right:0;top:16px;height:1px;background:var(--g3)"></div>
           <span style="position:absolute;left:40%;top:10px;width:13px;height:13px;border-radius:50%;background:#181818"></span><span class="t10 mute" style="position:absolute;left:40%;top:28px;transform:translateX(-30%)">${dt(m0)}</span>
@@ -2036,7 +2083,7 @@ function sheetHTML(name) {
 }
 function aiAnswer(q) {
   const d = D();
-  if (/얼마|더 써|오늘|예산/.test(q)) return { a:`오늘은 <b>${W(d.daily)}</b>까지 써도 돼요. 10월 남은 예산은 ${W(d.remain)}, 남은 ${d.left}일 기준이에요. 지금 속도면 월말에 ${W(Math.abs(d.proj))} ${d.proj >= 0 ? '남아요' : '부족해요'}. 다만 배달은 카테고리 예산의 87%라, 이번 주 배달은 1회만 추천해요.`, src:'10월 예산 800,000원 · 연동 카드 3개 지출' };
+  if (/얼마|더 써|오늘|예산/.test(q)) return { a:`오늘은 <b>${W(d.daily)}</b>까지 써도 돼요. 10월 남은 예산은 ${W(d.remain)}, 남은 ${d.left}일 기준이에요. 지금 속도면 월말에 ${W(Math.abs(d.proj))} ${d.proj >= 0 ? '남아요' : '부족해요'}. 다만 배달은 카테고리 예산의 ${pct(catSpent()['배달'] / S.cat['배달'])}라, 이번 주 배달은 1회만 추천해요.`, src:'10월 예산 800,000원 · 연동 카드 3개 지출' };
   if (/외주|알바|나누|보너스/.test(q)) return { a:`외주비 320,000원은 독립 자금 160,000원 · 비상금 96,000원 · 자유 64,000원으로 나누는 걸 추천해요. 비상금이 목표의 46%라 조금 더 채우면 좋고, 독립 자금은 계획보다 200,000원 느려서 절반을 넣으면 차이가 줄어요.`, src:'비상금 1,100,000 / 2,400,000원 · 독립 자금 계획 대비 −200,000원' };
   if (/적금|깨|인출|꺼내/.test(q)) return { a:`꺼낼 수는 있어요. 200,000원을 꺼내면 독립 자금 달성이 2027.06 → 2027.07로 1개월 늦어져요. 급한 지출이라면 비상금(1,100,000원)을 먼저 쓰는 게 목표에 영향이 적어요.`, src:'독립 자금 2,300,000원 · 월 350,000원 자동이체' };
   return { a:`지금 가장 효과가 큰 건 배달이에요. 9월에 지난달보다 44,000원 늘었고, 주 3회를 2회로 줄이면 한 달 64,000원을 아껴 독립 자금이 1개월 빨라져요.`, src:'9월 지출 영수증 · 독립 자금 목표' };
@@ -2075,7 +2122,7 @@ function goSub(ni, dir, from, d = 0) {
   setTimeout(() => { ne.forEach(e => { e.style.transition = ''; }); ghost && ghost.remove(); }, 360);
 }
 function swStart(x, y, tg) {
-  if (S.mode !== 'app' || S.sub || !SUBS[S.tab] || !view.contains(tg)) return;
+  if (S.mode !== 'app' || S.sub || !S.linked || !SUBS[S.tab] || !view.contains(tg)) return;
   if (tg.closest('.shead, .printer .feed, input, textarea, select')) return;
   for (let e = tg; e && e !== view; e = e.parentElement) if (e.scrollWidth > e.clientWidth + 1 && /auto|scroll/.test(getComputedStyle(e).overflowX)) return;
   swipe = { x, y, dx: 0, on: false };
@@ -2114,12 +2161,15 @@ function subTap(v) { const [k, l] = SUBS[S.tab], i = l.indexOf(S[k]), ni = l.ind
 function render(keepScroll = true) {
   const key = S.mode === 'onboard' ? 'ob' + S.ob : S.sub ? 'sub' + S.sub : 'tab' + S.tab;
   const st = keepScroll && key === lastKey ? view.scrollTop : 0;
-  const dark = S.mode === 'onboard' ? (S.ob === 1 || S.ob === 3) : S.sub === 'diag' || S.tab === 'spend';
+  const dark = S.mode === 'onboard' ? (S.ob === 1 || S.ob === 3) : S.sub ? S.sub === 'diag' : S.tab === 'spend';
   screen.classList.toggle('dark', dark);
   screen.classList.toggle('nonav', S.mode === 'onboard' || !!S.sub);
   if (S.mode === 'onboard') view.innerHTML = [vIntro, vSelf, vQuiz, vResult][S.ob]();
   else if (S.sub === 'diag') view.innerHTML = vResult('app');
+  else if (S.sub === 'link') view.innerHTML = vLink();
+  else if (!S.linked && S.tab !== 'benefit') view.innerHTML = vEmpty();
   else view.innerHTML = { home:vHome, spend:vSpend, plan:vPlan, goal:vGoal, benefit:vBenefit }[S.tab]();
+  if (S.sub === 'link') view.querySelectorAll('.use-row').forEach(r => { const o = r.querySelector('.on'); if (o) r.scrollLeft = Math.max(0, o.offsetLeft + o.offsetWidth - r.clientWidth + 20); });
   if (S.mode === 'app' && !S.sub) { const h = view.querySelector(':scope > header.top');
     if (h) { const w = document.createElement('div'); w.className = 'shead'; h.before(w); w.append(h); const t = w.nextElementSibling; if (t && t.classList.contains('utabs')) w.append(t); }
     const ut = view.querySelector('.utabs'); if (ut) ut.style.setProperty('--i', [...ut.children].findIndex(b => b.classList.contains('on'))); }
@@ -2223,13 +2273,16 @@ document.addEventListener('click', e => {
   const a = el.dataset.act, v = el.dataset.v;
   switch (a) {
     case 'ob': S.mode = 'onboard'; S.ob = +v; closeSheet(); render(false); break;
-    case 'toApp': S.mode = 'app'; S.tab = 'home'; render(false); break;
+    case 'toApp': S.mode = 'app'; S.tab = 'home'; S.linked = false; S.focus = null; render(false); break;
+    case 'linkStart': closeSheet(); S.mode = 'app'; S.sub = 'link'; render(false); break;
+    case 'acctUse': S.acctUse[el.dataset.k] = v; render(); break;
+    case 'linkDone': S.linked = true; S.sub = null; S.tab = 'home'; render(false); simpleToast(`계좌 ${ACCOUNTS.length}개를 연동했어요 · 용도는 직접 정한 대로 써요`); break;
     case 'self': S.self[el.dataset.k] = +v; render(); break;
     case 'ans': S.answers[S.q] = +v; render(); break;
     case 'qNext': if (S.answers[S.q] == null) return; if (S.q < 19) { S.q++; render(false); } else { S.ob = 3; render(false); } break;
     case 'qPrev': if (S.q > 0) { S.q--; render(false); } else { S.ob = 1; render(false); } break;
     case 'togglePrev': S.showPrev = !S.showPrev; render(); break;
-    case 'resLink': S.sub = null; S.persona = scores().persona; S.mode = 'app'; S.tab = 'home'; render(false); simpleToast('계좌 6개 · 카드 3개를 연동했어요'); break;
+    case 'resLink': S.persona = scores().persona; S.focus = null; S.mode = 'app'; S.tab = 'home'; S.sub = 'link'; render(false); break;
     case 'resSetup': S.persona = scores().persona; S.mode = 'app'; S.tab = 'plan'; S.planView = 'rule'; render(false); break;
     case 'rediag': closeSheet(); S.sub = null; S.mode = 'onboard'; S.ob = 1; S.q = 0; render(false); break;
     case 'tab': closeSheet(); S.mode = 'app'; S.sub = null; S.tab = el.dataset.tab; if (el.dataset.pv) S.planView = el.dataset.pv; if (el.dataset.sv) S.spendView = el.dataset.sv; if (el.dataset.gv) S.goalView = el.dataset.gv; render(false); break;
@@ -2264,6 +2317,8 @@ document.addEventListener('click', e => {
     case 'catSel': S.catSel = S.catSel === v ? null : v; render(); break;
     case 'step': S.cat[el.dataset.c] = Math.max(0, S.cat[el.dataset.c] + +el.dataset.d); render(); break;
     case 'wAmt': S.wAmt = +v; refreshSheet(); break;
+    case 'wEmer': { const amt = S.wAmt; S.emergency -= amt; closeSheet(); render(); simpleToast(`비상금에서 ${W(amt)}을 생활비 통장으로 옮겼어요 · 목표는 그대로예요`); break; }
+    case 'wBudget': { const amt = S.wAmt; closeSheet(); render(); simpleToast(`이번 달 예산에서 ${W(amt)}을 마련했어요 · 목표는 그대로예요`); break; }
     case 'wDo': { const amt = S.wAmt; S.goalSaved -= amt; closeSheet(); render(); simpleToast(`${W(amt)}을 생활비 통장으로 옮겼어요`); break; }
     case 'goalSel': S.goalSel = v; render(); break;
     case 'gType': S.gNew.type = v; refreshSheet(); break;
@@ -2314,8 +2369,8 @@ document.querySelector('#aiDock [type="submit"]').innerHTML = ic('send', 20);
 
 /* ---------- side panel ---------- */
 function renderPanel() {
-  const cur = S.mode === 'onboard' ? 'ob' + S.ob : S.sub === 'diag' ? 'diag' : S.tab === 'spend' ? 'spend-' + S.spendView : S.tab === 'plan' ? 'plan-' + S.planView : S.tab === 'goal' ? 'goal-' + S.goalView : S.tab;
-  const sc = [ ['ob0','진단 시작'], ['ob1','자기평가'], ['ob2','진단 문항'], ['ob3','진단 결과'], ['diag','내 진단 결과'], ['home','홈'], ['spend-list','지출 · 가계부'], ['spend-analysis','지출 · 분석'], ['spend-report','지출 · 리포트'], ['plan-budget','플랜 · 예산'], ['plan-bank','플랜 · 통장'], ['plan-rule','플랜 · 자동 규칙'], ['goal-goal','도전 · 목표'], ['goal-chal','도전 · 챌린지'], ['goal-comm','도전 · 소통'], ['benefit','혜택'] ];
+  const cur = S.mode === 'onboard' ? 'ob' + S.ob : S.sub === 'diag' ? 'diag' : S.sub === 'link' ? 'link' : !S.linked && S.tab === 'home' ? 'empty' : S.tab === 'spend' ? 'spend-' + S.spendView : S.tab === 'plan' ? 'plan-' + S.planView : S.tab === 'goal' ? 'goal-' + S.goalView : S.tab;
+  const sc = [ ['ob0','진단 시작'], ['ob1','자기평가'], ['ob2','진단 문항'], ['ob3','진단 결과'], ['diag','내 진단 결과'], ['link','계좌 연동 · 용도 확인'], ['empty','홈 · 연동 전'], ['home','홈'], ['spend-list','지출 · 가계부'], ['spend-analysis','지출 · 분석'], ['spend-report','지출 · 리포트'], ['plan-budget','플랜 · 예산'], ['plan-bank','플랜 · 통장'], ['plan-rule','플랜 · 자동 규칙'], ['goal-goal','도전 · 목표'], ['goal-chal','도전 · 챌린지'], ['goal-comm','도전 · 소통'], ['benefit','혜택'] ];
   document.getElementById('navScreens').innerHTML = sc.map(([k, n]) => `<button type="button" class="${cur === k ? 'on' : ''}" data-go="${k}">${n}</button>`).join('');
   document.getElementById('navPersona').innerHTML = Object.entries(PERSONA).map(([k, p]) => `<button type="button" class="${S.persona === k ? 'on' : ''}" data-persona="${k}">${p.name}</button>`).join('');
   document.getElementById('navScen').innerHTML = [ ['pay','결제 발생 → 실시간 피드백'], ['income','외주비 입금 → 배분'], ['settle','더치페이 정산'], ['withdraw','저축 인출 확인'], ['ai','AI 조언 묻기'] ].map(([k, n]) => `<button type="button" data-scen="${k}">${n}</button>`).join('');
@@ -2324,12 +2379,14 @@ document.querySelector('.panel').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return; closeSheet(); S.sub = null;
   if (b.dataset.go) { const g = b.dataset.go;
     if (g === 'diag') { S.mode = 'app'; S.sub = 'diag'; }
+    else if (g === 'link') { S.mode = 'app'; S.sub = 'link'; }
+    else if (g === 'empty') { S.mode = 'app'; S.linked = false; S.tab = 'home'; }
     else if (g.startsWith('ob')) { S.mode = 'onboard'; S.ob = +g[2]; }
-    else { S.mode = 'app'; if (g.startsWith('spend')) { S.tab = 'spend'; S.spendView = g.split('-')[1]; } else if (g.startsWith('plan')) { S.tab = 'plan'; S.planView = g.split('-')[1]; } else if (g.startsWith('goal')) { S.tab = 'goal'; S.goalView = g.split('-')[1]; } else S.tab = g; }
+    else { S.mode = 'app'; S.linked = true; if (g.startsWith('spend')) { S.tab = 'spend'; S.spendView = g.split('-')[1]; } else if (g.startsWith('plan')) { S.tab = 'plan'; S.planView = g.split('-')[1]; } else if (g.startsWith('goal')) { S.tab = 'goal'; S.goalView = g.split('-')[1]; } else S.tab = g; }
     render(false); }
   if (b.dataset.persona) { S.persona = b.dataset.persona; S.focus = FOCUS_BY_PERSONA[S.persona]; S.biteOpen = {}; S.planMore = false; S.mode = 'app'; S.tab = 'home'; render(false); }
   const sc = b.dataset.scen;
-  if (sc) { S.mode = 'app';
+  if (sc) { S.mode = 'app'; S.linked = true;
     if (sc === 'pay') { S.tab = 'home'; render(false); payment(); }
     if (sc === 'income') { S.tab = 'home'; S.incomeIn = true; S.allocDone = false; render(false); openSheet('alloc'); }
     if (sc === 'settle') { S.tab = 'home'; S.settled = false; render(false); openSheet('settle'); }
