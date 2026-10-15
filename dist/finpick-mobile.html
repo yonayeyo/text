@@ -1249,21 +1249,23 @@ function vEmpty() {
 /* =========================================================
    관심 기반 진입(원칙 4): 진단에서 추천한 영역부터 집중하고 인접 영역은 '다음 단계'로 보여 준다
    ========================================================= */
-const AREA_TAB = { spend:'spend', save:'plan', tax:'benefit' }, TAB_NAME = { spend:'지출', plan:'플랜', benefit:'혜택' };
+// 영역 ↔ 화면: 탭이 아니라 하위 탭 단위로 잇는다. 예산·줄이기 계획(플랜 › 예산)은 '소비와 지출'의 실천이라 지출과 같은 영역
+const AREA_TAB = { spend:'spend', save:'plan', tax:'benefit' }, AREA_PV = { save:'bank' }, TAB_NAME = { spend:'지출', plan:'플랜 › 통장', benefit:'혜택' };
+const viewArea = () => S.tab === 'spend' ? 'spend' : S.tab === 'benefit' ? 'tax' : S.tab === 'plan' ? { budget:'spend', bank:'save' }[S.planView] || null : null;
 // 오른쪽 패널에서 유형을 바꿔 볼 때 쓰는 대표 시작 영역 (실제 사용자는 진단 결과 scores().rec)
 const FOCUS_BY_PERSONA = { cog:'spend', low:'spend', habit:'save', self:'tax' };
 const areaName = id => AREAS.find(a => a.id === id).name;
 const focusArea = () => S.focus || scores().rec.id;
 const areaOrder = () => { const f = focusArea(); return [f, ...['spend','save','tax'].filter(x => x !== f)]; };
 function areaTag(tab) {
-  const id = Object.keys(AREA_TAB).find(k => AREA_TAB[k] === tab); if (!id) return '';
+  const id = tab === S.tab ? viewArea() : null; if (!id) return '';
   const n = areaOrder().indexOf(id) + 1, f = focusArea();
   return n === 1 ? `<span class="tag ink ph-tag">지금 집중</span>`
     : `<button class="tag dash ph-tag" data-act="toast" data-msg="지금은 ‘${areaName(f)}’에 집중하는 단계예요. 이 화면은 ${n}단계로, 먼저 둘러봐도 괜찮아요">다음 단계 ${n}</button>`;
 }
 function focusStrip() {
   const o = areaOrder(), f = o[0];
-  return `<button class="card c-paper focus-strip" data-act="tab" data-tab="${AREA_TAB[f]}" aria-label="지금 집중할 영역 ${areaName(f)}, ${TAB_NAME[AREA_TAB[f]]} 화면으로 가기">
+  return `<button class="card c-paper focus-strip" data-act="tab" data-tab="${AREA_TAB[f]}" ${AREA_PV[f] ? `data-pv="${AREA_PV[f]}"` : ''} aria-label="지금 집중할 영역 ${areaName(f)}, ${TAB_NAME[AREA_TAB[f]]} 화면으로 가기">
     <span class="fs-txt"><span class="t10 mute">지금 집중할 영역</span><span class="t14">${areaName(f)}</span></span>
     <span class="fs-steps" aria-hidden="true">${o.map((id, i) => `<span class="fs-step ${i ? '' : 'on'}"><b>${i + 1}</b><span>${{ spend:'지출', save:'저축', tax:'혜택' }[id]}</span></span>`).join('<i></i>')}</span>
     ${ic('arrow', 16)}</button>`;
