@@ -1690,16 +1690,6 @@ function vPlan() {
     <div class="sec-h"><div><div class="t18">카테고리별 예산</div><div class="sec-d">10.01 – 10.${String(S.day).padStart(2, '0')} · 쓴 돈 기준</div></div></div>
     <div class="card c-ink">${catPetals()}</div>
   </section>
-  <section class="sec">
-    <div class="sec-h"><div><div class="t18">이렇게 나눠 보면 어때요?</div><div class="sec-d">9월 수입 2,450,000원 · 지출 데이터 기준</div></div></div>
-    <div class="card c-sky">
-      ${halfDonut()}
-      <hr class="hair mt24">
-      <div class="row between mt16"><span class="t14">카테고리별 생활비</span><span class="t12 num ${total !== 800000 ? '' : 'mute'}">${W(total)}</span></div>
-      <div class="stack8 mt12">${Object.entries(S.cat).map(([k, v]) => `<div class="row between t14"><span>${k}</span>${S.ratioEdit ? `<span class="stepper"><button data-act="step" data-c="${k}" data-d="-10000" aria-label="${k} 줄이기">−</button><span class="num t12" style="min-width:64px;text-align:right">${won(v)}</span><button data-act="step" data-c="${k}" data-d="10000" aria-label="${k} 늘리기">+</button></span>` : `<span class="num">${won(v)}</span>`}</div>`).join('')}</div>
-      ${S.ratioOk ? `<div class="row g8 mt16 t14">${ic('check', 18)} 10월 예산에 적용했어요</div>` : `<div class="row g8 mt24"><button class="btn" style="flex:1" data-act="ratioOk">수락</button><button class="btn ghost" style="flex:1" data-act="ratioEdit">${S.ratioEdit ? '수정 완료' : '수정'}</button></div>`}
-    </div>
-  </section>
     <section class="sec">
       <div class="sec-h"><div><div class="t18">줄이기 계획</div><div class="sec-d">9월 지출 기준 · 다음 달 예산</div></div></div>
       <div class="t14"><span class="stepn">1</span>줄이지 않을 지출 고르기</div>
@@ -1725,7 +1715,17 @@ function vPlan() {
           <div class="row g8 mt16"><button class="btn sm ghost" data-act="cutUndo">반영 취소</button></div>`
         : `<button class="btn full mt16" data-act="cutApply" ${save ? '' : 'disabled style="opacity:.35"'}>${save ? '11월 예산에 반영' : '제안을 하나 이상 담아 주세요'}</button>`}
       </div>
-    </section>`}`;
+    </section>
+  <section class="sec">
+    <div class="sec-h"><div><div class="t18">이렇게 나눠 보면 어때요?</div><div class="sec-d">9월 수입 2,450,000원 · 지출 데이터 기준</div></div></div>
+    <div class="card c-sky">
+      ${halfDonut()}
+      <hr class="hair mt24">
+      <div class="row between mt16"><span class="t14">카테고리별 생활비</span><span class="t12 num ${total !== 800000 ? '' : 'mute'}">${W(total)}</span></div>
+      <div class="stack8 mt12">${Object.entries(S.cat).map(([k, v]) => `<div class="row between t14"><span>${k}</span>${S.ratioEdit ? `<span class="stepper"><button data-act="step" data-c="${k}" data-d="-10000" aria-label="${k} 줄이기">−</button><span class="num t12" style="min-width:64px;text-align:right">${won(v)}</span><button data-act="step" data-c="${k}" data-d="10000" aria-label="${k} 늘리기">+</button></span>` : `<span class="num">${won(v)}</span>`}</div>`).join('')}</div>
+      ${S.ratioOk ? `<div class="row g8 mt16 t14">${ic('check', 18)} 10월 예산에 적용했어요</div>` : `<div class="row g8 mt24"><button class="btn" style="flex:1" data-act="ratioOk">수락</button><button class="btn ghost" style="flex:1" data-act="ratioEdit">${S.ratioEdit ? '수정 완료' : '수정'}</button></div>`}
+    </div>
+  </section>`}`;
   // 통장: 용도별 통장 · 비상금 · 저축 꺼내기 · 투자
   if (pv === 'bank') return head + `
   <section class="mt16">${accountsCard(false)}</section>
