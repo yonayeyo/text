@@ -326,9 +326,14 @@ svg{display:block}
 .glowbar i::after{content:"";position:absolute;inset:-6px;border-radius:999px;background:inherit;filter:blur(10px);opacity:.75;z-index:-1}
 .glowbar.flat i::after{display:none}
 .goal-row{width:100%;text-align:left;display:flex;flex-direction:column;align-items:flex-start}
-.use-row{overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px;flex-wrap:nowrap}
-.use-row::-webkit-scrollbar{display:none}
-.sm-chip{height:32px;padding:0 12px;font-size:12px;flex:none}
+.acct-list{padding:4px 24px}
+.acct-row{width:100%;display:grid;grid-template-columns:10px 1fr auto;gap:14px;align-items:center;padding:16px 0;text-align:left}
+.acct-row + .acct-row{border-top:1px solid var(--line)}
+.acct-dot{width:10px;height:10px;border-radius:3px}
+.acct-t{display:grid;gap:2px;min-width:0}
+.acct-use{display:inline-flex;align-items:center;gap:4px;height:32px;padding:0 10px 0 14px;border-radius:999px;font-size:13px;box-shadow:inset 0 0 0 1px var(--line);white-space:nowrap}
+.use-opt{width:100%;display:flex;justify-content:space-between;align-items:center;padding:16px 4px;text-align:left;font-size:15px}
+.use-opt + .use-opt{border-top:1px solid var(--line)}
 .empty-card{text-align:center;padding:32px 24px;display:flex;flex-direction:column;align-items:center}
 /* 지금 집중할 영역 (홈) · 탭 제목 옆 단계 표시 · 탭바 점 */
 .focus-strip{width:100%;display:flex;align-items:center;gap:12px;padding:14px 20px;text-align:left;margin-top:16px}
@@ -1202,18 +1207,21 @@ function flowCard(home) {
 /* =========================================================
    계좌 연동 · 용도 확인 (흐름 ④): 찾은 계좌마다 용도를 사용자가 확인하거나 바꾼다
    ========================================================= */
+// 계좌 목록: 한 줄에 계좌 이름 · 잔액 · 지금 용도. 누르면 용도 고르기 시트가 열린다
+function acctRows() {
+  return `<div class="card c-paper acct-list">${ACCOUNTS.map(a => `<button class="acct-row" data-act="usePick" data-v="${a.k}" aria-label="${a.raw} 용도 ${useOf(a)}, 바꾸기">
+      <i class="acct-dot" style="background:${ACC_FILL[a.k]};${a.k === 'emer' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}"></i>
+      <span class="acct-t"><span class="t14">${a.raw}</span><span class="t12 mute num">${W(a.a)}</span></span>
+      <span class="acct-use">${useOf(a)}${ic('arrow', 14)}</span>
+    </button>`).join('')}</div>`;
+}
 function vLink() {
-  const total = ACCOUNTS.reduce((t, a) => t + a.a, 0);
   return `<div class="top"><button class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)" data-act="subClose" aria-label="뒤로">${ic('chevL', 20)}</button><span class="t14">계좌 연동</span><span style="width:40px"></span></div>
-  <div class="t12 mute mt24">계좌 ${ACCOUNTS.length}개를 찾았어요 · ${W(total)}</div>
-  <h1 class="t18 mt8" style="font-size:22px;line-height:1.4">각 계좌를 어디에 쓰고 있나요?</h1>
-  <p class="t12 mute mt8">나눠 둔 그대로 존중할게요. 계좌 이름과 거래를 보고 짐작한 용도를 먼저 골라 뒀어요. 다르면 바꿔 주세요.</p>
-  <div class="stack8 mt24">${ACCOUNTS.map(a => `<div class="card c-paper" style="padding:16px 20px">
-    <div class="row between"><span class="t14">${a.raw}</span><span class="t12 num mute">${W(a.a)}</span></div>
-    <div class="row g8 mt12 use-row">${USES.map(u => `<button class="chip sm-chip ${useOf(a) === u ? 'on' : ''}" data-act="acctUse" data-k="${a.k}" data-v="${u}">${u}${u === a.n && !S.acctUse[a.k] ? '<span class="t10" style="opacity:.6;margin-left:4px">추천</span>' : ''}</button>`).join('')}</div>
-  </div>`).join('')}</div>
-  <p class="t10 mute mt16">용도는 플랜 › 통장에서 언제든 바꿀 수 있어요. 예산과 자동 규칙은 이 용도를 기준으로 제안해요.</p>
-  <button class="btn full mt24" data-act="linkDone">이 용도로 시작하기</button>`;
+  <h1 class="t18 mt24" style="font-size:22px;line-height:1.4">계좌 ${ACCOUNTS.length}개를 찾았어요<br>용도가 맞는지 확인해 주세요</h1>
+  <p class="t12 mute mt8">나눠 둔 그대로 쓸게요. 다르면 눌러서 바꿔 주세요.</p>
+  <div class="mt24">${acctRows()}</div>
+  <p class="t10 mute mt12">플랜 › 통장에서 언제든 바꿀 수 있어요.</p>
+  <button class="btn full mt24" data-act="linkDone">이대로 시작하기</button>`;
 }
 // 연동 전(둘러보기): 데이터가 없는 상태를 그대로 보여 주고, 연동 없이 해 볼 수 있는 것을 안내
 function vEmpty() {
@@ -1717,7 +1725,11 @@ function vPlan() {
   // 통장: 용도별 통장 · 비상금 · 저축 꺼내기 · 투자
   if (pv === 'bank') return head + `
   <section class="mt16">${accountsCard(false)}</section>
-  ${S.persona === 'habit' ? '' : `<div class="mt12">${bite('comp')}</div>`}
+  <section class="sec">
+    <div class="sec-h"><div><div class="t18">계좌와 용도</div><div class="sec-d">눌러서 용도를 바꿀 수 있어요</div></div></div>
+    ${acctRows()}
+  </section>
+  ${S.persona === 'habit' ? '' : `<div class="mt24">${bite('comp')}</div>`}
   <section class="sec">
     <div class="sec-h"><div><div class="t18">비상금</div><div class="sec-d">생활비 3개월 기준</div></div></div>
     <div class="card c-paper">
@@ -2061,6 +2073,7 @@ function sheetHTML(name) {
     case 'compare': return head('적금 비교', '월 350,000원 · 12개월 · 세후 이자 (예시)') + `<div class="stack mt24">${[['지금 쓰는 적금','3.1%',59700,1],['A은행 청년 적금','4.2%',80800,0],['B은행 자유 적금','3.6%',69300,0]].map(([n, r, i, cur]) => `<div class="card ${cur ? 'c-paper' : 'c-sky'}" style="padding:20px 24px"><div class="row between"><span class="t14">${n}</span>${cur ? '<span class="tag line">사용 중</span>' : `<span class="tag ink">+${won(i - 59700)}원</span>`}</div><div class="row between mt12" style="align-items:baseline"><span class="n24">${r}</span><span class="t14 num">이자 ${W(i)}</span></div></div>`).join('')}
       <p class="t12 mute">금리는 우대 조건(급여이체·카드 실적)을 모두 채웠을 때 기준이에요.</p></div>
       <div class="mt16">${bite('tax', { force:true })}</div>`;
+    case 'use': { const a = ACCOUNTS.find(x => x.k === S.useK); return head('용도 고르기', `${a.raw} · ${W(a.a)}`) + `<div class="mt16">${USES.map(u => `<button class="use-opt" data-act="acctUse" data-k="${a.k}" data-v="${u}"><span>${u}</span>${useOf(a) === u ? ic('check', 18) : ''}</button>`).join('')}</div>`; }
     case 'bites': return head('한 입 금융', '필요한 순간에 하나씩 보여 드린 개념이에요') + `<div class="stack mt24">${Object.keys(BITES).map(id => bite(id, { force:true, noGo:true })).join('')}</div>`;
     case 'menu': return head('메뉴') + `<div class="stack8 mt24"><button class="card c-paper setrow" style="padding:16px 20px;text-align:left" data-act="diag"><span class="ib ink">${ic('spark', 20)}</span><span><span class="t14" style="display:block">내 진단 결과</span><span class="t12 mute">${PERSONA[S.persona].name} · 2026.10.15 진단</span></span>${ic('arrow', 18)}</button><button class="card c-paper setrow" style="padding:16px 20px;text-align:left" data-act="sheet" data-sheet="bites"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic('spark', 20)}</span><span><span class="t14" style="display:block">한 입 금융</span><span class="t12 mute">인플레이션 · 복리 · 세후 이자 · ${S.bitesDone.size}/${Object.keys(BITES).length} 알아봤어요</span></span>${ic('arrow', 18)}</button>${[['link','연동 계좌·카드 관리','6개 계좌 · 카드 2 · 간편결제 1'],['bell','알림 설정','예산 초과 위험 · 정산 · 입금'],['sliders','기본 설정 바꾸기·해제','선저축 · 비상금 · 예산 · 고정 지출'],['refresh','재진단','마지막 2026.06.12']].map(([i, t, s]) => `<button class="card c-paper setrow" style="padding:16px 20px;text-align:left" data-act="${i === 'refresh' ? 'rediag' : i === 'sliders' ? 'tab' : 'toast'}" data-tab="plan" data-msg="${t} 화면은 데모에서 생략했어요"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(i, 20)}</span><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${s}</span></span>${ic('arrow', 18)}</button>`).join('')}</div>
       <div class="eng mute mt24">테스트 진행자용</div>
@@ -2169,7 +2182,6 @@ function render(keepScroll = true) {
   else if (S.sub === 'link') view.innerHTML = vLink();
   else if (!S.linked && S.tab !== 'benefit') view.innerHTML = vEmpty();
   else view.innerHTML = { home:vHome, spend:vSpend, plan:vPlan, goal:vGoal, benefit:vBenefit }[S.tab]();
-  if (S.sub === 'link') view.querySelectorAll('.use-row').forEach(r => { const o = r.querySelector('.on'); if (o) r.scrollLeft = Math.max(0, o.offsetLeft + o.offsetWidth - r.clientWidth + 20); });
   if (S.mode === 'app' && !S.sub) { const h = view.querySelector(':scope > header.top');
     if (h) { const w = document.createElement('div'); w.className = 'shead'; h.before(w); w.append(h); const t = w.nextElementSibling; if (t && t.classList.contains('utabs')) w.append(t); }
     const ut = view.querySelector('.utabs'); if (ut) ut.style.setProperty('--i', [...ut.children].findIndex(b => b.classList.contains('on'))); }
@@ -2275,7 +2287,8 @@ document.addEventListener('click', e => {
     case 'ob': S.mode = 'onboard'; S.ob = +v; closeSheet(); render(false); break;
     case 'toApp': S.mode = 'app'; S.tab = 'home'; S.linked = false; S.focus = null; render(false); break;
     case 'linkStart': closeSheet(); S.mode = 'app'; S.sub = 'link'; render(false); break;
-    case 'acctUse': S.acctUse[el.dataset.k] = v; render(); break;
+    case 'usePick': S.useK = v; openSheet('use'); break;
+    case 'acctUse': S.acctUse[el.dataset.k] = v; closeSheet(); render(); break;
     case 'linkDone': S.linked = true; S.sub = null; S.tab = 'home'; render(false); simpleToast(`계좌 ${ACCOUNTS.length}개를 연동했어요 · 용도는 직접 정한 대로 써요`); break;
     case 'self': S.self[el.dataset.k] = +v; render(); break;
     case 'ans': S.answers[S.q] = +v; render(); break;
