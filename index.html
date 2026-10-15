@@ -309,6 +309,8 @@ svg{display:block}
 /* ---------- home ---------- */
 .urgent{width:100%;height:48px;margin-top:16px;border-radius:999px;padding:0 6px 0 20px;display:flex;align-items:center;gap:8px;background:var(--paper);box-shadow:inset 0 0 0 1px var(--g3)}
 .ib.ring{animation:ring .5s ease-out}
+.urgent.u-in{animation:uIn .4s cubic-bezier(.2,.8,.3,1) both}
+@keyframes uIn{from{opacity:0;transform:translateY(-12px) scale(.96)}}
 @keyframes ring{30%{transform:scale(1.12) rotate(-8deg)}60%{transform:scale(1.04) rotate(6deg)}}
 .urgent .u-dot{width:8px;height:8px;border-radius:50%;background:var(--rose);flex:none}
 .urgent .grow{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
@@ -1379,7 +1381,7 @@ function vHome() {
         <button class="ib glass" data-act="sheet" data-sheet="menu" aria-label="메뉴">${ic('menu', 20)}</button>
       </div>
     </header>
-    ${S.settled || S.tuck ? '' : `<button class="urgent" data-act="sheet" data-sheet="settle"><span class="u-dot"></span><span class="t14 grow">정산할 더치페이 2건</span><span class="t14 num">36,000원</span><span class="btn sm" style="height:36px">정산</span></button>`}
+    ${S.settled || S.tuck || S.holdSettle ? '' : `<button class="urgent${S.settleIn ? ' u-in' : ''}" data-act="sheet" data-sheet="settle"><span class="u-dot"></span><span class="t14 grow">정산할 더치페이 2건</span><span class="t14 num">36,000원</span><span class="btn sm" style="height:36px">정산</span></button>`}
     <section class="hero">
       <div class="t14 mute">✦ 오늘 쓸 수 있는 돈 ✦</div>
       <div class="hero-n"><span class="n56 num">${won(d.daily)}</span><span class="n24">₩</span></div>
@@ -2180,7 +2182,7 @@ function tuckSoon() {
   clearTimeout(tuckT);
   tuckT = setTimeout(() => {
     const u = view.querySelector('.urgent'), bell = view.querySelector('[data-sheet="noti"]');
-    if (!u || !bell || S.tab !== 'home') return;
+    if (!u || !bell || S.tab !== 'home' || S.holdSettle) return;
     const done = () => { S.tuck = true; u.remove(); bell.classList.remove('ring'); void bell.offsetWidth; bell.classList.add('ring'); };
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return done();
     const a = u.getBoundingClientRect(), c = bell.getBoundingClientRect();
@@ -2312,7 +2314,9 @@ document.addEventListener('click', e => {
     case 'linkStart': closeSheet(); S.mode = 'app'; S.sub = 'link'; render(false); break;
     case 'usePick': S.useK = v; openSheet('use'); break;
     case 'acctUse': S.acctUse[el.dataset.k] = v; closeSheet(); render(); break;
-    case 'linkDone': S.linked = true; S.sub = null; S.tab = 'home'; render(false); simpleToast(`계좌 ${ACCOUNTS.length}개를 연동했어요 · 용도는 직접 정한 대로 써요`); break;
+    case 'linkDone': // 연동 완료 알림을 먼저 보여 주고, 알림이 닫힌 뒤에 정산 알림을 띄운다
+      S.linked = true; S.sub = null; S.tab = 'home'; S.holdSettle = true; render(false); simpleToast(`계좌 ${ACCOUNTS.length}개를 연동했어요 · 용도는 직접 정한 대로 써요`);
+      setTimeout(() => { S.holdSettle = false; if (S.tab !== 'home' || S.sub || S.mode !== 'app') return; S.settleIn = true; render(); S.settleIn = false; tuckSoon(); }, 3600); break;
     case 'self': S.self[el.dataset.k] = +v; render(); break;
     case 'ans': S.answers[S.q] = +v; render(); break;
     case 'qNext': if (S.answers[S.q] == null) return; if (S.q < 19) { S.q++; render(false); } else { S.ob = 3; render(false); } break;
