@@ -339,7 +339,8 @@ svg{display:block}
 .use-opt + .use-opt{border-top:1px solid var(--line)}
 .empty-card{text-align:center;padding:32px 24px;display:flex;flex-direction:column;align-items:center}
 /* 지금 집중할 영역 (홈) · 탭 제목 옆 단계 표시 · 탭바 점 */
-.focus-strip{width:100%;display:flex;align-items:center;gap:12px;padding:14px 20px;text-align:left;margin-top:16px}
+.focus-strip{width:100%;display:flex;align-items:center;gap:12px;padding:14px 20px;text-align:left}
+.shead + .focus-strip{margin-top:16px}
 .fs-txt{display:grid;gap:2px;flex:none}
 .fs-steps{flex:1;display:flex;align-items:center;justify-content:flex-end;gap:4px;min-width:0}
 .fs-steps>i{width:10px;height:1px;background:var(--g3);flex:none}
@@ -1370,7 +1371,7 @@ function vHome() {
   const accounts = accountsCard(true);
   const flow = flowCard(true);
   // 자리는 그대로: 첫 번째 검정 카드 = 월말 예상, 두 번째 하늘색 카드 = 유형별 다음 행동
-  const order = [proj, nextCard(), goalAndSpend, accounts, flow];
+  const order = [proj, focusStrip(), nextCard(), goalAndSpend, accounts, flow];
   return `<header class="top">
       <div style="display:grid;gap:2px;line-height:1.3"><span class="t12" style="color:var(--g4)">Hello, 지혜</span><span class="t14">10월 ${S.day}일 ${'일월화수목금토'[(S.day + 3) % 7]}요일</span></div>
       <div class="row g8">
@@ -1379,7 +1380,6 @@ function vHome() {
       </div>
     </header>
     ${S.settled || S.tuck ? '' : `<button class="urgent" data-act="sheet" data-sheet="settle"><span class="u-dot"></span><span class="t14 grow">정산할 더치페이 2건</span><span class="t14 num">36,000원</span><span class="btn sm" style="height:36px">정산</span></button>`}
-    ${focusStrip()}
     <section class="hero">
       <div class="t14 mute">✦ 오늘 쓸 수 있는 돈 ✦</div>
       <div class="hero-n"><span class="n56 num">${won(d.daily)}</span><span class="n24">₩</span></div>
