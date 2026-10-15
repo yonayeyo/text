@@ -1641,13 +1641,13 @@ function vSpend() {
     ${knowLow() ? `<div class="mt16">${bite('infl', { dark:true })}</div>` : ''}
     <section class="sec">
       <div class="sec-h"><div><div class="t18">어디서 늘고 줄었나</div><div class="sec-d">${m ? '지난달' : '지난주'} 대비</div></div></div>
-      <div class="card c-ink">${diverging()}
+      <div class="card c-paper">${diverging()}
         <div class="row g16 t10 mute mt12"><span class="row g4"><i style="width:16px;height:8px;border-radius:4px;background:#FF769C;display:inline-block"></i>늘었어요</span><span class="row g4"><i style="width:16px;height:8px;border-radius:4px;background:#C8E1FF;display:inline-block"></i>줄었어요</span></div>
       </div>
     </section>
     <section class="sec">
       <div class="sec-h"><div><div class="t18">작은 돈이 모이면</div><div class="sec-d">소액 반복 지출</div></div><div class="n24">${won(repSum)}<span class="cur t12">₩</span></div></div>
-      <div class="card c-ink stack" style="gap:20px">
+      <div class="card c-paper stack" style="gap:20px">
         ${rep.map(r => `<div class="stack8"><div class="row between t12"><span>${r.n}</span><span class="mute num">${r.k}회 × ${won(r.u)} = ${won(r.k * r.u)}</span></div><div class="dots" aria-hidden="true">${'<i></i>'.repeat(r.k)}</div></div>`).join('')}
         <p class="t10 mute">점 하나 = 결제 1회</p>
       </div>
@@ -1758,7 +1758,7 @@ function vPlan(pvOver, noHead) {
   ${easy && !S.planMore ? `<button class="btn ghost full mt24" data-act="planMore">카테고리별 예산 · 줄이기 계획 자세히 보기</button>` : `
   <section class="sec">
     <div class="sec-h"><div><div class="t18">카테고리별 예산</div><div class="sec-d">10.01 – 10.${String(S.day).padStart(2, '0')} · 쓴 돈 기준</div></div></div>
-    <div class="card c-ink">${catPetals()}</div>
+    <div class="card c-paper">${catPetals()}</div>
   </section>
     <section class="sec">
       <div class="sec-h"><div><div class="t18">줄이기 계획</div><div class="sec-d">9월 지출 기준 · 다음 달 예산</div></div></div>
