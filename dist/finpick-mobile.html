@@ -2315,7 +2315,7 @@ document.addEventListener('click', e => {
     case 'usePick': S.useK = v; openSheet('use'); break;
     case 'acctUse': S.acctUse[el.dataset.k] = v; closeSheet(); render(); break;
     case 'linkDone': // 연동 완료 알림을 먼저 보여 주고, 알림이 닫힌 뒤에 정산 알림을 띄운다
-      S.linked = true; S.sub = null; S.tab = 'home'; S.holdSettle = true; render(false); simpleToast(`계좌 ${ACCOUNTS.length}개를 연동했어요 · 용도는 직접 정한 대로 써요`);
+      S.linked = true; S.sub = null; S.tab = 'home'; S.holdSettle = true; render(false); simpleToast(`계좌 ${ACCOUNTS.length}개를 연동했어요`);
       setTimeout(() => { S.holdSettle = false; if (S.tab !== 'home' || S.sub || S.mode !== 'app') return; S.settleIn = true; render(); S.settleIn = false; tuckSoon(); }, 3600); break;
     case 'self': S.self[el.dataset.k] = +v; render(); break;
     case 'ans': S.answers[S.q] = +v; render(); break;
