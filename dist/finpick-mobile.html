@@ -847,7 +847,9 @@ function log(ev) {
   if (LOG.length > 2000) LOG = LOG.slice(-2000);
   try { localStorage.setItem(LOG_KEY, JSON.stringify(LOG)); } catch (e) {}
 }
-const logText = () => LOG.map(l => `${l.t.slice(11, 19)}  +${l.s}s  ${l.ev}`).join('\n') || '아직 기록이 없어요.';
+// 시간은 한국 표준시(KST)로 표시한다 (저장은 ISO 그대로)
+const kst = iso => new Date(Date.parse(iso) + 9 * 3600e3).toISOString().replace('T', ' ').slice(0, 19);
+const logText = () => LOG.length ? '시간: 한국 표준시(KST)\n' + LOG.map(l => `${kst(l.t)}  +${l.s}s  ${l.ev}`).join('\n') : '아직 기록이 없어요.';
 const D = () => {
   const remain = S.budget - S.spent, left = S.days - S.day + 1;
   const daily = Math.floor(remain / left / 100) * 100;
@@ -2159,7 +2161,7 @@ function sheetHTML(name) {
       <div class="row g8 mt8" style="flex-wrap:wrap">${Object.entries(PERSONA).map(([k, p]) => `<button class="chip ${S.persona === k ? 'on' : ''}" data-act="persona" data-v="${k}">${p.name}</button>`).join('')}</div>
       <button class="btn ghost full mt24" data-act="mod" data-v="reset">처음부터 다시 (진단부터)</button>`;
     case 'log': return head('탭 기록', `${LOG.length}건 · 이 기기에만 저장돼요`) + `<pre class="log mt24" id="logBox">${logText()}</pre>
-      <div class="row g8 mt16"><button class="btn" style="flex:1" data-act="logCopy">복사</button><button class="btn ghost" style="flex:1" data-act="logClear">기록 지우기</button></div>`;
+      <div class="row g8 mt16"><button class="btn ghost" style="flex:3;padding:0 12px" data-act="logClear">기록 지우기</button><button class="btn" style="flex:7" data-act="logCopy">복사</button></div>`;
     case 'ai': return head('AI 조언', '연동된 자산·예산·목표 데이터 기준') + `<div class="stack mt24" style="display:grid">
       ${S.chat.map(c => c.q ? `<div class="ai-q">${c.q}</div>` : `<div class="ai-a c-sky">${c.a}<div class="t10 mute mt8">근거 · ${c.src}</div></div>`).join('')}
       <div class="row g8" style="flex-wrap:wrap">${['오늘 얼마 더 써도 돼?','외주비 어떻게 나눌까?','적금 깨도 될까?'].map(q => `<button class="chip" data-act="aiAsk" data-v="${q}">${q}</button>`).join('')}</div></div>`;
@@ -2177,7 +2179,7 @@ function aiAnswer(q) {
 /* =========================================================
    render
    ========================================================= */
-const SCREEN_NAME = k => ({ ob0:'진단 시작', ob1:'자기평가', ob2:'진단 문항', ob3:'진단 결과', subdiag:'내 진단 결과', tabhome:'홈', tabspend:'지출', tabplan:'저축', tabgoal:'도전', tabbenefit:'혜택' }[k] || k);
+const SCREEN_NAME = k => ({ ob0:'진단 시작', ob1:'자기평가', ob2:'진단 문항', ob3:'진단 결과', subdiag:'내 진단 결과', sublink:'계좌 연동 · 용도 확인', tabhome:'홈', tabspend:'지출', tabplan:'저축', tabgoal:'도전', tabbenefit:'혜택' }[k] || k);
 const TABS = [ ['home','홈','home'], ['spend','지출','bars'], ['plan','저축','coins'], ['goal','도전','flag'], ['benefit','혜택','gift'] ];
 const screen = document.getElementById('screen'), view = document.getElementById('view');
 let lastKey = '';
@@ -2320,9 +2322,20 @@ function setPageColor(c) {
   const m = document.createElement('meta'); m.name = 'theme-color'; m.content = c; document.head.appendChild(m);
   if (matchMedia('(max-width:520px)').matches) [document.documentElement, document.body, document.querySelector('.device')].forEach(el => el.style.backgroundColor = c);
 }
-function openSheet(name) { if (name !== 'log') log('시트 ' + name); S.seen.add('sheet-' + name); S.sheet = name; document.getElementById('sheet').innerHTML = sheetHTML(name); document.getElementById('layer').classList.add('open'); }
+function openSheet(name) { if (name !== 'log') log('시트 ' + name); S.seen.add('sheet-' + name); if (S.sheet && S.sheet !== name && S.sheet !== 'log') log(`시트 닫기 ${S.sheet} · ${Math.round((Date.now() - (S.sheetAt || Date.now())) / 100) / 10}s · 다른 시트로 이동`); if (S.sheet !== name) S.sheetAt = Date.now(); S.sheet = name; document.getElementById('sheet').innerHTML = sheetHTML(name); document.getElementById('layer').classList.add('open'); }
 function refreshSheet() { if (S.sheet) document.getElementById('sheet').innerHTML = sheetHTML(S.sheet); }
-function closeSheet() { S.sheet = null; document.getElementById('layer').classList.remove('open'); }
+// 기록용: 어떤 항목(data-k·data-c)에 어떤 값을 골랐는지, 알림 버튼이면 어떤 메시지였는지까지 남긴다
+function tapDetail(el) {
+  const d = el.dataset, a = d.act;
+  if (d.k) { const name = a === 'self' ? ({ k:'지식', p:'실천' }[d.k] || d.k) : a === 'acctUse' ? ((ACCOUNTS.find(x => x.k === d.k) || {}).raw || d.k) : d.k; return `${a}:${name}=${d.v}`; }
+  let out = a + (d.v ? ':' + d.v : d.sheet ? ':' + d.sheet : d.tab ? ':' + d.tab : '');
+  if (d.c) out += `:${d.c}${d.d ? (d.d > 0 ? ' +' : ' ') + d.d : ''}`;
+  if (d.pv || d.sv || d.gv) out += ` › ${d.pv || d.sv || d.gv}`;
+  if (d.msg) out += ` "${d.msg}"`;
+  return out;
+}
+// 시트를 닫을 때 몇 초 봤는지와 어떻게 닫았는지(닫기 버튼 · 바깥 탭 · 실행 후 자동) 남긴다
+function closeSheet(how = '실행 후 자동') { if (S.sheet && S.sheet !== 'log') log(`시트 닫기 ${S.sheet} · ${Math.round((Date.now() - (S.sheetAt || Date.now())) / 100) / 10}s · ${how}`); S.sheet = null; document.getElementById('layer').classList.remove('open'); }
 let toastT;
 function toast(html, ms = 3200) {
   const t = document.getElementById('toast'); document.getElementById('toastIn').innerHTML = html;
@@ -2386,8 +2399,8 @@ function goalBump(amt, label) {
 document.addEventListener('click', e => {
   const tb = e.target.closest('[data-term]');
   if (tb) { const host = tb.closest('.card') || tb.parentElement; const def = host.querySelector('.term-def'); def && def.classList.toggle('open'); return; }
-  const el = e.target.closest('[data-act]'); if (!el) { if (e.target.id === 'layer') closeSheet(); return; }
-  log('탭 ' + el.dataset.act + (el.dataset.v ? ':' + el.dataset.v : el.dataset.sheet ? ':' + el.dataset.sheet : el.dataset.tab ? ':' + el.dataset.tab : '') + (S.mode === 'onboard' && el.dataset.act === 'ans' ? ` (Q${S.q + 1})` : ''));
+  const el = e.target.closest('[data-act]'); if (!el) { if (e.target.id === 'layer') closeSheet('바깥 탭'); return; }
+  log('탭 ' + tapDetail(el) + (S.mode === 'onboard' && el.dataset.act === 'ans' ? ` (Q${S.q + 1})` : ''));
   const a = el.dataset.act, v = el.dataset.v;
   switch (a) {
     case 'ob': S.mode = 'onboard'; S.ob = +v; closeSheet(); render(false); break;
@@ -2419,7 +2432,7 @@ document.addEventListener('click', e => {
     case 'biteOk': S.bitesDone.add(v); S.biteOpen[v] = false; render(); break;
     case 'autoOn': S.autoOn.has(v) ? S.autoOn.delete(v) : S.autoOn.add(v); render(); simpleToast(S.autoOn.has(v) ? '켰어요 · 언제든 끌 수 있어요' : '껐어요'); break;
     case 'planMore': S.planMore = true; render(); break;
-    case 'closeSheet': closeSheet(); break;
+    case 'closeSheet': closeSheet('닫기 버튼'); break;
     case 'toast': closeSheet(); simpleToast(el.dataset.msg); break;
     case 'mic': simpleToast('음성 입력은 데모에서 지원하지 않아요'); break;
     case 'settleDo': S.settled = true; S.spent -= 36000; closeSheet(); render(); simpleToast(`정산 처리 · 오늘 쓸 수 있는 돈 ${W(D().daily)}`); break;
