@@ -339,7 +339,18 @@ svg{display:block}
 .use-opt + .use-opt{border-top:1px solid var(--line)}
 .empty-card{text-align:center;padding:32px 24px;display:flex;flex-direction:column;align-items:center}
 /* 지금 집중할 영역 (홈) · 탭 제목 옆 단계 표시 · 탭바 점 */
-.focus-strip{width:100%;display:flex;align-items:center;gap:12px;padding:14px 20px;text-align:left}
+.focus-strip{width:100%;padding:14px 20px;text-align:left}
+.fs-head{width:100%;display:flex;align-items:center;gap:12px;text-align:left}
+.fs-tasks{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.fs-task{width:100%;display:flex;align-items:center;gap:10px;padding:9px 0 3px;text-align:left}
+.fs-task .t14{flex:1}
+.fs-chk{width:18px;height:18px;border-radius:50%;flex:none;display:grid;place-items:center;box-shadow:inset 0 0 0 1.5px var(--g3)}
+.fs-task.done .fs-chk{background:var(--fg);color:var(--inv);box-shadow:none}
+.fs-task.done .t14{color:var(--mute);text-decoration:line-through;text-decoration-color:var(--g3)}
+/* 단계형 공개: 집중 영역이 아닌 탭은 요약 한 장으로 먼저 보여 준다 */
+.pv-list{display:grid}
+.pv-row{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;padding:14px 0;text-align:left;width:100%}
+.pv-row + .pv-row{border-top:1px solid var(--line)}
 .shead + .focus-strip{margin-top:16px}
 .fs-txt{display:grid;gap:2px;flex:none}
 .fs-steps{flex:1;display:flex;align-items:center;justify-content:flex-end;gap:4px;min-width:0}
@@ -811,7 +822,7 @@ const TIPS = [
    ========================================================= */
 const S = {
   mode:'onboard', ob:0, q:0, answers:Array(20).fill(null), self:{ k:8, p:3 }, showPrev:false,
-  tab:'home', persona:'cog', focus:null, linked:true, acctUse:{}, bitesDone:new Set(), biteOpen:{}, autoOn:new Set(), planMore:false,
+  tab:'home', persona:'cog', focus:null, linked:true, explored:new Set(), seen:new Set(), acctUse:{}, bitesDone:new Set(), biteOpen:{}, autoOn:new Set(), planMore:false,
   spent:348400, budget:800000, day:15, days:31,
   settled:false, incomeIn:true, allocDone:false, alloc:'bal',
   spendView:'list', planView:'bank', goalView:'chal', ledDay:15, period:'month', keeps:new Set(['여행','자기계발','경조사']), applied:new Set(),
@@ -1232,6 +1243,32 @@ function vLink() {
   <p class="t10 mute mt12">저축 › 통장에서 언제든 바꿀 수 있어요.</p>
   <button class="btn full mt24" data-act="linkDone">이대로 시작하기</button>`;
 }
+// 단계형 공개(원칙 4): 지금 집중할 영역이 아닌 탭은 처음엔 요약 한 장 + 무엇이 있는지만 보여 준다
+const isPreview = () => { const a = viewArea(); return S.mode === 'app' && !S.sub && S.linked && !!a && a !== focusArea() && !S.explored.has(a); };
+function vPreview() {
+  const a = viewArea(), f = focusArea(), n = areaOrder().indexOf(a) + 1, d = D();
+  const P = {
+    spend:{ t:'지출', sub:'가계부 · 분석 · 예산', k:'이번 달 쓴 돈', v:S.spent, d:`예산 ${W(S.budget)}의 ${pct(d.used)} · 오늘 쓸 수 있는 돈 ${W(d.daily)}`,
+      rows:[['가계부','날짜별 결제 내역과 무지출 날','list'],['분석','어디서 늘고 줄었나 · 주간·월간 영수증','analysis'],['예산','이번 달 예산과 줄이기 계획','budget']] },
+    save:{ t:'저축', sub:'통장 · 목표 · 자동 규칙', k:'통합 자산', v:ACCOUNTS.reduce((t, x) => t + x.a, 0), d:`독립 자금 ${pct(d.goal)} · 비상금 ${W(S.emergency)}`,
+      rows:[['통장','계좌와 용도 · 비상금 · 저축 꺼내기','bank'],['목표','독립 자금까지 남은 단계','goal'],['자동 규칙','월급날 먼저 모으기 · 매달 나가는 돈','rule']] },
+    tax:{ t:'혜택', sub:'세금 공제 · 정부 지원금 · 포인트', k:'올해 받을 수 있는 혜택 (최대)', v:3123600, d:'4건 중 1건은 지금 신청해야 해요',
+      rows:[['나에게 해당되는 혜택','나이·소득·주거 조건으로 찾아요',''],['신청 일정','마감이 가까운 순서',''],['흩어진 포인트','카드·통신사 포인트 모아 보기','']] },
+  }[a];
+  const subAttr = k => !k ? '' : a === 'spend' ? `data-sv="${k}"` : `data-pv="${k}"`;
+  return `<header class="top"><div><div class="ph-title">${P.t}${areaTag(S.tab)}</div><div class="ph-sub">${P.sub}</div></div></header>
+  <div class="card c-ink mt16">
+    <div class="t12 mute">${P.k}</div>
+    <div class="row g8 mt8" style="align-items:baseline"><span class="n32">${won(P.v)}</span><span class="cur t16">₩</span></div>
+    <p class="t12 mute mt8">${P.d}</p>
+  </div>
+  <section class="sec">
+    <div class="sec-h"><div><div class="t18">여기서 할 수 있는 것</div><div class="sec-d">${n}단계 영역이에요 · 요약만 먼저 보여 드려요</div></div></div>
+    <div class="card c-paper pv-list" style="padding:4px 24px">${P.rows.map(([t, dsc, k]) => `<button class="pv-row" data-act="explore" ${subAttr(k)}><span class="t14">${t}</span>${ic('arrow', 16)}<span class="t12 mute">${dsc}</span></button>`).join('')}</div>
+  </section>
+  <button class="btn full mt24" data-act="explore">${P.t} 전체 둘러보기</button>
+  <button class="btn ghost full mt8" style="box-shadow:none;color:var(--mute)" data-act="tab" data-tab="${AREA_TAB[f]}">지금은 ‘${areaName(f)}’에 집중할게요</button>`;
+}
 // 연동 전(둘러보기): 데이터가 없는 상태를 그대로 보여 주고, 연동 없이 해 볼 수 있는 것을 안내
 function vEmpty() {
   const T = { home:['', ''], spend:['지출', '가계부 · 분석 · 예산'], plan:['저축', '통장 · 목표 · 자동 규칙'], goal:['도전', '챌린지 · 소통'] }[S.tab];
@@ -1269,12 +1306,31 @@ function areaTag(tab) {
   return n === 1 ? `<span class="tag ink ph-tag">지금 집중</span>`
     : `<button class="tag dash ph-tag" data-act="toast" data-msg="지금은 ‘${areaName(f)}’에 집중하는 단계예요. 이 화면은 ${n}단계로, 먼저 둘러봐도 괜찮아요">다음 단계 ${n}</button>`;
 }
+// 첫 주 할 일 3개: 진단에서 고른 집중 영역의 핵심 기능을 하나씩 직접 써 보게 한다 (쓰면서 배우기)
+const TASKS = {
+  spend:[ { t:'가계부에서 쓴 돈 확인하기', go:'data-act="tab" data-tab="spend" data-sv="list"', done:() => S.seen.has('spend-list') },
+          { t:'줄이기 제안 하나 담기', go:'data-act="tab" data-tab="spend" data-sv="budget"', done:() => S.applied.size > 0 || !!S.cutApplied },
+          { t:'첫 영수증 출력하기', go:'data-act="tab" data-tab="spend" data-sv="analysis"', done:() => S.printed.size > 0 } ],
+  save: [ { t:'계좌 용도 확인하기', go:'data-act="tab" data-tab="plan" data-pv="bank"', done:() => S.seen.has('plan-bank') },
+          { t:'목표까지 남은 단계 보기', go:'data-act="tab" data-tab="plan" data-pv="goal"', done:() => S.seen.has('plan-goal') },
+          { t:'적금 금리 비교해 보기', go:'data-act="sheet" data-sheet="compare"', done:() => S.seen.has('sheet-compare') } ],
+  tax:  [ { t:'나에게 해당되는 혜택 보기', go:'data-act="tab" data-tab="benefit"', done:() => S.seen.has('benefit-') },
+          { t:'받은 혜택 비상금으로 옮기기', go:'data-act="tab" data-tab="benefit"', done:() => S.benefitMoved },
+          { t:'세후 이자 알아보기', go:'data-act="sheet" data-sheet="compare"', done:() => S.seen.has('sheet-compare') } ],
+};
 function focusStrip() {
-  const o = areaOrder(), f = o[0];
-  return `<button class="card c-paper focus-strip" data-act="tab" data-tab="${AREA_TAB[f]}" ${AREA_PV[f] ? `data-pv="${AREA_PV[f]}"` : ''} aria-label="지금 집중할 영역 ${areaName(f)}, ${TAB_NAME[AREA_TAB[f]]} 화면으로 가기">
+  const o = areaOrder(), f = o[0], tasks = TASKS[f], n = tasks.filter(t => t.done()).length;
+  const head = `<button class="fs-head" data-act="tab" data-tab="${AREA_TAB[f]}" ${AREA_PV[f] ? `data-pv="${AREA_PV[f]}"` : ''} aria-label="지금 집중할 영역 ${areaName(f)}, ${TAB_NAME[AREA_TAB[f]]} 화면으로 가기">
     <span class="fs-txt"><span class="t10 mute">지금 집중할 영역</span><span class="t14">${areaName(f)}</span></span>
     <span class="fs-steps" aria-hidden="true">${o.map((id, i) => `<span class="fs-step ${i ? '' : 'on'}"><b>${i + 1}</b><span>${{ spend:'지출', save:'저축', tax:'혜택' }[id]}</span></span>`).join('<i></i>')}</span>
     ${ic('arrow', 16)}</button>`;
+  if (!S.linked) return `<div class="card c-paper focus-strip">${head}</div>`;
+  return `<div class="card c-paper focus-strip">${head}
+    <div class="fs-tasks">
+      <div class="row between t12"><span>첫 주 할 일</span><span class="num mute">${n}/3</span></div>
+      ${n === 3 ? `<p class="row g8 t12 mute mt8" style="align-items:flex-start"><span style="flex:none;margin-top:1px">${ic('check', 14)}</span><span>모두 마쳤어요. 익숙해지면 다음 단계 ‘${areaName(o[1])}’로 넓혀 봐요.</span></p>`
+      : tasks.map(t => { const d = t.done(); return `<button class="fs-task ${d ? 'done' : ''}" ${t.go}><span class="fs-chk">${d ? ic('check', 12) : ''}</span><span class="t14">${t.t}</span>${d ? '' : ic('arrow', 14)}</button>`; }).join('')}
+    </div></div>`;
 }
 
 /* =========================================================
@@ -2150,7 +2206,7 @@ function goSub(ni, dir, from, d = 0) {
   setTimeout(() => { ne.forEach(e => { e.style.transition = ''; }); ghost && ghost.remove(); }, 360);
 }
 function swStart(x, y, tg) {
-  if (S.mode !== 'app' || S.sub || !S.linked || !SUBS[S.tab] || !view.contains(tg)) return;
+  if (S.mode !== 'app' || S.sub || !S.linked || isPreview() || !SUBS[S.tab] || !view.contains(tg)) return;
   if (tg.closest('.shead, .printer .feed, input, textarea, select')) return;
   for (let e = tg; e && e !== view; e = e.parentElement) if (e.scrollWidth > e.clientWidth + 1 && /auto|scroll/.test(getComputedStyle(e).overflowX)) return;
   swipe = { x, y, dx: 0, on: false };
@@ -2221,13 +2277,14 @@ function render(keepScroll = true) {
   const homeEnter = key === 'tabhome' && key !== lastKey && S.linked;
   if (homeEnter) S.tuck = false;
   const st = keepScroll && key === lastKey ? view.scrollTop : 0;
-  const dark = S.mode === 'onboard' ? (S.ob === 1 || S.ob === 3) : S.sub ? S.sub === 'diag' : S.tab === 'spend' && S.spendView !== 'budget' && S.linked;
+  const dark = S.mode === 'onboard' ? (S.ob === 1 || S.ob === 3) : S.sub ? S.sub === 'diag' : S.tab === 'spend' && S.spendView !== 'budget' && S.linked && !isPreview();
   screen.classList.toggle('dark', dark);
   screen.classList.toggle('nonav', S.mode === 'onboard' || !!S.sub);
   if (S.mode === 'onboard') view.innerHTML = [vIntro, vSelf, vQuiz, vResult][S.ob]();
   else if (S.sub === 'diag') view.innerHTML = vResult('app');
   else if (S.sub === 'link') view.innerHTML = vLink();
   else if (!S.linked && S.tab !== 'benefit') view.innerHTML = vEmpty();
+  else if (isPreview()) view.innerHTML = vPreview();
   else view.innerHTML = { home:vHome, spend:vSpend, plan:vPlan, goal:vGoal, benefit:vBenefit }[S.tab]();
   if (S.mode === 'app' && !S.sub) { const h = view.querySelector(':scope > header.top');
     if (h) { const w = document.createElement('div'); w.className = 'shead'; h.before(w); w.append(h); const t = w.nextElementSibling; if (t && t.classList.contains('utabs')) w.append(t); }
@@ -2238,6 +2295,7 @@ function render(keepScroll = true) {
   if (tr && S.naIdx) { const x = S.naIdx * (tr.firstElementChild.offsetWidth + 12);
     if (S.naSlide) { S.naSlide = false; setTimeout(() => tr.scrollTo({ left:x, behavior:'smooth' }), 350); } else tr.scrollLeft = x; }
   if (homeEnter) { popOut(); tuckSoon(); }
+  if (S.mode === 'app' && !S.sub && S.linked && !isPreview()) S.seen.add(S.tab + '-' + ({ spend:S.spendView, plan:S.planView, goal:S.goalView }[S.tab] || ''));
   if (key !== lastKey) log('화면 ' + SCREEN_NAME(key));
   // 휴대폰에서는 Safari 상단(상태바)·하단 영역이 페이지 배경색을 따르므로 화면 색과 맞춘다
   setPageColor('#FAFAFA'); // 휴대폰 상단(상태바)은 모든 화면에서 #FAFAFA로 통일
@@ -2247,7 +2305,7 @@ function render(keepScroll = true) {
   if (!tb.children.length) tb.innerHTML = TABS.map(([k, n, i]) => `<button class="tab" data-act="tab" data-tab="${k}" aria-label="${n}">${ic(i, 22)}<span>${n}</span></button>`).join('');
   [...tb.children].forEach(b => { const on = b.dataset.tab === S.tab; b.classList.toggle('on', on); on ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current'); });
   const dock = document.getElementById('aiDock');
-  dock.hidden = !(S.mode === 'app' && !S.sub && (S.tab === 'plan' || (S.tab === 'spend' && S.spendView !== 'list')));
+  dock.hidden = !(S.mode === 'app' && !S.sub && !isPreview() && (S.tab === 'plan' || (S.tab === 'spend' && S.spendView !== 'list')));
   if (dock.hidden) aiDock(false);
   view.style.paddingBottom = S.mode === 'onboard' || S.sub ? (S.ob === 3 || S.sub ? '0' : '24px') : '0';
   if (S.mode === 'app' && !S.sub) { const h = document.createElement('div'); h.className = 'ht-end'; h.style.height = (dock.hidden ? 140 : 200) + 'px'; h.style.marginTop = '24px'; view.append(h); const gap = view.clientHeight - (h.getBoundingClientRect().bottom - view.getBoundingClientRect().top + view.scrollTop); if (gap > 0) h.style.marginTop = (24 + gap) + 'px'; view.scrollTop = st; }
@@ -2261,7 +2319,7 @@ function setPageColor(c) {
   const m = document.createElement('meta'); m.name = 'theme-color'; m.content = c; document.head.appendChild(m);
   if (matchMedia('(max-width:520px)').matches) [document.documentElement, document.body, document.querySelector('.device')].forEach(el => el.style.backgroundColor = c);
 }
-function openSheet(name) { if (name !== 'log') log('시트 ' + name); S.sheet = name; document.getElementById('sheet').innerHTML = sheetHTML(name); document.getElementById('layer').classList.add('open'); }
+function openSheet(name) { if (name !== 'log') log('시트 ' + name); S.seen.add('sheet-' + name); S.sheet = name; document.getElementById('sheet').innerHTML = sheetHTML(name); document.getElementById('layer').classList.add('open'); }
 function refreshSheet() { if (S.sheet) document.getElementById('sheet').innerHTML = sheetHTML(S.sheet); }
 function closeSheet() { S.sheet = null; document.getElementById('layer').classList.remove('open'); }
 let toastT;
@@ -2347,7 +2405,8 @@ document.addEventListener('click', e => {
     case 'resLink': S.persona = scores().persona; S.focus = null; S.mode = 'app'; S.tab = 'home'; S.sub = 'link'; render(false); break;
     case 'resSetup': S.persona = scores().persona; S.mode = 'app'; S.tab = 'plan'; S.planView = 'rule'; render(false); break;
     case 'rediag': closeSheet(); S.sub = null; S.mode = 'onboard'; S.ob = 1; S.q = 0; render(false); break;
-    case 'tab': closeSheet(); S.mode = 'app'; S.sub = null; S.tab = el.dataset.tab; if (el.dataset.pv) S.planView = el.dataset.pv; if (el.dataset.sv) S.spendView = el.dataset.sv; if (el.dataset.gv) S.goalView = el.dataset.gv; render(false); break;
+    case 'explore': { const a = viewArea(); a && S.explored.add(a); if (el.dataset.sv) S.spendView = el.dataset.sv; if (el.dataset.pv) S.planView = el.dataset.pv; render(false); break; }
+    case 'tab': closeSheet(); S.mode = 'app'; S.sub = null; S.tab = el.dataset.tab; if (!el.classList.contains('tab')) { const a = viewArea(); a && S.explored.add(a); } if (el.dataset.pv) S.planView = el.dataset.pv; if (el.dataset.sv) S.spendView = el.dataset.sv; if (el.dataset.gv) S.goalView = el.dataset.gv; render(false); break;
     case 'pv': subTap(v); break;
     case 'gv': subTap(v); break;
     case 'aiOpen': aiDock(true); break;
@@ -2404,7 +2463,7 @@ document.addEventListener('click', e => {
       if (SUGG.some(s => s.id === 's4' && S.applied.has('s4') && !S.keeps.has('구독'))) ch.push(['구독', 45000, 31500]);
       S.cutApplied = ch; render(); simpleToast('11월 예산에 반영했어요'); break; }
     case 'cutUndo': S.cutApplied.forEach(([c, a]) => { if (S.cat[c] != null) S.cat[c] = a; }); S.cutApplied = null; render(); break;
-    case 'persona': S.persona = v; S.focus = FOCUS_BY_PERSONA[v]; S.biteOpen = {}; S.planMore = false; S.sub = null; S.mode = 'app'; S.tab = 'home'; closeSheet(); render(false); break;
+    case 'persona': S.persona = v; S.focus = FOCUS_BY_PERSONA[v]; S.explored = new Set(); S.biteOpen = {}; S.planMore = false; S.sub = null; S.mode = 'app'; S.tab = 'home'; closeSheet(); render(false); break;
     case 'mod':
       closeSheet(); S.sub = null; S.mode = 'app';
       if (v === 'pay') { S.tab = 'home'; render(false); payment(); }
@@ -2444,9 +2503,9 @@ document.querySelector('.panel').addEventListener('click', e => {
     else if (g === 'link') { S.mode = 'app'; S.sub = 'link'; }
     else if (g === 'empty') { S.mode = 'app'; S.linked = false; S.tab = 'home'; }
     else if (g.startsWith('ob')) { S.mode = 'onboard'; S.ob = +g[2]; }
-    else { S.mode = 'app'; S.linked = true; if (g.startsWith('spend')) { S.tab = 'spend'; S.spendView = g.split('-')[1]; } else if (g.startsWith('plan')) { S.tab = 'plan'; S.planView = g.split('-')[1]; } else if (g.startsWith('goal')) { S.tab = 'goal'; S.goalView = g.split('-')[1]; } else S.tab = g; }
+    else { S.mode = 'app'; S.linked = true; S.explored.add({ spend:'spend', plan:'save', benefit:'tax' }[g.split('-')[0]]); if (g.startsWith('spend')) { S.tab = 'spend'; S.spendView = g.split('-')[1]; } else if (g.startsWith('plan')) { S.tab = 'plan'; S.planView = g.split('-')[1]; } else if (g.startsWith('goal')) { S.tab = 'goal'; S.goalView = g.split('-')[1]; } else S.tab = g; }
     render(false); }
-  if (b.dataset.persona) { S.persona = b.dataset.persona; S.focus = FOCUS_BY_PERSONA[S.persona]; S.biteOpen = {}; S.planMore = false; S.mode = 'app'; S.tab = 'home'; render(false); }
+  if (b.dataset.persona) { S.persona = b.dataset.persona; S.focus = FOCUS_BY_PERSONA[S.persona]; S.explored = new Set(); S.biteOpen = {}; S.planMore = false; S.mode = 'app'; S.tab = 'home'; render(false); }
   const sc = b.dataset.scen;
   if (sc) { S.mode = 'app'; S.linked = true;
     if (sc === 'pay') { S.tab = 'home'; render(false); payment(); }
