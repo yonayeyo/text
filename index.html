@@ -1325,10 +1325,10 @@ const TASKS = {
 };
 function focusStrip() {
   const o = areaOrder(), f = o[0], tasks = TASKS[f], n = tasks.filter(t => t.done()).length;
-  const head = `<button class="fs-head" data-act="tab" data-tab="${AREA_TAB[f]}" ${AREA_PV[f] ? `data-pv="${AREA_PV[f]}"` : ''} aria-label="지금 집중할 영역 ${areaName(f)}, ${TAB_NAME[AREA_TAB[f]]} 화면으로 가기">
+  const head = `<div class="fs-head">
     <span class="fs-txt"><span class="t10 mute">지금 집중할 영역</span><span class="t14">${areaName(f)}</span></span>
     <span class="fs-steps" aria-hidden="true">${o.map((id, i) => `<span class="fs-step ${i ? '' : 'on'}"><b>${i + 1}</b><span>${{ spend:'지출', save:'저축', tax:'혜택' }[id]}</span></span>`).join('<i></i>')}</span>
-    ${ic('arrow', 16)}</button>`;
+    </div>`;
   if (!S.linked) return `<div class="card c-paper focus-strip">${head}</div>`;
   return `<div class="card c-paper focus-strip">${head}
     <div class="fs-tasks">
