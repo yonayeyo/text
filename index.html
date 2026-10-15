@@ -779,8 +779,8 @@ const OCT_TX = {
   14:[['08:42','지하철','교통',2800],['12:10','김치찌개','외식',9000],['18:30','다이소','기타',4200],['20:40','배달의민족 · 족발','배달',29000]],
 };
 const ACCOUNTS = [
-  { n:'적금', a:5000000, k:'save', raw:'A은행 정기적금 ··3381' }, { n:'투자', a:2500000, k:'inv', raw:'B증권 위탁계좌 ··0927' }, { n:'독립 자금', a:2300000, k:'goal', raw:'C은행 자유적금 ··1150' },
-  { n:'생활비', a:1240000, k:'life', raw:'C은행 입출금 ··7710' }, { n:'비상금', a:1100000, k:'emer', raw:'D은행 파킹통장 ··4412' }, { n:'경조사비', a:260000, k:'evt', raw:'A은행 입출금 ··5098' },
+  { n:'적금', a:5000000, k:'save', raw:'가나은행 정기적금 ··3381' }, { n:'투자', a:2500000, k:'inv', raw:'나다증권 위탁계좌 ··0927' }, { n:'독립 자금', a:2300000, k:'goal', raw:'다라은행 자유적금 ··1150' },
+  { n:'생활비', a:1240000, k:'life', raw:'다라은행 입출금 ··7710' }, { n:'비상금', a:1100000, k:'emer', raw:'라마은행 파킹통장 ··4412' }, { n:'경조사비', a:260000, k:'evt', raw:'가나은행 입출금 ··5098' },
 ];
 // 계좌 용도는 사용자가 정한다(원칙 1): Finpick은 이름·거래를 보고 추측만 하고, 연동할 때 사용자가 확인·변경
 const USES = ['적금','투자','독립 자금','생활비','비상금','경조사비','여행','기타'];
@@ -1306,7 +1306,7 @@ function planLead() {
   if (P === 'habit') return `<div class="card c-sky mt16">
       <div class="row between"><span class="t12 mute">습관우세형 · 더 나은 선택 비교</span><span class="tag ink">+21,100원</span></div>
       <div class="t18 mt8">지금 적금보다 이자가 높은 곳이 있어요</div>
-      <div class="stack8 mt16">${[['지금 쓰는 적금', '3.1%', 59700, 0], ['A은행 청년 적금', '4.2%', 80800, 1]].map(([n, r, i, hi]) => `<div class="row between t14"><span>${n} <span class="num ${hi ? '' : 'mute'}">${r}</span></span><span class="num">${hi ? '' : '<span class="mute">'}이자 ${W(i)}${hi ? '' : '</span>'}</span></div>`).join('')}</div>
+      <div class="stack8 mt16">${[['지금 쓰는 적금', '3.1%', 59700, 0], ['가나은행 청년 적금', '4.2%', 80800, 1]].map(([n, r, i, hi]) => `<div class="row between t14"><span>${n} <span class="num ${hi ? '' : 'mute'}">${r}</span></span><span class="num">${hi ? '' : '<span class="mute">'}이자 ${W(i)}${hi ? '' : '</span>'}</span></div>`).join('')}</div>
       <p class="t10 mute mt8">월 350,000원 · 12개월 · 세후 기준</p>
       <button class="btn sm mt16" data-act="sheet" data-sheet="compare">3개 상품 비교 보기</button>
     </div>
@@ -2070,7 +2070,7 @@ function sheetHTML(name) {
       <div class="card c-sky mt24"><div class="t12 mute">매달 필요한 금액</div><div class="row g8 mt8" style="align-items:baseline"><span class="n32">${won(mon)}</span><span class="cur t16">₩</span></div><p class="t12 mute mt8">중간 목표 4단계를 자동으로 만들어 드려요.${mon > 400000 ? ' 지금 저축 여력(월 약 400,000원)보다 커서 기간을 늘리는 걸 추천해요.' : ''}</p></div>
       <button class="btn full mt16" data-act="gCreate">목표 만들기</button>`;
     }
-    case 'compare': return head('적금 비교', '월 350,000원 · 12개월 · 세후 이자 (예시)') + `<div class="stack mt24">${[['지금 쓰는 적금','3.1%',59700,1],['A은행 청년 적금','4.2%',80800,0],['B은행 자유 적금','3.6%',69300,0]].map(([n, r, i, cur]) => `<div class="card ${cur ? 'c-paper' : 'c-sky'}" style="padding:20px 24px"><div class="row between"><span class="t14">${n}</span>${cur ? '<span class="tag line">사용 중</span>' : `<span class="tag ink">+${won(i - 59700)}원</span>`}</div><div class="row between mt12" style="align-items:baseline"><span class="n24">${r}</span><span class="t14 num">이자 ${W(i)}</span></div></div>`).join('')}
+    case 'compare': return head('적금 비교', '월 350,000원 · 12개월 · 세후 이자 (예시)') + `<div class="stack mt24">${[['지금 쓰는 적금','3.1%',59700,1],['가나은행 청년 적금','4.2%',80800,0],['나다은행 자유 적금','3.6%',69300,0]].map(([n, r, i, cur]) => `<div class="card ${cur ? 'c-paper' : 'c-sky'}" style="padding:20px 24px"><div class="row between"><span class="t14">${n}</span>${cur ? '<span class="tag line">사용 중</span>' : `<span class="tag ink">+${won(i - 59700)}원</span>`}</div><div class="row between mt12" style="align-items:baseline"><span class="n24">${r}</span><span class="t14 num">이자 ${W(i)}</span></div></div>`).join('')}
       <p class="t12 mute">금리는 우대 조건(급여이체·카드 실적)을 모두 채웠을 때 기준이에요.</p></div>
       <div class="mt16">${bite('tax', { force:true })}</div>`;
     case 'use': { const a = ACCOUNTS.find(x => x.k === S.useK); return head('용도 고르기', `${a.raw} · ${W(a.a)}`) + `<div class="mt16">${USES.map(u => `<button class="use-opt" data-act="acctUse" data-k="${a.k}" data-v="${u}"><span>${u}</span>${useOf(a) === u ? ic('check', 18) : ''}</button>`).join('')}</div>`; }
