@@ -813,7 +813,7 @@ const S = {
   tab:'home', persona:'cog', focus:null, linked:true, acctUse:{}, bitesDone:new Set(), biteOpen:{}, autoOn:new Set(), planMore:false,
   spent:348400, budget:800000, day:15, days:31,
   settled:false, incomeIn:true, allocDone:false, alloc:'bal',
-  spendView:'list', planView:'budget', goalView:'goal', ledDay:15, period:'month', keeps:new Set(['여행','자기계발','경조사']), applied:new Set(),
+  spendView:'list', planView:'bank', goalView:'chal', ledDay:15, period:'month', keeps:new Set(['여행','자기계발','경조사']), applied:new Set(),
   fixedSet:false, ratioOk:false, ratioEdit:false,
   cat:{ '식비':250000, '배달':150000, '카페·간식':100000, '교통':90000, '쇼핑':120000, '기타':90000 },
   goalSaved:2300000, emergency:1100000, wAmt:200000,
@@ -1228,16 +1228,16 @@ function vLink() {
   <h1 class="t18 mt24" style="font-size:22px;line-height:1.4">계좌 ${ACCOUNTS.length}개를 찾았어요<br>용도가 맞는지 확인해 주세요</h1>
   <p class="t12 mute mt8">나눠 둔 그대로 쓸게요. 다르면 눌러서 바꿔 주세요.</p>
   <div class="mt24">${acctRows()}</div>
-  <p class="t10 mute mt12">플랜 › 통장에서 언제든 바꿀 수 있어요.</p>
+  <p class="t10 mute mt12">모으기 › 통장에서 언제든 바꿀 수 있어요.</p>
   <button class="btn full mt24" data-act="linkDone">이대로 시작하기</button>`;
 }
 // 연동 전(둘러보기): 데이터가 없는 상태를 그대로 보여 주고, 연동 없이 해 볼 수 있는 것을 안내
 function vEmpty() {
-  const T = { home:['', ''], spend:['지출', '계좌 · 카드 연동으로 자동 기록돼요'], plan:['플랜', '예산 · 통장 · 자동 규칙'], goal:['도전', '목표 · 챌린지 · 소통'] }[S.tab];
+  const T = { home:['', ''], spend:['쓰기', '가계부 · 분석 · 예산'], plan:['모으기', '통장 · 목표 · 자동 규칙'], goal:['도전', '챌린지 · 소통'] }[S.tab];
   const msg = { home:['계좌를 연동하면<br>오늘 쓸 수 있는 돈을 알려 드려요', '예산 · 지출 · 목표가 연동한 계좌 기준으로 채워져요.'],
-    spend:['연동하면 결제 내역이<br>자동으로 기록돼요', '가계부 · 분석 · 영수증 리포트는 연동 후에 열려요.'],
-    plan:['연동하면 통장 용도에 맞춰<br>예산과 자동 규칙을 제안해요', '계좌마다 용도를 직접 정한 뒤 시작해요.'],
-    goal:['연동하면 목표 통장 잔액으로<br>진행률을 보여 드려요', '챌린지는 연동 후 결제 기록으로 인증돼요.'] }[S.tab];
+    spend:['연동하면 결제 내역이<br>자동으로 기록돼요', '가계부 · 분석 · 예산은 연동 후에 열려요.'],
+    plan:['연동하면 통장 용도에 맞춰<br>목표와 자동 규칙을 제안해요', '계좌마다 용도를 직접 정한 뒤 시작해요.'],
+    goal:['연동하면 결제 기록으로<br>챌린지를 인증해요', '함께 도전하는 사람들의 팁은 연동 후에 볼 수 있어요.'] }[S.tab];
   const head = S.tab === 'home' ? `<header class="top"><div style="display:grid;gap:2px;line-height:1.3"><span class="t12" style="color:var(--g4)">Hello</span><span class="t14">10월 ${S.day}일 ${'일월화수목금토'[(S.day + 3) % 7]}요일</span></div>
       <button class="ib glass" data-act="sheet" data-sheet="menu" aria-label="메뉴">${ic('menu', 20)}</button></header>${focusStrip()}`
     : `<header class="top"><div><div class="ph-title">${T[0]}${areaTag(S.tab)}</div><div class="ph-sub">${T[1]}</div></div></header>`;
@@ -1254,9 +1254,9 @@ function vEmpty() {
 /* =========================================================
    관심 기반 진입(원칙 4): 진단에서 추천한 영역부터 집중하고 인접 영역은 '다음 단계'로 보여 준다
    ========================================================= */
-// 영역 ↔ 화면: 탭이 아니라 하위 탭 단위로 잇는다. 예산·줄이기 계획(플랜 › 예산)은 '소비와 지출'의 실천이라 지출과 같은 영역
-const AREA_TAB = { spend:'spend', save:'plan', tax:'benefit' }, AREA_PV = { save:'bank' }, TAB_NAME = { spend:'지출', plan:'플랜 › 통장', benefit:'혜택' };
-const viewArea = () => S.tab === 'spend' ? 'spend' : S.tab === 'benefit' ? 'tax' : S.tab === 'plan' ? { budget:'spend', bank:'save' }[S.planView] || null : null;
+// 탭 = 금융 영역: 쓰기(소비와 지출) · 모으기(저축과 투자) · 혜택(세금과 혜택). 홈·도전은 영역 공통
+const AREA_TAB = { spend:'spend', save:'plan', tax:'benefit' }, AREA_PV = {}, TAB_NAME = { spend:'쓰기', plan:'모으기', benefit:'혜택' };
+const viewArea = () => ({ spend:'spend', plan:'save', benefit:'tax' })[S.tab] || null;
 // 오른쪽 패널에서 유형을 바꿔 볼 때 쓰는 대표 시작 영역 (실제 사용자는 진단 결과 scores().rec)
 const FOCUS_BY_PERSONA = { cog:'spend', low:'spend', habit:'save', self:'tax' };
 const areaName = id => AREAS.find(a => a.id === id).name;
@@ -1369,7 +1369,7 @@ function vHome() {
     </div>`;
   // 독립 자금 · 10월 누적 지출: 상단 라벨 / 숫자 / 하단(그래프·영수증 보기)을 같은 서체·크기·위치로 맞춘다
   // 예산 상태는 '오늘 쓸 수 있는 돈'(위)과 '월말 예상'(검정 카드) 두 곳에서만 보여 준다. 누적 지출 카드·미터는 겹쳐서 뺐다
-  const goalAndSpend = `<button class="card c-aura goal-row" data-act="tab" data-tab="goal" data-gv="goal">
+  const goalAndSpend = `<button class="card c-aura goal-row" data-act="tab" data-tab="plan" data-pv="goal">
         <span class="row between" style="width:100%"><span class="gs-top">독립 자금</span><span class="row g4 t10 mute">${W(S.goalSaved)} / 500만 원${ic('arrow', 14)}</span></span>
         <span class="row g16 mt8" style="width:100%;align-items:center"><span class="gs-num" style="flex:none;margin:0">${pct(d.goal)}</span><span class="glowbar" style="flex:1;height:8px"><i style="width:${d.goal * 100}%"></i></span></span>
       </button>`;
@@ -1377,7 +1377,7 @@ function vHome() {
   const accounts = accountsCard(true);
   const flow = flowCard(true);
   // 자리는 그대로: 첫 번째 검정 카드 = 월말 예상, 두 번째 하늘색 카드 = 유형별 다음 행동
-  const order = [proj, focusStrip(), nextCard(), goalAndSpend, accounts, flow];
+  const order = [proj, focusStrip(), nextCard(), goalAndSpend];
   return `<header class="top">
       <div style="display:grid;gap:2px;line-height:1.3"><span class="t12" style="color:var(--g4)">Hello, 지혜</span><span class="t14">10월 ${S.day}일 ${'일월화수목금토'[(S.day + 3) % 7]}요일</span></div>
       <div class="row g8">
@@ -1570,12 +1570,12 @@ function vLedger() {
 function vSpend() {
   const m = S.period === 'month', an = S.spendView === 'analysis', ls = S.spendView === 'list';
   const rep = REPEATS[S.period], repSum = rep.reduce((s, r) => s + r.k * r.u, 0);
-  const head = `<header class="top"><div><div class="ph-title">지출${areaTag('spend')}</div><div class="ph-sub">계좌 · 카드 연동으로 자동 기록돼요</div></div></header>
-    <div class="utabs" role="tablist">${[['list','가계부'],['analysis','분석'],['report','리포트']].map(([k, n]) => `<button class="${S.spendView === k ? 'on' : ''}" data-act="sv" data-v="${k}" role="tab" aria-selected="${S.spendView === k}">${n}</button>`).join('')}</div>
-    ${ls ? '' : `<div class="row between"><div class="row g8"><button class="chip pchip ${m ? '' : 'on'}" data-act="period" data-v="week">주간</button><button class="chip pchip ${m ? 'on' : ''}" data-act="period" data-v="month">월간</button></div>
+  const head = `<header class="top"><div><div class="ph-title">쓰기${areaTag('spend')}</div><div class="ph-sub">가계부 · 분석 · 예산</div></div></header>
+    <div class="utabs" role="tablist">${[['list','가계부'],['analysis','분석'],['budget','예산']].map(([k, n]) => `<button class="${S.spendView === k ? 'on' : ''}" data-act="sv" data-v="${k}" role="tab" aria-selected="${S.spendView === k}">${n}</button>`).join('')}</div>
+    ${!an ? '' : `<div class="row between"><div class="row g8"><button class="chip pchip ${m ? '' : 'on'}" data-act="period" data-v="week">주간</button><button class="chip pchip ${m ? 'on' : ''}" data-act="period" data-v="month">월간</button></div>
 </div>`}`;
   if (ls) return head + vLedger();
-  if (!an) return head + printer('pReport-' + S.period, receiptReport()) + (S.printed.has('pReport-' + S.period) ? `<p class="t12 mute mt16" style="text-align:center">영수증은 매주 월요일, 매월 1일에 자동 발행돼요</p>` : '');
+  if (!an) return head + vPlan('budget', true);
   return head + `
     <section style="margin-top:14px">${topSpend()}</section>
     ${knowLow() ? `<div class="mt16">${bite('infl', { dark:true })}</div>` : ''}
@@ -1597,7 +1597,11 @@ function vSpend() {
       <div class="sec-h"><div><div class="t18">10월 돈의 흐름</div><div class="sec-d">들어온 돈이 어디로 갔나 · 10.01 – 10.${S.day}</div></div></div>
       ${flowCard(false)}
     </section>
-    <button class="card c-paper row between mt24" style="width:100%;text-align:left" data-act="tab" data-tab="plan" data-pv="budget"><span><span class="t12 mute" style="display:block">줄일 곳이 보였다면</span><span class="t16">플랜에서 다음 달 예산에 반영하기</span></span>${ic('arrow', 20)}</button>`;
+    <section class="sec">
+      <div class="sec-h"><div><div class="t18">${m ? '9월' : '이번 주'} 영수증</div><div class="sec-d">${m ? '한 달' : '한 주'} 지출을 한 장으로 · 매주 월요일, 매월 1일 발행</div></div></div>
+      ${printer('pReport-' + S.period, receiptReport())}
+    </section>
+    <button class="card c-paper row between mt24" style="width:100%;text-align:left" data-act="tab" data-tab="spend" data-sv="budget"><span><span class="t12 mute" style="display:block">줄일 곳이 보였다면</span><span class="t16">예산에서 다음 달 예산에 반영하기</span></span>${ic('arrow', 20)}</button>`;
 }
 
 /* =========================================================
@@ -1657,7 +1661,7 @@ function halfDonut() {
     <text x="${cx}" y="124" text-anchor="middle" font-size="11" fill="#606060">저축 비율</text></svg>
     <div class="grid2 mt16" style="gap:8px 12px">${parts.map(([n, p, c]) => `<div class="row g8 t12"><i style="width:10px;height:10px;border-radius:50%;display:inline-block;background:${c.startsWith('url') ? 'var(--aura)' : c}"></i><span style="flex:1">${n}</span><span class="num">${p}%</span></div>`).join('')}</div>`;
 }
-function vPlan() {
+function vPlan(pvOver, noHead) {
   const req = [
     { k:'pre', t:'급여일 선저축', v:'매월 25일 · 300,000원 → 독립 자금 적금', done:true, icn:'calendar', term:'선저축: 월급이 들어오면 쓰기 전에 먼저 저축 계좌로 옮기는 방식이에요. 남은 돈으로 생활하게 돼요.' },
     { k:'emer', t:'비상금', v:'매월 25일 · 100,000원 → 비상금 통장', done:true, icn:'shield', term:'비상금: 갑작스러운 병원비·퇴사 같은 상황을 위한 돈이에요. 보통 생활비 3개월치를 권해요.' },
@@ -1667,7 +1671,7 @@ function vPlan() {
   const doneN = req.filter(r => r.done).length;
   const easy = S.persona === 'low';
   const total = Object.values(S.cat).reduce((s, v) => s + v, 0);
-  const d = D(), pv = S.planView;
+  const d = D(), pv = pvOver || S.planView;
   // 줄이기 계획 (지출 분석 → 다음 달 예산 반영)
   const shown = SUGG.filter(s => !S.keeps.has(s.c)), hidden = SUGG.filter(s => S.keeps.has(s.c));
   const picked = shown.filter(s => S.applied.has(s.id));
@@ -1675,10 +1679,11 @@ function vPlan() {
   const remain = 5000000 - S.goalSaved, faster = Math.ceil(remain / 350000) - Math.ceil(remain / (350000 + save));
   const amtOf = c => (MONTH_ITEMS.find(i => i.c === c) || {}).a || 0;
   const locked = !!S.cutApplied;
-  const head = `<header class="top"><div><div class="ph-title">플랜${areaTag('plan')}</div><div class="ph-sub">예산 · 통장 · 자동 규칙</div></div><button class="ib glass" data-act="sheet" data-sheet="menu" aria-label="설정 메뉴">${ic('sliders', 20)}</button></header>
-  <div class="utabs" role="tablist">${[['budget','예산'],['bank','통장'],['rule','자동 규칙']].map(([k, n]) => `<button class="${pv === k ? 'on' : ''}" data-act="pv" data-v="${k}" role="tab" aria-selected="${pv === k}">${n}</button>`).join('')}</div>`;
+  const head = noHead ? '' : `<header class="top"><div><div class="ph-title">모으기${areaTag('plan')}</div><div class="ph-sub">통장 · 목표 · 자동 규칙</div></div><button class="ib glass" data-act="sheet" data-sheet="menu" aria-label="설정 메뉴">${ic('sliders', 20)}</button></header>
+  <div class="utabs" role="tablist">${[['bank','통장'],['goal','목표'],['rule','자동 규칙']].map(([k, n]) => `<button class="${pv === k ? 'on' : ''}" data-act="pv" data-v="${k}" role="tab" aria-selected="${pv === k}">${n}</button>`).join('')}</div>`;
+  if (pv === 'goal') return head + vGoal('goal', true);
   // 예산: 이번 달 예산 현황 · 카테고리별 배분 · 줄이기 계획
-  if (pv === 'budget') return head + planLead() + `
+  if (pv === 'budget') return head + (S.persona === 'habit' ? '' : planLead()) + `
   <div class="bsum">
     <div class="row between"><span class="t12 mute">10월 예산</span><span class="t10 mute num">10.01 – 10.31</span></div>
     <div class="row g8 mt8" style="align-items:baseline"><span class="n32">${won(S.budget)}</span><span class="cur t16">₩</span></div>
@@ -1732,7 +1737,7 @@ function vPlan() {
     </div>
   </section>`}`;
   // 통장: 용도별 통장 · 비상금 · 저축 꺼내기 · 투자
-  if (pv === 'bank') return head + `
+  if (pv === 'bank') return head + (S.persona === 'habit' ? planLead() : '') + `
   <section class="mt16">${accountsCard(false)}</section>
   <section class="sec">
     <div class="sec-h"><div><div class="t18">계좌와 용도</div><div class="sec-d">눌러서 용도를 바꿀 수 있어요</div></div></div>
@@ -1899,7 +1904,7 @@ function vChal() {
     <div class="row between">${[['예산 지킴','check',1],['선저축 첫 달','calendar',1],['무지출 10회','spark',1],['진단 완료','refresh',1],['3개월 연속','flag',0]].map(([n, i, got]) => `<div class="badge"><span class="b ${got ? 'got' : 'lock'}">${ic(got ? i : 'lock', 22)}</span><span class="t10 ${got ? '' : 'mute'}">${n}</span></div>`).join('')}</div>
   </section>`;
 }
-function vGoal() {
+function vGoal(gvOver, noHead) {
   const g = S.goals.find(x => x.id === S.goalSel) || S.goals[0];
   const indep = g.id === 'indep'; const saved = indep ? S.goalSaved : g.saved;
   const pa = planActual(); const d = D();
@@ -1907,9 +1912,9 @@ function vGoal() {
   const msMonths = Math.max(1, Math.ceil((STAGES[msCur].a - saved) / 350000)), msDate = new Date(2026, 9 + msMonths, 1);
   const ms = { cur:msCur, next:STAGES[msCur + 1], due:`${msDate.getFullYear()}년 ${msDate.getMonth() + 1}월` };
   // 도전 탭: 목표(모으는 돈) · 챌린지(골라서 참여·인증·리그) · 소통(절약 팁·정책 정보)
-  const gv = S.goalView;
-  const head = `<header class="top"><div><div class="ph-title">도전</div><div class="ph-sub">목표 3개 · 챌린지 ${S.chalOn.length}개 참여 중</div></div></header>
-  <div class="utabs" role="tablist">${[['goal','목표'],['chal','챌린지'],['comm','소통']].map(([k, n]) => `<button class="${gv === k ? 'on' : ''}" data-act="gv" data-v="${k}" role="tab" aria-selected="${gv === k}">${n}</button>`).join('')}</div>`;
+  const gv = gvOver || S.goalView;
+  const head = noHead ? '' : `<header class="top"><div><div class="ph-title">도전</div><div class="ph-sub">챌린지 ${S.chalOn.length}개 참여 중 · 소통</div></div></header>
+  <div class="utabs" role="tablist">${[['chal','챌린지'],['comm','소통']].map(([k, n]) => `<button class="${gv === k ? 'on' : ''}" data-act="gv" data-v="${k}" role="tab" aria-selected="${gv === k}">${n}</button>`).join('')}</div>`;
   if (gv === 'chal') return head + vChal();
   if (gv === 'comm') return head + `
   <section style="margin-top:16px">
@@ -2046,7 +2051,7 @@ function sheetHTML(name) {
     case 'alloc': return head('외주비 나누기', '10.08 입금 · 320,000원') + `<div class="row g8 mt24">${[['bal','균형'],['save','저축 우선'],['free','쓰기 우선']].map(([k, n]) => `<button class="chip ${S.alloc === k ? 'on' : ''}" data-act="alloc" data-v="${k}">${n}</button>`).join('')}</div>
       <div class="mt16">${allocBlock()}</div>
       <div class="card c-aura mt16"><div class="t12 mute">독립 자금</div><div class="t16 mt4">${pct(d.goal)} → ${pct((S.goalSaved + 320000 * ({ bal:.5, save:.7, free:.3 }[S.alloc])) / 5000000)}</div></div>
-      <button class="btn full mt16" data-act="allocDo">이대로 나누기</button><p class="t12 mute mt12" style="text-align:center">비율은 플랜 › 비정기 수입에서 바꿀 수 있어요</p>`;
+      <button class="btn full mt16" data-act="allocDo">이대로 나누기</button><p class="t12 mute mt12" style="text-align:center">비율은 모으기 › 자동 규칙에서 바꿀 수 있어요</p>`;
     case 'withdraw': {
       const a = S.wAmt, after = S.goalSaved - a; const m0 = Math.ceil((5000000 - S.goalSaved) / 350000), m1 = Math.ceil((5000000 - after) / 350000);
       const dt = k => { const t = new Date(2026, 9 + k, 1); return `${t.getFullYear()}.${String(t.getMonth() + 1).padStart(2, '0')}`; };
@@ -2114,12 +2119,12 @@ function aiAnswer(q) {
 /* =========================================================
    render
    ========================================================= */
-const SCREEN_NAME = k => ({ ob0:'진단 시작', ob1:'자기평가', ob2:'진단 문항', ob3:'진단 결과', subdiag:'내 진단 결과', tabhome:'홈', tabspend:'지출', tabplan:'플랜', tabgoal:'도전', tabbenefit:'혜택' }[k] || k);
-const TABS = [ ['home','홈','home'], ['spend','지출','bars'], ['plan','플랜','sliders'], ['goal','도전','flag'], ['benefit','혜택','gift'] ];
+const SCREEN_NAME = k => ({ ob0:'진단 시작', ob1:'자기평가', ob2:'진단 문항', ob3:'진단 결과', subdiag:'내 진단 결과', tabhome:'홈', tabspend:'쓰기', tabplan:'모으기', tabgoal:'도전', tabbenefit:'혜택' }[k] || k);
+const TABS = [ ['home','홈','home'], ['spend','쓰기','bars'], ['plan','모으기','coin'], ['goal','도전','flag'], ['benefit','혜택','gift'] ];
 const screen = document.getElementById('screen'), view = document.getElementById('view');
 let lastKey = '';
 // 세부 탭(지출·계획·목표): 본문을 좌우로 밀어 넘기고, 탭 밑줄도 같이 따라 움직인다
-const SUBS = { spend:['spendView', ['list','analysis','report']], plan:['planView', ['budget','bank','rule']], goal:['goalView', ['goal','chal','comm']] };
+const SUBS = { spend:['spendView', ['list','analysis','budget']], plan:['planView', ['bank','goal','rule']], goal:['goalView', ['chal','comm']] };
 const subPanes = () => [...view.children].filter(c => !c.classList.contains('shead'));
 const setPanes = (els, x, t) => els.forEach(e => { e.style.transition = t ? `transform ${t}` : 'none'; e.style.transform = x ? `translateX(${x}px)` : ''; });
 let swipe = null, swiped = false;
@@ -2215,7 +2220,7 @@ function render(keepScroll = true) {
   const homeEnter = key === 'tabhome' && key !== lastKey && S.linked;
   if (homeEnter) S.tuck = false;
   const st = keepScroll && key === lastKey ? view.scrollTop : 0;
-  const dark = S.mode === 'onboard' ? (S.ob === 1 || S.ob === 3) : S.sub ? S.sub === 'diag' : S.tab === 'spend';
+  const dark = S.mode === 'onboard' ? (S.ob === 1 || S.ob === 3) : S.sub ? S.sub === 'diag' : S.tab === 'spend' && S.spendView !== 'budget' && S.linked;
   screen.classList.toggle('dark', dark);
   screen.classList.toggle('nonav', S.mode === 'onboard' || !!S.sub);
   if (S.mode === 'onboard') view.innerHTML = [vIntro, vSelf, vQuiz, vResult][S.ob]();
@@ -2241,7 +2246,7 @@ function render(keepScroll = true) {
   if (!tb.children.length) tb.innerHTML = TABS.map(([k, n, i]) => `<button class="tab" data-act="tab" data-tab="${k}" aria-label="${n}">${ic(i, 22)}<span>${n}</span></button>`).join('');
   [...tb.children].forEach(b => { const on = b.dataset.tab === S.tab; b.classList.toggle('on', on); on ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current'); });
   const dock = document.getElementById('aiDock');
-  dock.hidden = !(S.mode === 'app' && !S.sub && (S.tab === 'plan' || (S.tab === 'spend' && S.spendView === 'analysis')));
+  dock.hidden = !(S.mode === 'app' && !S.sub && (S.tab === 'plan' || (S.tab === 'spend' && S.spendView !== 'list')));
   if (dock.hidden) aiDock(false);
   view.style.paddingBottom = S.mode === 'onboard' || S.sub ? (S.ob === 3 || S.sub ? '0' : '24px') : '0';
   if (S.mode === 'app' && !S.sub) { const h = document.createElement('div'); h.className = 'ht-end'; h.style.height = (dock.hidden ? 140 : 200) + 'px'; h.style.marginTop = '24px'; view.append(h); const gap = view.clientHeight - (h.getBoundingClientRect().bottom - view.getBoundingClientRect().top + view.scrollTop); if (gap > 0) h.style.marginTop = (24 + gap) + 'px'; view.scrollTop = st; }
@@ -2426,7 +2431,7 @@ document.querySelector('#aiDock [type="submit"]').innerHTML = ic('send', 20);
 /* ---------- side panel ---------- */
 function renderPanel() {
   const cur = S.mode === 'onboard' ? 'ob' + S.ob : S.sub === 'diag' ? 'diag' : S.sub === 'link' ? 'link' : !S.linked && S.tab === 'home' ? 'empty' : S.tab === 'spend' ? 'spend-' + S.spendView : S.tab === 'plan' ? 'plan-' + S.planView : S.tab === 'goal' ? 'goal-' + S.goalView : S.tab;
-  const sc = [ ['ob0','진단 시작'], ['ob1','자기평가'], ['ob2','진단 문항'], ['ob3','진단 결과'], ['diag','내 진단 결과'], ['link','계좌 연동 · 용도 확인'], ['empty','홈 · 연동 전'], ['home','홈'], ['spend-list','지출 · 가계부'], ['spend-analysis','지출 · 분석'], ['spend-report','지출 · 리포트'], ['plan-budget','플랜 · 예산'], ['plan-bank','플랜 · 통장'], ['plan-rule','플랜 · 자동 규칙'], ['goal-goal','도전 · 목표'], ['goal-chal','도전 · 챌린지'], ['goal-comm','도전 · 소통'], ['benefit','혜택'] ];
+  const sc = [ ['ob0','진단 시작'], ['ob1','자기평가'], ['ob2','진단 문항'], ['ob3','진단 결과'], ['diag','내 진단 결과'], ['link','계좌 연동 · 용도 확인'], ['empty','홈 · 연동 전'], ['home','홈'], ['spend-list','쓰기 · 가계부'], ['spend-analysis','쓰기 · 분석·영수증'], ['spend-budget','쓰기 · 예산'], ['plan-bank','모으기 · 통장'], ['plan-goal','모으기 · 목표'], ['plan-rule','모으기 · 자동 규칙'], ['goal-chal','도전 · 챌린지'], ['goal-comm','도전 · 소통'], ['benefit','혜택'] ];
   document.getElementById('navScreens').innerHTML = sc.map(([k, n]) => `<button type="button" class="${cur === k ? 'on' : ''}" data-go="${k}">${n}</button>`).join('');
   document.getElementById('navPersona').innerHTML = Object.entries(PERSONA).map(([k, p]) => `<button type="button" class="${S.persona === k ? 'on' : ''}" data-persona="${k}">${p.name}</button>`).join('');
   document.getElementById('navScen').innerHTML = [ ['pay','결제 발생 → 실시간 피드백'], ['income','외주비 입금 → 배분'], ['settle','더치페이 정산'], ['withdraw','저축 인출 확인'], ['ai','AI 조언 묻기'] ].map(([k, n]) => `<button type="button" data-scen="${k}">${n}</button>`).join('');
@@ -2447,7 +2452,7 @@ document.querySelector('.panel').addEventListener('click', e => {
     if (sc === 'income') { S.tab = 'home'; S.incomeIn = true; S.allocDone = false; render(false); openSheet('alloc'); }
     if (sc === 'settle') { S.tab = 'home'; S.settled = false; render(false); openSheet('settle'); }
     if (sc === 'withdraw') { S.tab = 'plan'; S.planView = 'bank'; render(false); openSheet('withdraw'); }
-    if (sc === 'ai') { S.tab = 'plan'; S.planView = 'budget'; render(false); ask('오늘 얼마 더 써도 돼?'); }
+    if (sc === 'ai') { S.tab = 'spend'; S.spendView = 'budget'; render(false); ask('오늘 얼마 더 써도 돼?'); }
   }
   if (b.id === 'gridBtn') { const g = document.getElementById('gridOv'); g.classList.toggle('on'); b.classList.toggle('on'); }
 });
