@@ -352,7 +352,8 @@ svg{display:block}
 .fs-step.on b{background:var(--fg);color:var(--inv);box-shadow:none}
 .ph-tag{vertical-align:middle;margin-left:8px;position:relative;top:-3px;height:20px;font-weight:400;letter-spacing:0}
 button.ph-tag{color:var(--mute)}
-.tab.focus:not(.on)::after{content:"";position:absolute;top:9px;right:calc(50% - 15px);width:6px;height:6px;border-radius:50%;background:#C8E1FF}
+/* 집중 영역 탭: 알림 점처럼 보이지 않게, 아이콘 뒤에 옅은 하늘색 원을 깔아 '지금 여기'를 표시 */
+.tab.focus:not(.on)::before{content:"";position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:rgba(200,225,255,.14);box-shadow:inset 0 0 0 1px rgba(200,225,255,.45);pointer-events:none}
 /* 한 입 금융 */
 .bite{padding:20px 24px}
 .bite.c-light{box-shadow:0 0 0 1px rgba(24,24,24,.08)}
