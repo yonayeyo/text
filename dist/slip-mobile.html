@@ -339,6 +339,7 @@ button.ph-tag{color:var(--mute)}
 .tab.focus:not(.on)::after{content:"";position:absolute;top:9px;right:calc(50% - 15px);width:6px;height:6px;border-radius:50%;background:#C8E1FF}
 /* 한 입 금융 */
 .bite{padding:20px 24px}
+.bite.c-light{box-shadow:0 0 0 1px rgba(24,24,24,.08)}
 .bite-h{display:grid;grid-template-columns:1fr auto;gap:6px 12px;width:100%;text-align:left;align-items:center}
 .bite-k{grid-column:1/-1;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mute)}
 .bite-q{line-height:1.4}
@@ -1237,7 +1238,7 @@ const knowLow = () => S.persona === 'low' || S.persona === 'habit';
 function bite(id, o = {}) {
   const b = BITES[id], done = S.bitesDone.has(id);
   const open = o.force || (id in S.biteOpen ? S.biteOpen[id] : knowLow() && !done);
-  return `<div class="card bite ${o.dark ? 'c-ink' : 'c-paper'} ${open ? 'open' : ''} ${o.cls || ''}">
+  return `<div class="card bite ${o.dark ? 'c-ink' : o.force ? 'c-light' : 'c-paper'} ${open ? 'open' : ''} ${o.cls || ''}">
     ${o.force ? `<div class="bite-h"><span class="bite-k">${ic('spark', 14)}한 입 금융 · ${b.k}</span><span class="t16 bite-q">${b.q}</span></div>`
     : `<button class="bite-h" data-act="bite" data-v="${id}" aria-expanded="${open}"><span class="bite-k">${ic('spark', 14)}한 입 금융 · ${b.k}${done ? `<span class="tag line" style="height:18px;margin-left:6px">${ic('check', 10)}&nbsp;알아봤어요</span>` : ''}</span><span class="t16 bite-q">${b.q}</span><span class="bite-tg">${ic(open ? 'minus' : 'plus', 16)}</span></button>`}
     ${open ? `<div class="bite-b">${b.ex()}<p class="t12 bite-take">${b.take}</p>
