@@ -643,7 +643,7 @@ button.ph-tag{color:var(--mute)}
    icons (24 box · 1.5px line)
    ========================================================= */
 const IC = {
-  piggy:  '<path d="M11 17h3v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-3a3.16 3.16 0 0 0 2-2h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1a5 5 0 0 0-2-4V3a4 4 0 0 0-3.2 1.6l-.3.4H11a6 6 0 0 0-6 6v1a5 5 0 0 0 2 4v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1z"/><path d="M16 10h.01"/><path d="M2 8v1a2 2 0 0 0 2 2h1"/>',
+  coins:  '<rect x="3.5" y="16.5" width="14" height="4" rx="2"/><rect x="6.5" y="11.25" width="14" height="4" rx="2"/><rect x="3.5" y="6" width="14" height="4" rx="2"/>',
   home:'<path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/>',
   bars:'<path d="M6 19v-7M12 19V5M18 19v-4"/>',
   sliders:'<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>',
@@ -2121,7 +2121,7 @@ function aiAnswer(q) {
    render
    ========================================================= */
 const SCREEN_NAME = k => ({ ob0:'진단 시작', ob1:'자기평가', ob2:'진단 문항', ob3:'진단 결과', subdiag:'내 진단 결과', tabhome:'홈', tabspend:'지출', tabplan:'저축', tabgoal:'도전', tabbenefit:'혜택' }[k] || k);
-const TABS = [ ['home','홈','home'], ['spend','지출','bars'], ['plan','저축','piggy'], ['goal','도전','flag'], ['benefit','혜택','gift'] ];
+const TABS = [ ['home','홈','home'], ['spend','지출','bars'], ['plan','저축','coins'], ['goal','도전','flag'], ['benefit','혜택','gift'] ];
 const screen = document.getElementById('screen'), view = document.getElementById('view');
 let lastKey = '';
 // 세부 탭(지출·계획·목표): 본문을 좌우로 밀어 넘기고, 탭 밑줄도 같이 따라 움직인다
