@@ -1558,7 +1558,7 @@ function topSpend() {
   const X0 = Math.min(...B.map(b => b[0]), ...top.map((i, k) => P[k][0] - r(i) - 7)), X1 = Math.max(...B.map(b => b[0] + b[2]), ...top.map((i, k) => P[k][0] + r(i) + 7));
   const Y0 = Math.min(...B.map(b => b[1]), ...top.map((i, k) => P[k][1] - r(i) - 7)), Y1 = Math.max(...top.map((i, k) => P[k][1] + r(i) + 7));
   const vb = `${(X0 - 4).toFixed(1)} ${(Y0 - 4).toFixed(1)} ${(X1 - X0 + 8).toFixed(1)} ${(Y1 - Y0 + 8).toFixed(1)}`;
-  return `<div class="card c-light">
+  return `<div class="card c-paper">
     <div class="row between"><span class="t18" style="font-family:var(--f-num);font-weight:300;font-size:24px">Top spend</span><span class="t10 mute num">${m ? '9.1 – 9.30' : '10.5 – 10.11'}</span></div>
     <div class="t10 mute mt4" style="text-align:right">상위 4개 = 지출의 ${pct(share)}</div>
     <svg viewBox="${vb}" width="100%" class="mt8" role="img" aria-label="상위 지출: ${top.map(i => `${i.c} ${won(i.a)}원`).join(', ')}">
