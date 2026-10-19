@@ -2483,8 +2483,12 @@ function setPageColor(c) {
   if (c === pageColorNow) return; pageColorNow = c;
   document.querySelectorAll('meta[name=theme-color]').forEach(m => m.remove());
   const m = document.createElement('meta'); m.name = 'theme-color'; m.content = c; document.head.appendChild(m);
-  if (matchMedia('(max-width:520px)').matches) [document.documentElement, document.body, document.querySelector('.device')].forEach(el => el.style.backgroundColor = c);
+  applyPageBg();
 }
+// 휴대폰 폭에서만 페이지·기기 배경을 화면 색으로 칠한다. 좁게 열렸다가 넓어지면(웹 크기) 칠한 색을 지워 검정 기기 테두리로 되돌린다
+const narrowMQ = matchMedia('(max-width:520px)');
+function applyPageBg() { const on = narrowMQ.matches; [document.documentElement, document.body, document.querySelector('.device')].forEach(el => el.style.backgroundColor = on ? pageColorNow : ''); }
+narrowMQ.addEventListener('change', applyPageBg);
 function openSheet(name) { if (name !== 'log') log('시트 ' + name); S.seen.add('sheet-' + name); if (S.sheet && S.sheet !== name && S.sheet !== 'log') log(`시트 닫기 ${S.sheet} · ${Math.round((Date.now() - (S.sheetAt || Date.now())) / 100) / 10}s · 다른 시트로 이동`); if (S.sheet !== name) S.sheetAt = Date.now(); S.sheet = name; document.getElementById('sheet').innerHTML = sheetHTML(name); document.getElementById('layer').classList.add('open'); }
 function refreshSheet() { if (S.sheet) document.getElementById('sheet').innerHTML = sheetHTML(S.sheet); }
 // 기록용: 어떤 항목(data-k·data-c)에 어떤 값을 골랐는지, 알림 버튼이면 어떤 메시지였는지까지 남긴다
