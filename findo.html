@@ -624,14 +624,28 @@ button.ph-tag{color:var(--mute)}
 .ai-fab svg{display:block;margin:auto}
 .screen .ai-dock:not(.open) > [type="submit"]{background:rgba(17,17,17,.85);box-shadow:inset 1px 1px 1.1px rgba(255,255,255,.52),inset -1px -1px 1.1px rgba(255,255,255,.52),inset 0 0 4px rgba(255,255,255,.9)}
 .screen .ai-dock:not(.open) > [type="submit"]::before{display:none}
-.discs{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * var(--m));padding:0 var(--m)}
-.discs::-webkit-scrollbar{display:none}
-.disc{flex:none;width:72px;display:grid;justify-items:center;align-content:start;gap:8px;text-align:center}
-.disc i{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-style:normal;background:linear-gradient(180deg,var(--g2),var(--g3))}
-.disc.done i{background:var(--ink);color:var(--paper)}
-.disc.unk i{background:var(--paper);border:1.5px dashed var(--rose);color:var(--rose);font-family:var(--f-num);font-size:20px}
-.disc.soon{opacity:.55}
-.disc span{font-size:12px;line-height:1.35}
+/* 알기 › 한입 금융 (시안 13) */
+.lr-sum{position:relative;margin-top:16px;padding-right:56px}
+.lr-sum .k{font-size:14px;color:#999}
+.lr-sum .v{display:flex;align-items:baseline;gap:8px;margin-top:2px}
+.lr-sum .v b{font-family:"Bitcount Grid Single",var(--f-num);font-weight:400;font-size:28px;line-height:1;color:#000}
+.lr-sum .v span{font-size:10px;color:#999}
+.lr-sum .ib{position:absolute;right:0;top:50%;transform:translateY(-50%);background:#181818}
+.lr-new{margin-top:24px;font-size:14px;color:#999}
+.lr-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:8px calc(-1 * var(--m)) 0;padding:0 var(--m)}
+.lr-chips::-webkit-scrollbar{display:none}
+.lr-chips button{flex:none;height:22px;padding:0 8px;border-radius:999px;font-size:12px;color:#999;box-shadow:inset 0 0 0 .5px #C4C4C4;white-space:nowrap}
+.lr-chips button.on{background:#000;color:#fff;box-shadow:none}
+.lr-list{display:flex;flex-direction:column;gap:28px;margin-top:24px;padding-left:10px}
+.lr-row{display:flex;align-items:center;width:100%;text-align:left}
+.lr-row .th{flex:none;width:100px;height:100px;margin:0 20px;border-radius:50px;background:#D9D9D9;transition:width .32s cubic-bezier(.2,.8,.2,1),height .32s cubic-bezier(.2,.8,.2,1),margin .32s cubic-bezier(.2,.8,.2,1),border-radius .32s cubic-bezier(.2,.8,.2,1)}
+.lr-row .tx{display:grid;gap:4px;min-width:0;margin-left:0;transition:margin .32s cubic-bezier(.2,.8,.2,1)}
+.lr-row.on .th{width:140px;height:140px;margin:0;border-radius:32px}
+.lr-row.on .tx{margin-left:20px}
+.lr-row .ca{font-size:12px;color:#999}
+.lr-row .nm{font-size:18px;color:#000}
+.lr-row .ds{font-size:14px;color:#999;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (prefers-reduced-motion:reduce){.lr-row .th,.lr-row .tx{transition:none}}
 .bit-card{width:100%;display:flex;align-items:center;gap:14px;padding:24px 20px;text-align:left}
 .bit-q{width:36px;height:36px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--ink);color:var(--paper);font-family:var(--f-num);font-size:16px}
 /* Fin.do 로고 — 30 × 6 점 그리드 워드마크 (assets/findo-logo.svg를 마스크로 사용) */
@@ -1470,7 +1484,7 @@ const BITES = {
     go:null },
 };
 // 알기 › 한 입 금융: 5개 영역의 개념 원반. b = 생활 예시가 있는 기존 개념 카드(BITES), known = 이미 알아본 개념(예시)
-const CONCEPT_TOTAL = 56, CONCEPT_KNOWN = 9;   // 전체 56개 중 데모에 담은 개념만 보여 준다
+const CONCEPT_TOTAL = 136, CONCEPT_KNOWN = 12;   // 전체 136개 중 데모에 담은 개념만 보여 준다
 const CONCEPTS = [
   { id:'budget', a:'spend', k:'예산', known:true, q:'한 달 예산,<br>어떻게 정할까요?', take:'월급에서 매달 나가는 돈과 먼저 모을 돈을 뺀 나머지가 한 달 예산이에요. 이걸 남은 날로 나누면 오늘 쓸 수 있는 돈이 돼요.', go:['예산 보기', 'data-act="tab" data-tab="spend" data-sv="budget"'] },
   { id:'fixed', a:'spend', k:'고정 지출', q:'월세·통신비는<br>왜 먼저 빼 둘까요?', take:'매달 정해진 날 빠져나가는 돈이라 쓸 수 있는 돈이 아니에요. 미리 빼 두면 하루 예산이 실제보다 커 보이는 일을 막을 수 있어요.', go:['매달 나가는 돈 확인', 'data-act="tab" data-tab="plan" data-pv="rule"'] },
@@ -2133,35 +2147,33 @@ function vGoal() {
    ========================================================= */
 function vLearn() {
   const lv = S.learnView;
-  const head = `<header class="top"><div><div class="ph-title">알기</div><div class="ph-sub">한 입 금융 · 팁과 소식</div></div></header>
-  <div class="utabs" role="tablist">${[['bite','한 입 금융'],['tips','팁과 소식']].map(([k, n]) => `<button class="${lv === k ? 'on' : ''}" data-act="lv" data-v="${k}" role="tab" aria-selected="${lv === k}">${n}</button>`).join('')}</div>`;
+  const head = `<header class="top"><div><div class="ph-title">알기</div><div class="ph-sub">한입 금융 · 팁과 소식</div></div></header>
+  <div class="utabs" role="tablist">${[['bite','한입 금융'],['tips','팁과 소식']].map(([k, n]) => `<button class="${lv === k ? 'on' : ''}" data-act="lv" data-v="${k}" role="tab" aria-selected="${lv === k}">${n}</button>`).join('')}</div>`;
   if (lv === 'tips') return head + `
   <section style="margin-top:16px">
     <div class="sec-h"><div><div class="t18">절약 팁 · 정책 정보</div><div class="sec-d">함께 실천하는 사람들의 팁과 정책 소식</div></div><button class="btn sm ghost" data-act="toast" data-msg="팁 작성 화면은 다음 버전에서 열려요">${ic('plus', 14)}공유</button></div>
     <div class="stack">${TIPS.map((t, i) => `<div class="card c-paper"><div class="row between"><span class="tag ${t.k === '정책 정보' ? 'glow' : 'line'}">${t.k}</span><span class="t10 mute">${t.who}</span></div><p class="t14 mt12">${t.t}</p><button class="chip mt12 ${S.liked.has(i) ? 'on' : ''}" data-act="like" data-v="${i}">도움돼요 ${t.likes + (S.liked.has(i) ? 1 : 0)}</button></div>`).join('')}</div>
   </section>`;
-  const unk = unkAreas(), known = conceptKnown();
-  const disc = c => { c = conceptOf(c.id); const d = conceptDone(c), u = !d && unk.has(c.a), soon = !AREAS.find(a => a.id === c.a).now;
-    return `<button class="disc ${d ? 'done' : u ? 'unk' : ''} ${soon ? 'soon' : ''}" data-act="concept" data-v="${c.id}" aria-label="${c.k}${d ? ' · 알아봤어요' : u ? ' · 잘 모르겠어요' : ''}"><i>${d ? ic('check', 20) : u ? '?' : ''}</i><span>${c.k}</span></button>`; };
+  const known = conceptKnown(), area = S.learnArea || 'all';
+  const list = CONCEPTS.map(c => conceptOf(c.id)).filter(c => !conceptDone(c) && (area === 'all' || c.a === area));
   return head + `
-  <section style="margin-top:16px">
-    <div class="card c-ink">
-      <div class="row between"><span class="t12 mute">알아본 개념</span><span class="t10 mute">5개 영역 · 전체 ${CONCEPT_TOTAL}개</span></div>
-      <div class="row g8 mt8" style="align-items:baseline"><span class="n56 num">${known}</span><span class="n24 mute">/ ${CONCEPT_TOTAL}</span></div>
-      <div class="glowbar flat mt16" style="height:6px;background:rgba(252,252,252,.12)"><i style="width:${known / CONCEPT_TOTAL * 100}%"></i></div>
-      ${unk.size ? `<p class="t12 mute mt12"><i class="warn-dot"></i>진단에서 ‘잘 모르겠어요’를 고른 ${[...unk].map(areaName).join('·')} 개념을 표시했어요</p>` : ''}
-    </div>
+  <section class="lr-sum">
+    <div class="k">알아본 개념</div>
+    <div class="v"><b aria-label="${CONCEPT_TOTAL}개 중 ${known}개">${known}/${CONCEPT_TOTAL}</b><span>5개 영역</span></div>
+    <button class="ib ink" data-act="sheet" data-sheet="bites" aria-label="알아본 개념 보기">${ic('ur', 20)}</button>
   </section>
-  <section class="sec">
-    <div class="sec-h"><div><div class="t18">영역별 개념</div><div class="sec-d">원반을 누르면 한 입씩 알려 드려요</div></div></div>
-    <div class="stack" style="gap:24px">${AREAS.map(ar => { const list = CONCEPTS.filter(c => c.a === ar.id), dn = list.filter(c => conceptDone(conceptOf(c.id))).length;
-      return `<div><div class="row between"><span class="t14">${ar.name}</span><span class="t10 mute num">${ar.now ? `${dn}/${list.length}` : '확장 예정'}</span></div>
-        <div class="discs mt12">${list.map(disc).join('')}</div></div>`; }).join('')}</div>
-  </section>
-  <section class="sec">
-    <div class="sec-h"><div><div class="t18">필요한 순간에 본 개념</div><div class="sec-d">지출·저축 화면에서 보여 드린 개념 카드</div></div></div>
-    <div class="stack">${Object.keys(BITES).map(id => bite(id)).join('')}</div>
-  </section>`;
+  <div class="lr-new">새로운 개념</div>
+  <div class="lr-chips" role="tablist">${[['all', '전체'], ...AREAS.map(a => [a.id, a.name])].map(([k, n]) => `<button class="${area === k ? 'on' : ''}" data-act="learnArea" data-v="${k}" role="tab" aria-selected="${area === k}">${n}</button>`).join('')}</div>
+  <div class="lr-list" id="lrList">${list.length ? list.map((c, i) => `<button class="lr-row ${i ? '' : 'on'}" data-act="concept" data-v="${c.id}"><span class="th" aria-hidden="true"></span>
+      <span class="tx"><span class="ca">${areaName(c.a)}</span><span class="nm">${c.k}</span><span class="ds">${c.q.replace(/<br>/g, ' ')}</span></span></button>`).join('')
+    : '<p class="t14 mute">이 영역의 개념은 모두 알아봤어요.</p>'}</div>`;
+}
+// 한입 금융 목록: 스크롤할 때 목록에서 가장 위에 보이는 개념을 크게(둥근 사각형) 보여 준다
+function learnActive() {
+  const l = document.getElementById('lrList'); if (!l) return;
+  const sh = view.querySelector('.shead'), top = (sh ? sh.getBoundingClientRect().bottom : view.getBoundingClientRect().top) + 24;
+  const rows = [...l.querySelectorAll('.lr-row')], cur = rows.find(r => r.getBoundingClientRect().bottom > top) || rows[rows.length - 1];
+  rows.forEach(r => r.classList.toggle('on', r === cur));
 }
 
 /* =========================================================
@@ -2341,6 +2353,8 @@ function aiAnswer(q) {
 const SCREEN_NAME = k => ({ ob0:'진단 시작', ob1:'자기평가', ob2:'진단 문항', ob3:'진단 결과', subdiag:'내 진단 결과', sublink:'계좌 연동 · 용도 확인', tabhome:'홈', tabspend:'지출', tabplan:'저축', tablearn:'알기', tabbenefit:'혜택' }[k] || k);
 const TABS = [ ['home','홈','tHome'], ['spend','지출','tWallet'], ['plan','저축','tStack'], ['learn','알기','tNotes'], ['benefit','혜택','tGift'] ];
 const screen = document.getElementById('screen'), view = document.getElementById('view');
+let learnRaf = 0;
+view.addEventListener('scroll', () => { cancelAnimationFrame(learnRaf); learnRaf = requestAnimationFrame(learnActive); }, { passive:true });
 let lastKey = '';
 // 세부 탭(지출·계획·목표): 본문을 좌우로 밀어 넘기고, 탭 밑줄도 같이 따라 움직인다
 const SUBS = { spend:['spendView', ['list','analysis','budget']], plan:['planView', ['bank','goal','rule']], learn:['learnView', ['bite','tips']] };
@@ -2587,6 +2601,7 @@ document.addEventListener('click', e => {
     case 'tab': closeSheet(); S.mode = 'app'; S.sub = null; S.tab = el.dataset.tab; if (!el.classList.contains('tab')) { const a = viewArea(); a && S.explored.add(a); } if (el.dataset.pv) S.planView = el.dataset.pv; if (el.dataset.sv) S.spendView = el.dataset.sv; if (el.dataset.lv) S.learnView = el.dataset.lv; render(false); break;
     case 'pv': subTap(v); break;
     case 'lv': subTap(v); break;
+    case 'learnArea': S.learnArea = v; render(); break;
     case 'concept': S.conceptId = v; if (el.dataset.go) { S.mode = 'app'; S.sub = null; S.tab = el.dataset.go; S.learnView = 'bite'; render(false); } openSheet('concept'); break;
     case 'conceptOk': { const c = conceptOf(v); c.b ? S.bitesDone.add(c.b) : S.conceptDone.add(v); refreshSheet(); render(); break; }
     case 'aiOpen': aiDock(true); break;
