@@ -627,6 +627,8 @@ button.ph-tag{color:var(--mute)}
 .ask-slot:has(.ai-dock.open) .ask-hint{opacity:0}
 .screen .ask-slot .ai-dock{left:0;right:0;top:0;bottom:auto}
 .ai-fab svg{display:block;margin:auto}
+.screen .ai-dock:not(.open) > [type="submit"]{background:rgba(17,17,17,.85);box-shadow:inset 1px 1px 1.1px rgba(255,255,255,.26),inset -1px -1px 1.1px rgba(255,255,255,0),inset 0 0 4px rgba(255,255,255,.9)}
+.screen .ai-dock:not(.open) > [type="submit"]::before{display:none}
 .discs{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * var(--m));padding:0 var(--m)}
 .discs::-webkit-scrollbar{display:none}
 .disc{flex:none;width:72px;display:grid;justify-items:center;align-content:start;gap:8px;text-align:center}
