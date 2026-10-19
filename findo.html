@@ -595,14 +595,16 @@ button.ph-tag{color:var(--mute)}
   button:active,.opt:active,.cut:active{transform:scale(.97);transition:transform .08s}
 }
 /* 홈 (시안 4): 머리말 아래 구분선 · 오늘 쓸 수 있는 금액 · 오늘의 실천 항목 궤도 */
-.h-hero{position:relative;margin-top:12px;display:grid;gap:1px;padding-right:56px}
+.shead:has(> .home-top){box-shadow:inset 0 -1px 0 #EDEDED}
+.h-hero{position:relative;margin-top:24px;display:grid;gap:1px;padding-right:56px}
 .h-hero .h-lb{font-size:14px;font-weight:500;color:#999}
 .h-hero .h-sb{font-size:10px;font-weight:400;color:#999}
 .h-hero .ib{position:absolute;right:0;top:35px;background:#181818}
 .dotnum{font-family:"Bitcount Grid Single",var(--f-num);font-weight:400;font-size:47px;line-height:1.2;color:#000;font-variant-numeric:tabular-nums;white-space:nowrap}
-.orbit{position:relative;height:430px;margin:24px calc(-1 * var(--m)) 0}
-.orbit .deco{position:absolute;border-radius:50%;background:var(--ink);pointer-events:none}
-.pc{position:absolute;width:80px;height:100px;border-radius:10px;display:grid;place-items:center;padding:8px;text-align:center;font-size:14px;font-weight:400;line-height:1.35;color:var(--ink);transform:rotate(var(--rot));transition:transform .2s cubic-bezier(.2,.8,.2,1)}
+/* 오늘의 실천 항목 궤도 — 시안 좌표(402 프레임, y 170 기준) · 카드 80 × 100 · 모서리 9 · 왼쪽 위 기준 ±5° 회전 */
+.orbit{position:relative;height:440px;margin:8px calc(-1 * var(--m)) 0}
+.orbit .deco{position:absolute;border-radius:50%;background:#000;pointer-events:none}
+.pc{position:absolute;width:80px;height:100px;border-radius:9px;display:grid;place-items:center;padding:8px;text-align:center;font-size:14px;font-weight:400;line-height:1.35;color:#000;transform:rotate(var(--rot));transform-origin:top left;transition:transform .2s cubic-bezier(.2,.8,.2,1)}
 .pc:active{transform:rotate(var(--rot)) scale(.95)}
 /* 완료 */
 .pc.done{background:#181818;color:#fff;box-shadow:0 1px 12px rgba(104,160,234,.54)}
@@ -610,10 +612,15 @@ button.ph-tag{color:var(--mute)}
 .pc.todo{background:radial-gradient(ellipse 50% 50% at 50% 50%,#FAFAFA 60%,#EFF3FF 100%);border:.5px solid rgba(78,132,202,.24)}
 /* 새 항목 */
 .pc.new{background:#FBFBFB;border:.5px solid #000}
-.orbit .oc{position:absolute;left:50%;top:184px;transform:translateX(-50%);width:200px;text-align:center}
-.orbit .oc .logo{display:block;margin:0 auto 10px;width:88px}
-.orbit .oc .ot{font-size:16px;color:var(--g4)}
-.orbit .oc .od{font-size:12px;color:var(--g4);margin-top:4px;line-height:1.5}
+/* 이미지 카드 (시안의 사진 자리 · 이미지가 정해지기 전까지 모노톤 질감) */
+.pc.img{color:#fff;background-color:#D9D9D9;box-shadow:0 1px 12px rgba(104,160,234,.54)}
+.pc.img.a{background:linear-gradient(28deg,transparent 49.6%,rgba(255,255,255,.2) 50%,transparent 50.6%),linear-gradient(152deg,transparent 49.6%,rgba(0,0,0,.35) 50%,transparent 50.6%),linear-gradient(160deg,#4A5568,#1C2230 55%,#2B3242)}
+.pc.img.b{background:repeating-linear-gradient(90deg,rgba(0,0,0,.28) 0 3px,transparent 3px 9px,rgba(0,0,0,.18) 9px 11px,transparent 11px 17px),linear-gradient(180deg,#6F8094,#34404D 60%,#1F262E)}
+.pc .ck{position:absolute;top:8px;right:8px;opacity:.9}
+.orbit .oc{position:absolute;left:50%;top:183px;transform:translateX(-50%);width:168px;text-align:center}
+.orbit .oc .ow{font-family:"Bitcount Grid Single",var(--f-num);font-weight:400;font-size:30px;line-height:36px;color:#000}
+.orbit .oc .ot{font-size:14px;font-weight:500;color:#999}
+.orbit .oc .od{font-size:10px;font-weight:400;line-height:14px;color:#999;margin-top:2px}
 .dot-h{display:flex;align-items:center;gap:8px;font-size:16px;margin-bottom:12px}
 .dot-h::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ink)}
 /* 알기 탭: 상단 입력창 · 개념 원반 · 홈 '?' 알아볼 것 조각 */
@@ -1366,50 +1373,52 @@ function focusStrip(noLabel) {
 }
 // 홈 궤도: 유형별 오늘의 실천 항목 7개 (첫 주 할 일 · 행동 추천 · 챌린지) + 새 항목. [제목, 완료 여부, 누르면 하는 일]
 const PRACTICE = {
-  cog: { d:'아는 만큼 바로 움직이도록<br>누르면 끝나는 것만 골랐어요', items:[
-    ['쓴 돈 확인', () => S.seen.has('spend-list'), 'data-act="tab" data-tab="spend" data-sv="list"'],
-    ['외주비 나누기', () => S.allocDone, 'data-act="sheet" data-sheet="alloc"'],
+  cog: { d:'바로 실행할 수 있는 것부터<br>지혜님에게 맞춰 골랐어요', items:[
     ['줄이기 제안 담기', () => S.applied.size > 0 || !!S.cutApplied, 'data-act="tab" data-tab="spend" data-sv="budget"'],
+    ['선저축 설정', () => false, 'data-act="tab" data-tab="plan" data-pv="rule"'],
+    ['외주비 나누기', () => S.allocDone, 'data-act="sheet" data-sheet="alloc"'],
+    ['쓴 돈 확인', () => true, 'data-act="tab" data-tab="spend" data-sv="list"'],
     ['배달 한도 알림', () => S.autoOn.has('dlv'), 'data-act="autoOn" data-v="dlv"'],
-    ['무지출 데이', () => S.chalCert.has('zero'), 'data-act="chalCert" data-v="zero"'],
     ['영수증 출력', () => S.printed.size > 0, 'data-act="tab" data-tab="spend" data-sv="analysis"'],
-    ['구독 정리', () => S.fixedSet, 'data-act="tab" data-tab="plan" data-pv="rule"'] ] },
-  low: { d:'1분이면 끝나는<br>작은 것부터 골랐어요', items:[
-    ['매달 나가는 돈', () => S.fixedSet, 'data-act="tab" data-tab="plan" data-pv="rule"'],
+    ['무지출 데이', () => true, 'data-act="tab" data-tab="plan" data-pv="goal"'] ] },
+  low: { d:'1분이면 끝나는 작은 것부터<br>지혜님에게 맞춰 골랐어요', items:[
     ['예산 알림 켜기', () => S.autoOn.has('b80'), 'data-act="autoOn" data-v="b80"'],
-    ['쓴 돈 확인', () => S.seen.has('spend-list'), 'data-act="tab" data-tab="spend" data-sv="list"'],
+    ['매달 나가는 돈', () => S.fixedSet, 'data-act="tab" data-tab="plan" data-pv="rule"'],
     ['한 입 금융', () => S.bitesDone.size > 0, 'data-act="tab" data-tab="learn" data-lv="bite"'],
-    ['무지출 데이', () => S.chalCert.has('zero'), 'data-act="chalCert" data-v="zero"'],
+    ['쓴 돈 확인', () => true, 'data-act="tab" data-tab="spend" data-sv="list"'],
     ['줄이기 제안 담기', () => S.applied.size > 0 || !!S.cutApplied, 'data-act="tab" data-tab="spend" data-sv="budget"'],
-    ['영수증 출력', () => S.printed.size > 0, 'data-act="tab" data-tab="spend" data-sv="analysis"'] ] },
-  habit: { d:'지금 습관 위에<br>더 나은 선택을 더했어요', items:[
-    ['적금 금리 비교', () => S.seen.has('sheet-compare'), 'data-act="sheet" data-sheet="compare"'],
-    ['계좌 용도 확인', () => S.seen.has('plan-bank'), 'data-act="tab" data-tab="plan" data-pv="bank"'],
+    ['영수증 출력', () => S.printed.size > 0, 'data-act="tab" data-tab="spend" data-sv="analysis"'],
+    ['무지출 데이', () => true, 'data-act="tab" data-tab="plan" data-pv="goal"'] ] },
+  habit: { d:'지금 습관 위에 더 나은 선택을<br>지혜님에게 맞춰 골랐어요', items:[
     ['카드 실적 확인', () => S.seen.has('benefit-'), 'data-act="tab" data-tab="benefit"'],
+    ['적금 금리 비교', () => S.seen.has('sheet-compare'), 'data-act="sheet" data-sheet="compare"'],
     ['목표 단계 보기', () => S.seen.has('plan-goal'), 'data-act="tab" data-tab="plan" data-pv="goal"'],
-    ['텀블러 인증', () => S.chalCert.has('cafe'), 'data-act="chalCert" data-v="cafe"'],
+    ['계좌 용도 확인', () => true, 'data-act="tab" data-tab="plan" data-pv="bank"'],
     ['외주비 나누기', () => S.allocDone, 'data-act="sheet" data-sheet="alloc"'],
-    ['무지출 데이', () => S.chalCert.has('zero'), 'data-act="chalCert" data-v="zero"'] ] },
-  self: { d:'다음 영역으로<br>넓히는 것들을 골랐어요', items:[
-    ['혜택 확인', () => S.seen.has('benefit-'), 'data-act="tab" data-tab="benefit"'],
-    ['매주 투자 시작', () => false, 'data-act="tab" data-tab="plan" data-pv="bank"'],
+    ['무지출 데이', () => S.chalCert.has('zero'), 'data-act="chalCert" data-v="zero"'],
+    ['텀블러 인증', () => true, 'data-act="tab" data-tab="plan" data-pv="goal"'] ] },
+  self: { d:'다음 영역으로 넓히는 것을<br>지혜님에게 맞춰 골랐어요', items:[
     ['청년도약계좌', () => false, 'data-act="tab" data-tab="benefit"'],
-    ['환급금 비상금으로', () => S.benefitMoved, 'data-act="tab" data-tab="benefit"'],
+    ['매주 투자 시작', () => false, 'data-act="tab" data-tab="plan" data-pv="bank"'],
     ['포인트 모으기', () => S.pointsMoved, 'data-act="tab" data-tab="benefit"'],
+    ['혜택 확인', () => true, 'data-act="tab" data-tab="benefit"'],
     ['이자 알아보기', () => S.seen.has('sheet-compare'), 'data-act="sheet" data-sheet="compare"'],
-    ['무지출 데이', () => S.chalCert.has('zero'), 'data-act="chalCert" data-v="zero"'] ] },
+    ['환급금 비상금으로', () => S.benefitMoved, 'data-act="tab" data-tab="benefit"'],
+    ['무지출 데이', () => true, 'data-act="tab" data-tab="plan" data-pv="goal"'] ] },
 };
-// 궤도 자리 (393 화면 기준, 카드 80 × 100) · 기울기 ±5°
-const ORBIT = [[60,58,-5],[157,20,5],[253,58,-5],[20,170,5],[293,170,5],[157,320,-5],[253,286,-5]], ORBIT_NEW = [60,286,-5];
+// 궤도 자리 [x, y, 기울기, 이미지 카드] — 시안 좌표에서 x는 402 → 393 화면 차이만큼(−4.5) 옮기고, y는 프레임 170 기준
+const OX = -4.5, OY = 170;
+const ORBIT = [[59,233.97,-5],[165.51,190,5,'a'],[257,233.97,-5],[27.71,341,5],[303.71,341,5,'b'],[165.51,490.3,5],[257,458.97,-5]], ORBIT_NEW = [59,458.97,-5];
+const pos = (x, y, r) => `left:${(x + OX).toFixed(2)}px;top:${(y - OY).toFixed(2)}px;--rot:${r}deg`;
 function orbit() {
   const P = PRACTICE[S.persona], items = P.items.map(([t, done, act]) => [t, done(), act]);
   const n = items.filter(i => i[1]).length;
   return `<section class="orbit" aria-label="오늘의 실천 항목 ${items.length}개 중 ${n}개 완료">
-    ${[[268,6,20],[344,100,8],[12,138,20],[228,300,8],[290,398,20]].map(([x, y, r]) => `<span class="deco" style="left:${x}px;top:${y}px;width:${r}px;height:${r}px" aria-hidden="true"></span>`).join('')}
-    ${items.map(([t, done, act], k) => { const [x, y, r] = ORBIT[k];
-      return `<button class="pc ${done ? 'done' : 'todo'}" style="left:${x}px;top:${y}px;--rot:${r}deg" ${act} aria-label="${t}${done ? ' · 완료' : ''}">${t}</button>`; }).join('')}
-    <button class="pc new" style="left:${ORBIT_NEW[0]}px;top:${ORBIT_NEW[1]}px;--rot:${ORBIT_NEW[2]}deg" data-act="tab" data-tab="plan" data-pv="goal" aria-label="새 실천 항목 추가">새 항목</button>
-    <div class="oc"><span class="logo" role="img" aria-label="Fin.do"></span><div class="ot">오늘의 실천 항목 <span class="num">${n}/${items.length}</span></div><div class="od">${P.d}</div></div>
+    ${[[20,315,10],[274,180,10],[240,473,4],[352,275,4],[305,577,10]].map(([x, y, r]) => `<span class="deco" style="left:${(x + OX).toFixed(1)}px;top:${y - OY}px;width:${r}px;height:${r}px" aria-hidden="true"></span>`).join('')}
+    ${items.map(([t, done, act], k) => { const [x, y, r, img] = ORBIT[k];
+      return `<button class="pc ${img ? 'img ' + img : done ? 'done' : 'todo'}" style="${pos(x, y, r)}" ${act} aria-label="${t}${done ? ' · 완료' : ''}">${img && done ? `<span class="ck" aria-hidden="true">${ic('check', 14)}</span>` : ''}${t}</button>`; }).join('')}
+    <button class="pc new" style="${pos(...ORBIT_NEW)}" data-act="tab" data-tab="plan" data-pv="goal" aria-label="새 실천 항목 추가">새 항목</button>
+    <div class="oc"><div class="ow" aria-label="Fin.do">FIN.Do</div><div class="ot">오늘의 실천 항목</div><div class="od">${P.d}</div></div>
   </section>`;
 }
 // 오늘의 실천 항목: 첫 주 할 일 + 유형별 행동 추천 + 참여 중인 챌린지 인증을 한곳에
@@ -1555,7 +1564,7 @@ function projCard() {
 }
 function vHome() {
   const d = D();
-  return `<header class="top">
+  return `<header class="top home-top">
       <div style="display:grid;gap:2px;line-height:1.3"><span class="t12" style="color:var(--g4)">Hello, 지혜</span><span class="t14">10월 ${S.day}일 ${'일월화수목금토'[(S.day + 3) % 7]}요일</span></div>
       <div class="row g8">
         <button class="ib glass" data-act="sheet" data-sheet="noti" aria-label="알림 3건">${ic('bell', 20)}<span class="dot"></span></button>
