@@ -241,9 +241,9 @@ svg{display:block}
 /* ---------- nav & AI dock ---------- */
 .tabbar{position:absolute;left:var(--m);right:var(--m);bottom:24px;height:64px;padding:8px;border-radius:999px;z-index:20;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;
   /* 유리: 흐림(포그)은 줄이고 굴절·반사광을 살린다. 크롬은 SVG 굴절 필터, 사파리는 흐림+채도로 */
-  background:rgba(24,24,24,.9);
+  background:rgba(17,17,17,.85);
   -webkit-backdrop-filter:blur(10px) saturate(180%);backdrop-filter:url(#glassRefract) blur(8px) saturate(180%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -1px 0 rgba(255,255,255,.14),inset 0 0 0 .5px rgba(255,255,255,.28),0 10px 28px rgba(0,0,0,.22)}
+  box-shadow:inset 1px 1px 1.1px rgba(255,255,255,.52),inset -1px -1px 1.1px rgba(255,255,255,.52),inset 0 0 4px rgba(255,255,255,.9),0 10px 28px rgba(0,0,0,.22)}
 /* 각 탭은 5칸 중 제자리에 고정. 활성 탭만 제자리에서 글자를 펼친다(다른 아이콘은 움직이지 않음) */
 .tab{justify-self:center;height:48px;min-width:48px;border-radius:999px;display:flex;align-items:center;justify-content:center;gap:0;color:var(--paper);font-size:14px;padding:0 13px;transition:background .25s,padding .3s,gap .3s;position:relative}
 .tab:first-child.on{justify-self:start}.tab:last-child.on{justify-self:end}
@@ -621,7 +621,7 @@ button.ph-tag{color:var(--mute)}
 .dot-h::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ink)}
 /* 알기 탭: 상단 입력창 · 개념 원반 · 홈 '?' 알아볼 것 조각 */
 .ai-fab svg{display:block;margin:auto}
-.screen .ai-dock:not(.open) > [type="submit"]{background:rgba(17,17,17,.85);box-shadow:inset 1px 1px 1.1px rgba(255,255,255,.26),inset -1px -1px 1.1px rgba(255,255,255,0),inset 0 0 4px rgba(255,255,255,.9)}
+.screen .ai-dock:not(.open) > [type="submit"]{background:rgba(17,17,17,.85);box-shadow:inset 1px 1px 1.1px rgba(255,255,255,.52),inset -1px -1px 1.1px rgba(255,255,255,.52),inset 0 0 4px rgba(255,255,255,.9)}
 .screen .ai-dock:not(.open) > [type="submit"]::before{display:none}
 .discs{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * var(--m));padding:0 var(--m)}
 .discs::-webkit-scrollbar{display:none}
