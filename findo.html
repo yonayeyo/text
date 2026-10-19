@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols+2&text=%E2%9C%A6&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bitcount+Grid+Single:ELSH,wght@0..100,100..900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@200;300;400&family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600&family=IBM+Plex+Mono:wght@400;500&family=Nanum+Gothic+Coding:wght@400;700&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /*
@@ -593,6 +594,31 @@ button.ph-tag{color:var(--mute)}
   .res-sheet{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 48px)}
   button:active,.opt:active,.cut:active{transform:scale(.97);transition:transform .08s}
 }
+/* 홈 (시안 4): 머리말 아래 구분선 · 오늘 쓸 수 있는 금액 · 오늘의 실천 항목 궤도 */
+.shead:has(> .home-top){box-shadow:inset 0 -1px 0 var(--g3)}
+.ib.line{background:var(--paper);box-shadow:inset 0 0 0 1px var(--g3)}
+.h-hero{margin-top:24px}
+.h-hero .h-lb{font-size:16px;color:var(--g4);line-height:1.45}
+.h-hero .h-sb{font-size:12px;color:var(--g4);margin-top:2px}
+.h-hero .rw{display:flex;align-items:center;gap:12px;margin-top:12px}
+.dotnum{font-family:"Bitcount Grid Single",var(--f-num);font-variation-settings:"ELSH" 100;font-weight:400;font-size:40px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.h-hero .hl{flex:1;height:1px;background:var(--g4)}
+.orbit{position:relative;height:430px;margin:24px calc(-1 * var(--m)) 0}
+.orbit .deco{position:absolute;border-radius:50%;background:var(--ink);pointer-events:none}
+.pc{position:absolute;width:80px;height:100px;border-radius:10px;display:grid;place-items:center;padding:8px;text-align:center;font-size:14px;font-weight:400;line-height:1.35;color:var(--ink);transform:rotate(var(--rot));transition:transform .2s cubic-bezier(.2,.8,.2,1)}
+.pc:active{transform:rotate(var(--rot)) scale(.95)}
+/* 완료 */
+.pc.done{background:#181818;color:#fff;box-shadow:0 1px 12px rgba(104,160,234,.54)}
+/* 아직 못한 것 (알지만 실천 못함) */
+.pc.todo{background:radial-gradient(ellipse 50% 50% at 50% 50%,#FAFAFA 60%,#EFF3FF 100%);border:.5px solid rgba(78,132,202,.24)}
+/* 새 항목 */
+.pc.new{background:#FBFBFB;border:.5px solid #000}
+.orbit .oc{position:absolute;left:50%;top:184px;transform:translateX(-50%);width:200px;text-align:center}
+.orbit .oc .logo{display:block;margin:0 auto 10px;width:88px}
+.orbit .oc .ot{font-size:16px;color:var(--g4)}
+.orbit .oc .od{font-size:12px;color:var(--g4);margin-top:4px;line-height:1.5}
+.dot-h{display:flex;align-items:center;gap:8px;font-size:16px;margin-bottom:12px}
+.dot-h::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ink)}
 /* 알기 탭: 상단 입력창 · 개념 원반 · 홈 '?' 알아볼 것 조각 */
 .ask-top{display:flex;align-items:center;gap:8px;height:48px;margin:4px 0 12px;padding:0 6px 0 18px;border-radius:999px;background:var(--paper);box-shadow:inset 0 0 0 1px var(--g3)}
 .ask-top input{flex:1;min-width:0;border:0;background:transparent;font-size:14px;outline:0}
@@ -1332,14 +1358,62 @@ const TASKS = {
           { t:'받은 혜택 비상금으로 옮기기', go:'data-act="tab" data-tab="benefit"', done:() => S.benefitMoved },
           { t:'실제로 받는 이자 알아보기', go:'data-act="sheet" data-sheet="compare"', done:() => S.seen.has('sheet-compare') } ],
 };
-function focusStrip() {
+function focusStrip(noLabel) {
   const o = areaOrder(), f = o[0], tasks = TASKS[f], n = tasks.filter(t => t.done()).length;
   const head = `<div class="fs-head">
-    <span class="fs-txt"><span class="t10 mute">지금 집중할 영역</span><span class="t14">${areaName(f)}</span></span>
+    <span class="fs-txt">${noLabel ? '' : '<span class="t10 mute">지금 집중할 영역</span>'}<span class="t14">${areaName(f)}</span></span>
     <span class="fs-steps" aria-hidden="true">${o.map((id, i) => `<span class="fs-step ${i ? '' : 'on'}"><b>${i + 1}</b><span>${{ spend:'지출', save:'저축', tax:'혜택' }[id]}</span></span>`).join('<i></i>')}</span>
     </div>`;
   return `<div class="card c-paper focus-strip">${head}
     ${S.linked && n === 3 ? `<p class="row g8 t12 mute mt12" style="align-items:flex-start"><span style="flex:none;margin-top:1px">${ic('check', 14)}</span><span>첫 주 할 일을 모두 마쳤어요. 익숙해지면 다음 단계 ‘${areaName(o[1])}’로 넓혀 봐요.</span></p>` : ''}</div>`;
+}
+// 홈 궤도: 유형별 오늘의 실천 항목 7개 (첫 주 할 일 · 행동 추천 · 챌린지) + 새 항목. [제목, 완료 여부, 누르면 하는 일]
+const PRACTICE = {
+  cog: { d:'아는 만큼 바로 움직이도록<br>누르면 끝나는 것만 골랐어요', items:[
+    ['쓴 돈 확인', () => S.seen.has('spend-list'), 'data-act="tab" data-tab="spend" data-sv="list"'],
+    ['외주비 나누기', () => S.allocDone, 'data-act="sheet" data-sheet="alloc"'],
+    ['줄이기 제안 담기', () => S.applied.size > 0 || !!S.cutApplied, 'data-act="tab" data-tab="spend" data-sv="budget"'],
+    ['배달 한도 알림', () => S.autoOn.has('dlv'), 'data-act="autoOn" data-v="dlv"'],
+    ['무지출 데이', () => S.chalCert.has('zero'), 'data-act="chalCert" data-v="zero"'],
+    ['영수증 출력', () => S.printed.size > 0, 'data-act="tab" data-tab="spend" data-sv="analysis"'],
+    ['구독 정리', () => S.fixedSet, 'data-act="tab" data-tab="plan" data-pv="rule"'] ] },
+  low: { d:'1분이면 끝나는<br>작은 것부터 골랐어요', items:[
+    ['매달 나가는 돈', () => S.fixedSet, 'data-act="tab" data-tab="plan" data-pv="rule"'],
+    ['예산 알림 켜기', () => S.autoOn.has('b80'), 'data-act="autoOn" data-v="b80"'],
+    ['쓴 돈 확인', () => S.seen.has('spend-list'), 'data-act="tab" data-tab="spend" data-sv="list"'],
+    ['한 입 금융', () => S.bitesDone.size > 0, 'data-act="tab" data-tab="learn" data-lv="bite"'],
+    ['무지출 데이', () => S.chalCert.has('zero'), 'data-act="chalCert" data-v="zero"'],
+    ['줄이기 제안 담기', () => S.applied.size > 0 || !!S.cutApplied, 'data-act="tab" data-tab="spend" data-sv="budget"'],
+    ['영수증 출력', () => S.printed.size > 0, 'data-act="tab" data-tab="spend" data-sv="analysis"'] ] },
+  habit: { d:'지금 습관 위에<br>더 나은 선택을 더했어요', items:[
+    ['적금 금리 비교', () => S.seen.has('sheet-compare'), 'data-act="sheet" data-sheet="compare"'],
+    ['계좌 용도 확인', () => S.seen.has('plan-bank'), 'data-act="tab" data-tab="plan" data-pv="bank"'],
+    ['카드 실적 확인', () => S.seen.has('benefit-'), 'data-act="tab" data-tab="benefit"'],
+    ['목표 단계 보기', () => S.seen.has('plan-goal'), 'data-act="tab" data-tab="plan" data-pv="goal"'],
+    ['텀블러 인증', () => S.chalCert.has('cafe'), 'data-act="chalCert" data-v="cafe"'],
+    ['외주비 나누기', () => S.allocDone, 'data-act="sheet" data-sheet="alloc"'],
+    ['무지출 데이', () => S.chalCert.has('zero'), 'data-act="chalCert" data-v="zero"'] ] },
+  self: { d:'다음 영역으로<br>넓히는 것들을 골랐어요', items:[
+    ['혜택 확인', () => S.seen.has('benefit-'), 'data-act="tab" data-tab="benefit"'],
+    ['매주 투자 시작', () => false, 'data-act="tab" data-tab="plan" data-pv="bank"'],
+    ['청년도약계좌', () => false, 'data-act="tab" data-tab="benefit"'],
+    ['환급금 비상금으로', () => S.benefitMoved, 'data-act="tab" data-tab="benefit"'],
+    ['포인트 모으기', () => S.pointsMoved, 'data-act="tab" data-tab="benefit"'],
+    ['이자 알아보기', () => S.seen.has('sheet-compare'), 'data-act="sheet" data-sheet="compare"'],
+    ['무지출 데이', () => S.chalCert.has('zero'), 'data-act="chalCert" data-v="zero"'] ] },
+};
+// 궤도 자리 (393 화면 기준, 카드 80 × 100) · 기울기 ±5°
+const ORBIT = [[60,58,-5],[157,20,5],[253,58,-5],[20,170,5],[293,170,5],[157,320,-5],[253,286,-5]], ORBIT_NEW = [60,286,-5];
+function orbit() {
+  const P = PRACTICE[S.persona], items = P.items.map(([t, done, act]) => [t, done(), act]);
+  const n = items.filter(i => i[1]).length;
+  return `<section class="orbit" aria-label="오늘의 실천 항목 ${items.length}개 중 ${n}개 완료">
+    ${[[268,6,20],[344,100,8],[12,138,20],[228,300,8],[290,398,20]].map(([x, y, r]) => `<span class="deco" style="left:${x}px;top:${y}px;width:${r}px;height:${r}px" aria-hidden="true"></span>`).join('')}
+    ${items.map(([t, done, act], k) => { const [x, y, r] = ORBIT[k];
+      return `<button class="pc ${done ? 'done' : 'todo'}" style="left:${x}px;top:${y}px;--rot:${r}deg" ${act} aria-label="${t}${done ? ' · 완료' : ''}">${t}</button>`; }).join('')}
+    <button class="pc new" style="left:${ORBIT_NEW[0]}px;top:${ORBIT_NEW[1]}px;--rot:${ORBIT_NEW[2]}deg" data-act="tab" data-tab="plan" data-pv="goal" aria-label="새 실천 항목 추가">새 항목</button>
+    <div class="oc"><span class="logo" role="img" aria-label="Fin.do"></span><div class="ot">오늘의 실천 항목 <span class="num">${n}/${items.length}</span></div><div class="od">${P.d}</div></div>
+  </section>`;
 }
 // 오늘의 실천 항목: 첫 주 할 일 + 유형별 행동 추천 + 참여 중인 챌린지 인증을 한곳에
 function practiceBlock() {
@@ -1484,22 +1558,23 @@ function projCard() {
 }
 function vHome() {
   const d = D();
-  return `<header class="top">
-      <div style="display:grid;gap:2px;line-height:1.3"><span class="t12" style="color:var(--g4)">Hello, 지혜</span><span class="t14">10월 ${S.day}일 ${'일월화수목금토'[(S.day + 3) % 7]}요일</span></div>
+  return `<header class="top home-top">
+      <div style="display:grid;gap:2px;line-height:1.3"><span class="t14" style="color:var(--g4)">Hello, 지혜</span><span class="t18">10월 ${S.day}일 ${'일월화수목금토'[(S.day + 3) % 7]}요일</span></div>
       <div class="row g8">
-        <button class="ib glass" data-act="sheet" data-sheet="noti" aria-label="알림 3건">${ic('bell', 20)}<span class="dot"></span></button>
-        <button class="ib glass" data-act="sheet" data-sheet="menu" aria-label="메뉴">${ic('menu', 20)}</button>
+        <button class="ib line" data-act="sheet" data-sheet="noti" aria-label="알림 3건">${ic('bell', 20)}<span class="dot"></span></button>
+        <button class="ib line" data-act="sheet" data-sheet="menu" aria-label="메뉴">${ic('menu', 20)}</button>
       </div>
     </header>
     ${S.settled || S.tuck || S.holdSettle ? '' : `<button class="urgent" data-act="sheet" data-sheet="settle"><span class="u-dot"></span><span class="t14 grow">정산할 더치페이 2건</span><span class="t14 num">36,000원</span><span class="btn sm" style="height:36px">정산</span></button>`}
-    <section class="hero">
-      <div class="t14 mute">✦ 오늘 쓸 수 있는 돈 ✦</div>
-      <div class="hero-n"><span class="n56 num">${won(d.daily)}</span><span class="n24">₩</span></div>
-      <div class="t12 mute">10월 남은 예산 ${W(d.remain)} · ${d.left}일</div>
+    <section class="h-hero" aria-label="오늘 쓸 수 있는 금액 ${W(d.daily)}">
+      <div class="h-lb">오늘 쓸 수 있는 금액</div>
+      <div class="h-sb num">10월 남은 예산 ${W(d.remain)} / ${d.left}일</div>
+      <div class="rw"><span class="dotnum">${won(d.daily)}</span><span class="hl" aria-hidden="true"></span><button class="ib ink" data-act="tab" data-tab="spend" data-sv="budget" aria-label="예산 자세히 보기">${ic('ur', 20)}</button></div>
     </section>
-    ${practiceBlock()}
-    ${knowBit()}
-    <section class="sec">${focusStrip()}</section>`;
+    ${orbit()}
+    <section class="sec"><div class="dot-h">지금 집중할 영역</div>${focusStrip(true)}</section>
+    <section class="sec"><div class="dot-h">행동 추천</div>${nextCard()}</section>
+    ${knowBit()}`;
 }
 
 /* =========================================================
