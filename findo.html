@@ -660,6 +660,9 @@ button.ph-tag{color:var(--mute)}
 /* 목표 만들기 슬라이더: 채워진 만큼 네이비, 나머지 연회색 */
 .g-row{display:flex;justify-content:space-between;align-items:baseline}
 .g-val{display:flex;align-items:baseline;gap:4px}
+.g-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * var(--m));padding:0 var(--m)}
+.g-chips::-webkit-scrollbar{display:none}
+.g-chips .chip{flex:none}
 .rng{-webkit-appearance:none;appearance:none;width:100%;height:32px;margin:8px 0 4px;background:transparent;cursor:pointer}
 .rng::-webkit-slider-runnable-track{height:6px;border-radius:999px;background:linear-gradient(90deg,var(--navy) var(--p),#E6E6E6 var(--p))}
 .rng::-moz-range-track{height:6px;border-radius:999px;background:linear-gradient(90deg,var(--navy) var(--p),#E6E6E6 var(--p))}
@@ -2381,7 +2384,7 @@ function sheetHTML(name) {
       return head('목표 만들기', '유형·금액·기간') + `<div class="t12 mute mt24">유형</div><div class="row g8 mt8" style="flex-wrap:wrap">${['전세 자금','독립','여행','비상금','직접 입력'].map(t => `<button class="chip ${g.type === t ? 'on' : ''}" data-act="gType" data-v="${t}">${t}</button>`).join('')}</div>
       <div class="g-row mt24"><span class="t12 mute">금액</span><span class="g-val"><span class="n24" id="gAmtV">${won(g.amt)}</span><span class="cur t12">₩</span></span></div>
       <input type="range" class="rng" id="gAmtR" min="${G_AMT[0]}" max="${G_AMT[1]}" step="${G_AMT[2]}" value="${g.amt}" style="--p:${gPct(g.amt, G_AMT)}%" aria-label="목표 금액">
-      <div class="row g8 mt8" style="flex-wrap:wrap">${[3000000,10000000,30000000].map(v => `<button class="chip ${g.amt === v ? 'on' : ''}" data-act="gAmt" data-v="${v}">${man(v)} 원</button>`).join('')}</div>
+      <div class="g-chips mt8">${[1000000,3000000,10000000,20000000,30000000].map(v => `<button class="chip ${g.amt === v ? 'on' : ''}" data-act="gAmt" data-v="${v}">${man(v)} 원</button>`).join('')}</div>
       <div class="g-row mt24"><span class="t12 mute">기간</span><span class="g-val"><span class="n24" id="gMonV">${g.months}</span><span class="t14">개월</span><span class="t12 mute" id="gMonY">${gYears(g.months)}</span></span></div>
       <input type="range" class="rng" id="gMonR" min="${G_MON[0]}" max="${G_MON[1]}" step="1" value="${g.months}" style="--p:${gPct(g.months, G_MON)}%" aria-label="목표 기간(개월)">
       <div class="row g8 mt8" style="flex-wrap:wrap">${[[6,'6개월'],[12,'1년'],[24,'2년'],[36,'3년']].map(([v, n]) => `<button class="chip ${g.months === v ? 'on' : ''}" data-act="gMon" data-v="${v}">${n}</button>`).join('')}</div>
