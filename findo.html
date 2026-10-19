@@ -2577,6 +2577,8 @@ function render(keepScroll = true) {
   if (tr && S.naIdx) { const x = S.naIdx * (tr.firstElementChild.offsetWidth + 12);
     if (S.naSlide) { S.naSlide = false; setTimeout(() => tr.scrollTo({ left:x, behavior:'smooth' }), 350); } else tr.scrollLeft = x; }
   if (homeEnter) { popOut(); tuckSoon(); }
+  // 홈으로 돌아오면 항상 처음 위치(맨 위)에서 시작: 남아 있는 관성 스크롤까지 멈추고 다시 맞춘다
+  if (key === 'tabhome' && key !== lastKey) { view.style.overflowY = 'hidden'; view.scrollTop = 0; requestAnimationFrame(() => { view.style.overflowY = ''; view.scrollTop = 0; }); }
   // 알기 › 한입 금융: 목록이 개념마다 탁탁 걸리도록 스크롤 스냅 (고정 영역 아래 16px에 맞춤)
   const snap = S.mode === 'app' && !S.sub && S.tab === 'learn' && S.learnView === 'bite';
   view.classList.toggle('snap', snap);
@@ -2718,7 +2720,10 @@ document.addEventListener('click', e => {
     case 'resSetup': S.persona = scores().persona; S.mode = 'app'; S.tab = 'plan'; S.planView = 'rule'; render(false); break;
     case 'rediag': closeSheet(); S.sub = null; S.mode = 'onboard'; S.ob = 1; S.q = 0; render(false); break;
     case 'explore': { const a = viewArea(); a && S.explored.add(a); if (el.dataset.sv) S.spendView = el.dataset.sv; if (el.dataset.pv) S.planView = el.dataset.pv; render(false); break; }
-    case 'tab': closeSheet(); S.mode = 'app'; S.sub = null; S.tab = el.dataset.tab; if (!el.classList.contains('tab')) { const a = viewArea(); a && S.explored.add(a); } if (el.dataset.pv) S.planView = el.dataset.pv; if (el.dataset.sv) S.spendView = el.dataset.sv; if (el.dataset.lv) S.learnView = el.dataset.lv; render(false); break;
+    case 'tab':
+      // 하단 탭바에서 지금 있는 탭을 한 번 더 누르면 그 탭의 맨 위로
+      if (el.classList.contains('tab') && S.mode === 'app' && !S.sub && S.tab === el.dataset.tab) { closeSheet(); view.scrollTo({ top:0, behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); break; }
+      closeSheet(); S.mode = 'app'; S.sub = null; S.tab = el.dataset.tab; if (!el.classList.contains('tab')) { const a = viewArea(); a && S.explored.add(a); } if (el.dataset.pv) S.planView = el.dataset.pv; if (el.dataset.sv) S.spendView = el.dataset.sv; if (el.dataset.lv) S.learnView = el.dataset.lv; render(false); break;
     case 'pv': subTap(v); break;
     case 'lv': subTap(v); break;
     case 'pgo': { const d = el.dataset; closeSheet(); S.mode = 'app'; S.sub = null; S.tab = d.tab;
