@@ -2058,7 +2058,7 @@ function vPlan(pvOver, noHead) {
     <div class="card c-sky">
       <div class="row between"><span class="t14">10.08 외주비</span><span class="n24">320,000<span class="cur t12">₩</span></span></div>
       <div class="row g8 mt16">${[['bal','균형'],['save','저축 우선'],['free','쓰기 우선']].map(([k, n]) => `<button class="chip ${S.alloc === k ? 'on' : ''}" data-act="alloc" data-v="${k}"><span>${n}</span></button>`).join('')}</div>
-      <div class="mt16" style="color:var(--paper)">${allocBlock()}</div>
+      <div class="mt16" style="color:var(--ink)">${allocBlock()}</div>
       ${S.allocDone ? `<div class="row g8 mt16 t14">${ic('check', 18)} 나눠서 옮겼어요</div>` : `<button class="btn full mt16" data-act="allocDo">이대로 나누기</button>`}
     </div>
   </section>`;
