@@ -1,0 +1,140 @@
+<title>Fin.do 레이아웃 가이드</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500&family=Urbanist:wght@300;400&display=swap">
+<style>
+  /* 레이아웃: 왼쪽 393 × 852 그리드 도면, 오른쪽 수치 표. 좁은 화면에서는 한 줄로 쌓는다 */
+  :root {
+    --bg: #F4F4F2; --panel: #FCFCFC; --ink: #181818; --mute: #6B6B6B; --line: #DEDEDE;
+    --col: rgba(255, 118, 156, .12); --col-edge: rgba(255, 118, 156, .5); --mark: #FF4F87;
+    --f-kr: "Pretendard Variable", Pretendard, "Noto Sans KR", -apple-system, "Apple SD Gothic Neo", sans-serif;
+    --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    --f-num: "Urbanist", "Noto Sans KR", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #141414; --panel: #1E1E1E; --ink: #F2F2F2; --mute: #A0A0A0; --line: #343434;
+    --col: rgba(255, 118, 156, .16); --col-edge: rgba(255, 118, 156, .6); --mark: #FF7EA6; color-scheme: dark } }
+  :root[data-theme="dark"] {
+    --bg: #141414; --panel: #1E1E1E; --ink: #F2F2F2; --mute: #A0A0A0; --line: #343434;
+    --col: rgba(255, 118, 156, .16); --col-edge: rgba(255, 118, 156, .6); --mark: #FF7EA6; color-scheme: dark }
+
+  body { background: var(--bg); color: var(--ink); font-family: var(--f-kr); }
+  .wrap { max-width: 960px; margin: 0 auto; padding-block: 48px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  h1 { font-size: 28px; font-weight: 500; letter-spacing: -.01em; margin: 0; }
+  .lead { color: var(--mute); font-size: 14px; line-height: 1.6; margin: 8px 0 0; }
+  .spec { font-family: var(--f-mono); font-size: 13px; line-height: 1.8; color: var(--mute); margin: 16px 0 0; }
+
+  .grid { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 40px; margin-top: 40px; align-items: start; }
+  @media (max-width: 720px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+
+  figure { margin: 0; }
+  .frame { width: 100%; max-width: 300px; height: auto; display: block; }
+  figcaption { font-size: 12px; color: var(--mute); margin-top: 12px; line-height: 1.5; }
+
+  section { background: var(--panel); border-radius: 20px; padding: 24px 20px; box-shadow: inset 0 0 0 .5px var(--line); }
+  section + section { margin-top: 12px; }
+  h2 { font-family: var(--f-mono); font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin: 0 0 16px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  td { padding: 8px 0; border-top: .5px solid var(--line); vertical-align: middle; }
+  tr:first-child td { border-top: 0; }
+  td.v { text-align: right; font-family: var(--f-mono); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .steps { display: grid; gap: 8px; }
+  .step { display: grid; grid-template-columns: 28px 1fr; gap: 12px; align-items: center; font-family: var(--f-mono); font-size: 13px; }
+  .step i { display: block; height: 10px; border-radius: 2px; background: var(--mark); }
+
+  .type { display: grid; gap: 10px; }
+  .type div { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+  .type b { font-family: var(--f-mono); font-size: 12px; font-weight: 400; color: var(--mute); width: 28px; flex: none; }
+  .type .num { font-family: var(--f-num); font-weight: 300; line-height: 1; }
+  .type .kr { font-weight: 500; line-height: 1.3; }
+  .type span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .note { font-size: 12px; color: var(--mute); margin: 12px 0 0; line-height: 1.5; }
+
+  .shapes { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
+  .shapes div { display: grid; gap: 8px; justify-items: center; font-family: var(--f-mono); font-size: 12px; color: var(--mute); }
+  .sh-card { width: 96px; height: 64px; border-radius: 20px; box-shadow: inset 0 0 0 1px var(--ink); }
+  .sh-pill { width: 96px; height: 36px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--ink); }
+  .sh-icon { width: 36px; height: 36px; display: grid; place-items: center; }
+</style>
+
+<main class="wrap">
+  <h1>Fin.do 레이아웃 가이드</h1>
+  <p class="lead">프로토타입 화면(393 × 852)을 만들 때 쓰는 그리드, 간격, 글자 크기, 모양 규칙이에요.</p>
+  <p class="spec">393 × 852 · 4 col · margin 20 · gutter 12<br>spacing 4 / 8 / 12 / 16 / 24 / 32 / 40<br>type 56 · 32 · 24 / 18 · 16 · 14 · 12 · 10<br>card r20 · pill r999 · icon 1.5px</p>
+
+  <div class="grid">
+    <figure>
+      <svg class="frame" viewBox="-4 -4 401 860" role="img" aria-label="393 × 852 화면에 4단 그리드: 바깥 여백 20, 칸 사이 12, 칸 너비 약 79">
+        <rect x="0" y="0" width="393" height="852" rx="48" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+        <g fill="var(--col)" stroke="var(--col-edge)" stroke-width="1">
+          <rect x="20" y="0" width="79.25" height="852"/>
+          <rect x="111.25" y="0" width="79.25" height="852"/>
+          <rect x="202.5" y="0" width="79.25" height="852"/>
+          <rect x="293.75" y="0" width="79.25" height="852"/>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="15" fill="var(--ink)" text-anchor="middle">
+          <line x1="0" y1="300" x2="20" y2="300" stroke="var(--mark)" stroke-width="2"/>
+          <text x="40" y="290" text-anchor="start">20</text>
+          <line x1="99.25" y1="420" x2="111.25" y2="420" stroke="var(--mark)" stroke-width="2"/>
+          <text x="105" y="410">12</text>
+          <line x1="20" y1="520" x2="99.25" y2="520" stroke="var(--mark)" stroke-width="2"/>
+          <text x="59.6" y="510">79.25</text>
+          <text x="196.5" y="60">393</text>
+        </g>
+      </svg>
+      <figcaption>칸 너비 = (393 − 20 × 2 − 12 × 3) ÷ 4 = 79.25. 콘텐츠 폭은 353이에요.</figcaption>
+    </figure>
+
+    <div>
+      <section>
+        <h2>Grid</h2>
+        <table>
+          <tr><td>화면</td><td class="v">393 × 852</td></tr>
+          <tr><td>칸 수</td><td class="v">4 col</td></tr>
+          <tr><td>바깥 여백</td><td class="v">margin 20</td></tr>
+          <tr><td>칸 사이</td><td class="v">gutter 12</td></tr>
+          <tr><td>콘텐츠 폭</td><td class="v">353</td></tr>
+        </table>
+      </section>
+
+      <section>
+        <h2>Spacing</h2>
+        <div class="steps">
+          <div class="step"><span>4</span><i style="width:4px"></i></div>
+          <div class="step"><span>8</span><i style="width:8px"></i></div>
+          <div class="step"><span>12</span><i style="width:12px"></i></div>
+          <div class="step"><span>16</span><i style="width:16px"></i></div>
+          <div class="step"><span>24</span><i style="width:24px"></i></div>
+          <div class="step"><span>32</span><i style="width:32px"></i></div>
+          <div class="step"><span>40</span><i style="width:40px"></i></div>
+        </div>
+        <p class="note">묶음 안 8 · 카드 사이 12 · 카드 안쪽 위아래 24 / 좌우 20 · 섹션 사이 40</p>
+      </section>
+
+      <section>
+        <h2>Type</h2>
+        <div class="type">
+          <div><b>56</b><span class="num" style="font-size:56px">26,500</span></div>
+          <div><b>32</b><span class="num" style="font-size:32px">800,000</span></div>
+          <div><b>24</b><span class="num" style="font-size:24px">12,400,000</span></div>
+          <div><b>18</b><span class="kr" style="font-size:18px">섹션 제목</span></div>
+          <div><b>16</b><span class="kr" style="font-size:16px">카드 제목</span></div>
+          <div><b>14</b><span class="kr" style="font-size:14px">본문과 카드 설명</span></div>
+          <div><b>12</b><span class="kr" style="font-size:12px">보조 설명</span></div>
+          <div><b>10</b><span class="kr" style="font-size:10px">라벨과 범례</span></div>
+        </div>
+        <p class="note">숫자 56 · 32 · 24, 한글 18 · 16 · 14 · 12 · 10. 한글 줄 높이 1.45, 숫자 줄 높이 1.</p>
+      </section>
+
+      <section>
+        <h2>Shape</h2>
+        <div class="shapes">
+          <div><span class="sh-card"></span>card r20</div>
+          <div><span class="sh-pill"></span>pill r999</div>
+          <div><span class="sh-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 19v-6.733a4 4 0 0 0-1.245-2.9L13.378 3.31a2 2 0 0 0-2.755 0L4.245 9.367A4 4 0 0 0 3 12.267V19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2"/><path d="M9 15a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6H9z"/></svg></span>icon 1.5px</div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
