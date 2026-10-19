@@ -618,6 +618,15 @@ button.ph-tag{color:var(--mute)}
 .pc.done{background:#181818;color:#fff;box-shadow:0 1px 12px rgba(104,160,234,.54)}
 /* 아직 못한 것 (알지만 실천 못함) */
 .pc.todo{background:radial-gradient(ellipse 50% 50% at 50% 50%,#FAFAFA 60%,#EFF3FF 100%);border:.5px solid rgba(78,132,202,.24)}
+/* 홈으로 돌아왔을 때 새로 완료된 카드: 살짝 흔들기 */
+.pc.wiggle{animation:pcWiggle .9s ease-in-out .35s}
+@keyframes pcWiggle{
+  0%,100%{transform:rotate(var(--rot))}
+  20%{transform:rotate(calc(var(--rot) - 7deg)) scale(1.06)}
+  40%{transform:rotate(calc(var(--rot) + 6deg)) scale(1.06)}
+  60%{transform:rotate(calc(var(--rot) - 4deg)) scale(1.03)}
+  80%{transform:rotate(calc(var(--rot) + 2deg))}}
+@media (prefers-reduced-motion:reduce){.pc.wiggle{animation:none}}
 /* 새 항목 */
 .pc.new{background:#FBFBFB;border:.5px solid #000}
 .orbit .oc{position:absolute;left:50%;top:183px;transform:translateX(-50%);width:168px;text-align:center}
@@ -1479,10 +1488,14 @@ const pos = (x, y, r) => `left:${(x + OX).toFixed(2)}px;top:${(y - OY).toFixed(2
 function orbit() {
   const P = PRACTICE[S.persona], items = P.items.map(([t, done, act]) => [t, done(), act]);
   const n = items.filter(i => i[1]).length;
+  // 홈에서 처음 보는 완료 카드는 살짝 흔든다 (유형별로 처음 그릴 때 이미 완료된 것은 제외)
+  const seen = S.pShown || (S.pShown = {}), first = !seen[S.persona], shown = seen[S.persona] || (seen[S.persona] = new Set());
+  const wig = new Set(items.filter(([t, d]) => d && !shown.has(t) && !first).map(i => i[0]));
+  items.forEach(([t, d]) => d && shown.add(t));
   return `<div class="orbit-wrap"><section class="orbit" aria-label="오늘의 실천 항목 ${items.length}개 중 ${n}개 완료">
     ${[[20,315,10],[274,180,10],[240,473,4],[352,275,4],[305,577,10]].map(([x, y, r]) => `<span class="deco" style="left:${(x + OX).toFixed(1)}px;top:${y - OY}px;width:${r}px;height:${r}px" aria-hidden="true"></span>`).join('')}
     ${items.map(([t, done, act], k) => { const [x, y, r] = ORBIT[k];
-      return `<button class="pc ${done ? 'done' : 'todo'}" style="${pos(x, y, r)}" ${act} aria-label="${t}${done ? ' · 완료' : ''}">${t}</button>`; }).join('')}
+      return `<button class="pc ${done ? 'done' : 'todo'}${wig.has(t) ? ' wiggle' : ''}" style="${pos(x, y, r)}" ${act} aria-label="${t}${done ? ' · 완료' : ''}">${t}</button>`; }).join('')}
     <button class="pc new" style="${pos(...ORBIT_NEW)}" ${PG('plan', 'data-pv="goal"', '.ch-more', '함께 할 챌린지를 골라 ‘참여’를 눌러 주세요', 'data-chal="1"')} aria-label="새 실천 항목 추가">새 항목</button>
     <div class="oc"><div class="ow" aria-label="Fin.do">FIN.Do</div><div class="ot">오늘의 실천 항목</div><div class="od">${P.d}</div></div>
   </section></div>`;
