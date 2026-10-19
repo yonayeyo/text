@@ -1,0 +1,138 @@
+/* =========================================================
+   Fin.do Design Tokens v0.1
+   기준 캔버스 402 x 874 (iPhone 16 Pro, 1x) · 4px 그리드 · 모노톤
+   스펙 문서: docs/design-system.md
+   ========================================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=Bitcount+Grid+Single:ELSH,wght@0..100,100..900&display=swap");
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+
+:root {
+  /* ---------- Color · Gray scale (중립 회색, 채도 0) ---------- */
+  --gray-0:    #FFFFFF;
+  --gray-50:   #FAFAFA;
+  --gray-100:  #F2F2F2;
+  --gray-150:  #EBEBEB;
+  --gray-200:  #E0E0E0;
+  --gray-300:  #D6D6D6;
+  --gray-400:  #B8B8B8;
+  --gray-500:  #8F8F8F;
+  --gray-600:  #6B6B6B;
+  --gray-700:  #4A4A4A;
+  --gray-800:  #2B2B2B;
+  --gray-900:  #1C1C1C;
+  --gray-950:  #111111;
+  --gray-1000: #000000;
+
+  /* ---------- Color · Semantic ---------- */
+  --bg:               var(--gray-0);
+  --surface:          var(--gray-100);   /* 입력창, 리스트 썸네일 */
+  --surface-strong:   var(--gray-300);   /* 플레이스홀더 원반 */
+  --line:             var(--gray-150);   /* 1px 구분선, 카드 테두리 */
+  --line-strong:      var(--gray-300);
+  --text-primary:     var(--gray-950);
+  --text-secondary:   var(--gray-600);
+  --text-tertiary:    var(--gray-500);
+  --text-disabled:    var(--gray-400);
+  --inverse-bg:       var(--gray-900);   /* 탭바, 어두운 카드 */
+  --inverse-text:     var(--gray-0);
+  --ink:              var(--gray-1000);  /* 로고, 장식 점, 액션 버튼 */
+
+  /* 모노톤 예외 (사용처 고정) */
+  --signal:           #FF3EA5;           /* 읽지 않은 알림 점 8px 전용 */
+  --frost-from:       #FFFFFF;           /* 실천 카드(라이트) 안쪽 */
+  --frost-to:         #EEF1F8;           /* 실천 카드(라이트) 가장자리 */
+  --frost-line:       #DCE2F0;
+  --frost-glow:       rgba(120, 140, 220, .22);
+
+  /* ---------- Typography ---------- */
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --font-dot:  "Bitcount Grid Single", var(--font-sans);
+
+  /* Pretendard: 10 / 12 / 14 / 16 / 18 만 사용 */
+  --fs-10: 10px;  --lh-10: 14px;
+  --fs-12: 12px;  --lh-12: 16px;
+  --fs-14: 14px;  --lh-14: 20px;
+  --fs-16: 16px;  --lh-16: 24px;
+  --fs-18: 18px;  --lh-18: 26px;
+
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semibold:600;
+
+  /* Bitcount Grid Single: 로고·숫자 포인트 */
+  --dot-16: 16px;   /* 영문 보조 라벨, 작은 숫자 */
+  --dot-24: 24px;   /* 개념 카운터, 카드 안 숫자 */
+  --dot-40: 40px;   /* 히어로 금액 */
+  --dot-shape: "ELSH" 100;  /* 100 = 둥근 점 (로고와 동일) */
+
+  /* ---------- Spacing (4px 그리드) ---------- */
+  --sp-2:  2px;
+  --sp-4:  4px;
+  --sp-8:  8px;
+  --sp-12: 12px;
+  --sp-16: 16px;
+  --sp-20: 20px;   /* 화면 좌우 여백 */
+  --sp-24: 24px;
+  --sp-32: 32px;
+  --sp-40: 40px;
+  --sp-48: 48px;
+  --sp-64: 64px;
+
+  /* ---------- Radius ---------- */
+  --r-4:  4px;
+  --r-8:  8px;
+  --r-12: 12px;   /* 실천 카드 */
+  --r-20: 20px;   /* 섹션 카드 */
+  --r-32: 32px;   /* 선택된 개념 썸네일 */
+  --r-full: 999px;
+
+  /* ---------- Size ---------- */
+  --screen-w: 402px;
+  --screen-h: 874px;
+  --gutter: 20px;          /* 좌우 여백 */
+  --status-h: 54px;
+  --header-h: 56px;
+  --icon-16: 16px;
+  --icon-20: 20px;
+  --icon-24: 24px;
+  --btn-40: 40px;          /* 원형 아이콘 버튼, 액션 버튼 */
+  --input-h: 48px;
+  --tabbar-h: 64px;
+  --tabbar-inset: 20px;    /* 탭바 좌우·하단 띄움 */
+  --tab-active-w: 72px;
+  --tab-active-h: 48px;
+  --task-card-w: 84px;
+  --task-card-h: 108px;
+  --thumb-100: 100px;      /* 개념 원반 */
+  --thumb-140: 140px;      /* 선택된 개념 */
+
+  /* ---------- Border ---------- */
+  --bw-1: 1px;
+
+  /* ---------- Elevation ---------- */
+  --shadow-card:  0 4px 16px rgba(0, 0, 0, .08);
+  --shadow-dark:  0 8px 20px rgba(0, 0, 0, .18);
+  --shadow-frost: 0 0 12px var(--frost-glow);
+  --shadow-float: 0 8px 24px rgba(0, 0, 0, .24);
+
+  /* ---------- Motion ---------- */
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 320ms;
+  --ease-out: cubic-bezier(.2, .7, .2, 1);
+}
+
+/* ---------- Text styles (클래스) ---------- */
+.t-10 { font: var(--fw-regular) var(--fs-10)/var(--lh-10) var(--font-sans); }
+.t-12 { font: var(--fw-regular) var(--fs-12)/var(--lh-12) var(--font-sans); }
+.t-14 { font: var(--fw-regular) var(--fs-14)/var(--lh-14) var(--font-sans); }
+.t-16 { font: var(--fw-regular) var(--fs-16)/var(--lh-16) var(--font-sans); }
+.t-18 { font: var(--fw-regular) var(--fs-18)/var(--lh-18) var(--font-sans); }
+.t-medium   { font-weight: var(--fw-medium); }
+.t-semibold { font-weight: var(--fw-semibold); }
+
+.dot   { font-family: var(--font-dot); font-variation-settings: var(--dot-shape); font-weight: 400; line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+.dot-16 { font-size: var(--dot-16); }
+.dot-24 { font-size: var(--dot-24); }
+.dot-40 { font-size: var(--dot-40); }
