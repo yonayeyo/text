@@ -585,7 +585,7 @@ button.ph-tag{color:var(--mute)}
   .screen{--nav-gap:max(12px, calc(env(safe-area-inset-bottom,0px) - 14px))}
   .tabbar{bottom:var(--nav-gap)}
   .ai-dock{bottom:calc(var(--nav-gap) + 76px)}
-  .ai-dock input{font-size:16px}
+  .ai-dock input,.ask-top input{font-size:16px}
   .toast{top:calc(env(safe-area-inset-top,0px) + 8px)}
   .toast.open{width:calc(100% - 24px)}
   .sheet{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 32px)}
@@ -593,6 +593,21 @@ button.ph-tag{color:var(--mute)}
   .res-sheet{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 48px)}
   button:active,.opt:active,.cut:active{transform:scale(.97);transition:transform .08s}
 }
+/* 알기 탭: 상단 입력창 · 개념 원반 · 홈 '?' 알아볼 것 조각 */
+.ask-top{display:flex;align-items:center;gap:8px;height:48px;margin:4px 0 12px;padding:0 6px 0 18px;border-radius:999px;background:var(--paper);box-shadow:inset 0 0 0 1px var(--g3)}
+.ask-top input{flex:1;min-width:0;border:0;background:transparent;font-size:14px;outline:0}
+.ask-top input::placeholder{color:var(--g4)}
+.ask-top .ib{width:36px;height:36px}
+.discs{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * var(--m));padding:0 var(--m)}
+.discs::-webkit-scrollbar{display:none}
+.disc{flex:none;width:72px;display:grid;justify-items:center;align-content:start;gap:8px;text-align:center}
+.disc i{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-style:normal;background:linear-gradient(180deg,var(--g2),var(--g3))}
+.disc.done i{background:var(--ink);color:var(--paper)}
+.disc.unk i{background:var(--paper);border:1.5px dashed var(--rose);color:var(--rose);font-family:var(--f-num);font-size:20px}
+.disc.soon{opacity:.55}
+.disc span{font-size:12px;line-height:1.35}
+.bit-card{width:100%;display:flex;align-items:center;gap:14px;padding:16px 20px;text-align:left}
+.bit-q{width:36px;height:36px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--ink);color:var(--paper);font-family:var(--f-num);font-size:16px}
 /* Fin.do 로고 — 30 × 6 점 그리드 워드마크 (assets/findo-logo.svg를 마스크로 사용) */
 .logo{display:inline-block;max-width:100%;aspect-ratio:5/1;vertical-align:middle;background:currentColor;
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 24' fill='%23000'%3E%3Ccircle cx='2' cy='2' r='1.5'/%3E%3Ccircle cx='2' cy='6' r='1.5'/%3E%3Ccircle cx='2' cy='10' r='1.5'/%3E%3Ccircle cx='2' cy='14' r='1.5'/%3E%3Ccircle cx='2' cy='18' r='1.5'/%3E%3Ccircle cx='2' cy='22' r='1.5'/%3E%3Ccircle cx='6' cy='2' r='1.5'/%3E%3Ccircle cx='6' cy='14' r='1.5'/%3E%3Ccircle cx='10' cy='2' r='1.5'/%3E%3Ccircle cx='10' cy='14' r='1.5'/%3E%3Ccircle cx='14' cy='2' r='1.5'/%3E%3Ccircle cx='14' cy='14' r='1.5'/%3E%3Ccircle cx='18' cy='2' r='1.5'/%3E%3Ccircle cx='26' cy='2' r='1.5'/%3E%3Ccircle cx='26' cy='22' r='1.5'/%3E%3Ccircle cx='30' cy='2' r='1.5'/%3E%3Ccircle cx='30' cy='6' r='1.5'/%3E%3Ccircle cx='30' cy='10' r='1.5'/%3E%3Ccircle cx='30' cy='14' r='1.5'/%3E%3Ccircle cx='30' cy='18' r='1.5'/%3E%3Ccircle cx='30' cy='22' r='1.5'/%3E%3Ccircle cx='34' cy='2' r='1.5'/%3E%3Ccircle cx='34' cy='22' r='1.5'/%3E%3Ccircle cx='42' cy='2' r='1.5'/%3E%3Ccircle cx='42' cy='6' r='1.5'/%3E%3Ccircle cx='42' cy='10' r='1.5'/%3E%3Ccircle cx='42' cy='14' r='1.5'/%3E%3Ccircle cx='42' cy='18' r='1.5'/%3E%3Ccircle cx='42' cy='22' r='1.5'/%3E%3Ccircle cx='46' cy='6' r='1.5'/%3E%3Ccircle cx='50' cy='10' r='1.5'/%3E%3Ccircle cx='54' cy='14' r='1.5'/%3E%3Ccircle cx='58' cy='2' r='1.5'/%3E%3Ccircle cx='58' cy='6' r='1.5'/%3E%3Ccircle cx='58' cy='10' r='1.5'/%3E%3Ccircle cx='58' cy='14' r='1.5'/%3E%3Ccircle cx='58' cy='18' r='1.5'/%3E%3Ccircle cx='58' cy='22' r='1.5'/%3E%3Ccircle cx='66' cy='18' r='1.5'/%3E%3Ccircle cx='66' cy='22' r='1.5'/%3E%3Ccircle cx='70' cy='18' r='1.5'/%3E%3Ccircle cx='70' cy='22' r='1.5'/%3E%3Ccircle cx='82' cy='2' r='1.5'/%3E%3Ccircle cx='82' cy='6' r='1.5'/%3E%3Ccircle cx='82' cy='10' r='1.5'/%3E%3Ccircle cx='82' cy='14' r='1.5'/%3E%3Ccircle cx='82' cy='18' r='1.5'/%3E%3Ccircle cx='82' cy='22' r='1.5'/%3E%3Ccircle cx='86' cy='2' r='1.5'/%3E%3Ccircle cx='86' cy='22' r='1.5'/%3E%3Ccircle cx='90' cy='2' r='1.5'/%3E%3Ccircle cx='90' cy='22' r='1.5'/%3E%3Ccircle cx='94' cy='2' r='1.5'/%3E%3Ccircle cx='94' cy='22' r='1.5'/%3E%3Ccircle cx='98' cy='6' r='1.5'/%3E%3Ccircle cx='98' cy='10' r='1.5'/%3E%3Ccircle cx='98' cy='14' r='1.5'/%3E%3Ccircle cx='98' cy='18' r='1.5'/%3E%3Ccircle cx='102' cy='10' r='1.5'/%3E%3Ccircle cx='102' cy='14' r='1.5'/%3E%3Ccircle cx='102' cy='18' r='1.5'/%3E%3Ccircle cx='106' cy='6' r='1.5'/%3E%3Ccircle cx='106' cy='22' r='1.5'/%3E%3Ccircle cx='110' cy='6' r='1.5'/%3E%3Ccircle cx='110' cy='22' r='1.5'/%3E%3Ccircle cx='114' cy='6' r='1.5'/%3E%3Ccircle cx='114' cy='22' r='1.5'/%3E%3Ccircle cx='118' cy='10' r='1.5'/%3E%3Ccircle cx='118' cy='14' r='1.5'/%3E%3Ccircle cx='118' cy='18' r='1.5'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 24' fill='%23000'%3E%3Ccircle cx='2' cy='2' r='1.5'/%3E%3Ccircle cx='2' cy='6' r='1.5'/%3E%3Ccircle cx='2' cy='10' r='1.5'/%3E%3Ccircle cx='2' cy='14' r='1.5'/%3E%3Ccircle cx='2' cy='18' r='1.5'/%3E%3Ccircle cx='2' cy='22' r='1.5'/%3E%3Ccircle cx='6' cy='2' r='1.5'/%3E%3Ccircle cx='6' cy='14' r='1.5'/%3E%3Ccircle cx='10' cy='2' r='1.5'/%3E%3Ccircle cx='10' cy='14' r='1.5'/%3E%3Ccircle cx='14' cy='2' r='1.5'/%3E%3Ccircle cx='14' cy='14' r='1.5'/%3E%3Ccircle cx='18' cy='2' r='1.5'/%3E%3Ccircle cx='26' cy='2' r='1.5'/%3E%3Ccircle cx='26' cy='22' r='1.5'/%3E%3Ccircle cx='30' cy='2' r='1.5'/%3E%3Ccircle cx='30' cy='6' r='1.5'/%3E%3Ccircle cx='30' cy='10' r='1.5'/%3E%3Ccircle cx='30' cy='14' r='1.5'/%3E%3Ccircle cx='30' cy='18' r='1.5'/%3E%3Ccircle cx='30' cy='22' r='1.5'/%3E%3Ccircle cx='34' cy='2' r='1.5'/%3E%3Ccircle cx='34' cy='22' r='1.5'/%3E%3Ccircle cx='42' cy='2' r='1.5'/%3E%3Ccircle cx='42' cy='6' r='1.5'/%3E%3Ccircle cx='42' cy='10' r='1.5'/%3E%3Ccircle cx='42' cy='14' r='1.5'/%3E%3Ccircle cx='42' cy='18' r='1.5'/%3E%3Ccircle cx='42' cy='22' r='1.5'/%3E%3Ccircle cx='46' cy='6' r='1.5'/%3E%3Ccircle cx='50' cy='10' r='1.5'/%3E%3Ccircle cx='54' cy='14' r='1.5'/%3E%3Ccircle cx='58' cy='2' r='1.5'/%3E%3Ccircle cx='58' cy='6' r='1.5'/%3E%3Ccircle cx='58' cy='10' r='1.5'/%3E%3Ccircle cx='58' cy='14' r='1.5'/%3E%3Ccircle cx='58' cy='18' r='1.5'/%3E%3Ccircle cx='58' cy='22' r='1.5'/%3E%3Ccircle cx='66' cy='18' r='1.5'/%3E%3Ccircle cx='66' cy='22' r='1.5'/%3E%3Ccircle cx='70' cy='18' r='1.5'/%3E%3Ccircle cx='70' cy='22' r='1.5'/%3E%3Ccircle cx='82' cy='2' r='1.5'/%3E%3Ccircle cx='82' cy='6' r='1.5'/%3E%3Ccircle cx='82' cy='10' r='1.5'/%3E%3Ccircle cx='82' cy='14' r='1.5'/%3E%3Ccircle cx='82' cy='18' r='1.5'/%3E%3Ccircle cx='82' cy='22' r='1.5'/%3E%3Ccircle cx='86' cy='2' r='1.5'/%3E%3Ccircle cx='86' cy='22' r='1.5'/%3E%3Ccircle cx='90' cy='2' r='1.5'/%3E%3Ccircle cx='90' cy='22' r='1.5'/%3E%3Ccircle cx='94' cy='2' r='1.5'/%3E%3Ccircle cx='94' cy='22' r='1.5'/%3E%3Ccircle cx='98' cy='6' r='1.5'/%3E%3Ccircle cx='98' cy='10' r='1.5'/%3E%3Ccircle cx='98' cy='14' r='1.5'/%3E%3Ccircle cx='98' cy='18' r='1.5'/%3E%3Ccircle cx='102' cy='10' r='1.5'/%3E%3Ccircle cx='102' cy='14' r='1.5'/%3E%3Ccircle cx='102' cy='18' r='1.5'/%3E%3Ccircle cx='106' cy='6' r='1.5'/%3E%3Ccircle cx='106' cy='22' r='1.5'/%3E%3Ccircle cx='110' cy='6' r='1.5'/%3E%3Ccircle cx='110' cy='22' r='1.5'/%3E%3Ccircle cx='114' cy='6' r='1.5'/%3E%3Ccircle cx='114' cy='22' r='1.5'/%3E%3Ccircle cx='118' cy='10' r='1.5'/%3E%3Ccircle cx='118' cy='14' r='1.5'/%3E%3Ccircle cx='118' cy='18' r='1.5'/%3E%3C/svg%3E") center/contain no-repeat}
@@ -687,6 +702,7 @@ const IC = {
   home2:'<path d="M3 11 12 4l9 7M6 9.5V20h12V9.5"/>',
   plane:'<path d="M3 13.5 21 6l-4 14-5-5-3 3v-5z"/>',
   umbrella:'<path d="M3 12a9 9 0 0 1 18 0zM12 12v6a2 2 0 0 0 4 0"/>',
+  book:'<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/>',
 };
 const ic = (n, s = 24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
 
@@ -822,7 +838,7 @@ const S = {
   tab:'home', persona:'cog', focus:null, linked:true, explored:new Set(), seen:new Set(), acctUse:{}, bitesDone:new Set(), biteOpen:{}, autoOn:new Set(), planMore:false,
   spent:348400, budget:800000, day:15, days:31,
   settled:false, incomeIn:true, allocDone:false, alloc:'bal',
-  spendView:'list', planView:'bank', goalView:'chal', ledDay:15, period:'month', keeps:new Set(['여행','자기계발','경조사']), applied:new Set(),
+  spendView:'list', planView:'bank', learnView:'bite', conceptDone:new Set(), conceptId:null, ledDay:15, period:'month', keeps:new Set(['여행','자기계발','경조사']), applied:new Set(),
   fixedSet:false, ratioOk:false, ratioEdit:false,
   cat:{ '식비':250000, '배달':150000, '카페·간식':100000, '교통':90000, '쇼핑':120000, '기타':90000 },
   goalSaved:2300000, emergency:1100000, wAmt:200000,
@@ -1270,11 +1286,10 @@ function vPreview() {
 }
 // 연동 전(둘러보기): 데이터가 없는 상태를 그대로 보여 주고, 연동 없이 해 볼 수 있는 것을 안내
 function vEmpty() {
-  const T = { home:['', ''], spend:['지출', '가계부 · 분석 · 예산'], plan:['저축', '통장 · 목표 · 자동 규칙'], goal:['도전', '챌린지 · 소통'] }[S.tab];
+  const T = { home:['', ''], spend:['지출', '가계부 · 분석 · 예산'], plan:['저축', '통장 · 목표 · 자동 규칙'], learn:['알기', '한 입 금융 · 팁과 소식'] }[S.tab];
   const msg = { home:['계좌를 연동하면<br>오늘 쓸 수 있는 돈을 알려 드려요', '예산 · 지출 · 목표가 연동한 계좌 기준으로 채워져요.'],
     spend:['연동하면 결제 내역이<br>자동으로 기록돼요', '가계부 · 분석 · 예산은 연동 후에 열려요.'],
-    plan:['연동하면 통장 용도에 맞춰<br>목표와 자동 규칙을 제안해요', '계좌마다 용도를 직접 정한 뒤 시작해요.'],
-    goal:['연동하면 결제 기록으로<br>챌린지를 인증해요', '함께 도전하는 사람들의 팁은 연동 후에 볼 수 있어요.'] }[S.tab];
+    plan:['연동하면 통장 용도에 맞춰<br>목표와 자동 규칙을 제안해요', '계좌마다 용도를 직접 정한 뒤 시작해요.'], }[S.tab];
   const head = S.tab === 'home' ? `<header class="top"><div style="display:grid;gap:2px;line-height:1.3"><span class="t12" style="color:var(--g4)">Hello</span><span class="t14">10월 ${S.day}일 ${'일월화수목금토'[(S.day + 3) % 7]}요일</span></div>
       <button class="ib glass" data-act="sheet" data-sheet="menu" aria-label="메뉴">${ic('menu', 20)}</button></header>${focusStrip()}`
     : `<header class="top"><div><div class="ph-title">${T[0]}${areaTag(S.tab)}</div><div class="ph-sub">${T[1]}</div></div></header>`;
@@ -1285,7 +1300,7 @@ function vEmpty() {
       <button class="btn mt24" data-act="linkStart">${ic('link', 18)}계좌 연동하기</button>
     </div>
     ${S.tab === 'home' ? `<section class="sec"><div class="sec-h"><div><div class="t18">연동 전에도 할 수 있어요</div><div class="sec-d">계좌 없이 둘러보기</div></div></div>
-      <div class="stack8">${[['spark', '내 진단 결과 보기', '유형과 시작 영역', 'data-act="diag"'], ['spark', '한 입 금융', '인플레이션 · 복리 · 실제로 받는 이자', 'data-act="sheet" data-sheet="bites"'], ['gift', '받을 수 있는 혜택 확인', '나이·소득 조건만으로 볼 수 있어요', 'data-act="tab" data-tab="benefit"']].map(([i, t, d, a]) => `<button class="card c-paper setrow" style="padding:16px 20px;text-align:left" ${a}><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(i, 20)}</span><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${d}</span></span>${ic('arrow', 18)}</button>`).join('')}</div></section>` : ''}`;
+      <div class="stack8">${[['spark', '내 진단 결과 보기', '유형과 시작 영역', 'data-act="diag"'], ['book', '한 입 금융', '인플레이션 · 복리 · 실제로 받는 이자', 'data-act="tab" data-tab="learn"'], ['gift', '받을 수 있는 혜택 확인', '나이·소득 조건만으로 볼 수 있어요', 'data-act="tab" data-tab="benefit"']].map(([i, t, d, a]) => `<button class="card c-paper setrow" style="padding:16px 20px;text-align:left" ${a}><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(i, 20)}</span><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${d}</span></span>${ic('arrow', 18)}</button>`).join('')}</div></section>` : ''}`;
 }
 
 /* =========================================================
@@ -1323,13 +1338,34 @@ function focusStrip() {
     <span class="fs-txt"><span class="t10 mute">지금 집중할 영역</span><span class="t14">${areaName(f)}</span></span>
     <span class="fs-steps" aria-hidden="true">${o.map((id, i) => `<span class="fs-step ${i ? '' : 'on'}"><b>${i + 1}</b><span>${{ spend:'지출', save:'저축', tax:'혜택' }[id]}</span></span>`).join('<i></i>')}</span>
     </div>`;
-  if (!S.linked) return `<div class="card c-paper focus-strip">${head}</div>`;
   return `<div class="card c-paper focus-strip">${head}
-    <div class="fs-tasks">
-      <div class="row between t12"><span>첫 주 할 일</span><span class="num mute">${n}/3</span></div>
-      ${n === 3 ? `<p class="row g8 t12 mute mt8" style="align-items:flex-start"><span style="flex:none;margin-top:1px">${ic('check', 14)}</span><span>모두 마쳤어요. 익숙해지면 다음 단계 ‘${areaName(o[1])}’로 넓혀 봐요.</span></p>`
-      : tasks.map(t => { const d = t.done(); return `<button class="fs-task ${d ? 'done' : ''}" ${t.go}><span class="fs-chk">${d ? ic('check', 12) : ''}</span><span class="t14">${t.t}</span>${d ? '' : ic('arrow', 14)}</button>`; }).join('')}
-    </div></div>`;
+    ${S.linked && n === 3 ? `<p class="row g8 t12 mute mt12" style="align-items:flex-start"><span style="flex:none;margin-top:1px">${ic('check', 14)}</span><span>첫 주 할 일을 모두 마쳤어요. 익숙해지면 다음 단계 ‘${areaName(o[1])}’로 넓혀 봐요.</span></p>` : ''}</div>`;
+}
+// 오늘의 실천 항목: 첫 주 할 일 + 유형별 행동 추천 + 참여 중인 챌린지 인증을 한곳에
+function practiceBlock() {
+  const tasks = TASKS[focusArea()], n = tasks.filter(t => t.done()).length;
+  const chals = CHALS.filter(c => S.chalOn.includes(c.id) && c.id !== 'coin');
+  const row = (d, go, t, k) => `<button class="fs-task ${d ? 'done' : ''}" ${go}><span class="fs-chk">${d ? ic('check', 12) : ''}</span><span class="t14">${t}</span><span class="t10 mute">${k}</span></button>`;
+  const rows = [...(n === 3 ? [] : tasks.map(t => row(t.done(), t.go, t.t, '첫 주 할 일'))),
+    ...chals.map(c => row(S.chalCert.has(c.id), `data-act="chalCert" data-v="${c.id}"`, `${c.n} 인증`, '챌린지'))];
+  const total = (n === 3 ? 0 : 3) + chals.length, doneN = (n === 3 ? 0 : n) + chals.filter(c => S.chalCert.has(c.id)).length;
+  return `<section class="sec" style="margin-top:32px">
+    <div class="sec-h"><div><div class="t18">오늘의 실천 항목</div><div class="sec-d">첫 주 할 일 · 행동 추천 · 챌린지</div></div><span class="n24">${doneN}<span class="t12 mute"> / ${total}</span></span></div>
+    ${nextCard()}
+    ${rows.length ? `<div class="card c-paper focus-strip" style="padding:6px 20px 14px">${rows.join('')}
+      <button class="row between t12 mute mt12" style="width:100%" data-act="tab" data-tab="plan" data-pv="goal"><span>챌린지 달력 · 리그 순위</span>${ic('arrow', 14)}</button></div>` : ''}
+  </section>`;
+}
+// '?' 알아볼 것 조각: 진단에서 '잘 모르겠어요'를 고른 영역 → 지금 집중 영역 순으로 아직 안 본 개념 하나
+function knowBit() {
+  const unk = unkAreas(), list = CONCEPTS.map(c => conceptOf(c.id)).filter(c => !conceptDone(c));
+  const c = list.find(x => unk.has(x.a)) || list.find(x => x.a === focusArea()) || list[0];
+  if (!c) return '';
+  return `<section class="sec">
+    <div class="sec-h"><div><div class="t18">알아볼 것 한 조각</div><div class="sec-d">한 입 금융 · 1분이면 돼요</div></div><button class="row g4 t12 mute" data-act="tab" data-tab="learn" data-lv="bite">알기${ic('arrow', 14)}</button></div>
+    <button class="card c-know bit-card" data-act="concept" data-v="${c.id}" data-go="learn"><span class="bit-q" aria-hidden="true">?</span>
+      <span style="flex:1;min-width:0"><span class="t12 mute" style="display:block">${areaName(c.a)} · ${c.k}${unk.has(c.a) ? ' · 진단에서 ‘잘 모르겠어요’' : ''}</span><span class="t14" style="display:block;margin-top:2px">${c.q.replace(/<br>/g, ' ')}</span></span>${ic('arrow', 18)}</button>
+  </section>`;
 }
 
 /* =========================================================
@@ -1351,6 +1387,27 @@ const BITES = {
     take:'예금·적금 이자에는 보통 15.4%의 세금이 붙어요. 상품을 비교할 땐 세금을 뺀 이자(세후 이자)를 봐야 실제로 받는 돈을 알 수 있어요. 비과세 혜택이 있는 상품은 이 세금이 없어요.',
     go:null },
 };
+// 알기 › 한 입 금융: 5개 영역의 개념 원반. b = 생활 예시가 있는 기존 개념 카드(BITES), known = 이미 알아본 개념(예시)
+const CONCEPT_TOTAL = 56, CONCEPT_KNOWN = 9;   // 전체 56개 중 데모에 담은 개념만 보여 준다
+const CONCEPTS = [
+  { id:'budget', a:'spend', k:'예산', known:true, q:'한 달 예산,<br>어떻게 정할까요?', take:'월급에서 매달 나가는 돈과 먼저 모을 돈을 뺀 나머지가 한 달 예산이에요. 이걸 남은 날로 나누면 오늘 쓸 수 있는 돈이 돼요.', go:['예산 보기', 'data-act="tab" data-tab="spend" data-sv="budget"'] },
+  { id:'fixed', a:'spend', k:'고정 지출', q:'월세·통신비는<br>왜 먼저 빼 둘까요?', take:'매달 정해진 날 빠져나가는 돈이라 쓸 수 있는 돈이 아니에요. 미리 빼 두면 하루 예산이 실제보다 커 보이는 일을 막을 수 있어요.', go:['매달 나가는 돈 확인', 'data-act="tab" data-tab="plan" data-pv="rule"'] },
+  { id:'small', a:'spend', k:'소액 반복 지출', q:'편의점 커피 한 잔,<br>한 달이면 얼마일까요?', take:'2,100원짜리 커피도 23번이면 48,300원이에요. 한 번은 작아도 자주 반복되는 지출이 한 달 예산을 가장 많이 흔들어요.', go:['작은 돈 보기', 'data-act="tab" data-tab="spend" data-sv="analysis"'] },
+  { id:'infl', a:'save', b:'infl' },
+  { id:'comp', a:'save', b:'comp' },
+  { id:'emer', a:'save', k:'비상금', known:true, q:'갑자기 병원비가 생기면<br>어디서 꺼낼까요?', take:'갑작스러운 지출을 위해 따로 모아 둔 돈이에요. 보통 생활비 3개월치를 권해요. 비상금이 있으면 적금을 깨거나 할부를 쓰지 않아도 돼요.', go:['비상금 보기', 'data-act="tab" data-tab="plan" data-pv="bank"'] },
+  { id:'pre', a:'save', k:'선저축', known:true, q:'월급날 먼저 모으면<br>뭐가 달라질까요?', take:'쓰고 남은 돈을 모으면 남는 돈이 거의 없어요. 월급이 들어오자마자 저축부터 옮기면 남은 돈 안에서 생활하게 돼요.', go:['자동 규칙 보기', 'data-act="tab" data-tab="plan" data-pv="rule"'] },
+  { id:'credit', a:'credit', k:'신용점수', q:'카드값을 늦게 내면<br>무엇이 달라질까요?', take:'신용점수는 돈을 제때 갚는지를 점수로 매긴 거예요. 연체가 생기면 점수가 내려가고, 대출 금리가 높아지거나 대출이 어려워질 수 있어요.', go:['납부 자동이체 확인', 'data-act="tab" data-tab="plan" data-pv="rule"'] },
+  { id:'loan', a:'credit', k:'대출 이자', q:'월 1% 이자,<br>1년이면 12%일까요?', take:'갚지 않은 이자에 다시 이자가 붙으면 1년 뒤 갚을 돈은 12%보다 많아져요. 빌린 돈에도 복리가 붙는다는 걸 기억해 두세요.', go:['복리 알아보기', 'data-act="concept" data-v="comp"'] },
+  { id:'insure', a:'insure', k:'실손보험', q:'병원비 30,000원,<br>실손보험이 있으면?', take:'실제로 낸 병원비 중 일부를 돌려받는 보험이에요. 정해진 금액을 한꺼번에 주는 보험과는 달라요.', go:null },
+  { id:'tax', a:'tax', b:'tax', go:['적금 비교하기', 'data-act="sheet" data-sheet="compare"'] },
+  { id:'deduct', a:'tax', k:'소득공제', q:'체크카드가 왜<br>연말정산에 유리할까요?', take:'카드 사용액이 총급여의 25%를 넘으면 그다음부터 공제돼요. 이때 체크카드는 30%, 신용카드는 15%가 적용돼요.', go:['혜택에서 확인', 'data-act="tab" data-tab="benefit"'] },
+  { id:'youth', a:'tax', k:'청년 지원금', q:'나도 받을 수 있는<br>지원금이 있을까요?', take:'나이·소득·주거 조건에 맞으면 월세 지원, 저축 기여금 같은 혜택을 받을 수 있어요. 대부분 직접 신청해야 받을 수 있어요.', go:['나에게 해당되는 혜택', 'data-act="tab" data-tab="benefit"'] },
+];
+const conceptOf = id => { const c = CONCEPTS.find(x => x.id === id); return c.b ? { ...BITES[c.b], ...c, go:c.go !== undefined ? c.go : BITES[c.b].go } : c; };
+const conceptDone = c => c.b ? S.bitesDone.has(c.b) : !!c.known || S.conceptDone.has(c.id);
+const conceptKnown = () => Math.min(CONCEPT_TOTAL, CONCEPT_KNOWN + S.bitesDone.size + S.conceptDone.size);
+const unkAreas = () => new Set(scores().areas.filter(a => a.know === 'unknown').map(a => a.id));
 // 지식이 낮은 유형(저관여형·습관우세형)에게는 펼친 채로 앞쪽에, 지식이 높은 유형에게는 접어서 보여 준다
 const knowLow = () => S.persona === 'low' || S.persona === 'habit';
 function bite(id, o = {}) {
@@ -1360,7 +1417,7 @@ function bite(id, o = {}) {
     ${o.force ? `<div class="bite-h"><span class="bite-k">${ic('spark', 14)}한 입 금융 · ${b.k}</span><span class="t16 bite-q">${b.q}</span></div>`
     : `<button class="bite-h" data-act="bite" data-v="${id}" aria-expanded="${open}"><span class="bite-k">${ic('spark', 14)}한 입 금융 · ${b.k}${done ? `<span class="tag line" style="height:18px;margin-left:6px">${ic('check', 10)}&nbsp;알아봤어요</span>` : ''}</span><span class="t16 bite-q">${b.q}</span><span class="bite-tg">${ic(open ? 'minus' : 'plus', 16)}</span></button>`}
     ${open ? `<div class="bite-b">${b.ex()}<p class="t12 bite-take">${b.take}</p>
-      <div class="row g8 mt16">${o.force ? '' : `<button class="btn sm ${o.dark ? 'light' : ''}" data-act="biteOk" data-v="${id}">${done ? '접기' : '알았어요'}</button>`}${b.go && !o.noGo ? `<button class="btn sm ghost" ${b.go[1]}>${b.go[0]}</button>` : ''}</div></div>` : ''}
+      <div class="row g8 mt16">${o.force ? '' : `<button class="btn sm ${o.dark ? 'light' : ''}" data-act="biteOk" data-v="${id}">${done ? '접기' : '알았어요'}</button>`}${b.go && !o.noGo ? `<button class="btn sm ghost" ${b.go[1]}>${b.go[0]}</button>` : ''}${o.force || S.tab === 'learn' ? '' : `<button class="btn sm ghost" style="box-shadow:none;color:var(--mute);padding:0 4px;margin-left:auto;gap:2px" data-act="tab" data-tab="learn" data-lv="bite">모아보기${ic('arrow', 14)}</button>`}</div></div>` : ''}
   </div>`;
 }
 
@@ -1396,7 +1453,7 @@ function planLead() {
     </div>`;
 }
 
-function vHome() {
+function projCard() {
   const d = D();
   // 축 눈금은 항상 10만 원 간격 4개(30만 폭). 기본은 60만·70만·80만·90만이고,
   // 월말 예상 지출이 범위를 벗어나면 예산이 축 안에 남는 한도에서 창 전체를 10만 원씩 옮긴다
@@ -1423,17 +1480,10 @@ function vHome() {
         <i class="pc-spark" style="left:${clampAx(d.projSpend)}%"></i>
       </div>
     </div>`;
-  // 독립 자금 · 10월 누적 지출: 상단 라벨 / 숫자 / 하단(그래프·영수증 보기)을 같은 서체·크기·위치로 맞춘다
-  // 예산 상태는 '오늘 쓸 수 있는 돈'(위)과 '월말 예상'(검정 카드) 두 곳에서만 보여 준다. 누적 지출 카드·미터는 겹쳐서 뺐다
-  const goalAndSpend = `<button class="card c-aura goal-row" data-act="tab" data-tab="plan" data-pv="goal">
-        <span class="row between" style="width:100%"><span class="gs-top">독립 자금</span><span class="row g4 t10 mute">${W(S.goalSaved)} / 500만 원${ic('arrow', 14)}</span></span>
-        <span class="row g16 mt8" style="width:100%;align-items:center"><span class="gs-num" style="flex:none;margin:0">${pct(d.goal)}</span><span class="glowbar" style="flex:1;height:8px"><i style="width:${d.goal * 100}%"></i></span></span>
-      </button>`;
-  // 홈은 요약만: 통장 → 플랜·통장, 돈의 흐름 → 지출·분석 (상세와 정리 버튼은 해당 탭에)
-  const accounts = accountsCard(true);
-  const flow = flowCard(true);
-  // 자리는 그대로: 첫 번째 검정 카드 = 월말 예상, 두 번째 하늘색 카드 = 유형별 다음 행동
-  const order = [proj, focusStrip(), nextCard(), goalAndSpend];
+  return proj;
+}
+function vHome() {
+  const d = D();
   return `<header class="top">
       <div style="display:grid;gap:2px;line-height:1.3"><span class="t12" style="color:var(--g4)">Hello, 지혜</span><span class="t14">10월 ${S.day}일 ${'일월화수목금토'[(S.day + 3) % 7]}요일</span></div>
       <div class="row g8">
@@ -1447,9 +1497,9 @@ function vHome() {
       <div class="hero-n"><span class="n56 num">${won(d.daily)}</span><span class="n24">₩</span></div>
       <div class="t12 mute">10월 남은 예산 ${W(d.remain)} · ${d.left}일</div>
     </section>
-    <div class="stack" style="margin-top:32px">
-      ${order.join('')}
-    </div>`;
+    ${practiceBlock()}
+    ${knowBit()}
+    <section class="sec">${focusStrip()}</section>`;
 }
 
 /* =========================================================
@@ -1735,9 +1785,9 @@ function vPlan(pvOver, noHead) {
   const locked = !!S.cutApplied;
   const head = noHead ? '' : `<header class="top"><div><div class="ph-title">저축${areaTag('plan')}</div><div class="ph-sub">통장 · 목표 · 자동 규칙</div></div><button class="ib glass" data-act="sheet" data-sheet="menu" aria-label="설정 메뉴">${ic('sliders', 20)}</button></header>
   <div class="utabs" role="tablist">${[['bank','통장'],['goal','목표'],['rule','자동 규칙']].map(([k, n]) => `<button class="${pv === k ? 'on' : ''}" data-act="pv" data-v="${k}" role="tab" aria-selected="${pv === k}">${n}</button>`).join('')}</div>`;
-  if (pv === 'goal') return head + vGoal('goal', true);
+  if (pv === 'goal') return head + vGoal() + vChal();
   // 예산: 이번 달 예산 현황 · 카테고리별 배분 · 줄이기 계획
-  if (pv === 'budget') return head + (S.persona === 'habit' ? '' : planLead()) + `
+  if (pv === 'budget') return head + `<div class="mt16">${projCard()}</div>` + (S.persona === 'habit' ? '' : planLead()) + `
   <div class="bsum">
     <div class="row between"><span class="t12 mute">10월 예산</span><span class="t10 mute num">10.01 – 10.31</span></div>
     <div class="row g8 mt8" style="align-items:baseline"><span class="n32">${won(S.budget)}</span><span class="cur t16">₩</span></div>
@@ -1922,7 +1972,7 @@ function vChal() {
     : [...L.rows, ['지혜 (나)', meCnt, true]].sort((a, b) => b[1] - a[1]).map(([n, c, me], i) => [i + 1, n, c, !!me]);
   const more = CHALS.filter(c => !S.chalOn.includes(c.id)), full = S.chalOn.length >= 3;
   return `
-  <section style="margin-top:16px">
+  <section class="sec">
     <div class="sec-h"><div><div class="t18">참여 중인 챌린지 ${on.length}</div><div class="sec-d">최대 3개까지 함께 할 수 있어요</div></div><button class="btn sm ghost" data-act="chalMore" aria-expanded="${!!S.chalMore}">${ic(S.chalMore ? 'close' : 'plus', 14)}${S.chalMore ? '닫기' : '추가'}</button></div>
     <div class="row g8" style="flex-wrap:wrap">${[['all','전체'], ...on.map(c => [c.id, c.s])].map(([k, n]) => `<button class="chip pchip ${S.chalPick === k ? 'on' : ''}" data-act="chalPick" data-v="${k}">${n}</button>`).join('')}</div>
     <div class="card c-ink mt12">
@@ -1958,24 +2008,14 @@ function vChal() {
     <div class="row between">${[['예산 지킴','check',1],['먼저 모으기 첫 달','calendar',1],['무지출 10회','spark',1],['진단 완료','refresh',1],['3개월 연속','flag',0]].map(([n, i, got]) => `<div class="badge"><span class="b ${got ? 'got' : 'lock'}">${ic(got ? i : 'lock', 22)}</span><span class="t10 ${got ? '' : 'mute'}">${n}</span></div>`).join('')}</div>
   </section>`;
 }
-function vGoal(gvOver, noHead) {
+function vGoal() {
   const g = S.goals.find(x => x.id === S.goalSel) || S.goals[0];
   const indep = g.id === 'indep'; const saved = indep ? S.goalSaved : g.saved;
   const pa = planActual(); const d = D();
   const msCur = (() => { const i = STAGES.findIndex(st => saved < st.a); return i < 0 ? STAGES.length - 1 : i; })();
   const msMonths = Math.max(1, Math.ceil((STAGES[msCur].a - saved) / 350000)), msDate = new Date(2026, 9 + msMonths, 1);
   const ms = { cur:msCur, next:STAGES[msCur + 1], due:`${msDate.getFullYear()}년 ${msDate.getMonth() + 1}월` };
-  // 도전 탭: 목표(모으는 돈) · 챌린지(골라서 참여·인증·리그) · 소통(절약 팁·정책 정보)
-  const gv = gvOver || S.goalView;
-  const head = noHead ? '' : `<header class="top"><div><div class="ph-title">도전</div><div class="ph-sub">챌린지 ${S.chalOn.length}개 참여 중 · 소통</div></div></header>
-  <div class="utabs" role="tablist">${[['chal','챌린지'],['comm','소통']].map(([k, n]) => `<button class="${gv === k ? 'on' : ''}" data-act="gv" data-v="${k}" role="tab" aria-selected="${gv === k}">${n}</button>`).join('')}</div>`;
-  if (gv === 'chal') return head + vChal();
-  if (gv === 'comm') return head + `
-  <section style="margin-top:16px">
-    <div class="sec-h"><div><div class="t18">절약 팁 · 정책 정보</div><div class="sec-d">함께 도전하는 사람들의 팁과 정책 소식</div></div><button class="btn sm ghost" data-act="toast" data-msg="팁 작성 화면은 다음 버전에서 열려요">${ic('plus', 14)}공유</button></div>
-    <div class="stack">${TIPS.map((t, i) => `<div class="card c-paper" style="padding:20px 24px"><div class="row between"><span class="tag ${t.k === '정책 정보' ? 'glow' : 'line'}">${t.k}</span><span class="t10 mute">${t.who}</span></div><p class="t14 mt12">${t.t}</p><button class="chip mt12 ${S.liked.has(i) ? 'on' : ''}" data-act="like" data-v="${i}">도움돼요 ${t.likes + (S.liked.has(i) ? 1 : 0)}</button></div>`).join('')}</div>
-  </section>`;
-  return head + `
+  return `
   <div class="row g8 mt16" style="overflow-x:auto;scrollbar-width:none">${S.goals.map(x => `<button class="chip ${x.id === g.id ? 'on' : ''}" data-act="goalSel" data-v="${x.id}">${x.n}</button>`).join('')}<button class="btn sm ghost" style="flex:none" data-act="sheet" data-sheet="goalAdd" aria-label="새 목표 만들기">${ic('plus', 14)}새 목표</button></div>
   <div class="card c-aura mt16">
     <div class="row between"><span class="t14">${g.n}</span><span class="tag ink">${g.due}까지</span></div>
@@ -2003,6 +2043,43 @@ function vGoal(gvOver, noHead) {
       <div class="grid2 mt16"><div><div class="t10 mute">9월 목표 적립</div><div class="t14 num mt4">350,000 → 250,000원</div></div><div><div class="t10 mute">차이 원인</div><div class="t14 mt4">배달 +44,000원</div></div></div>
     </div>
   </section>` : `<p class="t12 mute mt16">${g.n}은 아직 중간 목표가 없어요. 금액을 나눠 단계를 만들면 진행이 더 잘 보여요.</p>`}`;
+}
+
+/* =========================================================
+   LEARN (알기): 한 입 금융 · 팁과 소식 · 상단 AI 입력창
+   ========================================================= */
+function vLearn() {
+  const lv = S.learnView;
+  const head = `<header class="top"><div><div class="ph-title">알기</div><div class="ph-sub">한 입 금융 · 팁과 소식</div></div></header>
+  <form class="ask-top" data-ask><span aria-hidden="true">${ic('spark', 18)}</span><input placeholder="AI에게 물어보기" aria-label="AI에게 물어보기" autocomplete="off"><button type="submit" class="ib ink" aria-label="보내기">${ic('send', 18)}</button></form>
+  <div class="utabs" role="tablist">${[['bite','한 입 금융'],['tips','팁과 소식']].map(([k, n]) => `<button class="${lv === k ? 'on' : ''}" data-act="lv" data-v="${k}" role="tab" aria-selected="${lv === k}">${n}</button>`).join('')}</div>`;
+  if (lv === 'tips') return head + `
+  <section style="margin-top:16px">
+    <div class="sec-h"><div><div class="t18">절약 팁 · 정책 정보</div><div class="sec-d">함께 실천하는 사람들의 팁과 정책 소식</div></div><button class="btn sm ghost" data-act="toast" data-msg="팁 작성 화면은 다음 버전에서 열려요">${ic('plus', 14)}공유</button></div>
+    <div class="stack">${TIPS.map((t, i) => `<div class="card c-paper" style="padding:20px 24px"><div class="row between"><span class="tag ${t.k === '정책 정보' ? 'glow' : 'line'}">${t.k}</span><span class="t10 mute">${t.who}</span></div><p class="t14 mt12">${t.t}</p><button class="chip mt12 ${S.liked.has(i) ? 'on' : ''}" data-act="like" data-v="${i}">도움돼요 ${t.likes + (S.liked.has(i) ? 1 : 0)}</button></div>`).join('')}</div>
+  </section>`;
+  const unk = unkAreas(), known = conceptKnown();
+  const disc = c => { c = conceptOf(c.id); const d = conceptDone(c), u = !d && unk.has(c.a), soon = !AREAS.find(a => a.id === c.a).now;
+    return `<button class="disc ${d ? 'done' : u ? 'unk' : ''} ${soon ? 'soon' : ''}" data-act="concept" data-v="${c.id}" aria-label="${c.k}${d ? ' · 알아봤어요' : u ? ' · 잘 모르겠어요' : ''}"><i>${d ? ic('check', 20) : u ? '?' : ''}</i><span>${c.k}</span></button>`; };
+  return head + `
+  <section style="margin-top:16px">
+    <div class="card c-ink">
+      <div class="row between"><span class="t12 mute">알아본 개념</span><span class="t10 mute">5개 영역 · 전체 ${CONCEPT_TOTAL}개</span></div>
+      <div class="row g8 mt8" style="align-items:baseline"><span class="n56 num">${known}</span><span class="n24 mute">/ ${CONCEPT_TOTAL}</span></div>
+      <div class="glowbar flat mt16" style="height:6px;background:rgba(252,252,252,.12)"><i style="width:${known / CONCEPT_TOTAL * 100}%"></i></div>
+      ${unk.size ? `<p class="t12 mute mt12"><i class="warn-dot"></i>진단에서 ‘잘 모르겠어요’를 고른 ${[...unk].map(areaName).join('·')} 개념을 표시했어요</p>` : ''}
+    </div>
+  </section>
+  <section class="sec">
+    <div class="sec-h"><div><div class="t18">영역별 개념</div><div class="sec-d">원반을 누르면 한 입씩 알려 드려요</div></div></div>
+    <div class="stack" style="gap:24px">${AREAS.map(ar => { const list = CONCEPTS.filter(c => c.a === ar.id), dn = list.filter(c => conceptDone(conceptOf(c.id))).length;
+      return `<div><div class="row between"><span class="t14">${ar.name}</span><span class="t10 mute num">${ar.now ? `${dn}/${list.length}` : '확장 예정'}</span></div>
+        <div class="discs mt12">${list.map(disc).join('')}</div></div>`; }).join('')}</div>
+  </section>
+  <section class="sec">
+    <div class="sec-h"><div><div class="t18">필요한 순간에 본 개념</div><div class="sec-d">지출·저축 화면에서 보여 드린 개념 카드</div></div></div>
+    <div class="stack">${Object.keys(BITES).map(id => bite(id)).join('')}</div>
+  </section>`;
 }
 
 /* =========================================================
@@ -2142,8 +2219,14 @@ function sheetHTML(name) {
       <p class="t12 mute">금리는 우대 조건(급여이체·카드 실적)을 모두 채웠을 때 기준이에요.</p></div>
       <div class="mt16">${bite('tax', { force:true })}</div>`;
     case 'use': { const a = ACCOUNTS.find(x => x.k === S.useK); return head('용도 고르기', `${a.raw} · ${W(a.a)}`) + `<div class="mt16">${USES.map(u => `<button class="use-opt" data-act="acctUse" data-k="${a.k}" data-v="${u}"><span>${u}</span>${useOf(a) === u ? ic('check', 18) : ''}</button>`).join('')}</div>`; }
+    case 'concept': { const c = conceptOf(S.conceptId), done = conceptDone(c), ar = AREAS.find(a => a.id === c.a);
+      return head(c.k, `한 입 금융 · ${ar.name}${ar.now ? '' : ' · 확장 예정'}`) + `<div class="card bite c-know mt24">
+        <div class="bite-h"><span class="bite-k">${ic('spark', 14)}한 입 금융 · ${c.k}${done ? `<span class="tag line" style="height:18px;margin-left:6px">${ic('check', 10)}&nbsp;알아봤어요</span>` : ''}</span><span class="t16 bite-q">${c.q}</span></div>
+        <div class="bite-b">${c.ex ? c.ex() : ''}<p class="t12 bite-take">${c.take}</p></div></div>
+        <div class="stack8 mt16">${done ? '' : `<button class="btn full light" style="box-shadow:inset 0 0 0 1px var(--g3)" data-act="conceptOk" data-v="${c.id}">알았어요</button>`}
+        ${c.go ? `<button class="btn full" ${c.go[1]}>${c.go[0]}${ic('arrow', 18)}</button>` : ''}</div>`; }
     case 'bites': return head('한 입 금융', '필요한 순간에 하나씩 보여 드린 개념이에요') + `<div class="stack mt24">${Object.keys(BITES).map(id => bite(id, { force:true, noGo:true })).join('')}</div>`;
-    case 'menu': return head('메뉴') + `<div class="stack8 mt24"><button class="card c-paper setrow" style="padding:16px 20px;text-align:left" data-act="diag"><span class="ib ink">${ic('spark', 20)}</span><span><span class="t14" style="display:block">내 진단 결과</span><span class="t12 mute">${PERSONA[S.persona].name} · 2026.10.15 진단</span></span>${ic('arrow', 18)}</button><button class="card c-paper setrow" style="padding:16px 20px;text-align:left" data-act="sheet" data-sheet="bites"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic('spark', 20)}</span><span><span class="t14" style="display:block">한 입 금융</span><span class="t12 mute">인플레이션 · 복리 · 세후 이자 · ${S.bitesDone.size}/${Object.keys(BITES).length} 알아봤어요</span></span>${ic('arrow', 18)}</button>${[['link','연동 계좌·카드 관리','6개 계좌 · 카드 2 · 간편결제 1'],['bell','알림 설정','예산 초과 위험 · 정산 · 입금'],['sliders','기본 설정 바꾸기·해제','선저축 · 비상금 · 예산 · 고정 지출'],['refresh','재진단','마지막 2026.06.12']].map(([i, t, s]) => `<button class="card c-paper setrow" style="padding:16px 20px;text-align:left" data-act="${i === 'refresh' ? 'rediag' : i === 'sliders' ? 'tab' : 'toast'}" data-tab="plan" data-msg="${t} 화면은 데모에서 생략했어요"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(i, 20)}</span><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${s}</span></span>${ic('arrow', 18)}</button>`).join('')}</div>
+    case 'menu': return head('메뉴') + `<div class="stack8 mt24"><button class="card c-paper setrow" style="padding:16px 20px;text-align:left" data-act="diag"><span class="ib ink">${ic('spark', 20)}</span><span><span class="t14" style="display:block">내 진단 결과</span><span class="t12 mute">${PERSONA[S.persona].name} · 2026.10.15 진단</span></span>${ic('arrow', 18)}</button>${[['link','연동 계좌·카드 관리','6개 계좌 · 카드 2 · 간편결제 1'],['bell','알림 설정','예산 초과 위험 · 정산 · 입금'],['sliders','기본 설정 바꾸기·해제','선저축 · 비상금 · 예산 · 고정 지출'],['refresh','재진단','마지막 2026.06.12']].map(([i, t, s]) => `<button class="card c-paper setrow" style="padding:16px 20px;text-align:left" data-act="${i === 'refresh' ? 'rediag' : i === 'sliders' ? 'tab' : 'toast'}" data-tab="plan" data-msg="${t} 화면은 데모에서 생략했어요"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(i, 20)}</span><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${s}</span></span>${ic('arrow', 18)}</button>`).join('')}</div>
       <div class="eng mute mt24">테스트 진행자용</div>
       <div class="row g8 mt12" style="flex-wrap:wrap">
         <button class="chip" data-act="mod" data-v="pay">결제 발생</button>
@@ -2173,12 +2256,12 @@ function aiAnswer(q) {
 /* =========================================================
    render
    ========================================================= */
-const SCREEN_NAME = k => ({ ob0:'진단 시작', ob1:'자기평가', ob2:'진단 문항', ob3:'진단 결과', subdiag:'내 진단 결과', sublink:'계좌 연동 · 용도 확인', tabhome:'홈', tabspend:'지출', tabplan:'저축', tabgoal:'도전', tabbenefit:'혜택' }[k] || k);
-const TABS = [ ['home','홈','home'], ['spend','지출','bars'], ['plan','저축','coins'], ['goal','도전','flag'], ['benefit','혜택','gift'] ];
+const SCREEN_NAME = k => ({ ob0:'진단 시작', ob1:'자기평가', ob2:'진단 문항', ob3:'진단 결과', subdiag:'내 진단 결과', sublink:'계좌 연동 · 용도 확인', tabhome:'홈', tabspend:'지출', tabplan:'저축', tablearn:'알기', tabbenefit:'혜택' }[k] || k);
+const TABS = [ ['home','홈','home'], ['spend','지출','bars'], ['plan','저축','coins'], ['learn','알기','book'], ['benefit','혜택','gift'] ];
 const screen = document.getElementById('screen'), view = document.getElementById('view');
 let lastKey = '';
 // 세부 탭(지출·계획·목표): 본문을 좌우로 밀어 넘기고, 탭 밑줄도 같이 따라 움직인다
-const SUBS = { spend:['spendView', ['list','analysis','budget']], plan:['planView', ['bank','goal','rule']], goal:['goalView', ['chal','comm']] };
+const SUBS = { spend:['spendView', ['list','analysis','budget']], plan:['planView', ['bank','goal','rule']], learn:['learnView', ['bite','tips']] };
 const subPanes = () => [...view.children].filter(c => !c.classList.contains('shead'));
 const setPanes = (els, x, t) => els.forEach(e => { e.style.transition = t ? `transform ${t}` : 'none'; e.style.transform = x ? `translateX(${x}px)` : ''; });
 let swipe = null, swiped = false;
@@ -2280,11 +2363,11 @@ function render(keepScroll = true) {
   if (S.mode === 'onboard') view.innerHTML = [vIntro, vSelf, vQuiz, vResult][S.ob]();
   else if (S.sub === 'diag') view.innerHTML = vResult('app');
   else if (S.sub === 'link') view.innerHTML = vLink();
-  else if (!S.linked && S.tab !== 'benefit') view.innerHTML = vEmpty();
+  else if (!S.linked && S.tab !== 'benefit' && S.tab !== 'learn') view.innerHTML = vEmpty();
   else if (isPreview()) view.innerHTML = vPreview();
-  else view.innerHTML = { home:vHome, spend:vSpend, plan:vPlan, goal:vGoal, benefit:vBenefit }[S.tab]();
+  else view.innerHTML = { home:vHome, spend:vSpend, plan:vPlan, learn:vLearn, benefit:vBenefit }[S.tab]();
   if (S.mode === 'app' && !S.sub) { const h = view.querySelector(':scope > header.top');
-    if (h) { const w = document.createElement('div'); w.className = 'shead'; h.before(w); w.append(h); const t = w.nextElementSibling; if (t && t.classList.contains('utabs')) w.append(t); }
+    if (h) { const w = document.createElement('div'); w.className = 'shead'; h.before(w); w.append(h); let t = w.nextElementSibling; while (t && (t.classList.contains('utabs') || t.classList.contains('ask-top'))) { const nx = t.nextElementSibling; w.append(t); t = nx; } }
     const ut = view.querySelector('.utabs'); if (ut) { ut.style.setProperty('--n', ut.children.length); ut.style.setProperty('--i', [...ut.children].findIndex(b => b.classList.contains('on'))); } }
   view.scrollTop = st;
   // 행동 추천: 보던 카드 위치를 유지하고, 추천을 끝낸 직후에는 다음 카드로 부드럽게 넘긴다
@@ -2292,7 +2375,7 @@ function render(keepScroll = true) {
   if (tr && S.naIdx) { const x = S.naIdx * (tr.firstElementChild.offsetWidth + 12);
     if (S.naSlide) { S.naSlide = false; setTimeout(() => tr.scrollTo({ left:x, behavior:'smooth' }), 350); } else tr.scrollLeft = x; }
   if (homeEnter) { popOut(); tuckSoon(); }
-  if (S.mode === 'app' && !S.sub && S.linked && !isPreview()) S.seen.add(S.tab + '-' + ({ spend:S.spendView, plan:S.planView, goal:S.goalView }[S.tab] || ''));
+  if (S.mode === 'app' && !S.sub && S.linked && !isPreview()) S.seen.add(S.tab + '-' + ({ spend:S.spendView, plan:S.planView, learn:S.learnView }[S.tab] || ''));
   if (key !== lastKey) log('화면 ' + SCREEN_NAME(key));
   // 휴대폰에서는 Safari 상단(상태바)·하단 영역이 페이지 배경색을 따르므로 화면 색과 맞춘다
   setPageColor('#FAFAFA'); // 휴대폰 상단(상태바)은 모든 화면에서 #FAFAFA로 통일
@@ -2324,7 +2407,7 @@ function tapDetail(el) {
   if (d.k) { const name = a === 'self' ? ({ k:'지식', p:'실천' }[d.k] || d.k) : a === 'acctUse' ? ((ACCOUNTS.find(x => x.k === d.k) || {}).raw || d.k) : d.k; return `${a}:${name}=${d.v}`; }
   let out = a + (d.v ? ':' + d.v : d.sheet ? ':' + d.sheet : d.tab ? ':' + d.tab : '');
   if (d.c) out += `:${d.c}${d.d ? (d.d > 0 ? ' +' : ' ') + d.d : ''}`;
-  if (d.pv || d.sv || d.gv) out += ` › ${d.pv || d.sv || d.gv}`;
+  if (d.pv || d.sv || d.lv) out += ` › ${d.pv || d.sv || d.lv}`;
   if (d.msg) out += ` "${d.msg}"`;
   return out;
 }
@@ -2415,9 +2498,11 @@ document.addEventListener('click', e => {
     case 'resSetup': S.persona = scores().persona; S.mode = 'app'; S.tab = 'plan'; S.planView = 'rule'; render(false); break;
     case 'rediag': closeSheet(); S.sub = null; S.mode = 'onboard'; S.ob = 1; S.q = 0; render(false); break;
     case 'explore': { const a = viewArea(); a && S.explored.add(a); if (el.dataset.sv) S.spendView = el.dataset.sv; if (el.dataset.pv) S.planView = el.dataset.pv; render(false); break; }
-    case 'tab': closeSheet(); S.mode = 'app'; S.sub = null; S.tab = el.dataset.tab; if (!el.classList.contains('tab')) { const a = viewArea(); a && S.explored.add(a); } if (el.dataset.pv) S.planView = el.dataset.pv; if (el.dataset.sv) S.spendView = el.dataset.sv; if (el.dataset.gv) S.goalView = el.dataset.gv; render(false); break;
+    case 'tab': closeSheet(); S.mode = 'app'; S.sub = null; S.tab = el.dataset.tab; if (!el.classList.contains('tab')) { const a = viewArea(); a && S.explored.add(a); } if (el.dataset.pv) S.planView = el.dataset.pv; if (el.dataset.sv) S.spendView = el.dataset.sv; if (el.dataset.lv) S.learnView = el.dataset.lv; render(false); break;
     case 'pv': subTap(v); break;
-    case 'gv': subTap(v); break;
+    case 'lv': subTap(v); break;
+    case 'concept': S.conceptId = v; if (el.dataset.go) { S.mode = 'app'; S.sub = null; S.tab = el.dataset.go; S.learnView = 'bite'; render(false); } openSheet('concept'); break;
+    case 'conceptOk': { const c = conceptOf(v); c.b ? S.bitesDone.add(c.b) : S.conceptDone.add(v); refreshSheet(); render(); break; }
     case 'aiOpen': aiDock(true); break;
     case 'diag': closeSheet(); S.mode = 'app'; S.sub = 'diag'; render(false); break;
     case 'subClose': S.sub = null; render(false); break;
@@ -2496,11 +2581,13 @@ document.querySelector('#aiDock .ai-fab').innerHTML = '<span class="ai-ico" aria
 function aiDock(open) { const d = document.getElementById('aiDock'); d.classList.toggle('open', open); d.querySelector('.ai-fab').setAttribute('aria-expanded', open); if (open) setTimeout(() => document.getElementById('aiInput').focus(), 460); }
 document.getElementById('aiDock').addEventListener('focusout', () => setTimeout(() => { const d = document.getElementById('aiDock'); if (!d.contains(document.activeElement) && !document.getElementById('aiInput').value) aiDock(false); }, 120));
 document.querySelector('#aiDock [type="submit"]').innerHTML = ic('send', 20);
+// 알기 탭 상단 입력창: 떠 있는 AI 버튼과 같은 답변 시트를 연다
+document.addEventListener('submit', e => { const f = e.target.closest('form[data-ask]'); if (!f) return; e.preventDefault(); const i = f.querySelector('input'); log('탭 askTop'); ask(i.value || '오늘 얼마 더 써도 돼?'); i.value = ''; });
 
 /* ---------- side panel ---------- */
 function renderPanel() {
-  const cur = S.mode === 'onboard' ? 'ob' + S.ob : S.sub === 'diag' ? 'diag' : S.sub === 'link' ? 'link' : !S.linked && S.tab === 'home' ? 'empty' : S.tab === 'spend' ? 'spend-' + S.spendView : S.tab === 'plan' ? 'plan-' + S.planView : S.tab === 'goal' ? 'goal-' + S.goalView : S.tab;
-  const sc = [ ['ob0','진단 시작'], ['ob1','자기평가'], ['ob2','진단 문항'], ['ob3','진단 결과'], ['diag','내 진단 결과'], ['link','계좌 연동 · 용도 확인'], ['empty','홈 · 연동 전'], ['home','홈'], ['spend-list','지출 · 가계부'], ['spend-analysis','지출 · 분석·영수증'], ['spend-budget','지출 · 예산'], ['plan-bank','저축 · 통장'], ['plan-goal','저축 · 목표'], ['plan-rule','저축 · 자동 규칙'], ['goal-chal','도전 · 챌린지'], ['goal-comm','도전 · 소통'], ['benefit','혜택'] ];
+  const cur = S.mode === 'onboard' ? 'ob' + S.ob : S.sub === 'diag' ? 'diag' : S.sub === 'link' ? 'link' : !S.linked && S.tab === 'home' ? 'empty' : S.tab === 'spend' ? 'spend-' + S.spendView : S.tab === 'plan' ? 'plan-' + S.planView : S.tab === 'learn' ? 'learn-' + S.learnView : S.tab;
+  const sc = [ ['ob0','진단 시작'], ['ob1','자기평가'], ['ob2','진단 문항'], ['ob3','진단 결과'], ['diag','내 진단 결과'], ['link','계좌 연동 · 용도 확인'], ['empty','홈 · 연동 전'], ['home','홈'], ['spend-list','지출 · 가계부'], ['spend-analysis','지출 · 분석·영수증'], ['spend-budget','지출 · 예산'], ['plan-bank','저축 · 통장'], ['plan-goal','저축 · 목표'], ['plan-rule','저축 · 자동 규칙'], ['learn-bite','알기 · 한 입 금융'], ['learn-tips','알기 · 팁과 소식'], ['benefit','혜택'] ];
   document.getElementById('navScreens').innerHTML = sc.map(([k, n]) => `<button type="button" class="${cur === k ? 'on' : ''}" data-go="${k}">${n}</button>`).join('');
   document.getElementById('navPersona').innerHTML = Object.entries(PERSONA).map(([k, p]) => `<button type="button" class="${S.persona === k ? 'on' : ''}" data-persona="${k}">${p.name}</button>`).join('');
   document.getElementById('navScen').innerHTML = [ ['pay','결제 발생 → 실시간 피드백'], ['income','외주비 입금 → 배분'], ['settle','더치페이 정산'], ['withdraw','저축 인출 확인'], ['ai','AI 조언 묻기'] ].map(([k, n]) => `<button type="button" data-scen="${k}">${n}</button>`).join('');
@@ -2512,7 +2599,7 @@ document.querySelector('.panel').addEventListener('click', e => {
     else if (g === 'link') { S.mode = 'app'; S.sub = 'link'; }
     else if (g === 'empty') { S.mode = 'app'; S.linked = false; S.tab = 'home'; }
     else if (g.startsWith('ob')) { S.mode = 'onboard'; S.ob = +g[2]; }
-    else { S.mode = 'app'; S.linked = true; S.explored.add({ spend:'spend', plan:'save', benefit:'tax' }[g.split('-')[0]]); if (g.startsWith('spend')) { S.tab = 'spend'; S.spendView = g.split('-')[1]; } else if (g.startsWith('plan')) { S.tab = 'plan'; S.planView = g.split('-')[1]; } else if (g.startsWith('goal')) { S.tab = 'goal'; S.goalView = g.split('-')[1]; } else S.tab = g; }
+    else { S.mode = 'app'; S.linked = true; S.explored.add({ spend:'spend', plan:'save', benefit:'tax' }[g.split('-')[0]]); if (g.startsWith('spend')) { S.tab = 'spend'; S.spendView = g.split('-')[1]; } else if (g.startsWith('plan')) { S.tab = 'plan'; S.planView = g.split('-')[1]; } else if (g.startsWith('learn')) { S.tab = 'learn'; S.learnView = g.split('-')[1]; } else S.tab = g; }
     render(false); }
   if (b.dataset.persona) { S.persona = b.dataset.persona; S.focus = FOCUS_BY_PERSONA[S.persona]; S.explored = new Set(); S.biteOpen = {}; S.planMore = false; S.mode = 'app'; S.tab = 'home'; render(false); }
   const sc = b.dataset.scen;
