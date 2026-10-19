@@ -26,8 +26,10 @@
 :root{
   --ink:#181818; --g6:#606060; --g3:#DEDEDE; --paper:#FCFCFC; --bg:#FAFAFA;
   --g8:#2B2B2B; --g4:#9C9C9C; --g2:#EFEFEF;
-  --sky:#C8E1FF; --rose:#FF769C;
-  --aura:linear-gradient(120deg,#FFD6E2 0%,#E7DDF7 45%,#C8E1FF 100%);
+  /* 포인트 컬러: 네이비 #081F40 · 슬레이트 #424F62 · 블루 #B5CBFF · 페일 블루 #D5E3FF */
+  --navy:#081F40; --slate:#424F62; --blue:#B5CBFF; --pale:#D5E3FF;
+  --sky:var(--blue); --rose:var(--navy);
+  --aura:linear-gradient(120deg,#D5E3FF 0%,#B5CBFF 100%);
   --f-kr:"Pretendard Variable","Pretendard","Noto Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;
   --f-num:"Urbanist","Pretendard Variable",system-ui,sans-serif;
   --f-disp:"Aftersick DEMO","Aftersick","Bodoni Moda",Didot,"Times New Roman",serif;
@@ -99,7 +101,7 @@ svg{display:block}
 .n56{font-family:var(--f-num);font-weight:300;font-size:56px;line-height:1;letter-spacing:-.02em}
 .n48{font-family:var(--f-num);font-weight:300;font-size:48px;line-height:1;letter-spacing:-.01em}
 /* 다음 행동 카드 */
-.card.c-sky.na-card{background:linear-gradient(325deg,#B9D9FF 0%,#FBFCFD 100%);box-shadow:inset 0 0 23px #fff}
+.card.c-sky.na-card{background:linear-gradient(325deg,#B5CBFF 0%,#FBFCFD 100%);box-shadow:inset 0 0 23px #fff}
 .na-head{display:flex;align-items:center;gap:8px;font-size:12px;line-height:17px;color:#6D6D6D}
 .na-chip{height:17px;padding:0 6.5px;border-radius:21px;border:.5px solid #6D6D6D;font-size:10px;line-height:1;color:#6D6D6D;display:inline-flex;align-items:center}
 .na-body{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:9px}
@@ -111,8 +113,8 @@ svg{display:block}
 .na-track{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;min-width:0;margin:0 calc(-1 * var(--m));padding:0 var(--m);scroll-padding:0 var(--m)}
 .na-track::-webkit-scrollbar{display:none}
 .na-dots{display:flex;justify-content:center;gap:6px;height:6px}
-.na-dots i{width:6px;height:6px;border-radius:50%;background:#DCE9FA;transition:background .25s}
-.na-dots i.on{background:#A9CBF5}
+.na-dots i{width:6px;height:6px;border-radius:50%;background:#D5E3FF;transition:background .25s}
+.na-dots i.on{background:#B5CBFF}
 .pt-lg{display:inline-block;width:10px;height:10px;border-radius:3px}
 .na-track>.na-card{flex:0 0 100%;scroll-snap-align:start}
 .na-track::after{content:"";flex:0 0 1px}
@@ -131,14 +133,14 @@ svg{display:block}
 .na-star{flex:none;font-family:"Noto Sans Symbols 2","Apple Symbols","Segoe UI Symbol",sans-serif;font-size:12px;line-height:18px}
 /* 월말 예상 카드: 여백·라운드·배경은 다른 카드(c-ink)와 같고, 글자 굵기도 다른 카드와 같은 규칙(본문 500, 숫자 Urbanist 300) */
 /* 라벨은 작은 하늘색 알약 안에 */
-.proj-card .pc-label{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;background:#CFE3FF;color:#181818;font-size:10px;line-height:1}
+.proj-card .pc-label{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;background:#D5E3FF;color:#181818;font-size:10px;line-height:1}
 /* 라벨 ↔ 숫자 ↔ 설명 ↔ 그래프: 보이는 글자 기준 간격 14px로 동일 */
 .proj-card .pc-amount{margin-top:3px;height:48px;display:flex;align-items:baseline}
 .proj-card .pc-num{font-family:var(--f-num);font-size:36px;font-weight:300;line-height:48px}
 .proj-card .pc-desc{margin-top:1px;font-size:12px;line-height:16.8px;font-weight:400;color:#BEBEBE}
 .proj-card .pc-won{font-family:var(--f-kr);font-size:24px;font-weight:300;margin-left:12px}
-.proj-card .pc-axis{position:relative;height:50px;margin-top:9px;--bar:#ABD1FF}
-.proj-card .pc-axis.over{--bar:#FF9DB8}
+.proj-card .pc-axis{position:relative;height:50px;margin-top:9px;--bar:#B5CBFF}
+.proj-card .pc-axis.over{--bar:#D5E3FF}
 .proj-card .pc-bud{position:absolute;top:0;transform:translateX(-50%);font-size:10px;line-height:14px}
 .proj-card .pc-track{position:absolute;left:0;right:0;top:24.25px;height:1.5px;background:rgba(252,252,252,.45)}
 .proj-card .pc-bar{position:absolute;left:0;top:22px;height:6px;border-radius:0 8px 8px 0;background:linear-gradient(90deg,rgba(255,255,255,.38) 0%,var(--bar) 100%);box-shadow:0 0 14px 1px color-mix(in srgb,var(--bar) 55%,transparent)}
@@ -176,15 +178,15 @@ svg{display:block}
 .c-light{background:var(--paper);color:var(--ink);--fg:var(--ink);--inv:var(--paper);--mute:var(--g6);--line:var(--g3)}
 .screen.dark .c-ink{background:var(--paper);color:var(--ink);--fg:var(--ink);--inv:var(--paper);--mute:var(--g6);--line:var(--g3)}
 .screen.dark .c-paper{background:#232323;box-shadow:0 0 0 1px rgba(255,255,255,.06)}
-.c-sky{background:radial-gradient(90% 120% at 80% 100%,#B9D7FF 0%,#D9E9FF 45%,#F2F7FF 100%);color:var(--ink);--fg:var(--ink);--inv:var(--paper);--mute:var(--g6);--line:rgba(24,24,24,.14);box-shadow:inset 0 0 24px rgba(255,255,255,.9)}
+.c-sky{background:radial-gradient(90% 120% at 80% 100%,#B5CBFF 0%,#D5E3FF 45%,#FFFFFF 100%);color:var(--ink);--fg:var(--ink);--inv:var(--paper);--mute:var(--g6);--line:rgba(24,24,24,.14);box-shadow:inset 0 0 24px rgba(255,255,255,.9)}
 /* 하늘색 그라데이션 카드는 행동 추천 카드처럼 0.5px 하늘색 테두리를 함께 쓴다 */
-.card.c-sky{border:.5px solid #C8E1FF;background-origin:border-box}
+.card.c-sky{border:.5px solid #B5CBFF;background-origin:border-box}
 /* 분홍·하늘이 섞인 카드는 배경 색 위치에 맞춰 왼쪽 위 분홍 → 오른쪽 아래 하늘로 이어지는 얇은 테두리.
    카드 자체의 border로 그려서 둥근 모서리(슈퍼엘립스) 곡률을 그대로 따른다 */
 .card.c-aura{border:.75px solid transparent;
-  background:radial-gradient(70% 80% at 0% 0%,rgba(255,118,156,.42),transparent 70%) padding-box,radial-gradient(90% 100% at 100% 100%,#BCD8FF,transparent 75%) padding-box,linear-gradient(#F1EEF7,#F1EEF7) padding-box,
-    linear-gradient(135deg,#FFB3C7 0%,#EDE6F2 50%,#B9D7FF 100%) border-box}
-.c-aura{background:radial-gradient(70% 80% at 0% 0%,rgba(255,118,156,.42),transparent 70%),radial-gradient(90% 100% at 100% 100%,#BCD8FF,transparent 75%),#F1EEF7;color:var(--ink);--fg:var(--ink);--inv:var(--paper);--mute:var(--g6);--line:rgba(24,24,24,.14);box-shadow:inset 0 0 24px rgba(255,255,255,.85)}
+  background:radial-gradient(70% 80% at 0% 0%,rgba(255,255,255,.7),transparent 70%) padding-box,radial-gradient(90% 100% at 100% 100%,#B5CBFF,transparent 75%) padding-box,linear-gradient(#D5E3FF,#D5E3FF) padding-box,
+    linear-gradient(135deg,#B5CBFF 0%,#D5E3FF 50%,#B5CBFF 100%) border-box}
+.c-aura{background:radial-gradient(70% 80% at 0% 0%,rgba(255,255,255,.7),transparent 70%),radial-gradient(90% 100% at 100% 100%,#B5CBFF,transparent 75%),#D5E3FF;color:var(--ink);--fg:var(--ink);--inv:var(--paper);--mute:var(--g6);--line:rgba(24,24,24,.14);box-shadow:inset 0 0 24px rgba(255,255,255,.85)}
 .c-glass{background:rgba(252,252,252,.62);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);border:1px solid rgba(255,255,255,.8);color:var(--ink);--mute:var(--g6);--line:var(--g3)}
 .c-dash{border:1.5px dashed var(--g3);background:var(--paper)}
 .screen.dark .c-dash{border-color:#444;background:var(--ink)}
@@ -273,7 +275,7 @@ svg{display:block}
 .ai-dock > .ib[data-act="mic"],.ai-dock > input{opacity:0;transform:translateX(16px);transition:opacity .18s,transform .3s var(--ease)}
 .ai-dock.open > .ib[data-act="mic"],.ai-dock.open > input{opacity:1;transform:none;transition:opacity .26s .24s,transform .4s var(--ease) .2s}
 .ai-dock > [type="submit"]{position:relative;z-index:1;transform:scale(1.4);transition:transform .28s var(--ease);
-  box-shadow:inset 0 0 10px rgba(0,0,0,.6),0 0 12px rgba(255,118,156,.22)}
+  box-shadow:inset 0 0 10px rgba(0,0,0,.6),0 0 12px rgba(181,203,255,.22)}
 .ai-dock.open > [type="submit"]{transform:scale(1);box-shadow:none}
 .ai-dock > [type="submit"] svg{opacity:0;transform:rotate(-90deg) scale(.6);transition:opacity .2s,transform .28s var(--ease)}
 .ai-dock.open > [type="submit"] svg{opacity:1;transform:none;transition-delay:.08s}
@@ -282,7 +284,7 @@ svg{display:block}
 /* AI 버튼 아이콘 (assets/ai-chat-icon.png를 마스크로 사용) */
 .ai-ico{position:absolute;left:50%;top:50%;transform:translate(calc(-50% + 1px),calc(-50% - 1px));width:22px;height:22px;background:currentColor;-webkit-mask:url("data:image/png;base64,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") center/contain no-repeat;mask:url("data:image/png;base64,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") center/contain no-repeat}
 .ai-dock > [type="submit"]::before{content:"";position:absolute;inset:0;border-radius:50%;padding:1.1px;pointer-events:none;
-  background:linear-gradient(120deg,#FF769C,#C8E1FF,#FF769C,#FFB3C7,#FF769C) 0 0/300% 300%;
+  background:linear-gradient(120deg,#081F40,#B5CBFF,#081F40,#B5CBFF,#081F40) 0 0/300% 300%;
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
   animation:aiGlint 4s linear infinite;transition:opacity .2s}
 .ai-dock.open > [type="submit"]::before{opacity:0}
@@ -312,12 +314,12 @@ svg{display:block}
 .meter .bars{display:flex;justify-content:space-between;height:44px}
 .meter .bars i{width:2px;background:var(--ink);border-radius:1px}
 .meter .bars i.off{background:var(--g3)}
-.meter .bars i.now{width:3px;background:var(--sky);box-shadow:0 0 8px 2px rgba(200,225,255,.9)}
+.meter .bars i.now{width:3px;background:var(--sky);box-shadow:0 0 8px 2px rgba(181,203,255,.9)}
 .meter .lbl{position:relative;display:flex;height:14px;margin-top:4px}
 .meter .lbl .tk{position:absolute;top:0;white-space:nowrap}
 .meter .mk{position:absolute;top:-20px;white-space:nowrap}
 .glowbar{height:12px;border-radius:999px;background:rgba(24,24,24,.08);position:relative}
-.glowbar i{position:absolute;inset:0 auto 0 0;border-radius:999px;background:linear-gradient(90deg,#C8E1FF,#FF769C)}
+.glowbar i{position:absolute;inset:0 auto 0 0;border-radius:999px;background:linear-gradient(90deg,#B5CBFF,#081F40)}
 .glowbar i::after{content:"";position:absolute;inset:-6px;border-radius:999px;background:inherit;filter:blur(10px);opacity:.75;z-index:-1}
 .glowbar.flat i::after{display:none}
 /* 어두운 화면은 몰입 화면(진단 결과·영수증)에만: 지출 탭은 밝게 두고 영수증 구간만 어두운 띠로 */
@@ -375,7 +377,7 @@ button.ph-tag{color:var(--mute)}
 .bb-track{height:8px;border-radius:999px;background:rgba(24,24,24,.08);overflow:hidden}
 .c-ink .bb-track{background:rgba(252,252,252,.12)}
 .bb-track i{display:block;height:100%;border-radius:999px;background:var(--g3)}
-.bb-track i.hi{background:linear-gradient(90deg,#C8E1FF,#FF769C)}
+.bb-track i.hi{background:linear-gradient(90deg,#B5CBFF,#081F40)}
 /* 플랜-예산 상단 요약: 카드 없이 화면 바탕 위에 가볍게 */
 .bsum{margin-top:24px;padding:0 4px}
 .bsum-g{gap:14px 12px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
@@ -499,16 +501,17 @@ button.ph-tag{color:var(--mute)}
 .ld i{font-style:normal;font-size:9px;line-height:1;color:rgba(24,24,24,.62)}
 .ld.fut{background:none;box-shadow:inset 0 0 0 1px rgba(128,128,128,.18)}.ld.fut b{color:var(--mute)}
 .ld.l0{--cb:var(--paper);color:var(--fg);position:relative;border:1.5px solid transparent;padding:4.5px 0 4.5px 5.5px;
-  background:linear-gradient(var(--cb),var(--cb)) padding-box,linear-gradient(135deg,#C8E1FF,#FF769C) border-box}
+  background:linear-gradient(var(--cb),var(--cb)) padding-box,linear-gradient(135deg,#B5CBFF,#081F40) border-box}
 .screen.dark .ld.l0{--cb:#232323}
 .ld.l0 i{color:var(--mute)}
 .ld .ld-star{position:absolute;top:5px;right:6px;font-style:normal;font-size:10px;line-height:1;font-family:"Noto Sans Symbols 2","Apple Symbols","Segoe UI Symbol",sans-serif}
-.ld.l1,.lg.l1{background:#C8E1FF}.ld.l2,.lg.l2{background:#E6F0FD}.ld.l3,.lg.l3{background:#FFC4D4}.ld.l4,.lg.l4{background:#FF8FAE}
+.ld.l1,.lg.l1{background:#D5E3FF}.ld.l2,.lg.l2{background:#B5CBFF}.ld.l3,.lg.l3{background:#424F62}.ld.l4,.lg.l4{background:#081F40}
+.ld.l3,.ld.l4{color:#fff}.ld.l3 i,.ld.l4 i{color:rgba(255,255,255,.75)}
 .ld.today{background:none;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--fg)}.ld.today i{color:var(--mute)}
 .ld.sel{box-shadow:0 0 0 2px var(--fg);position:relative;z-index:1}
 .lg{display:inline-block;width:12px;height:12px;border-radius:4px;font-style:normal}
-.lg.l0z{border:1.5px solid transparent;background:linear-gradient(var(--paper),var(--paper)) padding-box,linear-gradient(135deg,#C8E1FF,#FF769C) border-box}
-.screen.dark .lg.l0z{background:linear-gradient(#232323,#232323) padding-box,linear-gradient(135deg,#C8E1FF,#FF769C) border-box}
+.lg.l0z{border:1.5px solid transparent;background:linear-gradient(var(--paper),var(--paper)) padding-box,linear-gradient(135deg,#B5CBFF,#081F40) border-box}
+.screen.dark .lg.l0z{background:linear-gradient(#232323,#232323) padding-box,linear-gradient(135deg,#B5CBFF,#081F40) border-box}
 .lrow{display:grid;grid-template-columns:36px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(128,128,128,.18)}
 .lrow:last-child{border-bottom:0}.lrow .ib{width:36px;height:36px;background:rgba(128,128,128,.16);color:inherit}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);row-gap:8px;justify-items:center}
@@ -519,7 +522,7 @@ button.ph-tag{color:var(--mute)}
 .sb-seg{min-width:0}
 .sb-track{height:12px;border-radius:999px;background:var(--g2);overflow:hidden;position:relative}
 .sb-track.done{background:#181818}
-.sb-track i{position:absolute;inset:0 auto 0 0;border-radius:999px;background:linear-gradient(90deg,#C8E1FF,#FF769C)}
+.sb-track i{position:absolute;inset:0 auto 0 0;border-radius:999px;background:linear-gradient(90deg,#B5CBFF,#081F40)}
 .sb-amt{margin-top:8px;font-family:var(--f-num);font-size:12px;text-align:right;color:var(--ink)}
 .sb-name{margin-top:2px;font-size:10px;color:var(--g4);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sb-name.now{color:var(--ink)}
@@ -532,7 +535,7 @@ button.ph-tag{color:var(--mute)}
 .ccal .cd b{font-family:var(--f-num);font-weight:400;font-size:13px;line-height:1}
 .ccal .cd i{display:flex;gap:3px;height:5px}
 .ccal .cd u,.lgd{width:5px;height:5px;border-radius:50%;background:#4E4E4E;display:inline-block}.ccal .cd u.y,.lgd.y{background:var(--sky)}
-.ccal .cd.all{background:rgba(200,225,255,.18);box-shadow:inset 0 0 0 1.5px var(--sky)}
+.ccal .cd.all{background:rgba(181,203,255,.18);box-shadow:inset 0 0 0 1.5px var(--sky)}
 .ccal .cd.none{color:#777}
 .ccal .cd.today{box-shadow:inset 0 0 0 1.5px var(--paper)}
 .ccal .cd.fut{background:none;color:#555}
@@ -544,7 +547,7 @@ button.ph-tag{color:var(--mute)}
 .cal .d{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-num);font-size:13px;font-variant-numeric:tabular-nums}
 .cal .d.zero{background:var(--fg);color:var(--inv)}
 .cal .d.ok{background:var(--sky);color:var(--ink)}
-.cal .d.over{background:var(--rose);color:var(--ink)}
+.cal .d.over{background:var(--rose);color:#fff}
 .cal .d.today{box-shadow:inset 0 0 0 1.5px var(--fg)}
 .cal .d.future{color:var(--mute)}
 .lg{display:inline-block;width:10px;height:10px;border-radius:50%}
@@ -609,9 +612,9 @@ button.ph-tag{color:var(--mute)}
 .pc{position:absolute;width:80px;height:100px;border-radius:9px;display:grid;place-items:center;padding:8px;text-align:center;font-size:14px;font-weight:400;line-height:1.35;color:#000;transform:rotate(var(--rot));transform-origin:top left;transition:transform .2s cubic-bezier(.2,.8,.2,1)}
 .pc:active{transform:rotate(var(--rot)) scale(.95)}
 /* 완료 */
-.pc.done{background:#181818;color:#fff;box-shadow:0 1px 12px rgba(104,160,234,.54)}
+.pc.done{background:#181818;color:#fff;box-shadow:0 1px 12px rgba(181,203,255,.54)}
 /* 아직 못한 것 (알지만 실천 못함) */
-.pc.todo{background:radial-gradient(ellipse 50% 50% at 50% 50%,#FAFAFA 60%,#EFF3FF 100%);border:.5px solid rgba(78,132,202,.24)}
+.pc.todo{background:radial-gradient(ellipse 50% 50% at 50% 50%,#FAFAFA 60%,#D5E3FF 100%);border:.5px solid rgba(66,79,98,.24)}
 /* 새 항목 */
 .pc.new{background:#FBFBFB;border:.5px solid #000}
 .orbit .oc{position:absolute;left:50%;top:183px;transform:translateX(-50%);width:168px;text-align:center}
@@ -644,12 +647,12 @@ button.ph-tag{color:var(--mute)}
 .lr-row .th svg{width:32px;height:32px;opacity:.9;transition:width .32s cubic-bezier(.2,.8,.2,1),height .32s cubic-bezier(.2,.8,.2,1)}
 .lr-row.on .th svg{width:44px;height:44px}
 /* 영역별 썸네일 그라데이션 (시안 14: 어두운 슬레이트 · 네이비 · 청록 · 남색) + 파란 빛 그림자 */
-.lr-row .th{color:#fff;box-shadow:0 1px 12px rgba(104,160,234,.35)}
-.th.a-spend{background:linear-gradient(150deg,#5B6272 0%,#2A2E3A 45%,#05060C 100%)}
-.th.a-save{background:radial-gradient(circle at 50% 50%,#302EA0 0%,#283B7A 55%,#1F3A5C 100%)}
-.th.a-credit{background:radial-gradient(circle at 50% 50%,#05060C 0%,#262B3F 50%,#4B5372 100%)}
-.th.a-insure{background:radial-gradient(circle at 45% 55%,#264A54 0%,#33707A 55%,#428A90 100%)}
-.th.a-tax{background:linear-gradient(150deg,#46506E 0%,#23284A 50%,#0C0E22 100%)}
+.lr-row .th{color:#fff;box-shadow:0 1px 12px rgba(181,203,255,.35)}
+.th.a-spend{background:linear-gradient(150deg,#424F62 0%,#081F40 100%)}
+.th.a-save{background:radial-gradient(circle at 50% 50%,#081F40 0%,#424F62 100%)}
+.th.a-credit{background:radial-gradient(circle at 50% 50%,#424F62 0%,#081F40 100%)}
+.th.a-insure{background:linear-gradient(150deg,#B5CBFF 0%,#424F62 100%)}
+.th.a-tax{background:radial-gradient(circle at 50% 45%,#B5CBFF 0%,#424F62 60%,#081F40 100%)}
 .lr-fixed{padding-bottom:12px}
 .view.snap{scroll-snap-type:y mandatory}
 .view.snap .lr-row{scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:var(--snapTop,0px)}
@@ -986,7 +989,7 @@ function allocBlock() {
   let x = 0; const cx = circles.map(c => { const v = x + c.r; x += c.r * 2 + 16; return v; });
   const off = (305 - (x - 16)) / 2;
   return `<svg viewBox="0 0 305 150" width="100%" role="img" aria-label="외주비 배분: ${parts.map(p => `${p[0]} ${p[1]}%`).join(', ')}">
-    <defs><linearGradient id="gAura" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF769C" stop-opacity=".7"/><stop offset="1" stop-color="#C8E1FF"/></linearGradient></defs>
+    <defs><linearGradient id="gAura" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#B5CBFF"/><stop offset="1" stop-color="#B5CBFF"/></linearGradient></defs>
     ${circles.map((c, i) => `<circle cx="${off + cx[i]}" cy="60" r="${c.r}" fill="${c.fill}" ${c.stroke ? 'stroke="currentColor" stroke-width="1.5"' : ''}/>
       <text x="${off + cx[i]}" y="64" text-anchor="middle" font-size="12" font-family="Urbanist" fill="#181818" style="${c.stroke ? 'fill:currentColor' : ''}">${c.p}%</text>
       <text x="${off + cx[i]}" y="134" text-anchor="middle" font-size="11" fill="currentColor" opacity=".6">${c.n}</text>
@@ -998,8 +1001,8 @@ function allocBlock() {
    ONBOARDING
    ========================================================= */
 function vIntro() {
-  return `<div class="aura-blob" style="width:280px;height:280px;left:-60px;top:120px;background:#FF769C;opacity:.45"></div>
-  <div class="aura-blob" style="width:320px;height:320px;right:-120px;top:220px;background:#C8E1FF;opacity:.55"></div>
+  return `<div class="aura-blob" style="width:280px;height:280px;left:-60px;top:120px;background:#B5CBFF;opacity:.6"></div>
+  <div class="aura-blob" style="width:320px;height:320px;right:-120px;top:220px;background:#B5CBFF;opacity:.55"></div>
   <div style="position:relative;min-height:690px;display:flex;flex-direction:column">
     <div style="margin-top:24px"><span class="logo" role="img" aria-label="Fin.do" style="width:136px"></span></div>
     <div class="t12 mute">금융 상태 진단</div>
@@ -1092,12 +1095,12 @@ function radar(sc) {
     return `<text x="${x.toFixed(1)}" y="${(y - (i === 0 ? 10 : 2)).toFixed(1)}" text-anchor="${anc}" font-size="11" fill="#181818" opacity="${a.now ? 1 : .45}">${a.name}</text>
       <text x="${x.toFixed(1)}" y="${(y + (i === 0 ? 3 : 11)).toFixed(1)}" text-anchor="${anc}" font-size="9" fill="#606060" opacity="${a.now ? 1 : .6}">${KN[a.know]}${a.now ? '' : ' · 확장 예정'}</text>`; };
   return `<svg viewBox="0 0 305 250" width="100%" role="img" aria-label="5개 영역 레이더: ${sc.areas.map(a => `${a.name} 관심 ${a.interest} 실천 ${a.practice}`).join(', ')}">
-    <defs><linearGradient id="rdA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF769C" stop-opacity=".45"/><stop offset="1" stop-color="#C8E1FF" stop-opacity=".75"/></linearGradient></defs>
+    <defs><linearGradient id="rdA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#B5CBFF" stop-opacity=".7"/><stop offset="1" stop-color="#B5CBFF" stop-opacity=".75"/></linearGradient></defs>
     ${[1,2,3,4].map(v => `<polygon points="${poly(Array(n).fill(v))}" fill="none" stroke="#181818" stroke-opacity="${v === 4 ? .18 : .08}"/>`).join('')}
     <polygon points="${poly(Array(n).fill(2.5))}" fill="none" stroke="#181818" stroke-opacity=".35" stroke-dasharray="3 3"/>
     ${sc.areas.map((a, i) => { const [x, y] = pt(i, 4); return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#181818" stroke-opacity=".1"/>`; }).join('')}
     ${[1,2,3,4].map(v => `<text x="${cx + 3}" y="${(cy - R * v / 4 + 9).toFixed(1)}" font-size="8" fill="#9C9C9C" font-family="Urbanist">${v}</text>`).join('')}
-    <polygon points="${poly(sc.areas.map(a => a.interest))}" fill="url(#rdA)" stroke="#FF769C" stroke-opacity=".6" stroke-width="1"/>
+    <polygon points="${poly(sc.areas.map(a => a.interest))}" fill="url(#rdA)" stroke="#424F62" stroke-opacity=".6" stroke-width="1"/>
     <polygon points="${poly(sc.areas.map(a => a.practice))}" fill="#181818" fill-opacity=".08" stroke="#181818" stroke-width="2" stroke-linejoin="round"/>
     ${sc.areas.map((a, i) => { const [x, y] = pt(i, a.practice); return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.5" fill="#181818"/>`; }).join('')}
     ${sc.areas.map(lab).join('')}
@@ -1260,15 +1263,15 @@ function sankey() {
     return `<g data-act="flow" data-v="${i}" style="cursor:pointer" role="button" aria-pressed="${sel === i}" aria-label="${n.n} ${won(n.v)}원 흐름 보기" opacity="${dim ? .35 : 1}"><rect x="${n.c ? n.x - 4 : 0}" y="${n.y - 4}" width="${n.c ? 112 : n.x + BW + 4}" height="${n.h + 8}" fill="transparent"/>${bar}${lab}</g>`;
   }).join('');
   return `<svg viewBox="0 0 305 ${H + TOP + 4}" width="100%" role="img" aria-label="10월 들어온 돈 ${ids.filter(i => !N[i].c).map(i => `${N[i].n} ${won(N[i].v)}원`).join(', ')}이 ${ids.filter(i => N[i].c).map(i => `${N[i].n} ${won(N[i].v)}원`).join(', ')}으로 나뉨">
-    <defs><linearGradient id="skF" x1="0" x2="1"><stop offset="0" stop-color="#FFE3EB"/><stop offset="1" stop-color="#FF9DB8"/></linearGradient>
-    <linearGradient id="skU" x1="0" x2="1"><stop offset="0" stop-color="#FFF0F4"/><stop offset="1" stop-color="#FFC9D7"/></linearGradient>
-    <linearGradient id="skA" x1="0" x2="1"><stop offset="0" stop-color="#E6F0FF"/><stop offset="1" stop-color="#A9CBF5"/></linearGradient>
-    <linearGradient id="skE" x1="0" x2="1"><stop offset="0" stop-color="#EEF4FF"/><stop offset="1" stop-color="#C8E1FF"/></linearGradient></defs>
+    <defs><linearGradient id="skF" x1="0" x2="1"><stop offset="0" stop-color="#D5E3FF"/><stop offset="1" stop-color="#424F62"/></linearGradient>
+    <linearGradient id="skU" x1="0" x2="1"><stop offset="0" stop-color="#D5E3FF"/><stop offset="1" stop-color="#B5CBFF"/></linearGradient>
+    <linearGradient id="skA" x1="0" x2="1"><stop offset="0" stop-color="#B5CBFF"/><stop offset="1" stop-color="#081F40"/></linearGradient>
+    <linearGradient id="skE" x1="0" x2="1"><stop offset="0" stop-color="#D5E3FF"/><stop offset="1" stop-color="#424F62"/></linearGradient></defs>
     <text x="${X[0] + BW}" y="10" text-anchor="end" font-size="10" fill="#9C9C9C">들어온 돈</text><text x="${X[1]}" y="10" font-size="10" fill="#9C9C9C">간 곳</text>
     ${links}${nodes}</svg>`;
 }
 // 용도별 통장: 통합 자산 총액과, 그 안에서 각 통장이 차지하는 비율(한 줄 막대) + 잔액 목록
-const ACC_FILL = { save:'linear-gradient(90deg,#C8E1FF,#E3EEFF)', goal:'linear-gradient(90deg,#FF9DB8,#C8E1FF)', inv:'#DEDEDE', life:'#181818', emer:'repeating-linear-gradient(-45deg,#181818 0 1.5px,#FCFCFC 1.5px 4.5px)', evt:'#606060' };
+const ACC_FILL = { save:'linear-gradient(90deg,#B5CBFF,#D5E3FF)', goal:'linear-gradient(90deg,#424F62,#B5CBFF)', inv:'#DEDEDE', life:'#181818', emer:'repeating-linear-gradient(-45deg,#181818 0 1.5px,#FCFCFC 1.5px 4.5px)', evt:'#606060' };
 function accountsBlock() {
   const total = ACCOUNTS.reduce((t, a) => t + a.a, 0);
   return `<div class="row g4 mt12" style="height:28px;border-radius:999px;overflow:hidden" role="img" aria-label="통합 자산 ${won(total)}원 중 ${ACCOUNTS.map(a => `${useOf(a)} ${pct(a.a / total)}`).join(', ')}">
@@ -1703,7 +1706,7 @@ function topSpend() {
   const items = all.slice().sort((a, b) => b.a - a.a), top = items.slice(0, 4);
   const total = all.reduce((t, i) => t + i.a, 0), share = top.reduce((t, i) => t + i.a, 0) / total;
   const sel = top.find(i => i.c === S.topSel) || top[0];
-  const P = [[112, 130], [232, 74], [236, 196], [46, 226]], FILL = ['#181818', '#C8E1FF', '#DEDEDE', '#FFB8CB'];
+  const P = [[112, 130], [232, 74], [236, 196], [46, 226]], FILL = ['#181818', '#B5CBFF', '#DEDEDE', '#D5E3FF'];
   const r = i => 66 * Math.sqrt(i.a / top[0].a);
   const NECKS = [[0, 1], [0, 3], [1, 2]];
   // 두 원을 잇는 잘록한 다리(메타볼 넥)
@@ -1731,7 +1734,7 @@ function topSpend() {
     <div class="t10 mute mt4" style="text-align:right">상위 4개 = 지출의 ${pct(share)}</div>
     <svg viewBox="${vb}" width="100%" class="mt8" role="img" aria-label="상위 지출: ${top.map(i => `${i.c} ${won(i.a)}원`).join(', ')}">
       <defs>${NECKS.map(([a, b], n) => `<linearGradient id="nk${n}" gradientUnits="userSpaceOnUse" x1="${P[a][0]}" y1="${P[a][1]}" x2="${P[b][0]}" y2="${P[b][1]}"><stop offset=".3" stop-color="${FILL[a]}"/><stop offset=".7" stop-color="${FILL[b]}"/></linearGradient>`).join('')}
-      <linearGradient id="bdg" x1="0" x2="1"><stop offset="0" stop-color="#FFC2D3"/><stop offset="1" stop-color="#C8E1FF"/></linearGradient></defs>
+      <linearGradient id="bdg" x1="0" x2="1"><stop offset="0" stop-color="#D5E3FF"/><stop offset="1" stop-color="#B5CBFF"/></linearGradient></defs>
       ${NECKS.map(([a, b], n) => `<path d="${neck(P[a], P[b], r(top[a]), r(top[b]))}" fill="url(#nk${n})"/>`).join('')}
       ${top.map((i, k) => `<circle cx="${P[k][0]}" cy="${P[k][1]}" r="${r(i)}" fill="${FILL[k]}"/>`).join('')}
       <circle cx="${sx}" cy="${sy}" r="${sr + 6}" fill="none" stroke="#181818" stroke-width="1.5" stroke-dasharray="3 3"/>
@@ -1754,7 +1757,7 @@ function diverging() {
   const items = (S.period === 'month' ? MONTH_ITEMS : WEEK_ITEMS).filter(i => i.d !== 0);
   const max = Math.max(...items.map(i => Math.abs(i.d))), mid = 172, half = 104;
   return `<svg viewBox="0 0 305 ${items.length * 30 + 10}" width="100%" role="img" aria-label="카테고리별 ${S.period === 'month' ? '지난달' : '지난주'} 대비 변화">
-    <defs><linearGradient id="dvU" x1="0" x2="1"><stop offset="0" stop-color="#FF769C" stop-opacity=".35"/><stop offset="1" stop-color="#FF769C"/></linearGradient><linearGradient id="dvD" x1="1" x2="0"><stop offset="0" stop-color="#C8E1FF" stop-opacity=".45"/><stop offset="1" stop-color="#C8E1FF"/></linearGradient></defs>
+    <defs><linearGradient id="dvU" x1="0" x2="1"><stop offset="0" stop-color="#081F40" stop-opacity=".35"/><stop offset="1" stop-color="#081F40"/></linearGradient><linearGradient id="dvD" x1="1" x2="0"><stop offset="0" stop-color="#B5CBFF" stop-opacity=".45"/><stop offset="1" stop-color="#B5CBFF"/></linearGradient></defs>
     <line x1="${mid}" y1="0" x2="${mid}" y2="${items.length * 30 + 4}" stroke="currentColor" stroke-width=".75"/>
     ${items.map((i, k) => { const y = 6 + k * 30, w = Math.abs(i.d) / max * (half - 8); const up = i.d > 0;
       return `<text x="0" y="${y + 12}" font-size="12" fill="currentColor">${i.c}</text>
@@ -1810,7 +1813,7 @@ function vSpend() {
     <section class="sec">
       <div class="sec-h"><div><div class="t18">어디서 늘고 줄었나</div><div class="sec-d">${m ? '지난달' : '지난주'} 대비</div></div></div>
       <div class="card c-paper">${diverging()}
-        <div class="row g16 t10 mute mt12"><span class="row g4"><i style="width:16px;height:8px;border-radius:4px;background:#FF769C;display:inline-block"></i>늘었어요</span><span class="row g4"><i style="width:16px;height:8px;border-radius:4px;background:#C8E1FF;display:inline-block"></i>줄었어요</span></div>
+        <div class="row g16 t10 mute mt12"><span class="row g4"><i style="width:16px;height:8px;border-radius:4px;background:#081F40;display:inline-block"></i>늘었어요</span><span class="row g4"><i style="width:16px;height:8px;border-radius:4px;background:#B5CBFF;display:inline-block"></i>줄었어요</span></div>
       </div>
     </section>
     <section class="sec">
@@ -1855,11 +1858,11 @@ function catPetals() {
     return `M${x0} ${y0}A${r2} ${r2} 0 0 1 ${x1} ${y1}L${x2} ${y2}A${r1} ${r1} 0 0 0 ${x3} ${y3}Z`; };
   const petals = cats.map((k, i) => {
     const a0 = i / n * 2 * Math.PI, a1 = (i + 1) / n * 2 * Math.PI, am = (a0 + a1) / 2;
-    const p = sp[k] / S.cat[k], fast = p > pace, fc = !fast ? '#C8E1FF' : p / pace <= 1.3 ? '#FFC4D4' : '#FF8FAE', rf = Math.sqrt(R0 * R0 + Math.min(1, p) * (R * R - R0 * R0));
+    const p = sp[k] / S.cat[k], fast = p > pace, fc = !fast ? '#B5CBFF' : p / pace <= 1.3 ? '#424F62' : '#081F40', rf = Math.sqrt(R0 * R0 + Math.min(1, p) * (R * R - R0 * R0));
     const outer = sector(R0 + IN, R - IN, a0, a1), inner = rf - IN > R0 + IN + 2 ? sector(R0 + IN, rf - IN, a0, a1) : '';
     // 라벨은 같은 반지름(바깥 쪽 78%)에 검정 글자로
     // 채움의 바깥 모서리에 글자가 걸치면 채움 안쪽으로 옮긴다
-    const rb = R * .78, rl = Math.abs(rf - rb) < 18 ? rf - 26 : rb, [lx, ly] = pt(rl, am), dim = sel && sel !== k, tc = '#181818', sc = '#606060';
+    const rb = R * .78, rl = Math.abs(rf - rb) < 18 ? rf - 26 : rb, [lx, ly] = pt(rl, am), dim = sel && sel !== k, onDark = fast && rl < rf - 10, tc = onDark ? '#fff' : '#181818', sc = onDark ? 'rgba(255,255,255,.75)' : '#606060';
     return `<g data-act="catSel" data-v="${k}" style="cursor:pointer" opacity="${dim ? .4 : 1}" role="button" aria-label="${k} 예산 ${won(S.cat[k])}원 중 ${won(sp[k])}원 사용 (${pct(p)})">
       <path d="${outer}" fill="#EFEFEF" stroke="#EFEFEF" stroke-width="${IN * 2}" stroke-linejoin="round"/>
       ${inner ? `<path d="${inner}" fill="${fc}" stroke="${fc}" stroke-width="${IN * 2}" stroke-linejoin="round"/>` : ''}
@@ -1872,7 +1875,7 @@ function catPetals() {
     ${petals}</svg>
     <div class="row between t12 mt16" style="min-height:18px">${s1 ? `<span>${s1}</span><span class="num">${won(sp[s1])} <span class="mute">/ ${won(S.cat[s1])}원</span></span>`
       : `<span class="mute">항목을 누르면 금액을 보여드려요</span><span class="mute num">오늘까지 ${pct(pace)}</span>`}</div>
-    <div class="row g16 t10 mute mt12"><span class="row g4"><i class="pt-lg" style="background:#EFEFEF"></i>예산</span><span class="row g4"><i class="pt-lg" style="background:#C8E1FF"></i>쓴 돈</span><span class="row g4"><i class="pt-lg" style="background:#FFC4D4"></i><i class="pt-lg" style="background:#FF8FAE;margin-left:-2px"></i>날짜보다 빨리 쓰는 중</span></div>`;
+    <div class="row g16 t10 mute mt12"><span class="row g4"><i class="pt-lg" style="background:#EFEFEF"></i>예산</span><span class="row g4"><i class="pt-lg" style="background:#B5CBFF"></i>쓴 돈</span><span class="row g4"><i class="pt-lg" style="background:#424F62"></i><i class="pt-lg" style="background:#081F40;margin-left:-2px"></i>날짜보다 빨리 쓰는 중</span></div>`;
 }
 function halfDonut() {
   const parts = [ ['고정 지출',24,'#181818'], ['생활비',33,'#606060'], ['저축',35,'url(#hd)'], ['여유',8,'#DEDEDE'] ];
@@ -1882,7 +1885,7 @@ function halfDonut() {
     const d = `M${s[0].toFixed(1)} ${s[1].toFixed(1)} A ${r} ${r} 0 0 1 ${e[0].toFixed(1)} ${e[1].toFixed(1)}`; a0 = a1;
     return `<path d="${d}" stroke="${c}" stroke-width="${sw}" fill="none" stroke-linecap="round"/>`; }).join('');
   return `<svg viewBox="0 0 305 130" width="100%" role="img" aria-label="월 수입 배분 제안: 고정 지출 24%, 생활비 33%, 저축 35%, 여유 8%">
-    <defs><linearGradient id="hd" x1="0" x2="1"><stop offset="0" stop-color="#FF769C"/><stop offset="1" stop-color="#C8E1FF"/></linearGradient></defs>${arcs}
+    <defs><linearGradient id="hd" x1="0" x2="1"><stop offset="0" stop-color="#081F40"/><stop offset="1" stop-color="#B5CBFF"/></linearGradient></defs>${arcs}
     <text x="${cx}" y="104" text-anchor="middle" font-size="34" font-family="Urbanist" font-weight="300" fill="#181818">35%</text>
     <text x="${cx}" y="124" text-anchor="middle" font-size="11" fill="#606060">저축 비율</text></svg>
     <div class="grid2 mt16" style="gap:8px 12px">${parts.map(([n, p, c]) => `<div class="row g8 t12"><i style="width:10px;height:10px;border-radius:50%;display:inline-block;background:${c.startsWith('url') ? 'var(--aura)' : c}"></i><span style="flex:1">${n}</span><span class="num">${p}%</span></div>`).join('')}</div>`;
@@ -2054,11 +2057,11 @@ function planActual() {
   const proj = [last]; let v = S.goalSaved; for (let i = gi + 1; i < n; i++) { v = Math.min(5000000, v + 350000); proj.push([X(i), Y(v)]); }
   const planNow = 5000000 * gi / (n - 1), gap = S.goalSaved - planNow;
   return { gap, svg:`<svg viewBox="0 0 305 176" width="100%" role="img" aria-label="계획 대비 실제 누적 저축. 현재 계획보다 ${won(Math.abs(gap))}원 ${gap < 0 ? '부족' : '앞섬'}">
-    <defs><linearGradient id="pa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C8E1FF" stop-opacity=".9"/><stop offset="1" stop-color="#C8E1FF" stop-opacity="0"/></linearGradient></defs>
+    <defs><linearGradient id="pa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B5CBFF" stop-opacity=".9"/><stop offset="1" stop-color="#B5CBFF" stop-opacity="0"/></linearGradient></defs>
     ${[0,2500000,5000000].map(v => `<line x1="40" x2="298" y1="${Y(v)}" y2="${Y(v)}" stroke="#181818" stroke-opacity=".12" stroke-width=".75"/><text x="34" y="${Y(v) + 3}" font-size="9" text-anchor="end" fill="#606060" font-family="Urbanist">${v ? man(v) : 0}</text>`).join('')}
     <path d="${smooth(act)} L${last[0]} 150 L40 150Z" fill="url(#pa)"/>
     <line x1="${X(0)}" y1="${Y(0)}" x2="${X(n - 1)}" y2="${Y(5000000)}" stroke="#181818" stroke-dasharray="4 4" stroke-width="1"/>
-    <path d="${smooth(proj)}" fill="none" stroke="#FF769C" stroke-width="1.5" stroke-dasharray="1 4" stroke-linecap="round"/>
+    <path d="${smooth(proj)}" fill="none" stroke="#081F40" stroke-width="1.5" stroke-dasharray="1 4" stroke-linecap="round"/>
     <path d="${smooth(act)}" fill="none" stroke="#181818" stroke-width="2"/>
     <circle cx="${last[0]}" cy="${last[1]}" r="5" fill="#181818"/><circle cx="${last[0]}" cy="${last[1]}" r="10" fill="none" stroke="#181818" stroke-opacity=".25"/>
     <line x1="${last[0]}" x2="${last[0]}" y1="${Y(planNow)}" y2="${last[1]}" stroke="#181818" stroke-width="1"/>
@@ -2101,7 +2104,7 @@ function vChal() {
       <div class="row between"><span class="n20 num">2026. 10</span>
         <button class="cal-tg t12" data-act="calOpen" aria-expanded="${S.calOpen}">${S.calOpen ? '주간으로 접기' : '월간 펼치기'}${ic(S.calOpen ? 'minus' : 'plus', 14)}</button></div>
       <div class="ccal mt16" role="group" aria-label="참여한 챌린지 성공 달력">${cells}</div>
-      <div class="row g16 mt16 t10 mute"><span class="row g4"><u class="lgd y"></u>성공</span><span class="row g4"><u class="lgd"></u>실패</span><span class="row g4"><i class="lg" style="border-radius:4px;background:rgba(200,225,255,.18);box-shadow:inset 0 0 0 1.5px var(--sky)"></i>모두 성공한 날</span></div>
+      <div class="row g16 mt16 t10 mute"><span class="row g4"><u class="lgd y"></u>성공</span><span class="row g4"><u class="lgd"></u>실패</span><span class="row g4"><i class="lg" style="border-radius:4px;background:rgba(181,203,255,.18);box-shadow:inset 0 0 0 1.5px var(--sky)"></i>모두 성공한 날</span></div>
     </div>
     <div class="stack8 mt8">${on.map(c => { const cert = c.id === 'coin' || S.chalCert.has(c.id);
       return `<div class="card c-paper ch-row"><span class="ib ink">${ic(c.i, 20)}</span>
@@ -2160,7 +2163,7 @@ function vGoal() {
   <section class="sec">
     <div class="sec-h"><div><div class="t18">계획보다 ${W(Math.abs(Math.round(pa.gap)))} ${pa.gap < 0 ? '느려요' : '빨라요'}</div><div class="sec-d">계획 대비 실제</div></div></div>
     <div class="card c-paper">${pa.svg}
-      <div class="row g16 t10 mute mt8" style="flex-wrap:wrap"><span class="row g4"><i style="width:16px;height:2px;background:#181818;display:inline-block"></i>실제 저축</span><span class="row g4"><i style="width:16px;border-top:1px dashed #181818;display:inline-block"></i>계획</span><span class="row g4"><i style="width:16px;border-top:2px dotted #FF769C;display:inline-block"></i>지금 속도 예상</span></div>
+      <div class="row g16 t10 mute mt8" style="flex-wrap:wrap"><span class="row g4"><i style="width:16px;height:2px;background:#181818;display:inline-block"></i>실제 저축</span><span class="row g4"><i style="width:16px;border-top:1px dashed #181818;display:inline-block"></i>계획</span><span class="row g4"><i style="width:16px;border-top:2px dotted #081F40;display:inline-block"></i>지금 속도 예상</span></div>
       <hr class="hair mt16">
       <div class="grid2 mt16"><div><div class="t10 mute">9월 목표 적립</div><div class="t14 num mt4">350,000 → 250,000원</div></div><div><div class="t10 mute">차이 원인</div><div class="t14 mt4">배달 +44,000원</div></div></div>
     </div>
@@ -2244,7 +2247,7 @@ function vBenefit() {
       <div style="position:relative;height:84px;margin-top:8px" role="img" aria-label="카드 사용액 7,100,000원, 공제 시작 기준 6,600,000원">
         <div style="position:absolute;left:0;right:0;top:28px;height:24px;border-radius:999px;background:rgba(24,24,24,.07)"></div>
         <div style="position:absolute;left:0;width:${X(4800000)}%;top:28px;height:24px;border-radius:999px 0 0 999px;background:#181818"></div>
-        <div style="position:absolute;left:${X(4800000)}%;width:${X(2300000)}%;top:28px;height:24px;border-radius:0 999px 999px 0;background:linear-gradient(90deg,#FF769C,#FCFCFC)"></div>
+        <div style="position:absolute;left:${X(4800000)}%;width:${X(2300000)}%;top:28px;height:24px;border-radius:0 999px 999px 0;background:linear-gradient(90deg,#424F62,#FCFCFC)"></div>
         <div style="position:absolute;left:${X(6600000)}%;top:16px;height:48px;width:1.5px;background:#181818"></div>
         <span class="t10" style="position:absolute;left:${X(6600000)}%;top:-2px;transform:translateX(-50%);white-space:nowrap">공제 시작 6,600,000</span>
         <span class="t10 mute" style="position:absolute;left:0;top:62px">신용 4,800,000</span>
@@ -2321,7 +2324,7 @@ function sheetHTML(name) {
         <div class="row between mt16"><div><div class="t10 mute">진행률</div><div class="n24 mt4">${pct(S.goalSaved / 5000000)} → ${pct(after / 5000000)}</div></div><div style="text-align:right"><div class="t10 mute">달성 예정</div><div class="n24 mt4">${dt(m1)}</div></div></div>
         <div style="position:relative;height:40px;margin-top:20px"><div style="position:absolute;left:0;right:0;top:16px;height:1px;background:var(--g3)"></div>
           <span style="position:absolute;left:40%;top:10px;width:13px;height:13px;border-radius:50%;background:#181818"></span><span class="t10 mute" style="position:absolute;left:40%;top:28px;transform:translateX(-30%)">${dt(m0)}</span>
-          <span style="position:absolute;left:${40 + (m1 - m0) * 12}%;top:10px;width:13px;height:13px;border-radius:50%;box-shadow:inset 0 0 0 1.5px #FF769C"></span><span class="t10" style="position:absolute;left:${40 + (m1 - m0) * 12}%;top:28px">${dt(m1)}</span></div>
+          <span style="position:absolute;left:${40 + (m1 - m0) * 12}%;top:10px;width:13px;height:13px;border-radius:50%;box-shadow:inset 0 0 0 1.5px #081F40"></span><span class="t10" style="position:absolute;left:${40 + (m1 - m0) * 12}%;top:28px">${dt(m1)}</span></div>
         <p class="t14 mt12">${m1 - m0 > 0 ? `목표 달성이 ${m1 - m0}개월 늦어져요` : '달성 시점은 그대로예요'}</p></div>
       <p class="t12 mute mt12">꺼낼 수는 있어요. 다만 다시 채우려면 한 달에 ${W(Math.ceil(a / 6 / 1000) * 1000)}씩 6개월이 필요해요.</p>
       <div class="row g8 mt16"><button class="btn ghost" style="flex:1" data-act="wDo">그래도 꺼내기</button><button class="btn" style="flex:1" data-act="closeSheet">꺼내지 않기</button></div>`;
