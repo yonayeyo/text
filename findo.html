@@ -114,7 +114,9 @@ svg{display:block}
 .na-track{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;min-width:0;margin:0 calc(-1 * var(--m));padding:0 var(--m);scroll-padding:0 var(--m)}
 .na-track::-webkit-scrollbar{display:none}
 .na-dots{display:flex;justify-content:center;gap:6px;height:6px}
-.na-dots i{width:6px;height:6px;border-radius:50%;background:#D5E3FF;transition:background .25s}
+.na-dots i{position:relative;width:6px;height:6px;border-radius:50%;background:#D5E3FF;transition:background .25s;cursor:pointer}
+.na-dots i::after{content:"";position:absolute;inset:-9px -5px}
+.na-track.dragging{scroll-snap-type:none;cursor:grabbing;user-select:none}
 .na-dots i.on{background:#B5CBFF}
 .pt-lg{display:inline-block;width:10px;height:10px;border-radius:3px}
 .na-track>.na-card{flex:0 0 100%;scroll-snap-align:start}
@@ -1166,6 +1168,26 @@ function vResult(ctx = 'ob') {
    ========================================================= */
 // 행동 추천 카드 (Figma 시안): "행동 추천" + 유형 칩 / 제목 20px / 설명 2줄 / 오른쪽 원형 실행 버튼
 // 행동 추천 카드를 넘기면 아래 점(∙ ∙ ∙)도 함께 바뀐다
+// 행동 추천 카드: 마우스로 끌어서 넘기기. 놓으면 가까운 카드에 맞추고, 끌었던 경우 버튼 클릭은 막는다
+let naDrag = null;
+document.addEventListener('pointerdown', e => {
+  const tr = e.pointerType === 'mouse' && e.button === 0 && e.target.closest('.na-track'); if (!tr) return;
+  naDrag = { tr, x:e.clientX, left:tr.scrollLeft, moved:false };
+});
+document.addEventListener('pointermove', e => {
+  const d = naDrag; if (!d) return;
+  const dx = e.clientX - d.x; if (!d.moved && Math.abs(dx) < 5) return;
+  if (!d.moved) { d.moved = true; d.tr.classList.add('dragging'); }
+  d.tr.scrollLeft = d.left - dx; e.preventDefault();
+});
+document.addEventListener('pointerup', e => {
+  const d = naDrag; naDrag = null; if (!d || !d.moved) return;
+  const w = d.tr.firstElementChild.offsetWidth + 12, dx = e.clientX - d.x, from = Math.round(d.left / w);
+  const to = Math.max(0, Math.min(d.tr.children.length - 1, Math.abs(dx) > w * .15 ? from + (dx < 0 ? 1 : -1) : from));
+  d.tr.classList.remove('dragging'); d.tr.scrollTo({ left:to * w, behavior:'smooth' });
+  const stop = ev => { ev.stopPropagation(); ev.preventDefault(); }; document.addEventListener('click', stop, { capture:true, once:true }); setTimeout(() => document.removeEventListener('click', stop, true), 0);
+});
+document.addEventListener('keydown', e => { const d = e.target.closest && e.target.closest('.na-dots i'); if (d && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); d.click(); } });
 function naDots(el) {
   const k = Math.round(el.scrollLeft / (el.firstElementChild.offsetWidth + 12)); S.naIdx = k;
   el.parentElement.querySelectorAll('.na-dots i').forEach((d, j) => d.classList.toggle('on', j === k));
@@ -1208,7 +1230,7 @@ function nextCard() {
       ${c.done ? `<span class="ib na-go done" aria-label="${c.b}">${ic('check', 22)}</span>` : `<button class="ib na-go" ${c.act} aria-label="${c.b}">${ic(c.i || 'ur', 22)}</button>`}</div>
   </div>`;
   return `<div class="na-wrap"><div class="na-track" onscroll="naDots(this)">${recs.map(card).join('')}</div>
-  ${total > 1 ? `<div class="na-dots" aria-hidden="true">${recs.map((_, k) => `<i class="${k === (S.naIdx || 0) ? 'on' : ''}"></i>`).join('')}</div>` : ''}
+  ${total > 1 ? `<div class="na-dots">${recs.map((_, k) => `<i class="${k === (S.naIdx || 0) ? 'on' : ''}" data-act="naGo" data-v="${k}" role="button" tabindex="0" aria-label="행동 추천 ${k + 1}/${total} 보기"></i>`).join('')}</div>` : ''}
   <p class="na-why"><span class="na-star" aria-hidden="true">✦</span><span>${why}</span></p></div>`;
 }
 function sankey() {
@@ -2634,6 +2656,7 @@ document.addEventListener('click', e => {
     case 'tab': closeSheet(); S.mode = 'app'; S.sub = null; S.tab = el.dataset.tab; if (!el.classList.contains('tab')) { const a = viewArea(); a && S.explored.add(a); } if (el.dataset.pv) S.planView = el.dataset.pv; if (el.dataset.sv) S.spendView = el.dataset.sv; if (el.dataset.lv) S.learnView = el.dataset.lv; render(false); break;
     case 'pv': subTap(v); break;
     case 'lv': subTap(v); break;
+    case 'naGo': { const tr = el.closest('.na-wrap').querySelector('.na-track'); tr.scrollTo({ left:+v * (tr.firstElementChild.offsetWidth + 12), behavior:'smooth' }); break; }
     case 'learnArea': S.learnArea = v; render(); break;
     case 'concept': S.conceptId = v; if (el.dataset.go) { S.mode = 'app'; S.sub = null; S.tab = el.dataset.go; S.learnView = 'bite'; render(false); } openSheet('concept'); break;
     case 'conceptOk': { const c = conceptOf(v); c.b ? S.bitesDone.add(c.b) : S.conceptDone.add(v); refreshSheet(); render(); break; }
