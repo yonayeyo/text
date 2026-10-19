@@ -599,10 +599,10 @@ button.ph-tag{color:var(--mute)}
 /* 홈 (시안 4): 머리말 아래 구분선 · 오늘 쓸 수 있는 금액 · 오늘의 실천 항목 궤도 */
 .shead:has(> .home-top){box-shadow:inset 0 -1px 0 #EDEDED}
 .top.home-top{padding-bottom:12px}
-.h-hero{position:relative;margin-top:12px;display:grid;gap:1px}
+.h-hero{position:relative;margin-top:12px;display:grid;gap:0}
 .h-hero .h-lb{font-size:14px;font-weight:500;color:#999;line-height:14px}
-.h-hero .h-sb{font-size:10px;font-weight:400;color:#999}
-.h-hero .rw{display:flex;align-items:center;gap:12px;margin-top:3px}  /* 보조 문구 ↔ 숫자: 보이는 글자 기준 12px */
+.h-hero .h-sb{font-size:10px;font-weight:400;color:#999;margin-top:5.25px}
+.h-hero .rw{display:flex;align-items:center;gap:12px;margin-top:-.25px}  /* 라벨 ↔ 보조 문구 ↔ 숫자: 보이는 글자 기준 모두 8px */
 .h-hero .hl{flex:1;height:1px;background:var(--g4)}
 .h-hero .ib{background:#181818}
 /* Bitcount 숫자는 글자 상자 안에서 위쪽에 그려져서, 선·버튼을 숫자 가운데(3.5px 위)에 맞춘다 */
@@ -612,8 +612,12 @@ button.ph-tag{color:var(--mute)}
 .orbit-wrap{margin:8px calc(-1 * var(--m)) 0;overflow:hidden}
 .orbit{position:relative;width:393px;height:440px;margin-left:calc(50% - 196.5px)}  /* 시안 좌표 기준 폭 393으로 고정하고 화면 가운데에 둔다 */
 .orbit .deco{position:absolute;border-radius:50%;background:#000;pointer-events:none}
-.pc{position:absolute;width:80px;height:100px;border-radius:9px;display:grid;place-items:center;padding:8px;text-align:center;font-size:14px;font-weight:400;line-height:1.35;color:#000;transform:rotate(var(--rot));transform-origin:top left;transition:transform .2s cubic-bezier(.2,.8,.2,1)}
-.pc:active{transform:rotate(var(--rot)) scale(.95)}
+.pc{position:absolute;width:80px;height:100px;border-radius:9px;display:grid;place-items:center;padding:8px;text-align:center;font-size:14px;font-weight:400;line-height:1.35;color:#000;transform:rotate(var(--rot));transform-origin:center;transition:transform .2s cubic-bezier(.2,.8,.2,1)}
+.pc:active{transform:rotate(var(--rot)) scale(.94)}
+/* 누르면 가운데를 축으로 쏙 들어갔다 튀어나온 뒤 이동 */
+.pc.tap{animation:pcTap .24s cubic-bezier(.3,.7,.4,1.4)}
+@keyframes pcTap{0%{transform:rotate(var(--rot)) scale(1)}45%{transform:rotate(var(--rot)) scale(.9)}100%{transform:rotate(var(--rot)) scale(1.04)}}
+@media (prefers-reduced-motion:reduce){.pc.tap{animation:none}}
 /* 완료 */
 .pc.done{background:#181818;color:#fff;box-shadow:0 1px 12px rgba(104,160,234,.54)}
 /* 아직 못한 것 (알지만 실천 못함) */
@@ -1208,6 +1212,11 @@ document.addEventListener('pointerup', e => {
   d.tr.classList.remove('dragging'); d.tr.scrollTo({ left:to * w, behavior:'smooth' });
   const stop = ev => { ev.stopPropagation(); ev.preventDefault(); }; document.addEventListener('click', stop, { capture:true, once:true }); setTimeout(() => document.removeEventListener('click', stop, true), 0);
 });
+document.addEventListener('click', e => {
+  const c = e.target.closest && e.target.closest('.orbit .pc'); if (!c || c.dataset.tapped || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  e.stopPropagation(); e.preventDefault(); c.dataset.tapped = '1'; c.classList.remove('wiggle'); c.classList.add('tap');
+  setTimeout(() => { c.click(); delete c.dataset.tapped; c.classList.remove('tap'); }, 240);
+}, true);
 document.addEventListener('keydown', e => { const d = e.target.closest && e.target.closest('.na-dots i'); if (d && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); d.click(); } });
 function naDots(el) {
   const k = Math.round(el.scrollLeft / (el.firstElementChild.offsetWidth + 12)); S.naIdx = k;
@@ -1484,7 +1493,9 @@ const PRACTICE = {
 // 궤도 자리 [x, y, 기울기, 이미지 카드] — 시안 좌표에서 x는 402 → 393 화면 차이만큼(−4.5) 옮기고, y는 프레임 170 기준
 const OX = -4.5, OY = 170;
 const ORBIT = [[59,233.97,-5],[165.51,190,5],[257,233.97,-5],[27.71,341,5],[303.71,341,5],[165.51,490.3,5],[257,458.97,-5]], ORBIT_NEW = [59,458.97,-5];
-const pos = (x, y, r) => `left:${(x + OX).toFixed(2)}px;top:${(y - OY).toFixed(2)}px;--rot:${r}deg`;
+// 시안은 왼쪽 위 기준 회전이라, 가운데 기준으로 돌려도 같은 자리에 보이도록 위치를 보정한다
+const pos = (x, y, r) => { const a = r * Math.PI / 180, cx = 40, cy = 50, dx = cx * Math.cos(a) - cy * Math.sin(a) - cx, dy = cx * Math.sin(a) + cy * Math.cos(a) - cy;
+  return `left:${(x + OX + dx).toFixed(2)}px;top:${(y - OY + dy).toFixed(2)}px;--rot:${r}deg`; };
 function orbit() {
   const P = PRACTICE[S.persona], items = P.items.map(([t, done, act]) => [t, done(), act]);
   const n = items.filter(i => i[1]).length;
