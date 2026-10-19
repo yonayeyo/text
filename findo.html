@@ -636,11 +636,20 @@ button.ph-tag{color:var(--mute)}
 .lr-chips::-webkit-scrollbar{display:none}
 .lr-chips button{flex:none;height:22px;padding:0 8px;border-radius:999px;font-size:12px;color:#999;box-shadow:inset 0 0 0 .5px #C4C4C4;white-space:nowrap}
 .lr-chips button.on{background:#000;color:#fff;box-shadow:none}
-.lr-list{display:flex;flex-direction:column;gap:28px;margin-top:24px;padding-left:10px}
+.lr-list{display:flex;flex-direction:column;gap:28px;margin-top:16px;padding-left:10px}
 .lr-row{display:flex;align-items:center;width:100%;text-align:left}
-.lr-row .th{flex:none;width:100px;height:100px;margin:0 20px;border-radius:50px;background:#D9D9D9;transition:width .32s cubic-bezier(.2,.8,.2,1),height .32s cubic-bezier(.2,.8,.2,1),margin .32s cubic-bezier(.2,.8,.2,1),border-radius .32s cubic-bezier(.2,.8,.2,1)}
+.lr-row .th{flex:none;display:grid;place-items:center;color:#181818;width:100px;height:100px;margin:0 20px;border-radius:50px;background:#D9D9D9;transition:width .32s cubic-bezier(.2,.8,.2,1),height .32s cubic-bezier(.2,.8,.2,1),margin .32s cubic-bezier(.2,.8,.2,1),border-radius .32s cubic-bezier(.2,.8,.2,1)}
 .lr-row .tx{display:grid;gap:4px;min-width:0;margin-left:0;transition:margin .32s cubic-bezier(.2,.8,.2,1)}
 .lr-row.on .th{width:140px;height:140px;margin:0;border-radius:32px}
+.lr-row .th svg{width:32px;height:32px;opacity:.8;transition:width .32s cubic-bezier(.2,.8,.2,1),height .32s cubic-bezier(.2,.8,.2,1)}
+.lr-row.on .th svg{width:44px;height:44px}
+/* 영역별 썸네일 색 (기존 팔레트: 분홍 · 하늘 · 오라) — 밝은 빛을 왼쪽 위에 얹어 입체감 */
+.th.a-spend{background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.75),transparent 55%),linear-gradient(150deg,#FFE3EB,#FF9DB8)}
+.th.a-save{background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.75),transparent 55%),linear-gradient(150deg,#EEF4FF,#A9CBF5)}
+.th.a-credit{background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.7),transparent 55%),linear-gradient(150deg,#FFD6E2,#E7DDF7 50%,#C8E1FF)}
+.th.a-insure{background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.7),transparent 55%),linear-gradient(150deg,#F1EEF7,#C8E1FF)}
+.th.a-tax{background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.7),transparent 55%),linear-gradient(150deg,#FFF0F4,#FFC4D4 55%,#E7DDF7)}
+.lr-fixed{padding-bottom:12px}
 .lr-row.on .tx{margin-left:20px}
 .lr-row .ca{font-size:12px;color:#999}
 .lr-row .nm{font-size:18px;color:#000}
@@ -1486,19 +1495,32 @@ const BITES = {
 // 알기 › 한 입 금융: 5개 영역의 개념 원반. b = 생활 예시가 있는 기존 개념 카드(BITES), known = 이미 알아본 개념(예시)
 const CONCEPT_TOTAL = 136, CONCEPT_KNOWN = 12;   // 전체 136개 중 데모에 담은 개념만 보여 준다
 const CONCEPTS = [
-  { id:'budget', a:'spend', k:'예산', known:true, q:'한 달 예산,<br>어떻게 정할까요?', take:'월급에서 매달 나가는 돈과 먼저 모을 돈을 뺀 나머지가 한 달 예산이에요. 이걸 남은 날로 나누면 오늘 쓸 수 있는 돈이 돼요.', go:['예산 보기', 'data-act="tab" data-tab="spend" data-sv="budget"'] },
-  { id:'fixed', a:'spend', k:'고정 지출', q:'월세·통신비는<br>왜 먼저 빼 둘까요?', take:'매달 정해진 날 빠져나가는 돈이라 쓸 수 있는 돈이 아니에요. 미리 빼 두면 하루 예산이 실제보다 커 보이는 일을 막을 수 있어요.', go:['매달 나가는 돈 확인', 'data-act="tab" data-tab="plan" data-pv="rule"'] },
-  { id:'small', a:'spend', k:'소액 반복 지출', q:'편의점 커피 한 잔,<br>한 달이면 얼마일까요?', take:'2,100원짜리 커피도 23번이면 48,300원이에요. 한 번은 작아도 자주 반복되는 지출이 한 달 예산을 가장 많이 흔들어요.', go:['작은 돈 보기', 'data-act="tab" data-tab="spend" data-sv="analysis"'] },
-  { id:'infl', a:'save', b:'infl' },
-  { id:'comp', a:'save', b:'comp' },
-  { id:'emer', a:'save', k:'비상금', known:true, q:'갑자기 병원비가 생기면<br>어디서 꺼낼까요?', take:'갑작스러운 지출을 위해 따로 모아 둔 돈이에요. 보통 생활비 3개월치를 권해요. 비상금이 있으면 적금을 깨거나 할부를 쓰지 않아도 돼요.', go:['비상금 보기', 'data-act="tab" data-tab="plan" data-pv="bank"'] },
-  { id:'pre', a:'save', k:'선저축', known:true, q:'월급날 먼저 모으면<br>뭐가 달라질까요?', take:'쓰고 남은 돈을 모으면 남는 돈이 거의 없어요. 월급이 들어오자마자 저축부터 옮기면 남은 돈 안에서 생활하게 돼요.', go:['자동 규칙 보기', 'data-act="tab" data-tab="plan" data-pv="rule"'] },
-  { id:'credit', a:'credit', k:'신용점수', q:'카드값을 늦게 내면<br>무엇이 달라질까요?', take:'신용점수는 돈을 제때 갚는지를 점수로 매긴 거예요. 연체가 생기면 점수가 내려가고, 대출 금리가 높아지거나 대출이 어려워질 수 있어요.', go:['납부 자동이체 확인', 'data-act="tab" data-tab="plan" data-pv="rule"'] },
-  { id:'loan', a:'credit', k:'대출 이자', q:'월 1% 이자,<br>1년이면 12%일까요?', take:'갚지 않은 이자에 다시 이자가 붙으면 1년 뒤 갚을 돈은 12%보다 많아져요. 빌린 돈에도 복리가 붙는다는 걸 기억해 두세요.', go:['복리 알아보기', 'data-act="concept" data-v="comp"'] },
-  { id:'insure', a:'insure', k:'실손보험', q:'병원비 30,000원,<br>실손보험이 있으면?', take:'실제로 낸 병원비 중 일부를 돌려받는 보험이에요. 정해진 금액을 한꺼번에 주는 보험과는 달라요.', go:null },
-  { id:'tax', a:'tax', b:'tax', go:['적금 비교하기', 'data-act="sheet" data-sheet="compare"'] },
-  { id:'deduct', a:'tax', k:'소득공제', q:'체크카드가 왜<br>연말정산에 유리할까요?', take:'카드 사용액이 총급여의 25%를 넘으면 그다음부터 공제돼요. 이때 체크카드는 30%, 신용카드는 15%가 적용돼요.', go:['혜택에서 확인', 'data-act="tab" data-tab="benefit"'] },
-  { id:'youth', a:'tax', k:'청년 지원금', q:'나도 받을 수 있는<br>지원금이 있을까요?', take:'나이·소득·주거 조건에 맞으면 월세 지원, 저축 기여금 같은 혜택을 받을 수 있어요. 대부분 직접 신청해야 받을 수 있어요.', go:['나에게 해당되는 혜택', 'data-act="tab" data-tab="benefit"'] },
+  { id:'budget', i:'wallet', a:'spend', k:'예산', known:true, q:'한 달 예산,<br>어떻게 정할까요?', take:'월급에서 매달 나가는 돈과 먼저 모을 돈을 뺀 나머지가 한 달 예산이에요. 이걸 남은 날로 나누면 오늘 쓸 수 있는 돈이 돼요.', go:['예산 보기', 'data-act="tab" data-tab="spend" data-sv="budget"'] },
+  { id:'fixed', i:'receipt', a:'spend', k:'고정 지출', q:'월세·통신비는<br>왜 먼저 빼 둘까요?', take:'매달 정해진 날 빠져나가는 돈이라 쓸 수 있는 돈이 아니에요. 미리 빼 두면 하루 예산이 실제보다 커 보이는 일을 막을 수 있어요.', go:['매달 나가는 돈 확인', 'data-act="tab" data-tab="plan" data-pv="rule"'] },
+  { id:'small', i:'coffee', a:'spend', k:'소액 반복 지출', q:'편의점 커피 한 잔,<br>한 달이면 얼마일까요?', take:'2,100원짜리 커피도 23번이면 48,300원이에요. 한 번은 작아도 자주 반복되는 지출이 한 달 예산을 가장 많이 흔들어요.', go:['작은 돈 보기', 'data-act="tab" data-tab="spend" data-sv="analysis"'] },
+  { id:'infl', i:'coffee', a:'save', b:'infl' },
+  { id:'comp', i:'coins', a:'save', b:'comp' },
+  { id:'emer', i:'shield', a:'save', k:'비상금', known:true, q:'갑자기 병원비가 생기면<br>어디서 꺼낼까요?', take:'갑작스러운 지출을 위해 따로 모아 둔 돈이에요. 보통 생활비 3개월치를 권해요. 비상금이 있으면 적금을 깨거나 할부를 쓰지 않아도 돼요.', go:['비상금 보기', 'data-act="tab" data-tab="plan" data-pv="bank"'] },
+  { id:'pre', i:'calendar', a:'save', k:'선저축', known:true, q:'월급날 먼저 모으면<br>뭐가 달라질까요?', take:'쓰고 남은 돈을 모으면 남는 돈이 거의 없어요. 월급이 들어오자마자 저축부터 옮기면 남은 돈 안에서 생활하게 돼요.', go:['자동 규칙 보기', 'data-act="tab" data-tab="plan" data-pv="rule"'] },
+  { id:'credit', i:'card', a:'credit', k:'신용점수', q:'카드값을 늦게 내면<br>무엇이 달라질까요?', take:'신용점수는 돈을 제때 갚는지를 점수로 매긴 거예요. 연체가 생기면 점수가 내려가고, 대출 금리가 높아지거나 대출이 어려워질 수 있어요.', go:['납부 자동이체 확인', 'data-act="tab" data-tab="plan" data-pv="rule"'] },
+  { id:'loan', i:'coin', a:'credit', k:'대출 이자', q:'월 1% 이자,<br>1년이면 12%일까요?', take:'갚지 않은 이자에 다시 이자가 붙으면 1년 뒤 갚을 돈은 12%보다 많아져요. 빌린 돈에도 복리가 붙는다는 걸 기억해 두세요.', go:['복리 알아보기', 'data-act="concept" data-v="comp"'] },
+  { id:'insure', i:'umbrella', a:'insure', k:'실손보험', q:'병원비 30,000원,<br>실손보험이 있으면?', take:'실제로 낸 병원비 중 일부를 돌려받는 보험이에요. 정해진 금액을 한꺼번에 주는 보험과는 달라요.', go:null },
+  { id:'tax', i:'coin', a:'tax', b:'tax', go:['적금 비교하기', 'data-act="sheet" data-sheet="compare"'] },
+  { id:'deduct', i:'receipt', a:'tax', k:'소득공제', q:'체크카드가 왜<br>연말정산에 유리할까요?', take:'카드 사용액이 총급여의 25%를 넘으면 그다음부터 공제돼요. 이때 체크카드는 30%, 신용카드는 15%가 적용돼요.', go:['혜택에서 확인', 'data-act="tab" data-tab="benefit"'] },
+  { id:'youth', i:'gift', a:'tax', k:'청년 지원금', q:'나도 받을 수 있는<br>지원금이 있을까요?', take:'나이·소득·주거 조건에 맞으면 월세 지원, 저축 기여금 같은 혜택을 받을 수 있어요. 대부분 직접 신청해야 받을 수 있어요.', go:['나에게 해당되는 혜택', 'data-act="tab" data-tab="benefit"'] },
+  { id:'install', a:'spend', k:'할부', i:'card', q:'나눠 내면<br>얼마를 더 낼까요?', take:'무이자가 아닌 할부에는 수수료가 붙어요. 60만 원을 6개월 할부로 사면 연 15% 수수료 기준 약 2만 6천 원을 더 내요. 할부가 끝나기 전까지는 다음 달 예산도 줄어들어요.', go:['예산 보기', 'data-act="tab" data-tab="spend" data-sv="budget"'] },
+  { id:'sub', a:'spend', k:'구독 정리', i:'refresh', q:'잊고 있던 구독,<br>1년이면 얼마일까요?', take:'월 13,500원 OTT도 1년이면 162,000원이에요. 석 달 동안 쓰지 않은 구독은 해지하고, 필요할 때 다시 가입하는 편이 대부분 이득이에요.', go:['매달 나가는 돈 확인', 'data-act="tab" data-tab="plan" data-pv="rule"'] },
+  { id:'dutch', a:'spend', k:'더치페이 정리', i:'users', q:'대신 낸 돈도<br>내 지출일까요?', take:'친구 몫까지 결제하면 가계부에는 전부 내 지출로 잡혀요. 받을 돈을 정리해야 이번 달에 실제로 쓴 돈과 남은 예산이 정확해져요.', go:['정산하기', 'data-act="sheet" data-sheet="settle"'] },
+  { id:'deposit', a:'save', k:'예금과 적금', i:'calendar', q:'목돈이 있을 땐 예금,<br>없을 땐 적금?', take:'예금은 한 번에 맡기고, 적금은 매달 나눠 넣어요. 같은 금리라도 적금은 넣은 기간만큼만 이자가 붙어서 실제로 받는 이자는 예금의 절반 정도예요.', go:['적금 비교하기', 'data-act="sheet" data-sheet="compare"'] },
+  { id:'parking', a:'save', k:'파킹통장', i:'wallet', q:'잠깐 둘 돈,<br>어디에 둘까요?', take:'언제든 넣고 뺄 수 있으면서 입출금 통장보다 이자가 높은 통장이에요. 비상금처럼 바로 꺼낼 수 있어야 하는 돈을 두기 좋아요.', go:['비상금 보기', 'data-act="tab" data-tab="plan" data-pv="bank"'] },
+  { id:'etf', a:'save', k:'분산 투자', i:'coins', q:'한 종목에<br>몰아도 될까요?', take:'여러 회사에 나눠 담으면 한 곳이 떨어져도 전체 손실이 작아져요. 지수를 따라가는 ETF는 한 번에 여러 종목을 사는 방법이에요. 원금 손실이 날 수 있어요.', go:['매주 조금씩 투자', 'data-act="tab" data-tab="plan" data-pv="bank"'] },
+  { id:'protect', a:'save', k:'예금자 보호', i:'shield', q:'은행이 문을 닫으면<br>내 돈은요?', take:'은행·저축은행 예금은 한 곳당 원금과 이자를 합쳐 1억 원까지 보호돼요. 투자 상품은 보호 대상이 아니에요.', go:null },
+  { id:'revolving', a:'credit', k:'리볼빙', i:'card', q:'카드값 일부만 내면<br>나머지는 어떻게 될까요?', take:'남은 카드값이 다음 달로 넘어가면서 높은 이자(연 15~19%)가 붙어요. 최소 금액만 내는 게 편해 보여도 빚이 계속 불어나요.', go:['납부 자동이체 확인', 'data-act="tab" data-tab="plan" data-pv="rule"'] },
+  { id:'student', a:'credit', k:'학자금 대출', i:'home2', q:'학자금 대출,<br>먼저 갚아야 할까요?', take:'학자금 대출은 금리가 낮은 편이라, 금리가 더 높은 빚이 있다면 그것부터 갚는 게 이득이에요. 소득이 생기면 갚는 방식인지도 확인해 보세요.', go:null },
+  { id:'pension', a:'insure', k:'연금저축', i:'umbrella', q:'노후 준비,<br>지금 시작해도 될까요?', take:'연금저축에 넣은 돈은 연말정산 때 세액공제를 받고, 오래 둘수록 복리로 불어나요. 일찍 시작할수록 같은 금액으로 더 큰 돈이 돼요.', go:['세액공제 보기', 'data-act="tab" data-tab="benefit"'] },
+  { id:'npension', a:'insure', k:'국민연금', i:'users', q:'월급에서 빠지는<br>국민연금은 뭘까요?', take:'소득의 9%를 회사와 내가 반씩 내고, 나이가 들면 매달 연금으로 돌려받아요. 낸 기간이 길수록 받는 돈이 많아져요.', go:null },
+  { id:'yearend', a:'tax', k:'연말정산', i:'receipt', q:'13월의 월급,<br>누구나 받을까요?', take:'한 해 동안 미리 낸 세금과 실제 세금을 비교해서 더 냈으면 돌려받고, 덜 냈으면 더 내요. 공제 항목을 챙길수록 돌려받는 돈이 커져요.', go:['혜택에서 확인', 'data-act="tab" data-tab="benefit"'] },
+  { id:'kpass', a:'tax', k:'교통비 환급', i:'bus', q:'버스·지하철 요금도<br>돌려받을 수 있을까요?', take:'K-패스에 가입하면 한 달에 15번 넘게 탄 대중교통 요금의 일부를 돌려받아요. 청년은 30%까지 환급돼요.', go:['혜택에서 확인', 'data-act="tab" data-tab="benefit"'] },
 ];
 const conceptOf = id => { const c = CONCEPTS.find(x => x.id === id); return c.b ? { ...BITES[c.b], ...c, go:c.go !== undefined ? c.go : BITES[c.b].go } : c; };
 const conceptDone = c => c.b ? S.bitesDone.has(c.b) : !!c.known || S.conceptDone.has(c.id);
@@ -2157,14 +2179,14 @@ function vLearn() {
   const known = conceptKnown(), area = S.learnArea || 'all';
   const list = CONCEPTS.map(c => conceptOf(c.id)).filter(c => !conceptDone(c) && (area === 'all' || c.a === area));
   return head + `
-  <section class="lr-sum">
+  <div class="lr-fixed"><section class="lr-sum">
     <div class="k">알아본 개념</div>
     <div class="v"><b aria-label="${CONCEPT_TOTAL}개 중 ${known}개">${known}/${CONCEPT_TOTAL}</b><span>5개 영역</span></div>
     <button class="ib ink" data-act="sheet" data-sheet="bites" aria-label="알아본 개념 보기">${ic('ur', 20)}</button>
   </section>
   <div class="lr-new">새로운 개념</div>
-  <div class="lr-chips" role="tablist">${[['all', '전체'], ...AREAS.map(a => [a.id, a.name])].map(([k, n]) => `<button class="${area === k ? 'on' : ''}" data-act="learnArea" data-v="${k}" role="tab" aria-selected="${area === k}">${n}</button>`).join('')}</div>
-  <div class="lr-list" id="lrList">${list.length ? list.map((c, i) => `<button class="lr-row ${i ? '' : 'on'}" data-act="concept" data-v="${c.id}"><span class="th" aria-hidden="true"></span>
+  <div class="lr-chips" role="tablist">${[['all', '전체'], ...AREAS.map(a => [a.id, a.name])].map(([k, n]) => `<button class="${area === k ? 'on' : ''}" data-act="learnArea" data-v="${k}" role="tab" aria-selected="${area === k}">${n}</button>`).join('')}</div></div>
+  <div class="lr-list" id="lrList">${list.length ? list.map((c, i) => `<button class="lr-row ${i ? '' : 'on'}" data-act="concept" data-v="${c.id}"><span class="th a-${c.a}" aria-hidden="true">${ic(c.i || 'spark', 32)}</span>
       <span class="tx"><span class="ca">${areaName(c.a)}</span><span class="nm">${c.k}</span><span class="ds">${c.q.replace(/<br>/g, ' ')}</span></span></button>`).join('')
     : '<p class="t14 mute">이 영역의 개념은 모두 알아봤어요.</p>'}</div>`;
 }
@@ -2463,7 +2485,7 @@ function render(keepScroll = true) {
   else if (isPreview()) view.innerHTML = vPreview();
   else view.innerHTML = { home:vHome, spend:vSpend, plan:vPlan, learn:vLearn, benefit:vBenefit }[S.tab]();
   if (S.mode === 'app' && !S.sub) { const h = view.querySelector(':scope > header.top');
-    if (h) { const w = document.createElement('div'); w.className = 'shead'; h.before(w); w.append(h); let t = w.nextElementSibling; while (t && (t.classList.contains('utabs') || t.classList.contains('utabs'))) { const nx = t.nextElementSibling; w.append(t); t = nx; } }
+    if (h) { const w = document.createElement('div'); w.className = 'shead'; h.before(w); w.append(h); let t = w.nextElementSibling; while (t && (t.classList.contains('utabs') || t.classList.contains('lr-fixed'))) { const nx = t.nextElementSibling; w.append(t); t = nx; } }
     const ut = view.querySelector('.utabs'); if (ut) { ut.style.setProperty('--n', ut.children.length); ut.style.setProperty('--i', [...ut.children].findIndex(b => b.classList.contains('on'))); } }
   view.scrollTop = st;
   // 행동 추천: 보던 카드 위치를 유지하고, 추천을 끝낸 직후에는 다음 카드로 부드럽게 넘긴다
