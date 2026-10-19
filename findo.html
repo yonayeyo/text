@@ -731,6 +731,12 @@ const IC = {
   home2:'<path d="M3 11 12 4l9 7M6 9.5V20h12V9.5"/>',
   plane:'<path d="M3 13.5 21 6l-4 14-5-5-3 3v-5z"/>',
   umbrella:'<path d="M3 12a9 9 0 0 1 18 0zM12 12v6a2 2 0 0 0 4 0"/>',
+  // 하단 탭 아이콘 (akar-icons:home-alt1 · flowbite:wallet-outline · hugeicons:stack-star · iconoven:meeting-notes-ai · lucide:gift, 선 1.5px)
+  tHome:'<path d="M21 19v-6.733a4 4 0 0 0-1.245-2.9L13.378 3.31a2 2 0 0 0-2.755 0L4.245 9.367A4 4 0 0 0 3 12.267V19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2"/><path d="M9 15a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6H9z"/>',
+  tWallet:'<path d="M17 8H5m12 0a1 1 0 0 1 1 1v2.6M17 8l-4-4M5 8a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.6M5 8l4-4l4 4m6 4h-4a2 2 0 1 0 0 4h4a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>',
+  tStack:'<path d="M16.828 7.062C18 8.125 18 9.835 18 13.254v1.492c0 3.42 0 5.13-1.172 6.192S13.771 22 10 22s-5.657 0-6.828-1.062S2 18.166 2 14.746v-1.492c0-3.42 0-5.13 1.172-6.192S6.229 6 10 6s5.657 0 6.828 1.062"/><path d="M6.066 6c.107-1.388.385-2.285 1.105-2.938C8.342 2 10.228 2 13.999 2s5.657 0 6.829 1.062s1.171 2.773 1.171 6.192v1.492c0 3.42 0 5.13-1.171 6.192c-.654.592-1.529.854-2.829.97"/><path d="m10.691 10.578l.704 1.42a.87.87 0 0 0 .568.423l1.276.213c.816.137 1.008.734.42 1.323l-.992 1a.88.88 0 0 0-.208.73l.284 1.238c.224.98-.292 1.359-1.152.847l-1.196-.714a.86.86 0 0 0-.792 0l-1.196.714c-.856.512-1.376.129-1.152-.847l.284-1.238a.88.88 0 0 0-.208-.73l-.991-1c-.584-.589-.396-1.186.42-1.323l1.275-.213a.87.87 0 0 0 .564-.424l.704-1.42c.384-.77 1.008-.77 1.388 0"/>',
+  tNotes:'<rect width="15.5" height="17" x="4.25" y="4.25" rx="2.5"/><path d="M8 2.75v3m4-3v3m4-3v3M7.5 10h5m-5 3.5h3M15 13q.36 2.64 3 3q-2.64.36-3 3q-.36-2.64-3-3q2.64-.36 3-3"/>',
+  tGift:'<path d="M12 7v14m8-10v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8m3.5-4a1 1 0 0 1 0-5A4.8 8 0 0 1 12 7a4.8 8 0 0 1 4.5-5a1 1 0 0 1 0 5"/><rect width="18" height="4" x="3" y="7" rx="1"/>',
   book:'<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/>',
 };
 const ic = (n, s = 24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
@@ -2337,7 +2343,7 @@ function aiAnswer(q) {
    render
    ========================================================= */
 const SCREEN_NAME = k => ({ ob0:'진단 시작', ob1:'자기평가', ob2:'진단 문항', ob3:'진단 결과', subdiag:'내 진단 결과', sublink:'계좌 연동 · 용도 확인', tabhome:'홈', tabspend:'지출', tabplan:'저축', tablearn:'알기', tabbenefit:'혜택' }[k] || k);
-const TABS = [ ['home','홈','home'], ['spend','지출','bars'], ['plan','저축','coins'], ['learn','알기','book'], ['benefit','혜택','gift'] ];
+const TABS = [ ['home','홈','tHome'], ['spend','지출','tWallet'], ['plan','저축','tStack'], ['learn','알기','tNotes'], ['benefit','혜택','tGift'] ];
 const screen = document.getElementById('screen'), view = document.getElementById('view');
 let lastKey = '';
 // 세부 탭(지출·계획·목표): 본문을 좌우로 밀어 넘기고, 탭 밑줄도 같이 따라 움직인다
