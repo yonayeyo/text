@@ -582,7 +582,7 @@ button.ph-tag{color:var(--mute)}
   .screen{--nav-gap:max(12px, calc(env(safe-area-inset-bottom,0px) - 14px))}
   .tabbar{bottom:var(--nav-gap)}
   .ai-dock{bottom:calc(var(--nav-gap) + 76px)}
-  .ai-dock input,.ask-top input{font-size:16px}
+  .ai-dock input{font-size:16px}
   .toast{top:calc(env(safe-area-inset-top,0px) + 8px)}
   .toast.open{width:calc(100% - 24px)}
   .sheet{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 32px)}
@@ -620,10 +620,13 @@ button.ph-tag{color:var(--mute)}
 .dot-h{display:flex;align-items:center;gap:8px;font-size:16px;margin-bottom:12px}
 .dot-h::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ink)}
 /* 알기 탭: 상단 입력창 · 개념 원반 · 홈 '?' 알아볼 것 조각 */
-.ask-top{display:flex;align-items:center;gap:8px;height:48px;margin:4px 0 12px;padding:0 6px 0 18px;border-radius:999px;background:var(--paper);box-shadow:inset 0 0 0 1px var(--g3)}
-.ask-top input{flex:1;min-width:0;border:0;background:transparent;font-size:14px;outline:0}
-.ask-top input::placeholder{color:var(--g4)}
-.ask-top .ib{width:36px;height:36px}
+.ask-slot{position:relative;height:56px;margin:4px 0 12px}
+.ask-hint{display:flex;align-items:baseline;gap:8px;height:56px;padding:0 72px 0 4px;width:100%;font-size:16px;color:var(--ink);transition:opacity .2s}
+.ask-hint span{flex:1;min-width:0;font-size:12px;color:var(--g4);overflow:hidden;text-overflow:ellipsis;text-align:left}
+.ask-hint{align-items:center;white-space:nowrap}
+.ask-slot:has(.ai-dock.open) .ask-hint{opacity:0}
+.screen .ask-slot .ai-dock{left:0;right:0;top:0;bottom:auto}
+.ai-fab svg{display:block;margin:auto}
 .discs{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * var(--m));padding:0 var(--m)}
 .discs::-webkit-scrollbar{display:none}
 .disc{flex:none;width:72px;display:grid;justify-items:center;align-content:start;gap:8px;text-align:center}
@@ -2134,7 +2137,7 @@ function vGoal() {
 function vLearn() {
   const lv = S.learnView;
   const head = `<header class="top"><div><div class="ph-title">알기</div><div class="ph-sub">한 입 금융 · 팁과 소식</div></div></header>
-  <form class="ask-top" data-ask><span aria-hidden="true">${ic('spark', 18)}</span><input placeholder="AI에게 물어보기" aria-label="AI에게 물어보기" autocomplete="off"><button type="submit" class="ib ink" aria-label="보내기">${ic('send', 18)}</button></form>
+  <div class="ask-slot"><button type="button" class="ask-hint" data-act="aiOpen">AI에게 물어보기<span>내 예산·목표 기준으로 물어보세요</span></button></div>
   <div class="utabs" role="tablist">${[['bite','한 입 금융'],['tips','팁과 소식']].map(([k, n]) => `<button class="${lv === k ? 'on' : ''}" data-act="lv" data-v="${k}" role="tab" aria-selected="${lv === k}">${n}</button>`).join('')}</div>`;
   if (lv === 'tips') return head + `
   <section style="margin-top:16px">
@@ -2443,6 +2446,8 @@ function render(keepScroll = true) {
   const dark = S.mode === 'onboard' ? (S.ob === 1 || S.ob === 3) : S.sub === 'diag';
   screen.classList.toggle('dark', dark);
   screen.classList.toggle('nonav', S.mode === 'onboard' || !!S.sub);
+  // AI 버튼이 알기 화면 안에 들어가 있으면 화면을 다시 그리기 전에 밖으로 꺼내 둔다 (입력 상태·이벤트 유지)
+  const dk = document.getElementById('aiDock'); if (view.contains(dk)) screen.insertBefore(dk, document.getElementById('tabbar'));
   if (S.mode === 'onboard') view.innerHTML = [vIntro, vSelf, vQuiz, vResult][S.ob]();
   else if (S.sub === 'diag') view.innerHTML = vResult('app');
   else if (S.sub === 'link') view.innerHTML = vLink();
@@ -2450,7 +2455,7 @@ function render(keepScroll = true) {
   else if (isPreview()) view.innerHTML = vPreview();
   else view.innerHTML = { home:vHome, spend:vSpend, plan:vPlan, learn:vLearn, benefit:vBenefit }[S.tab]();
   if (S.mode === 'app' && !S.sub) { const h = view.querySelector(':scope > header.top');
-    if (h) { const w = document.createElement('div'); w.className = 'shead'; h.before(w); w.append(h); let t = w.nextElementSibling; while (t && (t.classList.contains('utabs') || t.classList.contains('ask-top'))) { const nx = t.nextElementSibling; w.append(t); t = nx; } }
+    if (h) { const w = document.createElement('div'); w.className = 'shead'; h.before(w); w.append(h); let t = w.nextElementSibling; while (t && (t.classList.contains('utabs') || t.classList.contains('ask-slot'))) { const nx = t.nextElementSibling; w.append(t); t = nx; } }
     const ut = view.querySelector('.utabs'); if (ut) { ut.style.setProperty('--n', ut.children.length); ut.style.setProperty('--i', [...ut.children].findIndex(b => b.classList.contains('on'))); } }
   view.scrollTop = st;
   // 행동 추천: 보던 카드 위치를 유지하고, 추천을 끝낸 직후에는 다음 카드로 부드럽게 넘긴다
@@ -2468,10 +2473,10 @@ function render(keepScroll = true) {
   if (!tb.children.length) tb.innerHTML = TABS.map(([k, n, i]) => `<button class="tab" data-act="tab" data-tab="${k}" aria-label="${n}">${ic(i, 22)}<span>${n}</span></button>`).join('');
   [...tb.children].forEach(b => { const on = b.dataset.tab === S.tab; b.classList.toggle('on', on); on ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current'); });
   const dock = document.getElementById('aiDock');
-  dock.hidden = !(S.mode === 'app' && !S.sub && !isPreview() && (S.tab === 'plan' || (S.tab === 'spend' && S.spendView !== 'list')));
-  if (dock.hidden) aiDock(false);
+  dock.hidden = !(S.mode === 'app' && !S.sub && S.tab === 'learn');
+  if (dock.hidden) aiDock(false); else { const slot = view.querySelector('.ask-slot'); slot && slot.append(dock); }
   view.style.paddingBottom = S.mode === 'onboard' || S.sub ? (S.ob === 3 || S.sub ? '0' : '24px') : '0';
-  if (S.mode === 'app' && !S.sub) { const h = document.createElement('div'); h.className = 'ht-end'; h.style.height = (dock.hidden ? 140 : 200) + 'px'; h.style.marginTop = '24px'; view.append(h); const gap = view.clientHeight - (h.getBoundingClientRect().bottom - view.getBoundingClientRect().top + view.scrollTop); if (gap > 0) h.style.marginTop = (24 + gap) + 'px'; view.scrollTop = st; }
+  if (S.mode === 'app' && !S.sub) { const h = document.createElement('div'); h.className = 'ht-end'; h.style.height = '140px'; h.style.marginTop = '24px'; view.append(h); const gap = view.clientHeight - (h.getBoundingClientRect().bottom - view.getBoundingClientRect().top + view.scrollTop); if (gap > 0) h.style.marginTop = (24 + gap) + 'px'; view.scrollTop = st; }
   renderPanel();
 }
 // Safari는 theme-color 값 변경만으로는 상단 색을 다시 칠하지 않을 때가 있어, 태그를 새로 넣고 고정 레이어 배경도 함께 바꾼다
@@ -2663,13 +2668,11 @@ document.addEventListener('click', e => {
 function ask(q) { if (!q.trim()) return; const r = aiAnswer(q); S.chat.push({ q }, r); if (S.chat.length > 6) S.chat = S.chat.slice(-6); openSheet('ai'); const sh = document.getElementById('sheet'); sh.scrollTop = sh.scrollHeight; }
 document.getElementById('aiDock').addEventListener('submit', e => { e.preventDefault(); const i = document.getElementById('aiInput'); ask(i.value || '오늘 얼마 더 써도 돼?'); i.value = ''; aiDock(false); });
 document.querySelector('#aiDock [data-act="mic"]').innerHTML = ic('mic', 20);
-document.querySelector('#aiDock .ai-fab').innerHTML = '<span class="ai-ico" aria-hidden="true"></span>';
+document.querySelector('#aiDock .ai-fab').innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.8 2.9c.7 4.6 2.4 7.2 9.3 9.8c-6.9 2.6-8.6 5.2-9.3 9.8c-.7-4.6-2.4-7.2-9.3-9.8c6.9-2.6 8.6-5.2 9.3-9.8z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M20.2.6c.3 1.6.9 2.3 2.6 3.1c-1.7.8-2.3 1.5-2.6 3.1c-.3-1.6-.9-2.3-2.6-3.1c1.7-.8 2.3-1.5 2.6-3.1z" fill="currentColor"/></svg>';
 // 펼친 입력창은 비어 있는 채로 포커스를 잃거나 질문을 보내면 다시 원형 버튼으로 접는다
 function aiDock(open) { const d = document.getElementById('aiDock'); d.classList.toggle('open', open); d.querySelector('.ai-fab').setAttribute('aria-expanded', open); if (open) setTimeout(() => document.getElementById('aiInput').focus(), 460); }
 document.getElementById('aiDock').addEventListener('focusout', () => setTimeout(() => { const d = document.getElementById('aiDock'); if (!d.contains(document.activeElement) && !document.getElementById('aiInput').value) aiDock(false); }, 120));
 document.querySelector('#aiDock [type="submit"]').innerHTML = ic('send', 20);
-// 알기 탭 상단 입력창: 떠 있는 AI 버튼과 같은 답변 시트를 연다
-document.addEventListener('submit', e => { const f = e.target.closest('form[data-ask]'); if (!f) return; e.preventDefault(); const i = f.querySelector('input'); log('탭 askTop'); ask(i.value || '오늘 얼마 더 써도 돼?'); i.value = ''; });
 
 /* ---------- side panel ---------- */
 function renderPanel() {
