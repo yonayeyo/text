@@ -641,15 +641,18 @@ button.ph-tag{color:var(--mute)}
 .lr-row .th{flex:none;display:grid;place-items:center;color:#181818;width:100px;height:100px;margin:0 20px;border-radius:50px;background:#D9D9D9;transition:width .32s cubic-bezier(.2,.8,.2,1),height .32s cubic-bezier(.2,.8,.2,1),margin .32s cubic-bezier(.2,.8,.2,1),border-radius .32s cubic-bezier(.2,.8,.2,1)}
 .lr-row .tx{display:grid;gap:4px;min-width:0;margin-left:0;transition:margin .32s cubic-bezier(.2,.8,.2,1)}
 .lr-row.on .th{width:140px;height:140px;margin:0;border-radius:32px}
-.lr-row .th svg{width:32px;height:32px;opacity:.8;transition:width .32s cubic-bezier(.2,.8,.2,1),height .32s cubic-bezier(.2,.8,.2,1)}
+.lr-row .th svg{width:32px;height:32px;opacity:.9;transition:width .32s cubic-bezier(.2,.8,.2,1),height .32s cubic-bezier(.2,.8,.2,1)}
 .lr-row.on .th svg{width:44px;height:44px}
-/* 영역별 썸네일 색 (기존 팔레트: 분홍 · 하늘 · 오라) — 밝은 빛을 왼쪽 위에 얹어 입체감 */
-.th.a-spend{background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.75),transparent 55%),linear-gradient(150deg,#FFE3EB,#FF9DB8)}
-.th.a-save{background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.75),transparent 55%),linear-gradient(150deg,#EEF4FF,#A9CBF5)}
-.th.a-credit{background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.7),transparent 55%),linear-gradient(150deg,#FFD6E2,#E7DDF7 50%,#C8E1FF)}
-.th.a-insure{background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.7),transparent 55%),linear-gradient(150deg,#F1EEF7,#C8E1FF)}
-.th.a-tax{background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.7),transparent 55%),linear-gradient(150deg,#FFF0F4,#FFC4D4 55%,#E7DDF7)}
+/* 영역별 썸네일 그라데이션 (시안 14: 어두운 슬레이트 · 네이비 · 청록 · 남색) + 파란 빛 그림자 */
+.lr-row .th{color:#fff;box-shadow:0 1px 12px rgba(104,160,234,.35)}
+.th.a-spend{background:linear-gradient(150deg,#5B6272 0%,#2A2E3A 45%,#05060C 100%)}
+.th.a-save{background:radial-gradient(circle at 50% 50%,#302EA0 0%,#283B7A 55%,#1F3A5C 100%)}
+.th.a-credit{background:radial-gradient(circle at 50% 50%,#05060C 0%,#262B3F 50%,#4B5372 100%)}
+.th.a-insure{background:radial-gradient(circle at 45% 55%,#264A54 0%,#33707A 55%,#428A90 100%)}
+.th.a-tax{background:linear-gradient(150deg,#46506E 0%,#23284A 50%,#0C0E22 100%)}
 .lr-fixed{padding-bottom:12px}
+.view.snap{scroll-snap-type:y mandatory}
+.view.snap .lr-row{scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:var(--snapTop,0px)}
 .lr-row.on .tx{margin-left:20px}
 .lr-row .ca{font-size:12px;color:#999}
 .lr-row .nm{font-size:18px;color:#000}
@@ -2493,6 +2496,10 @@ function render(keepScroll = true) {
   if (tr && S.naIdx) { const x = S.naIdx * (tr.firstElementChild.offsetWidth + 12);
     if (S.naSlide) { S.naSlide = false; setTimeout(() => tr.scrollTo({ left:x, behavior:'smooth' }), 350); } else tr.scrollLeft = x; }
   if (homeEnter) { popOut(); tuckSoon(); }
+  // 알기 › 한입 금융: 목록이 개념마다 탁탁 걸리도록 스크롤 스냅 (고정 영역 아래 16px에 맞춤)
+  const snap = S.mode === 'app' && !S.sub && S.tab === 'learn' && S.learnView === 'bite';
+  view.classList.toggle('snap', snap);
+  if (snap) { const sh = view.querySelector('.shead'); view.style.setProperty('--snapTop', ((sh ? sh.getBoundingClientRect().bottom : 0) - view.getBoundingClientRect().top + 16) + 'px'); learnActive(); }
   if (S.mode === 'app' && !S.sub && S.linked && !isPreview()) S.seen.add(S.tab + '-' + ({ spend:S.spendView, plan:S.planView, learn:S.learnView }[S.tab] || ''));
   if (key !== lastKey) log('화면 ' + SCREEN_NAME(key));
   // 휴대폰에서는 Safari 상단(상태바)·하단 영역이 페이지 배경색을 따르므로 화면 색과 맞춘다
