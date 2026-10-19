@@ -603,7 +603,8 @@ button.ph-tag{color:var(--mute)}
 .h-hero .hl,.h-hero .rw .ib{transform:translateY(-3.5px)}
 .dotnum{font-family:"Bitcount Grid Single",var(--f-num);font-weight:400;font-size:47px;line-height:1;color:#000;font-variant-numeric:tabular-nums;white-space:nowrap}
 /* 오늘의 실천 항목 궤도 — 시안 좌표(402 프레임, y 170 기준) · 카드 80 × 100 · 모서리 9 · 왼쪽 위 기준 ±5° 회전 */
-.orbit{position:relative;height:440px;margin:8px calc(-1 * var(--m)) 0}
+.orbit-wrap{margin:8px calc(-1 * var(--m)) 0;overflow:hidden}
+.orbit{position:relative;width:393px;height:440px;margin-left:calc(50% - 196.5px)}  /* 시안 좌표 기준 폭 393으로 고정하고 화면 가운데에 둔다 */
 .orbit .deco{position:absolute;border-radius:50%;background:#000;pointer-events:none}
 .pc{position:absolute;width:80px;height:100px;border-radius:9px;display:grid;place-items:center;padding:8px;text-align:center;font-size:14px;font-weight:400;line-height:1.35;color:#000;transform:rotate(var(--rot));transform-origin:top left;transition:transform .2s cubic-bezier(.2,.8,.2,1)}
 .pc:active{transform:rotate(var(--rot)) scale(.95)}
@@ -1414,13 +1415,13 @@ const pos = (x, y, r) => `left:${(x + OX).toFixed(2)}px;top:${(y - OY).toFixed(2
 function orbit() {
   const P = PRACTICE[S.persona], items = P.items.map(([t, done, act]) => [t, done(), act]);
   const n = items.filter(i => i[1]).length;
-  return `<section class="orbit" aria-label="오늘의 실천 항목 ${items.length}개 중 ${n}개 완료">
+  return `<div class="orbit-wrap"><section class="orbit" aria-label="오늘의 실천 항목 ${items.length}개 중 ${n}개 완료">
     ${[[20,315,10],[274,180,10],[240,473,4],[352,275,4],[305,577,10]].map(([x, y, r]) => `<span class="deco" style="left:${(x + OX).toFixed(1)}px;top:${y - OY}px;width:${r}px;height:${r}px" aria-hidden="true"></span>`).join('')}
     ${items.map(([t, done, act], k) => { const [x, y, r] = ORBIT[k];
       return `<button class="pc ${done ? 'done' : 'todo'}" style="${pos(x, y, r)}" ${act} aria-label="${t}${done ? ' · 완료' : ''}">${t}</button>`; }).join('')}
     <button class="pc new" style="${pos(...ORBIT_NEW)}" data-act="tab" data-tab="plan" data-pv="goal" aria-label="새 실천 항목 추가">새 항목</button>
     <div class="oc"><div class="ow" aria-label="Fin.do">FIN.Do</div><div class="ot">오늘의 실천 항목</div><div class="od">${P.d}</div></div>
-  </section>`;
+  </section></div>`;
 }
 // 오늘의 실천 항목: 첫 주 할 일 + 유형별 행동 추천 + 참여 중인 챌린지 인증을 한곳에
 function practiceBlock() {
