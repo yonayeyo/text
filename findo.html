@@ -620,12 +620,6 @@ button.ph-tag{color:var(--mute)}
 .dot-h{display:flex;align-items:center;gap:8px;font-size:16px;margin-bottom:12px}
 .dot-h::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ink)}
 /* 알기 탭: 상단 입력창 · 개념 원반 · 홈 '?' 알아볼 것 조각 */
-.ask-slot{position:relative;height:56px;margin:4px 0 12px}
-.ask-hint{display:flex;align-items:baseline;gap:8px;height:56px;padding:0 72px 0 4px;width:100%;font-size:16px;color:var(--ink);transition:opacity .2s}
-.ask-hint span{flex:1;min-width:0;font-size:12px;color:var(--g4);overflow:hidden;text-overflow:ellipsis;text-align:left}
-.ask-hint{align-items:center;white-space:nowrap}
-.ask-slot:has(.ai-dock.open) .ask-hint{opacity:0}
-.screen .ask-slot .ai-dock{left:0;right:0;top:0;bottom:auto}
 .ai-fab svg{display:block;margin:auto}
 .screen .ai-dock:not(.open) > [type="submit"]{background:rgba(17,17,17,.85);box-shadow:inset 1px 1px 1.1px rgba(255,255,255,.26),inset -1px -1px 1.1px rgba(255,255,255,0),inset 0 0 4px rgba(255,255,255,.9)}
 .screen .ai-dock:not(.open) > [type="submit"]::before{display:none}
@@ -2139,7 +2133,6 @@ function vGoal() {
 function vLearn() {
   const lv = S.learnView;
   const head = `<header class="top"><div><div class="ph-title">알기</div><div class="ph-sub">한 입 금융 · 팁과 소식</div></div></header>
-  <div class="ask-slot"><button type="button" class="ask-hint" data-act="aiOpen">AI에게 물어보기<span>내 예산·목표 기준으로 물어보세요</span></button></div>
   <div class="utabs" role="tablist">${[['bite','한 입 금융'],['tips','팁과 소식']].map(([k, n]) => `<button class="${lv === k ? 'on' : ''}" data-act="lv" data-v="${k}" role="tab" aria-selected="${lv === k}">${n}</button>`).join('')}</div>`;
   if (lv === 'tips') return head + `
   <section style="margin-top:16px">
@@ -2448,8 +2441,6 @@ function render(keepScroll = true) {
   const dark = S.mode === 'onboard' ? (S.ob === 1 || S.ob === 3) : S.sub === 'diag';
   screen.classList.toggle('dark', dark);
   screen.classList.toggle('nonav', S.mode === 'onboard' || !!S.sub);
-  // AI 버튼이 알기 화면 안에 들어가 있으면 화면을 다시 그리기 전에 밖으로 꺼내 둔다 (입력 상태·이벤트 유지)
-  const dk = document.getElementById('aiDock'); if (view.contains(dk)) screen.insertBefore(dk, document.getElementById('tabbar'));
   if (S.mode === 'onboard') view.innerHTML = [vIntro, vSelf, vQuiz, vResult][S.ob]();
   else if (S.sub === 'diag') view.innerHTML = vResult('app');
   else if (S.sub === 'link') view.innerHTML = vLink();
@@ -2457,7 +2448,7 @@ function render(keepScroll = true) {
   else if (isPreview()) view.innerHTML = vPreview();
   else view.innerHTML = { home:vHome, spend:vSpend, plan:vPlan, learn:vLearn, benefit:vBenefit }[S.tab]();
   if (S.mode === 'app' && !S.sub) { const h = view.querySelector(':scope > header.top');
-    if (h) { const w = document.createElement('div'); w.className = 'shead'; h.before(w); w.append(h); let t = w.nextElementSibling; while (t && (t.classList.contains('utabs') || t.classList.contains('ask-slot'))) { const nx = t.nextElementSibling; w.append(t); t = nx; } }
+    if (h) { const w = document.createElement('div'); w.className = 'shead'; h.before(w); w.append(h); let t = w.nextElementSibling; while (t && (t.classList.contains('utabs') || t.classList.contains('utabs'))) { const nx = t.nextElementSibling; w.append(t); t = nx; } }
     const ut = view.querySelector('.utabs'); if (ut) { ut.style.setProperty('--n', ut.children.length); ut.style.setProperty('--i', [...ut.children].findIndex(b => b.classList.contains('on'))); } }
   view.scrollTop = st;
   // 행동 추천: 보던 카드 위치를 유지하고, 추천을 끝낸 직후에는 다음 카드로 부드럽게 넘긴다
@@ -2476,9 +2467,9 @@ function render(keepScroll = true) {
   [...tb.children].forEach(b => { const on = b.dataset.tab === S.tab; b.classList.toggle('on', on); on ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current'); });
   const dock = document.getElementById('aiDock');
   dock.hidden = !(S.mode === 'app' && !S.sub && S.tab === 'learn');
-  if (dock.hidden) aiDock(false); else { const slot = view.querySelector('.ask-slot'); slot && slot.append(dock); }
+  if (dock.hidden) aiDock(false);
   view.style.paddingBottom = S.mode === 'onboard' || S.sub ? (S.ob === 3 || S.sub ? '0' : '24px') : '0';
-  if (S.mode === 'app' && !S.sub) { const h = document.createElement('div'); h.className = 'ht-end'; h.style.height = '140px'; h.style.marginTop = '24px'; view.append(h); const gap = view.clientHeight - (h.getBoundingClientRect().bottom - view.getBoundingClientRect().top + view.scrollTop); if (gap > 0) h.style.marginTop = (24 + gap) + 'px'; view.scrollTop = st; }
+  if (S.mode === 'app' && !S.sub) { const h = document.createElement('div'); h.className = 'ht-end'; h.style.height = (dock.hidden ? 140 : 200) + 'px'; h.style.marginTop = '24px'; view.append(h); const gap = view.clientHeight - (h.getBoundingClientRect().bottom - view.getBoundingClientRect().top + view.scrollTop); if (gap > 0) h.style.marginTop = (24 + gap) + 'px'; view.scrollTop = st; }
   renderPanel();
 }
 // Safari는 theme-color 값 변경만으로는 상단 색을 다시 칠하지 않을 때가 있어, 태그를 새로 넣고 고정 레이어 배경도 함께 바꾼다
