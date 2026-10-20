@@ -618,10 +618,10 @@ button.ph-tag{color:var(--mute)}
 .pc.tap{animation:pcTap .24s cubic-bezier(.3,.7,.4,1.4)}
 @keyframes pcTap{0%{transform:rotate(var(--rot)) scale(1)}45%{transform:rotate(var(--rot)) scale(.9)}100%{transform:rotate(var(--rot)) scale(1.04)}}
 @media (prefers-reduced-motion:reduce){.pc.tap{animation:none}}
-/* 완료 */
-.pc.done{background:#181818;color:#fff;box-shadow:0 1px 12px rgba(104,160,234,.54)}
-/* 아직 못한 것 (알지만 실천 못함) */
-.pc.todo{background:radial-gradient(ellipse 50% 50% at 50% 50%,#FAFAFA 60%,#EFF3FF 100%);border:.5px solid rgba(78,132,202,.24)}
+/* 아직 실행하지 않은 것: 눌러야 하는 항목이라 다른 버튼처럼 검정 */
+.pc.todo{background:#181818;color:#fff;box-shadow:0 1px 12px rgba(104,160,234,.54)}
+/* 완료: 밝은 카드로 물러남 */
+.pc.done{background:radial-gradient(ellipse 50% 50% at 50% 50%,#FAFAFA 60%,#EFF3FF 100%);border:.5px solid rgba(78,132,202,.24)}
 /* 홈으로 돌아왔을 때 새로 완료된 카드: 살짝 흔들기 */
 .pc.wiggle{animation:pcWiggle .9s ease-in-out .35s}
 @keyframes pcWiggle{
