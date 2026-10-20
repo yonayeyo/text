@@ -644,31 +644,27 @@ button.ph-tag{color:var(--mute)}
 .screen .ai-dock:not(.open) > [type="submit"]{background:rgba(17,17,17,.85);box-shadow:inset 1px 1px 1.1px rgba(255,255,255,.52),inset -1px -1px 1.1px rgba(255,255,255,.52),inset 0 0 4px rgba(255,255,255,.9)}
 .screen .ai-dock:not(.open) > [type="submit"]::before{display:none}
 /* 알기 › 한입 금융 (시안 13) */
-.lr-sum{position:relative;margin-top:16px;padding-right:56px}
-.lr-sum .k{font-size:14px;color:#999}
-.lr-sum .v{display:flex;align-items:baseline;gap:8px;margin-top:2px}
-.lr-sum .v b{font-family:"Bitcount Grid Single",var(--f-num);font-weight:400;font-size:28px;line-height:1;color:#000}
-.lr-sum .v span{font-size:10px;color:#999}
-.lr-sum .ib{position:absolute;right:0;top:50%;transform:translateY(-50%);background:#181818}
-.lr-new{margin-top:24px;font-size:14px;color:#999}
-.lr-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:8px calc(-1 * var(--m)) 0;padding:0 var(--m)}
+.lr-h{margin-top:16px}
+.lr-known{display:grid;justify-items:end;gap:2px;flex:none}
+.lr-cnt{display:flex;align-items:baseline;gap:2px}
+.lr-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * var(--m));padding:0 var(--m)}
 .lr-chips::-webkit-scrollbar{display:none}
-.lr-chips button{flex:none;height:22px;padding:0 8px;border-radius:999px;font-size:12px;color:#999;box-shadow:inset 0 0 0 .5px #C4C4C4;white-space:nowrap}
-.lr-chips button.on{background:#000;color:#fff;box-shadow:none}
+.lr-chips .chip{flex:none}
 .lr-list{display:flex;flex-direction:column;gap:28px;margin-top:16px;padding-left:10px}
 .lr-row{display:flex;align-items:center;width:100%;text-align:left}
 .lr-row .th{flex:none;display:grid;place-items:center;color:#181818;width:100px;height:100px;margin:0 20px;border-radius:50px;background:#D9D9D9;transition:width .32s cubic-bezier(.2,.8,.2,1),height .32s cubic-bezier(.2,.8,.2,1),margin .32s cubic-bezier(.2,.8,.2,1),border-radius .32s cubic-bezier(.2,.8,.2,1)}
 .lr-row .tx{display:grid;gap:4px;min-width:0;margin-left:0;transition:margin .32s cubic-bezier(.2,.8,.2,1)}
 .lr-row.on .th{width:140px;height:140px;margin:0;border-radius:32px}
-.lr-row .th svg{width:32px;height:32px;opacity:.9;transition:width .32s cubic-bezier(.2,.8,.2,1),height .32s cubic-bezier(.2,.8,.2,1)}
-.lr-row.on .th svg{width:44px;height:44px}
-/* 영역별 썸네일 그라데이션 (시안 14: 어두운 슬레이트 · 네이비 · 청록 · 남색) + 파란 빛 그림자 */
-.lr-row .th{color:#fff;box-shadow:0 1px 12px rgba(181,203,255,.35)}
-.th.a-spend{background:linear-gradient(150deg,#424F62 0%,#081F40 100%)}
-.th.a-save{background:radial-gradient(circle at 50% 50%,#081F40 0%,#424F62 100%)}
-.th.a-credit{background:radial-gradient(circle at 50% 50%,#424F62 0%,#081F40 100%)}
-.th.a-insure{background:linear-gradient(150deg,#B5CBFF 0%,#424F62 100%)}
-.th.a-tax{background:radial-gradient(circle at 50% 45%,#B5CBFF 0%,#424F62 60%,#081F40 100%)}
+.lr-row .th svg{width:28px;height:28px;opacity:1;transition:width .32s cubic-bezier(.2,.8,.2,1),height .32s cubic-bezier(.2,.8,.2,1)}
+.lr-row.on .th svg{width:40px;height:40px}
+/* 영역별 썸네일: 하늘색 카드와 같은 페일 블루 → 블루 계열, 아이콘은 네이비. 커진(지금 보는) 개념만 한 단계 진하게 */
+.lr-row .th{color:var(--navy);box-shadow:inset 0 0 0 .5px rgba(8,31,64,.08)}
+.th.a-spend{background:linear-gradient(150deg,#FFFFFF 0%,#D5E3FF 45%,#B5CBFF 100%)}
+.th.a-save{background:radial-gradient(circle at 30% 25%,#FFFFFF 0%,#D5E3FF 50%,#B5CBFF 100%)}
+.th.a-credit{background:linear-gradient(210deg,#FFFFFF 0%,#D5E3FF 45%,#B5CBFF 100%)}
+.th.a-insure{background:radial-gradient(circle at 70% 80%,#B5CBFF 0%,#D5E3FF 55%,#FFFFFF 100%)}
+.th.a-tax{background:linear-gradient(180deg,#D5E3FF 0%,#B5CBFF 100%)}
+.lr-row.on .th{filter:saturate(1.25) brightness(.94)}
 .lr-fixed{padding-bottom:12px}
 /* 목표 만들기 슬라이더: 채워진 만큼 네이비, 나머지 연회색 */
 .g-row{display:flex;justify-content:space-between;align-items:baseline}
@@ -688,8 +684,8 @@ button.ph-tag{color:var(--mute)}
 .view.snap{scroll-snap-type:y mandatory}
 .view.snap .lr-row{scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:var(--snapTop,0px)}
 .lr-row.on .tx{margin-left:20px}
-.lr-row .ca{font-size:12px;color:#999}
-.lr-row .nm{font-size:18px;color:#000}
+.lr-row .ca{font-size:12px;color:var(--g6)}
+.lr-row .nm{font-size:16px;font-weight:500;color:var(--ink)}
 .lr-row .ds{font-size:14px;color:#999;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media (prefers-reduced-motion:reduce){.lr-row .th,.lr-row .tx{transition:none}}
 .bit-card{width:100%;display:flex;align-items:center;gap:14px;padding:24px 20px;text-align:left}
@@ -2244,14 +2240,11 @@ function vLearn() {
   const known = conceptKnown(), area = S.learnArea || 'all';
   const list = CONCEPTS.map(c => conceptOf(c.id)).filter(c => !conceptDone(c) && (area === 'all' || c.a === area));
   return head + `
-  <div class="lr-fixed"><section class="lr-sum">
-    <div class="k">알아본 개념</div>
-    <div class="v"><b aria-label="${CONCEPT_TOTAL}개 중 ${known}개">${known}/${CONCEPT_TOTAL}</b><span>5개 영역</span></div>
-    <button class="ib ink" data-act="sheet" data-sheet="bites" aria-label="알아본 개념 보기">${ic('ur', 20)}</button>
-  </section>
-  <div class="lr-new">새로운 개념</div>
-  <div class="lr-chips" role="tablist">${[['all', '전체'], ...AREAS.map(a => [a.id, a.name])].map(([k, n]) => `<button class="${area === k ? 'on' : ''}" data-act="learnArea" data-v="${k}" role="tab" aria-selected="${area === k}">${n}</button>`).join('')}</div></div>
-  <div class="lr-list" id="lrList">${list.length ? list.map((c, i) => `<button class="lr-row ${i ? '' : 'on'}" data-act="concept" data-v="${c.id}"><span class="th a-${c.a}" aria-hidden="true">${ic(c.i || 'spark', 32)}</span>
+  <div class="lr-fixed">
+  <div class="sec-h lr-h"><div><div class="t18">새로운 개념</div><div class="sec-d">5개 영역 · ${CONCEPT_TOTAL}개 중 ${known}개 알아봤어요</div></div>
+    <button class="lr-known" data-act="sheet" data-sheet="bites" aria-label="알아본 개념 ${known}개 보기"><span class="lr-cnt"><span class="n24">${known}</span><span class="t12 mute">/${CONCEPT_TOTAL}</span></span><span class="row g4 t10 mute">알아본 개념${ic('arrow', 12)}</span></button></div>
+  <div class="lr-chips" role="tablist">${[['all', '전체'], ...AREAS.map(a => [a.id, a.name])].map(([k, n]) => `<button class="chip pchip ${area === k ? 'on' : ''}" data-act="learnArea" data-v="${k}" role="tab" aria-selected="${area === k}">${n}</button>`).join('')}</div></div>
+  <div class="lr-list" id="lrList">${list.length ? list.map((c, i) => `<button class="lr-row ${i ? '' : 'on'}" data-act="concept" data-v="${c.id}"><span class="th a-${c.a}" aria-hidden="true">${ic(c.i || 'spark', 28)}</span>
       <span class="tx"><span class="ca">${areaName(c.a)}</span><span class="nm">${c.k}</span><span class="ds">${c.q.replace(/<br>/g, ' ')}</span></span></button>`).join('')
     : '<p class="t14 mute">이 영역의 개념은 모두 알아봤어요.</p>'}</div>`;
 }
