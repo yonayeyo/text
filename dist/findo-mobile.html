@@ -368,6 +368,7 @@ button.ph-tag{color:var(--mute)}
 .screen.dark .c-know{background:#262626;color:var(--paper);--fg:var(--paper);--inv:var(--ink);--mute:var(--g4);--line:#3A3A3A}
 .screen.dark .sheet .c-know{background:#F1F1F1;color:var(--ink);--fg:var(--ink);--inv:var(--paper);--mute:var(--g6);--line:#DADADA}
 .screen.dark .c-know .bb-track{background:rgba(252,252,252,.12)}.screen.dark .sheet .c-know .bb-track{background:rgba(24,24,24,.08)}
+.n-urgent{box-shadow:inset 0 0 0 1px var(--navy)}
 .warn-dot{width:6px;height:6px;border-radius:50%;background:var(--rose);display:inline-block;margin-right:6px}
 .bite-h{display:grid;grid-template-columns:1fr auto;gap:6px 12px;width:100%;text-align:left;align-items:center}
 .bite-k{grid-column:1/-1;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mute)}
@@ -2356,8 +2357,10 @@ function sheetHTML(name) {
   const head = (t, s) => `${close}<div class="row between"><div><div class="t18">${t}</div>${s ? `<div class="t12 mute">${s}</div>` : ''}</div><button class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)" data-act="closeSheet" aria-label="닫기">${ic('close', 20)}</button></div>`;
   switch (name) {
     case 'noti': return head('알림', '예산 초과 위험·정산·입금일 때만 보내요') + `<div class="stack mt24">
+      ${S.settled ? '' : `<div class="t12 mute">지금 처리할 일</div>
+      <button class="card c-paper n-urgent" style="text-align:left" data-act="sheet" data-sheet="settle"><span class="tag line"><i class="warn-dot"></i>정산 · 먼저 처리해 주세요</span><div class="row between mt12"><span class="t16">받을 더치페이 2건</span><span class="n24">36,000<span class="t14">원</span></span></div><div class="t12 mute mt4">10.09 저녁 · 10.11 택시</div><span class="btn mt16" style="width:100%">정산하기</span></button>
+      <div class="t12 mute mt12">다른 알림</div>`}
       <div class="card c-paper"><span class="tag line"><i class="warn-dot"></i>예산 초과 위험</span><div class="t16 mt12">배달 예산의 ${pct(catSpent()['배달'] / S.cat['배달'])}를 썼어요</div><div class="t12 mute mt4">10월 ${W(S.cat['배달'])} 중 ${W(catSpent()['배달'])} · 남은 ${d.left}일</div><div class="glowbar mt12"><i style="width:${Math.min(100, catSpent()['배달'] / S.cat['배달'] * 100)}%"></i></div></div>
-      ${S.settled ? '' : `<button class="card c-paper" style="text-align:left" data-act="sheet" data-sheet="settle"><span class="tag line">정산</span><div class="t16 mt12">받을 더치페이 2건 · 36,000원</div><div class="t12 mute mt4">10.09 저녁 · 10.11 택시</div></button>`}
       ${S.allocDone ? '' : `<button class="card c-paper" style="text-align:left" data-act="sheet" data-sheet="alloc"><span class="tag line">입금</span><div class="t16 mt12">외주비 320,000원 배분 제안</div><div class="t12 mute mt4">10.08 · 한 번에 나누기</div></button>`}
       <p class="t12 mute">알림 종류는 메뉴 › 알림 설정에서 끌 수 있어요.</p></div>`;
     case 'settle': return head('정산하기', '더치페이 · 대리 결제 정리') + `<div class="stack mt24">
