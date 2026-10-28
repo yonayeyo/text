@@ -2722,7 +2722,7 @@ document.addEventListener('click', e => {
     case 'pgo': { const d = el.dataset; closeSheet(); S.mode = 'app'; S.sub = null; S.tab = d.tab;
       if (d.sv) S.spendView = d.sv; if (d.pv) S.planView = d.pv; if (d.lv) S.learnView = d.lv; if (d.more) S.planMore = true; if (d.chal) S.chalMore = true;
       const a = viewArea(); a && S.explored.add(a); render(false);
-      setTimeout(() => { const t = view.querySelector(d.focus); if (t) { t.scrollIntoView({ block:'center', behavior:'smooth' }); t.classList.add('pfocus'); setTimeout(() => t.classList.remove('pfocus'), 2600); } simpleToast(d.hint); }, 60);
+      setTimeout(() => { const t = view.querySelector(d.focus); if (t) { view.scrollTo({ top: view.scrollTop + t.getBoundingClientRect().top - view.getBoundingClientRect().top - (view.clientHeight - t.offsetHeight) / 2, behavior:'smooth' }); t.classList.add('pfocus'); setTimeout(() => t.classList.remove('pfocus'), 2600); } simpleToast(d.hint); }, 60);
       break; }
     case 'rentPrep': S.rentPrep = true; render(); simpleToast('청년 월세 지원 신청 서류 3개를 준비 목록에 담았어요'); break;
     case 'naGo': { const tr = el.closest('.na-wrap').querySelector('.na-track'); tr.scrollTo({ left:+v * (tr.firstElementChild.offsetWidth + 12), behavior:'smooth' }); break; }
