@@ -1845,7 +1845,7 @@ function topSpend() {
     <div class="row between"><span class="t18" style="font-family:var(--f-num);font-weight:300;font-size:24px">Top spend</span><span class="t10 mute num">${m ? '9.1 – 9.30' : '10.5 – 10.11'}</span></div>
     <div class="row between mt8"><div class="row g4" role="tablist" aria-label="보기 방식">${[['circle','상위 4개'],['tree','전체']].map(([k, l]) => `<button class="chip pchip ${S.topView === k ? 'on' : ''}" role="tab" aria-selected="${S.topView === k}" data-act="topView" data-v="${k}">${l}</button>`).join('')}</div>
       <span class="t10 mute">${tree ? `전체 ${items.length}개 · ${W(total)}` : `상위 4개 = 지출의 ${pct(share)}`}</span></div>
-    ${tree ? treemap(items, sel) : `<svg viewBox="${vb}" width="100%" class="mt8" role="img" aria-label="상위 지출: ${top.map(i => `${i.c} ${won(i.a)}원`).join(', ')}">
+    ${tree ? treemap(items, sel, vs) : `<svg viewBox="${vb}" width="100%" class="mt8" role="img" aria-label="상위 지출: ${top.map(i => `${i.c} ${won(i.a)}원`).join(', ')}">
       <defs>${NECKS.map(([a, b], n) => `<linearGradient id="nk${n}" gradientUnits="userSpaceOnUse" x1="${P[a][0]}" y1="${P[a][1]}" x2="${P[b][0]}" y2="${P[b][1]}"><stop offset=".3" stop-color="${FILL[a]}"/><stop offset=".7" stop-color="${FILL[b]}"/></linearGradient>`).join('')}
       <linearGradient id="bdg" x1="0" x2="1"><stop offset="0" stop-color="#D5E3FF"/><stop offset="1" stop-color="#B5CBFF"/></linearGradient></defs>
       ${NECKS.map(([a, b], n) => `<path d="${neck(P[a], P[b], r(top[a]), r(top[b]))}" fill="url(#nk${n})"/>`).join('')}
@@ -1866,18 +1866,22 @@ function topSpend() {
     </div>
   </div>`;
 }
-// 트리맵 시안: 크기 = 금액, 색 = 원형과 같은 순위 색(1위 검정 · 2위 하늘 · 3위 회색 · 4위 연하늘), 5위부터는 옅은 회색
-function treemap(items, sel) {
-  const Wd = 305, Ht = 232, G = 3, FILL = ['#181818', '#B5CBFF', '#DEDEDE', '#D5E3FF'], B = squarify(items.map(i => i.a), Wd, Ht);
+// 전체 보기 트리맵: 크기 = 금액, 색 = 지난 기간 대비 변화 5단계
+// 검정 많이 늘었어요(+20% 이상) · 진회색 조금 늘었어요 · 연회색 비슷해요(±5%) · 연하늘 조금 줄었어요 · 하늘 많이 줄었어요(−20% 이하)
+const CHG = [['#181818', '+20% 이상'], ['#6B6B6B', '+5~20%'], ['#E6E6E6', '±5%'], ['#D5E3FF', '−5~20%'], ['#B5CBFF', '−20% 이하']];
+const chgLv = i => { const prev = i.a - i.d, r = prev > 0 ? i.d / prev : i.d > 0 ? 1 : 0; return r >= .2 ? 0 : r > .05 ? 1 : r >= -.05 ? 2 : r > -.2 ? 3 : 4; };
+function treemap(items, sel, vs) {
+  const Wd = 305, Ht = 232, G = 3, B = squarify(items.map(i => i.a), Wd, Ht);
   return `<svg viewBox="-2 -2 ${Wd + 4} ${Ht + 4}" width="100%" class="mt12" role="img" aria-label="전체 지출 트리맵: ${items.map(i => `${i.c} ${won(i.a)}원`).join(', ')}">
-    ${items.map((it, k) => { const b = B[k], X = b.x + G / 2, Y = b.y + G / 2, w = b.w - G, h = b.h - G, on = it === sel, big = w > 56 && h > 48, ink = k === 0 ? '#FCFCFC' : '#181818';
+    ${items.map((it, k) => { const b = B[k], X = b.x + G / 2, Y = b.y + G / 2, w = b.w - G, h = b.h - G, on = it === sel, big = w > 56 && h > 48, lv = chgLv(it), ink = lv < 2 ? '#FCFCFC' : '#181818';
       return `<g data-act="topSel" data-v="${it.c}" style="cursor:pointer" role="button" aria-pressed="${on}" aria-label="${it.c} ${won(it.a)}원 자세히">
-        <rect x="${X.toFixed(1)}" y="${Y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="10" fill="${FILL[k] || '#F0F0F0'}"/>
+        <rect x="${X.toFixed(1)}" y="${Y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="10" fill="${CHG[lv][0]}"/>
         ${on ? `<rect x="${(X - 2.5).toFixed(1)}" y="${(Y - 2.5).toFixed(1)}" width="${(w + 5).toFixed(1)}" height="${(h + 5).toFixed(1)}" rx="12" fill="none" stroke="#181818" stroke-width="1.5" stroke-dasharray="3 3"/>` : ''}
         ${w > 34 && h > 22 ? `<text x="${(X + 10).toFixed(1)}" y="${(Y + 18).toFixed(1)}" font-size="${big ? 12 : 10}" fill="${ink}" opacity=".75">${it.c}</text>` : ''}
         ${big ? `<text x="${(X + 10).toFixed(1)}" y="${(Y + h - 12).toFixed(1)}" font-size="${w > 120 ? 22 : w > 80 ? 15 : 13}" font-family="Urbanist" font-weight="300" fill="${ink}">${won(it.a)}<tspan font-size="9" dx="2">₩</tspan></text>` : ''}</g>`; }).join('')}
   </svg>
-  <div class="row between t10 mute mt8"><span>크기 = 금액 · 색 = 상위 4개 순위</span><span>칸을 눌러 자세히 보기</span></div>`;
+  <div class="row between t10 mute mt8"><span>크기 = 금액 · 색 = ${vs} 대비</span><span>칸을 눌러 자세히 보기</span></div>
+  <div class="row mt8" style="gap:4px">${CHG.map(([c, l]) => `<span style="flex:1;min-width:0"><i style="display:block;height:6px;border-radius:3px;background:${c}"></i><span class="t10 mute num" style="display:block;margin-top:4px;text-align:center;white-space:nowrap">${l}</span></span>`).join('')}</div>`;
 }
 function diverging() {
   const items = (S.period === 'month' ? MONTH_ITEMS : WEEK_ITEMS).filter(i => i.d !== 0);
