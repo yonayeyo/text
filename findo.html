@@ -934,7 +934,7 @@ const S = {
   gNew:{ type:'전세 자금', amt:10000000, months:24 },
   cert:false, printed:new Set(), chalOn:['zero','cafe'], chalCert:new Set(), chalPick:'all', calOpen:false, league:'all', liked:new Set(), benefitMoved:false, deductOk:false, pointsMoved:false, interest:new Set(),
   switches:{ pre:true, emer:true, budget:true, fixed:false },
-  chat:[], flowSel:null, topSel:null, acctSel:null, cutApplied:null,
+  chat:[], flowSel:null, topSel:null, topView:'circle', acctSel:null, cutApplied:null,
 };
 /* ---------- 사용성 테스트 기록: 화면 이동과 탭을 시간순으로 남김 (이 기기에만 저장) ---------- */
 const LOG_KEY = 'slip-usability-log';
@@ -1797,7 +1797,8 @@ function topSpend() {
   const m = S.period === 'month', all = m ? MONTH_ITEMS : WEEK_ITEMS;
   const items = all.slice().sort((a, b) => b.a - a.a), top = items.slice(0, 4);
   const total = all.reduce((t, i) => t + i.a, 0), share = top.reduce((t, i) => t + i.a, 0) / total;
-  const sel = top.find(i => i.c === S.topSel) || top[0];
+  const tree = S.topView === 'tree';
+  const sel = (tree ? items : top).find(i => i.c === S.topSel) || top[0];
   const P = [[112, 130], [232, 74], [236, 196], [46, 226]], FILL = ['#181818', '#B5CBFF', '#DEDEDE', '#D5E3FF'];
   const r = i => 66 * Math.sqrt(i.a / top[0].a);
   const NECKS = [[0, 1], [0, 3], [1, 2]];
@@ -1810,8 +1811,8 @@ function topSpend() {
     return `M${a1} Q${(mx + nx * w).toFixed(1)},${(my + ny * w).toFixed(1)} ${b1} L${b2} Q${(mx - nx * w).toFixed(1)},${(my - ny * w).toFixed(1)} ${a2}Z`;
   };
   const vs = m ? '지난달' : '지난주';
-  const si = top.indexOf(sel), sr = r(sel), [sx, sy] = P[si];
-  const bt = `${sel.d >= 0 ? '+' : '−'}${won(Math.abs(sel.d))}원 ${vs} 대비`, bw = bt.length * 6.4 + 20;
+  const cs = top.includes(sel) ? sel : top[0], si = top.indexOf(cs), sr = r(cs), [sx, sy] = P[si];
+  const bt = `${cs.d >= 0 ? '+' : '−'}${won(Math.abs(cs.d))}원 ${vs} 대비`, bw = bt.length * 6.4 + 20;
   const bx = Math.max(0, Math.min(305 - bw, sx - bw / 2)), by = Math.max(0, sy - sr - 16);
   // 그려진 원·배지의 실제 범위에 맞춰 viewBox를 잡아 카드 안에서 가운데 오게
   // 선택이 바뀌어도 그래픽이 움직이지 않도록, 모든 항목의 선택 테두리(+6)와 배지 위치를 다 포함한 고정 범위를 쓴다
@@ -1823,8 +1824,9 @@ function topSpend() {
   const vb = `${(X0 - 4).toFixed(1)} ${(Y0 - 4).toFixed(1)} ${(X1 - X0 + 8).toFixed(1)} ${(Y1 - Y0 + 8).toFixed(1)}`;
   return `<div class="card c-paper">
     <div class="row between"><span class="t18" style="font-family:var(--f-num);font-weight:300;font-size:24px">Top spend</span><span class="t10 mute num">${m ? '9.1 – 9.30' : '10.5 – 10.11'}</span></div>
-    <div class="t10 mute mt4" style="text-align:right">상위 4개 = 지출의 ${pct(share)}</div>
-    <svg viewBox="${vb}" width="100%" class="mt8" role="img" aria-label="상위 지출: ${top.map(i => `${i.c} ${won(i.a)}원`).join(', ')}">
+    <div class="row between mt8"><div class="row g4" role="tablist" aria-label="보기 방식">${[['circle','원형'],['tree','트리맵']].map(([k, l]) => `<button class="chip pchip ${S.topView === k ? 'on' : ''}" role="tab" aria-selected="${S.topView === k}" data-act="topView" data-v="${k}">${l}</button>`).join('')}</div>
+      <span class="t10 mute">${tree ? `전체 ${items.length}개 · ${W(total)}` : `상위 4개 = 지출의 ${pct(share)}`}</span></div>
+    ${tree ? treemap(items, sel) : `<svg viewBox="${vb}" width="100%" class="mt8" role="img" aria-label="상위 지출: ${top.map(i => `${i.c} ${won(i.a)}원`).join(', ')}">
       <defs>${NECKS.map(([a, b], n) => `<linearGradient id="nk${n}" gradientUnits="userSpaceOnUse" x1="${P[a][0]}" y1="${P[a][1]}" x2="${P[b][0]}" y2="${P[b][1]}"><stop offset=".3" stop-color="${FILL[a]}"/><stop offset=".7" stop-color="${FILL[b]}"/></linearGradient>`).join('')}
       <linearGradient id="bdg" x1="0" x2="1"><stop offset="0" stop-color="#D5E3FF"/><stop offset="1" stop-color="#B5CBFF"/></linearGradient></defs>
       ${NECKS.map(([a, b], n) => `<path d="${neck(P[a], P[b], r(top[a]), r(top[b]))}" fill="url(#nk${n})"/>`).join('')}
@@ -1837,13 +1839,26 @@ function topSpend() {
           <text x="${x}" y="${y + (big ? 16 : 10)}" text-anchor="middle" font-size="${big ? 24 : 15}" font-family="Urbanist" font-weight="300" fill="${c}">${won(i.a)}<tspan font-size="${big ? 12 : 9}" dx="2">₩</tspan></text></g>`; }).join('')}
       <rect x="${bx}" y="${by}" width="${bw}" height="24" rx="12" fill="url(#bdg)"/>
       <text x="${bx + bw / 2}" y="${by + 16}" text-anchor="middle" font-size="11" fill="#181818">${bt}</text>
-    </svg>
-    <div class="row g12 mt16" style="padding:12px;margin:0 -8px;border-radius:999px;background:var(--g2)">
+    </svg>`}
+    <div class="row g12 mt16" style="padding:12px;margin:${tree ? '20px -8px 0' : '0 -8px'};border-radius:999px;background:var(--g2)">
       <span class="ib" style="background:var(--paper)">${ic(CAT_IC[sel.c] || 'receipt', 20)}</span>
       <div><div class="t14">${sel.c} ${sel.q}회 · 1회 평균 ${W(Math.round(sel.a / sel.q / 100) * 100)}</div>
       <div class="t12 mute">${sel.d === 0 ? `${vs}와 같아요` : `${vs}보다 ${Ws(sel.d)}`}</div></div>
     </div>
   </div>`;
+}
+// 트리맵 시안: 크기 = 금액, 색 = 원형과 같은 순위 색(1위 검정 · 2위 하늘 · 3위 회색 · 4위 연하늘), 5위부터는 옅은 회색
+function treemap(items, sel) {
+  const Wd = 305, Ht = 232, G = 3, FILL = ['#181818', '#B5CBFF', '#DEDEDE', '#D5E3FF'], B = squarify(items.map(i => i.a), Wd, Ht);
+  return `<svg viewBox="-2 -2 ${Wd + 4} ${Ht + 4}" width="100%" class="mt12" role="img" aria-label="전체 지출 트리맵: ${items.map(i => `${i.c} ${won(i.a)}원`).join(', ')}">
+    ${items.map((it, k) => { const b = B[k], X = b.x + G / 2, Y = b.y + G / 2, w = b.w - G, h = b.h - G, on = it === sel, big = w > 56 && h > 48, ink = k === 0 ? '#FCFCFC' : '#181818';
+      return `<g data-act="topSel" data-v="${it.c}" style="cursor:pointer" role="button" aria-pressed="${on}" aria-label="${it.c} ${won(it.a)}원 자세히">
+        <rect x="${X.toFixed(1)}" y="${Y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="10" fill="${FILL[k] || '#F0F0F0'}"/>
+        ${on ? `<rect x="${(X - 2.5).toFixed(1)}" y="${(Y - 2.5).toFixed(1)}" width="${(w + 5).toFixed(1)}" height="${(h + 5).toFixed(1)}" rx="12" fill="none" stroke="#181818" stroke-width="1.5" stroke-dasharray="3 3"/>` : ''}
+        ${w > 34 && h > 22 ? `<text x="${(X + 10).toFixed(1)}" y="${(Y + 18).toFixed(1)}" font-size="${big ? 12 : 10}" fill="${ink}" opacity=".75">${it.c}</text>` : ''}
+        ${big ? `<text x="${(X + 10).toFixed(1)}" y="${(Y + h - 12).toFixed(1)}" font-size="${w > 120 ? 22 : w > 80 ? 15 : 13}" font-family="Urbanist" font-weight="300" fill="${ink}">${won(it.a)}<tspan font-size="9" dx="2">₩</tspan></text>` : ''}</g>`; }).join('')}
+  </svg>
+  <div class="row between t10 mute mt8"><span>크기 = 금액 · 색 = 상위 4개 순위</span><span>칸을 눌러 자세히 보기</span></div>`;
 }
 function diverging() {
   const items = (S.period === 'month' ? MONTH_ITEMS : WEEK_ITEMS).filter(i => i.d !== 0);
@@ -2821,6 +2836,7 @@ document.addEventListener('click', e => {
     case 'benMove': S.benefitMoved = true; S.emergency += 12300; render(); simpleToast('12,300원을 비상금으로 옮겼어요'); break;
     case 'ptMove': S.pointsMoved = true; goalBump(32440, '포인트 현금 전환'); break;
     case 'topSel': S.topSel = v; render(); break;
+    case 'topView': S.topView = v; S.topSel = null; render(); break;
     case 'cutApply': { const ch = SUGG.filter(s => !S.keeps.has(s.c) && S.applied.has(s.id) && CUT_CAT[s.id]).map(s => { const c = CUT_CAT[s.id], a = S.cat[c], b = Math.max(0, Math.round((a - s.save) / 1000) * 1000); S.cat[c] = b; return [c, a, b]; });
       if (SUGG.some(s => s.id === 's4' && S.applied.has('s4') && !S.keeps.has('구독'))) ch.push(['구독', 45000, 31500]);
       S.cutApplied = ch; render(); simpleToast('11월 예산에 반영했어요'); break; }
