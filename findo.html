@@ -1360,7 +1360,7 @@ function accountsTree() {
       <span class="num" style="font-family:var(--f-num);font-weight:300;font-size:${b.w > 120 ? 20 : 14}px;${a.k === 'evt' ? 'background:#FCFCFC;color:#181818;border-radius:4px;padding:0 4px;align-self:flex-start' : ''}">${won(a.a)}</span>` : ''}</div></button>`; }).join('');
   return `<div class="mt12" style="position:relative;aspect-ratio:${Wd}/${Ht}" role="img" aria-label="통합 자산 ${won(total)}원 중 ${ACCOUNTS.map(a => `${useOf(a)} ${pct(a.a / total)}`).join(', ')}">${tiles}</div>
     <div class="row between t10 mute mt8"><span>크기 = 잔액 · 색 = 용도</span><span>${sel ? '다시 누르면 전체 보기' : '칸을 눌러 자세히 보기'}</span></div>
-    ${sel ? `<div class="row g12 mt12" style="padding:12px;margin:0 -8px;border-radius:999px;background:var(--g2)">
+    ${sel ? `<div class="row g12" style="padding:12px;margin:20px -8px 0;border-radius:999px;background:var(--g2)">
       <span class="ib" style="background:var(--paper)">${ic(ACC_IC[sel.k] || 'wallet', 20)}</span>
       <div><div class="t14">${useOf(sel)} ${pct(sel.a / total)} · ${W(sel.a)}</div><div class="t12 mute">${sel.raw}</div></div>
     </div>` : ''}`;
