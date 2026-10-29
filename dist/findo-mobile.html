@@ -1843,7 +1843,7 @@ function topSpend() {
   const vb = `${(X0 - 4).toFixed(1)} ${(Y0 - 4).toFixed(1)} ${(X1 - X0 + 8).toFixed(1)} ${(Y1 - Y0 + 8).toFixed(1)}`;
   return `<div class="card c-paper">
     <div class="row between"><span class="t18" style="font-family:var(--f-num);font-weight:300;font-size:24px">Top spend</span><span class="t10 mute num">${m ? '9.1 – 9.30' : '10.5 – 10.11'}</span></div>
-    <div class="row between mt8"><div class="row g4" role="tablist" aria-label="보기 방식">${[['circle','원형'],['tree','트리맵']].map(([k, l]) => `<button class="chip pchip ${S.topView === k ? 'on' : ''}" role="tab" aria-selected="${S.topView === k}" data-act="topView" data-v="${k}">${l}</button>`).join('')}</div>
+    <div class="row between mt8"><div class="row g4" role="tablist" aria-label="보기 방식">${[['circle','상위 4개'],['tree','전체']].map(([k, l]) => `<button class="chip pchip ${S.topView === k ? 'on' : ''}" role="tab" aria-selected="${S.topView === k}" data-act="topView" data-v="${k}">${l}</button>`).join('')}</div>
       <span class="t10 mute">${tree ? `전체 ${items.length}개 · ${W(total)}` : `상위 4개 = 지출의 ${pct(share)}`}</span></div>
     ${tree ? treemap(items, sel) : `<svg viewBox="${vb}" width="100%" class="mt8" role="img" aria-label="상위 지출: ${top.map(i => `${i.c} ${won(i.a)}원`).join(', ')}">
       <defs>${NECKS.map(([a, b], n) => `<linearGradient id="nk${n}" gradientUnits="userSpaceOnUse" x1="${P[a][0]}" y1="${P[a][1]}" x2="${P[b][0]}" y2="${P[b][1]}"><stop offset=".3" stop-color="${FILL[a]}"/><stop offset=".7" stop-color="${FILL[b]}"/></linearGradient>`).join('')}
