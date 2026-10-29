@@ -1348,18 +1348,20 @@ function squarify(vals, Wd, Ht) {
   }
   return out;
 }
-// 저축 › 통장: 통합 자산 트리맵. 크기 = 잔액, 색 = 용도(홈의 막대와 같은 색)
-const ACC_INK = { life:'#FCFCFC', emer:'#FCFCFC', goal:'#FCFCFC' };
+// 저축 › 통장: 통합 자산 트리맵. 크기 = 잔액, 색 = 잔액 순위(Top spend와 같은 색: 검정 · 하늘 · 회색 · 연하늘, 5위부터 옅은 회색)
+const RANK_FILL = ['#181818', '#B5CBFF', '#DEDEDE', '#D5E3FF'];
+const accRank = a => ACCOUNTS.slice().sort((x, y) => y.a - x.a).indexOf(a);
+const accFill = a => RANK_FILL[accRank(a)] || '#F0F0F0';
 const ACC_IC = { save:'coin', inv:'ur', goal:'flag', life:'wallet', emer:'shield', evt:'gift' };
 function accountsTree() {
   const total = ACCOUNTS.reduce((t, a) => t + a.a, 0), Wd = 313, Ht = 208, B = squarify(ACCOUNTS.map(a => a.a), Wd, Ht);
   const sel = ACCOUNTS.find(a => a.k === S.acctSel);
-  const tiles = ACCOUNTS.map((a, k) => { const b = B[k], fit = b.w > 64 && b.h > 44, ink = ACC_INK[a.k] || '#181818', on = sel === a;
-    return `<button data-act="acctSel" data-v="${a.k}" aria-pressed="${on}" aria-label="${useOf(a)} ${W(a.a)} 자세히" style="position:absolute;left:${b.x / Wd * 100}%;top:${b.y / Ht * 100}%;width:${b.w / Wd * 100}%;height:${b.h / Ht * 100}%;padding:2px;text-align:left;opacity:${sel && !on ? .4 : 1};transition:opacity .2s"><div style="box-sizing:border-box;height:100%;${on ? 'outline:1.5px dashed #181818;outline-offset:1px;' : ''}border-radius:10px;background:${ACC_FILL[a.k]};color:${ink};padding:${fit ? 10 : 0}px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;${a.k === 'evt' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}">
-      ${fit ? `<span class="t12" style="white-space:nowrap;${a.k === 'evt' ? 'background:#FCFCFC;color:#181818;border-radius:4px;padding:0 4px;align-self:flex-start' : ''}">${useOf(a)} <span class="t10" style="opacity:.7">${pct(a.a / total)}</span></span>
-      <span class="num" style="font-family:var(--f-num);font-weight:300;font-size:${b.w > 120 ? 20 : 14}px;${a.k === 'evt' ? 'background:#FCFCFC;color:#181818;border-radius:4px;padding:0 4px;align-self:flex-start' : ''}">${won(a.a)}</span>` : ''}</div></button>`; }).join('');
+  const tiles = ACCOUNTS.map((a, k) => { const b = B[k], fit = b.w > 64 && b.h > 44, ink = accRank(a) === 0 ? '#FCFCFC' : '#181818', on = sel === a;
+    return `<button data-act="acctSel" data-v="${a.k}" aria-pressed="${on}" aria-label="${useOf(a)} ${W(a.a)} 자세히" style="position:absolute;left:${b.x / Wd * 100}%;top:${b.y / Ht * 100}%;width:${b.w / Wd * 100}%;height:${b.h / Ht * 100}%;padding:2px;text-align:left;opacity:${sel && !on ? .4 : 1};transition:opacity .2s"><div style="box-sizing:border-box;height:100%;${on ? 'outline:1.5px dashed #181818;outline-offset:1px;' : ''}border-radius:10px;background:${accFill(a)};color:${ink};padding:${fit ? 10 : 0}px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden">
+      ${fit ? `<span class="t12" style="white-space:nowrap">${useOf(a)} <span class="t10" style="opacity:.7">${pct(a.a / total)}</span></span>
+      <span class="num" style="font-family:var(--f-num);font-weight:300;font-size:${b.w > 120 ? 20 : 14}px">${won(a.a)}</span>` : ''}</div></button>`; }).join('');
   return `<div class="mt12" style="position:relative;aspect-ratio:${Wd}/${Ht}" role="img" aria-label="통합 자산 ${won(total)}원 중 ${ACCOUNTS.map(a => `${useOf(a)} ${pct(a.a / total)}`).join(', ')}">${tiles}</div>
-    <div class="row between t10 mute mt8"><span>크기 = 잔액 · 색 = 용도</span><span>${sel ? '다시 누르면 전체 보기' : '칸을 눌러 자세히 보기'}</span></div>
+    <div class="row between t10 mute mt8"><span>크기 = 잔액 · 색 = 상위 4개 순위</span><span>${sel ? '다시 누르면 전체 보기' : '칸을 눌러 자세히 보기'}</span></div>
     ${sel ? `<div class="row g12" style="padding:12px;margin:20px -8px 0;border-radius:999px;background:var(--g2)">
       <span class="ib" style="background:var(--paper)">${ic(ACC_IC[sel.k] || 'wallet', 20)}</span>
       <div><div class="t14">${useOf(sel)} ${pct(sel.a / total)} · ${W(sel.a)}</div><div class="t12 mute">${sel.raw}</div></div>
@@ -1390,7 +1392,7 @@ function flowCard(home) {
 // 계좌 목록: 한 줄에 계좌 이름 · 잔액 · 지금 용도. 누르면 용도 고르기 시트가 열린다
 function acctRows() {
   return `<div class="card c-paper acct-list">${ACCOUNTS.map(a => `<button class="acct-row" data-act="usePick" data-v="${a.k}" aria-label="${a.raw} 용도 ${useOf(a)}, 바꾸기">
-      <i class="acct-dot" style="background:${ACC_FILL[a.k]};${a.k === 'evt' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}"></i>
+      <i class="acct-dot" style="background:${accFill(a)}"></i>
       <span class="acct-t"><span class="t12 mute">${a.raw.split(' ')[0]}</span><span class="t14">${a.raw.split(' ').slice(1).join(' ')}</span><span class="t14 num">${W(a.a)}</span></span>
       <span class="acct-use">${useOf(a)}${ic('chevD', 14)}</span>
     </button>`).join('')}</div>`;
