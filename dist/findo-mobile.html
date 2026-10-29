@@ -934,7 +934,7 @@ const S = {
   gNew:{ type:'전세 자금', amt:10000000, months:24 },
   cert:false, printed:new Set(), chalOn:['zero','cafe'], chalCert:new Set(), chalPick:'all', calOpen:false, league:'all', liked:new Set(), benefitMoved:false, deductOk:false, pointsMoved:false, interest:new Set(),
   switches:{ pre:true, emer:true, budget:true, fixed:false },
-  chat:[], flowSel:null, topSel:null, cutApplied:null,
+  chat:[], flowSel:null, topSel:null, acctSel:null, cutApplied:null,
 };
 /* ---------- 사용성 테스트 기록: 화면 이동과 탭을 시간순으로 남김 (이 기기에만 저장) ---------- */
 const LOG_KEY = 'slip-usability-log';
@@ -1350,16 +1350,20 @@ function squarify(vals, Wd, Ht) {
 }
 // 저축 › 통장: 통합 자산 트리맵. 크기 = 잔액, 색 = 용도(홈의 막대와 같은 색)
 const ACC_INK = { life:'#FCFCFC', emer:'#FCFCFC', goal:'#FCFCFC' };
+const ACC_IC = { save:'coin', inv:'ur', goal:'flag', life:'wallet', emer:'shield', evt:'gift' };
 function accountsTree() {
   const total = ACCOUNTS.reduce((t, a) => t + a.a, 0), Wd = 313, Ht = 208, B = squarify(ACCOUNTS.map(a => a.a), Wd, Ht);
-  const small = [];
-  const tiles = ACCOUNTS.map((a, k) => { const b = B[k], fit = b.w > 64 && b.h > 44, ink = ACC_INK[a.k] || '#181818';
-    if (!fit) small.push(a);
-    return `<div style="position:absolute;left:${b.x / Wd * 100}%;top:${b.y / Ht * 100}%;width:${b.w / Wd * 100}%;height:${b.h / Ht * 100}%;padding:2px"><div style="box-sizing:border-box;height:100%;border-radius:10px;background:${ACC_FILL[a.k]};color:${ink};padding:${fit ? 10 : 0}px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;${a.k === 'evt' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}">
+  const sel = ACCOUNTS.find(a => a.k === S.acctSel);
+  const tiles = ACCOUNTS.map((a, k) => { const b = B[k], fit = b.w > 64 && b.h > 44, ink = ACC_INK[a.k] || '#181818', on = sel === a;
+    return `<button data-act="acctSel" data-v="${a.k}" aria-pressed="${on}" aria-label="${useOf(a)} ${W(a.a)} 자세히" style="position:absolute;left:${b.x / Wd * 100}%;top:${b.y / Ht * 100}%;width:${b.w / Wd * 100}%;height:${b.h / Ht * 100}%;padding:2px;text-align:left;opacity:${sel && !on ? .4 : 1};transition:opacity .2s"><div style="box-sizing:border-box;height:100%;${on ? 'outline:1.5px dashed #181818;outline-offset:1px;' : ''}border-radius:10px;background:${ACC_FILL[a.k]};color:${ink};padding:${fit ? 10 : 0}px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;${a.k === 'evt' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}">
       ${fit ? `<span class="t12" style="white-space:nowrap;${a.k === 'evt' ? 'background:#FCFCFC;color:#181818;border-radius:4px;padding:0 4px;align-self:flex-start' : ''}">${useOf(a)} <span class="t10" style="opacity:.7">${pct(a.a / total)}</span></span>
-      <span class="num" style="font-family:var(--f-num);font-weight:300;font-size:${b.w > 120 ? 20 : 14}px;${a.k === 'evt' ? 'background:#FCFCFC;color:#181818;border-radius:4px;padding:0 4px;align-self:flex-start' : ''}">${won(a.a)}</span>` : ''}</div></div>`; }).join('');
+      <span class="num" style="font-family:var(--f-num);font-weight:300;font-size:${b.w > 120 ? 20 : 14}px;${a.k === 'evt' ? 'background:#FCFCFC;color:#181818;border-radius:4px;padding:0 4px;align-self:flex-start' : ''}">${won(a.a)}</span>` : ''}</div></button>`; }).join('');
   return `<div class="mt12" style="position:relative;aspect-ratio:${Wd}/${Ht}" role="img" aria-label="통합 자산 ${won(total)}원 중 ${ACCOUNTS.map(a => `${useOf(a)} ${pct(a.a / total)}`).join(', ')}">${tiles}</div>
-    <div class="row between t10 mute mt8"><span>크기 = 잔액 · 색 = 용도</span>${small.length ? `<span class="num">${small.map(a => `${useOf(a)} ${pct(a.a / total)} · ${W(a.a)}`).join(' / ')}</span>` : ''}</div>`;
+    <div class="row between t10 mute mt8"><span>크기 = 잔액 · 색 = 용도</span><span>${sel ? '다시 누르면 전체 보기' : '칸을 눌러 자세히 보기'}</span></div>
+    ${sel ? `<div class="row g12 mt12" style="padding:12px;margin:0 -8px;border-radius:999px;background:var(--g2)">
+      <span class="ib" style="background:var(--paper)">${ic(ACC_IC[sel.k] || 'wallet', 20)}</span>
+      <div><div class="t14">${useOf(sel)} ${pct(sel.a / total)} · ${W(sel.a)}</div><div class="t12 mute">${sel.raw}</div></div>
+    </div>` : ''}`;
 }
 function accountsCard(home) {
   return `<div class="card c-paper">
@@ -2791,6 +2795,7 @@ document.addEventListener('click', e => {
     case 'sw': S.switches[v] = S.switches[v] === false; render(); break;
     case 'ratioOk': S.ratioOk = true; S.ratioEdit = false; render(); break;
     case 'ratioEdit': S.ratioEdit = !S.ratioEdit; render(); break;
+    case 'acctSel': S.acctSel = S.acctSel === v ? null : v; render(); break;
     case 'catSel': S.catSel = S.catSel === v ? null : v; render(); break;
     case 'step': S.cat[el.dataset.c] = Math.max(0, S.cat[el.dataset.c] + +el.dataset.d); render(); break;
     case 'wAmt': S.wAmt = +v; refreshSheet(); break;
