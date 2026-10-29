@@ -1323,14 +1323,14 @@ function sankey() {
     ${links}${nodes}</svg>`;
 }
 // 용도별 통장: 통합 자산 총액과, 그 안에서 각 통장이 차지하는 비율(한 줄 막대) + 잔액 목록
-const ACC_FILL = { save:'linear-gradient(90deg,#B5CBFF,#D5E3FF)', goal:'linear-gradient(90deg,#424F62,#B5CBFF)', inv:'#DEDEDE', life:'#181818', emer:'repeating-linear-gradient(-45deg,#181818 0 1.5px,#FCFCFC 1.5px 4.5px)', evt:'#606060' };
+const ACC_FILL = { save:'linear-gradient(90deg,#B5CBFF,#D5E3FF)', goal:'linear-gradient(90deg,#424F62,#B5CBFF)', inv:'#DEDEDE', life:'#181818', emer:'#606060', evt:'repeating-linear-gradient(-45deg,#181818 0 1.5px,#FCFCFC 1.5px 4.5px)' };
 function accountsBlock() {
   const total = ACCOUNTS.reduce((t, a) => t + a.a, 0);
   return `<div class="row g4 mt12" style="height:28px;border-radius:999px;overflow:hidden" role="img" aria-label="통합 자산 ${won(total)}원 중 ${ACCOUNTS.map(a => `${useOf(a)} ${pct(a.a / total)}`).join(', ')}">
       ${ACCOUNTS.map(a => `<i style="display:block;height:100%;flex:${a.a} 1 0;min-width:4px;background:${ACC_FILL[a.k]}"></i>`).join('')}
     </div>
     <div class="grid2 mt16" style="gap:12px 16px">${ACCOUNTS.map(a => `<div class="row g8" style="align-items:flex-start">
-      <i style="flex:none;width:10px;height:10px;border-radius:3px;margin-top:4px;background:${ACC_FILL[a.k]};${a.k === 'emer' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}"></i>
+      <i style="flex:none;width:10px;height:10px;border-radius:3px;margin-top:4px;background:${ACC_FILL[a.k]};${a.k === 'evt' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}"></i>
       <span style="min-width:0"><span class="t12" style="display:block">${useOf(a)} <span class="t10 mute num">${pct(a.a / total)}</span></span><span class="t12 num mute">${W(a.a)}</span></span></div>`).join('')}</div>`;
 }
 // squarified 트리맵 배치: 짧은 변을 따라 한 줄씩 채우고, 가로세로 비가 나빠지면 다음 줄로
@@ -1349,15 +1349,15 @@ function squarify(vals, Wd, Ht) {
   return out;
 }
 // 저축 › 통장: 통합 자산 트리맵. 크기 = 잔액, 색 = 용도(홈의 막대와 같은 색)
-const ACC_INK = { life:'#FCFCFC', evt:'#FCFCFC', goal:'#FCFCFC' };
+const ACC_INK = { life:'#FCFCFC', emer:'#FCFCFC', goal:'#FCFCFC' };
 function accountsTree() {
   const total = ACCOUNTS.reduce((t, a) => t + a.a, 0), Wd = 313, Ht = 208, B = squarify(ACCOUNTS.map(a => a.a), Wd, Ht);
   const small = [];
   const tiles = ACCOUNTS.map((a, k) => { const b = B[k], fit = b.w > 64 && b.h > 44, ink = ACC_INK[a.k] || '#181818';
     if (!fit) small.push(a);
-    return `<div style="position:absolute;left:${b.x / Wd * 100}%;top:${b.y / Ht * 100}%;width:${b.w / Wd * 100}%;height:${b.h / Ht * 100}%;padding:2px"><div style="height:100%;border-radius:10px;background:${ACC_FILL[a.k]};color:${ink};padding:10px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;${a.k === 'emer' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}">
-      ${fit ? `<span class="t12" style="white-space:nowrap;${a.k === 'emer' ? 'background:#FCFCFC;color:#181818;border-radius:4px;padding:0 4px;align-self:flex-start' : ''}">${useOf(a)} <span class="t10" style="opacity:.7">${pct(a.a / total)}</span></span>
-      <span class="num" style="font-family:var(--f-num);font-weight:300;font-size:${b.w > 120 ? 20 : 14}px;${a.k === 'emer' ? 'background:#FCFCFC;color:#181818;border-radius:4px;padding:0 4px;align-self:flex-start' : ''}">${won(a.a)}</span>` : ''}</div></div>`; }).join('');
+    return `<div style="position:absolute;left:${b.x / Wd * 100}%;top:${b.y / Ht * 100}%;width:${b.w / Wd * 100}%;height:${b.h / Ht * 100}%;padding:2px"><div style="box-sizing:border-box;height:100%;border-radius:10px;background:${ACC_FILL[a.k]};color:${ink};padding:${fit ? 10 : 0}px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;${a.k === 'evt' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}">
+      ${fit ? `<span class="t12" style="white-space:nowrap;${a.k === 'evt' ? 'background:#FCFCFC;color:#181818;border-radius:4px;padding:0 4px;align-self:flex-start' : ''}">${useOf(a)} <span class="t10" style="opacity:.7">${pct(a.a / total)}</span></span>
+      <span class="num" style="font-family:var(--f-num);font-weight:300;font-size:${b.w > 120 ? 20 : 14}px;${a.k === 'evt' ? 'background:#FCFCFC;color:#181818;border-radius:4px;padding:0 4px;align-self:flex-start' : ''}">${won(a.a)}</span>` : ''}</div></div>`; }).join('');
   return `<div class="mt12" style="position:relative;aspect-ratio:${Wd}/${Ht}" role="img" aria-label="통합 자산 ${won(total)}원 중 ${ACCOUNTS.map(a => `${useOf(a)} ${pct(a.a / total)}`).join(', ')}">${tiles}</div>
     <div class="row between t10 mute mt8"><span>크기 = 잔액 · 색 = 용도</span>${small.length ? `<span class="num">${small.map(a => `${useOf(a)} ${pct(a.a / total)} · ${W(a.a)}`).join(' / ')}</span>` : ''}</div>`;
 }
@@ -1386,7 +1386,7 @@ function flowCard(home) {
 // 계좌 목록: 한 줄에 계좌 이름 · 잔액 · 지금 용도. 누르면 용도 고르기 시트가 열린다
 function acctRows() {
   return `<div class="card c-paper acct-list">${ACCOUNTS.map(a => `<button class="acct-row" data-act="usePick" data-v="${a.k}" aria-label="${a.raw} 용도 ${useOf(a)}, 바꾸기">
-      <i class="acct-dot" style="background:${ACC_FILL[a.k]};${a.k === 'emer' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}"></i>
+      <i class="acct-dot" style="background:${ACC_FILL[a.k]};${a.k === 'evt' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}"></i>
       <span class="acct-t"><span class="t12 mute">${a.raw.split(' ')[0]}</span><span class="t14">${a.raw.split(' ').slice(1).join(' ')}</span><span class="t14 num">${W(a.a)}</span></span>
       <span class="acct-use">${useOf(a)}${ic('chevD', 14)}</span>
     </button>`).join('')}</div>`;
