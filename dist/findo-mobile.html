@@ -1371,8 +1371,8 @@ function accountsTree() {
 }
 function accountsCard(home) {
   return `<div class="card c-paper">
-      ${home ? `<button class="row between" style="width:100%;text-align:left" data-act="tab" data-tab="plan" data-pv="bank"><span class="t14">통장 나눠 쓰기</span><span class="row g4 t10 mute">6개 계좌${ic('arrow', 14)}</span></button>`
-        : `<div class="row between"><span class="t14">통장 나눠 쓰기</span><span class="t10 mute">6개 계좌</span></div>`}
+      ${home ? `<button class="row between" style="width:100%;text-align:left" data-act="tab" data-tab="plan" data-pv="bank"><span class="t14">자산 구성</span><span class="row g4 t10 mute">6개 계좌${ic('arrow', 14)}</span></button>`
+        : `<div class="row between"><span class="t14">자산 구성</span><span class="t10 mute">6개 계좌</span></div>`}
       <div class="row between mt12" style="align-items:baseline"><span class="t12 mute">통합 자산</span><span class="n24">${won(ACCOUNTS.reduce((t, a) => t + a.a, 0))}<span class="cur t12">₩</span></span></div>
       ${home ? accountsBlock() : accountsTree()}
     </div>`;
