@@ -1327,7 +1327,7 @@ function sankey() {
     ${links}${nodes}</svg>`;
 }
 // 용도별 통장: 통합 자산 총액과, 그 안에서 각 통장이 차지하는 비율(한 줄 막대) + 잔액 목록
-const ACC_FILL = { save:'linear-gradient(90deg,#B5CBFF,#D5E3FF)', goal:'linear-gradient(90deg,#424F62,#B5CBFF)', inv:'#DEDEDE', life:'#181818', emer:'#606060', evt:'repeating-linear-gradient(-45deg,#181818 0 1.5px,#FCFCFC 1.5px 4.5px)' };
+const ACC_FILL = { save:'linear-gradient(135deg,#B5CBFF,#D5E3FF)', goal:'linear-gradient(135deg,#424F62,#B5CBFF)', inv:'#DEDEDE', life:'#181818', emer:'#606060', evt:'repeating-linear-gradient(-45deg,#181818 0 1.5px,#FCFCFC 1.5px 4.5px)' };
 function accountsBlock() {
   const total = ACCOUNTS.reduce((t, a) => t + a.a, 0);
   return `<div class="row g4 mt12" style="height:28px;border-radius:999px;overflow:hidden" role="img" aria-label="통합 자산 ${won(total)}원 중 ${ACCOUNTS.map(a => `${useOf(a)} ${pct(a.a / total)}`).join(', ')}">
@@ -1352,37 +1352,18 @@ function squarify(vals, Wd, Ht) {
   }
   return out;
 }
-// 저축 › 통장: 통합 자산 트리맵. 크기 = 잔액, 색 = 잔액 순위(Top spend와 같은 색: 검정 · 하늘 · 회색 · 연하늘, 5위부터 옅은 회색)
-const RANK_FILL = ['#181818', '#B5CBFF', '#DEDEDE', '#D5E3FF'];
-const accRank = a => ACCOUNTS.slice().sort((x, y) => y.a - x.a).indexOf(a);
-const accFill = a => RANK_FILL[accRank(a)] || '#F0F0F0';
+// 저축 › 통장: 통합 자산 트리맵. 크기 = 잔액, 색 = 용도(홈의 막대와 같은 색)
+const ACC_INK = { life:'#FCFCFC', emer:'#FCFCFC', goal:'#FCFCFC' };
 const ACC_IC = { save:'coin', inv:'ur', goal:'flag', life:'wallet', emer:'shield', evt:'gift' };
-// 배치: 1위는 왼쪽 세로 한 칸, 나머지는 위아래 두 줄
-// 위 = 2위 | (4위 / 5위 세로로), 아래 = 3위 | 6위부터. 칸 크기는 모두 잔액에 비례
-function accLayout(Wd, Ht) {
-  const r = ACCOUNTS.map((a, k) => k).sort((x, y) => ACCOUNTS[y].a - ACCOUNTS[x].a), v = k => ACCOUNTS[r[k]] ? ACCOUNTS[r[k]].a : 0;
-  const total = r.reduce((t, k) => t + ACCOUNTS[k].a, 0), out = [];
-  const c1 = v(0) / total * Wd, w2 = Wd - c1, rest = total - v(0);
-  const top = v(1) + v(3) + v(4), th = top / rest * Ht, bh = Ht - th;
-  const w1 = v(1) / top * w2, h3 = v(3) / (v(3) + v(4)) * th;
-  const bot = r.slice(5).reduce((t, k) => t + ACCOUNTS[k].a, 0) + v(2), w3 = v(2) / bot * w2;
-  out[r[0]] = { x: 0, y: 0, w: c1, h: Ht };
-  out[r[1]] = { x: c1, y: 0, w: w1, h: th };
-  out[r[3]] = { x: c1 + w1, y: 0, w: w2 - w1, h: h3 };
-  out[r[4]] = { x: c1 + w1, y: h3, w: w2 - w1, h: th - h3 };
-  out[r[2]] = { x: c1, y: th, w: w3, h: bh };
-  let x = c1 + w3; r.slice(5).forEach(k => { const w = ACCOUNTS[k].a / bot * w2; out[k] = { x, y: th, w, h: bh }; x += w; });
-  return out;
-}
 function accountsTree() {
-  const total = ACCOUNTS.reduce((t, a) => t + a.a, 0), Wd = 313, Ht = 208, B = accLayout(Wd, Ht);
+  const total = ACCOUNTS.reduce((t, a) => t + a.a, 0), Wd = 313, Ht = 208, B = squarify(ACCOUNTS.map(a => a.a), Wd, Ht);
   const sel = ACCOUNTS.find(a => a.k === S.acctSel);
-  const tiles = ACCOUNTS.map((a, k) => { const b = B[k], fit = b.w > 64 && b.h > 44, ink = accRank(a) === 0 ? '#FCFCFC' : '#181818', on = sel === a;
-    return `<button data-act="acctSel" data-v="${a.k}" aria-pressed="${on}" aria-label="${useOf(a)} ${W(a.a)} 자세히" style="position:absolute;left:${b.x / Wd * 100}%;top:${b.y / Ht * 100}%;width:${b.w / Wd * 100}%;height:${b.h / Ht * 100}%;padding:2px;text-align:left;opacity:${sel && !on ? .4 : 1};transition:opacity .2s"><div style="box-sizing:border-box;height:100%;${on ? 'outline:1.5px dashed #181818;outline-offset:1px;' : ''}border-radius:10px;background:${accFill(a)};color:${ink};padding:${fit ? 10 : 0}px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden">
-      ${fit ? `<span class="t12" style="white-space:nowrap">${useOf(a)} <span class="t10" style="opacity:.7">${pct(a.a / total)}</span></span>
-      <span class="num" style="font-family:var(--f-num);font-weight:300;font-size:${b.w > 120 ? 20 : 14}px">${won(a.a)}</span>` : ''}</div></button>`; }).join('');
+  const tiles = ACCOUNTS.map((a, k) => { const b = B[k], fit = b.w > 64 && b.h > 44, ink = ACC_INK[a.k] || '#181818', on = sel === a;
+    return `<button data-act="acctSel" data-v="${a.k}" aria-pressed="${on}" aria-label="${useOf(a)} ${W(a.a)} 자세히" style="position:absolute;left:${b.x / Wd * 100}%;top:${b.y / Ht * 100}%;width:${b.w / Wd * 100}%;height:${b.h / Ht * 100}%;padding:2px;text-align:left;opacity:${sel && !on ? .4 : 1};transition:opacity .2s"><div style="box-sizing:border-box;height:100%;${on ? 'outline:1.5px dashed #181818;outline-offset:1px;' : ''}border-radius:10px;background:${ACC_FILL[a.k]};color:${ink};padding:${fit ? 10 : 0}px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;${a.k === 'evt' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}">
+      ${fit ? `<span class="t12" style="white-space:nowrap;${a.k === 'evt' ? 'background:#FCFCFC;color:#181818;border-radius:4px;padding:0 4px;align-self:flex-start' : ''}">${useOf(a)} <span class="t10" style="opacity:.7">${pct(a.a / total)}</span></span>
+      <span class="num" style="font-family:var(--f-num);font-weight:300;font-size:${b.w > 120 ? 20 : 14}px;${a.k === 'evt' ? 'background:#FCFCFC;color:#181818;border-radius:4px;padding:0 4px;align-self:flex-start' : ''}">${won(a.a)}</span>` : ''}</div></button>`; }).join('');
   return `<div class="mt12" style="position:relative;aspect-ratio:${Wd}/${Ht}" role="img" aria-label="통합 자산 ${won(total)}원 중 ${ACCOUNTS.map(a => `${useOf(a)} ${pct(a.a / total)}`).join(', ')}">${tiles}</div>
-    <div class="row between t10 mute mt8"><span>크기 = 잔액 · 색 = 상위 4개 순위</span><span>${sel ? '다시 누르면 전체 보기' : '칸을 눌러 자세히 보기'}</span></div>
+    <div class="row between t10 mute mt8"><span>크기 = 잔액 · 색 = 용도</span><span>${sel ? '다시 누르면 전체 보기' : '칸을 눌러 자세히 보기'}</span></div>
     ${sel ? `<div class="row g12" style="padding:12px;margin:20px -8px 0;border-radius:999px;background:var(--g2)">
       <span class="ib" style="background:var(--paper)">${ic(ACC_IC[sel.k] || 'wallet', 20)}</span>
       <div><div class="t14">${useOf(sel)} ${pct(sel.a / total)} · ${W(sel.a)}</div><div class="t12 mute">${sel.raw}</div></div>
@@ -1413,7 +1394,7 @@ function flowCard(home) {
 // 계좌 목록: 한 줄에 계좌 이름 · 잔액 · 지금 용도. 누르면 용도 고르기 시트가 열린다
 function acctRows() {
   return `<div class="card c-paper acct-list">${ACCOUNTS.map(a => `<button class="acct-row" data-act="usePick" data-v="${a.k}" aria-label="${a.raw} 용도 ${useOf(a)}, 바꾸기">
-      <i class="acct-dot" style="background:${accFill(a)}"></i>
+      <i class="acct-dot" style="background:${ACC_FILL[a.k]};${a.k === 'evt' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}"></i>
       <span class="acct-t"><span class="t12 mute">${a.raw.split(' ')[0]}</span><span class="t14">${a.raw.split(' ').slice(1).join(' ')}</span><span class="t14 num">${W(a.a)}</span></span>
       <span class="acct-use">${useOf(a)}${ic('chevD', 14)}</span>
     </button>`).join('')}</div>`;
