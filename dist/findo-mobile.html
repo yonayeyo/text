@@ -1566,12 +1566,14 @@ function practiceBlock() {
   </section>`;
 }
 // 홈 '알아볼 것': 행동 추천 카드 모양으로 한입 금융 개념을 넘겨 본다
-// 진단에서 '잘 모르겠어요'를 고른 영역 → 지금 집중 영역 → 나머지 순으로 3개를 한 번 고르고,
-// 읽은 개념은 그 자리에서 '완료'로 바뀐다 (다음 개념으로 채우지 않아 학습이 한 번에 끝난다)
+// 진단에서 '잘 모르겠어요'를 고른 영역 → 지금 집중 영역 → 나머지 순으로 안 읽은 개념 3개를 보여 준다
+// 읽은 카드는 그 자리에서 '완료'로 바뀌고, 새 개념은 맨 뒤에만 붙는다(보던 카드가 다음 개념으로 바뀌지 않게). 최대 5장
 function knowCards() {
   const unk = unkAreas(), fa = focusArea(), pr = c => unk.has(c.a) ? 0 : c.a === fa ? 1 : 2;
-  if (!S.knowPick) S.knowPick = CONCEPTS.map(c => conceptOf(c.id)).filter(c => !c.known && !conceptDone(c)).sort((x, y) => pr(x) - pr(y)).slice(0, 3).map(c => c.id);
-  const recs = S.knowPick.map(conceptOf);
+  const pool = CONCEPTS.map(c => conceptOf(c.id)).filter(c => !c.known).sort((x, y) => pr(x) - pr(y));
+  const pick = S.knowPick || (S.knowPick = []);
+  for (const c of pool) { if (pick.length >= 5 || pick.filter(id => !conceptDone(conceptOf(id))).length >= 3) break; if (!pick.includes(c.id) && !conceptDone(c)) pick.push(c.id); }
+  const recs = pick.map(conceptOf);
   if (!recs.length) return '';
   const total = recs.length;
   const card = (c, k) => { const done = conceptDone(c);
