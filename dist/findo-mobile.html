@@ -1565,16 +1565,23 @@ function practiceBlock() {
       <button class="row between t12 mute mt12" style="width:100%" data-act="tab" data-tab="plan" data-pv="goal"><span>챌린지 달력 · 리그 순위</span>${ic('arrow', 14)}</button></div>` : ''}
   </section>`;
 }
-// '?' 알아볼 것 조각: 진단에서 '잘 모르겠어요'를 고른 영역 → 지금 집중 영역 순으로 아직 안 본 개념 하나
-function knowBit() {
-  const unk = unkAreas(), list = CONCEPTS.map(c => conceptOf(c.id)).filter(c => !conceptDone(c));
-  const c = list.find(x => unk.has(x.a)) || list.find(x => x.a === focusArea()) || list[0];
-  if (!c) return '';
-  return `<section class="sec">
-    <div class="sec-h"><div><div class="t18">알아볼 것 한 조각</div><div class="sec-d">한 입 금융 · 1분이면 돼요</div></div><button class="row g4 t12 mute" data-act="tab" data-tab="learn" data-lv="bite">알기${ic('arrow', 14)}</button></div>
-    <button class="card c-know bit-card" data-act="concept" data-v="${c.id}" data-go="learn"><span class="bit-q" aria-hidden="true">?</span>
-      <span style="flex:1;min-width:0"><span class="t12 mute" style="display:block">${areaName(c.a)} · ${c.k}${unk.has(c.a) ? ' · 진단에서 ‘잘 모르겠어요’' : ''}</span><span class="t14" style="display:block;margin-top:2px">${c.q.replace(/<br>/g, ' ')}</span></span>${ic('arrow', 18)}</button>
-  </section>`;
+// 홈 '알아볼 것': 행동 추천 카드 모양으로 한입 금융 개념을 넘겨 본다
+// 진단에서 '잘 모르겠어요'를 고른 영역 → 지금 집중 영역 → 나머지 순. 읽은 개념은 '완료'로 맨 뒤에 남긴다
+function knowCards() {
+  const unk = unkAreas(), fa = focusArea(), pr = c => unk.has(c.a) ? 0 : c.a === fa ? 1 : 2;
+  const all = CONCEPTS.map(c => conceptOf(c.id)).filter(c => !c.known).sort((x, y) => pr(x) - pr(y));
+  const recs = [...all.filter(c => !conceptDone(c)).slice(0, 3), ...all.filter(conceptDone)].slice(0, 5);
+  if (!recs.length) return '';
+  const total = recs.length;
+  const card = (c, k) => { const done = conceptDone(c);
+    return `<div class="card ${done ? 'na-done' : 'c-sky'} na-card">
+    <div class="na-head"><span>알아볼 것${total > 1 ? ` ${k + 1}/${total}` : ''}</span>${done ? `<span class="na-chip done">${ic('check', 10)}완료</span>` : `<button class="na-chip" data-act="tab" data-tab="learn" data-lv="bite" aria-label="알기에서 ${areaName(c.a)} 보기">${areaName(c.a)}</button>`}</div>
+    <div class="na-body"><div><div class="na-title">${c.q}</div><p class="na-desc">${c.k} · 1분이면 돼요<br>${unk.has(c.a) ? '진단에서 ‘잘 모르겠어요’를 고른 영역이에요' : c.a === fa ? '지금 집중할 영역과 이어지는 개념이에요' : '알기에서 더 많은 개념을 볼 수 있어요'}</p></div>
+      ${done ? `<span class="ib na-go done" aria-label="${c.k} 읽음">${ic('check', 22)}</span>` : `<button class="ib na-go" data-act="concept" data-v="${c.id}" data-go="learn" aria-label="${c.k} 알아보기">${ic('ur', 22)}</button>`}</div>
+  </div>`; };
+  return `<div class="na-wrap"><div class="na-track" onscroll="naDots(this)">${recs.map(card).join('')}</div>
+  ${total > 1 ? `<div class="na-dots">${recs.map((_, k) => `<i class="${k === (S.naIdx || 0) ? 'on' : ''}" data-act="naGo" data-v="${k}" role="button" tabindex="0" aria-label="알아볼 것 ${k + 1}/${total} 보기"></i>`).join('')}</div>` : ''}
+  <p class="na-why"><span class="na-star" aria-hidden="true">✦</span><span>${unk.size ? '진단에서 ‘잘 모르겠어요’를 고른 영역부터 골랐어요' : '지금 집중할 영역부터 골랐어요'}</span></p></div>`;
 }
 
 /* =========================================================
@@ -1721,8 +1728,7 @@ function vHome() {
     </section>
     ${orbit()}
     <section class="sec"><div class="dot-h">지금 집중할 영역</div>${focusStrip(true)}</section>
-    <section class="sec"><div class="dot-h">행동 추천</div>${nextCard()}</section>
-    ${knowBit()}`;
+    <section class="sec"><div class="dot-h">알아볼 것</div>${knowCards()}</section>`;
 }
 
 /* =========================================================
