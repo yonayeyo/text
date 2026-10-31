@@ -1512,7 +1512,7 @@ const PRACTICE = {
   low: { d:'1분이면 끝나는 작은 것부터<br>지혜님에게 맞춰 골랐어요', items:[
     ['예산 알림 켜기', () => S.autoOn.has('b80'), 'data-act="autoOn" data-v="b80"'],
     P_FIXED,
-    ['한입 금융', () => S.bitesDone.size + S.conceptDone.size > 0, PG('learn', 'data-lv="bite"', '.lr-row', '개념 하나를 눌러 읽고 ‘알았어요’를 눌러 주세요')],
+    ['한입 금융', () => S.bitesDone.size + S.conceptDone.size > 0, PG('learn', 'data-lv="bite"', '.lr-row', '개념 하나를 눌러 읽고 ‘이해했어요’를 눌러 주세요')],
     P_DEDUCT, P_CUT, P_RECEIPT, P_ZERO ] },
   habit: { d:'지금 습관 위에 더 나은 선택을<br>지혜님에게 맞춰 골랐어요', items:[
     ['카드 실적 확인', () => S.deductOk, PG('benefit', '', '#cardRatio', '남은 기간에는 체크카드가 유리해요. 보고 ‘확인했어요’를 눌러 주세요')],
@@ -1649,7 +1649,7 @@ function bite(id, o = {}) {
     ${o.force ? `<div class="bite-h"><span class="bite-k">${ic('spark', 14)}한 입 금융 · ${b.k}</span><span class="t16 bite-q">${b.q}</span></div>`
     : `<button class="bite-h" data-act="bite" data-v="${id}" aria-expanded="${open}"><span class="bite-k">${ic('spark', 14)}한 입 금융 · ${b.k}${done ? `<span class="tag line" style="height:18px;margin-left:6px">${ic('check', 10)}&nbsp;알아봤어요</span>` : ''}</span><span class="t16 bite-q">${b.q}</span><span class="bite-tg">${ic(open ? 'minus' : 'plus', 16)}</span></button>`}
     ${open ? `<div class="bite-b">${b.ex()}<p class="t12 bite-take">${b.take}</p>
-      <div class="row g8 mt16">${o.force ? '' : `<button class="btn sm ${o.dark ? 'light' : ''}" data-act="biteOk" data-v="${id}">${done ? '접기' : '알았어요'}</button>`}${b.go && !o.noGo ? `<button class="btn sm ghost" ${b.go[1]}>${b.go[0]}</button>` : ''}${o.force || S.tab === 'learn' ? '' : `<button class="btn sm ghost" style="box-shadow:none;color:var(--mute);padding:0 4px;margin-left:auto;gap:2px" data-act="tab" data-tab="learn" data-lv="bite">모아보기${ic('arrow', 14)}</button>`}</div></div>` : ''}
+      <div class="row g8 mt16">${o.force ? '' : `<button class="btn sm ${o.dark ? 'light' : ''}" data-act="biteOk" data-v="${id}">${done ? '접기' : '이해했어요'}</button>`}${b.go && !o.noGo ? `<button class="btn sm ghost" ${b.go[1]}>${b.go[0]}</button>` : ''}${o.force || S.tab === 'learn' ? '' : `<button class="btn sm ghost" style="box-shadow:none;color:var(--mute);padding:0 4px;margin-left:auto;gap:2px" data-act="tab" data-tab="learn" data-lv="bite">모아보기${ic('arrow', 14)}</button>`}</div></div>` : ''}
   </div>`;
 }
 
@@ -2490,7 +2490,7 @@ function sheetHTML(name) {
       return head(c.k, `한 입 금융 · ${ar.name}${ar.now ? '' : ' · 확장 예정'}`) + `<div class="card bite c-know mt24">
         <div class="bite-h"><span class="bite-k">${ic('spark', 14)}한 입 금융 · ${c.k}${done ? `<span class="tag line" style="height:18px;margin-left:6px">${ic('check', 10)}&nbsp;알아봤어요</span>` : ''}</span><span class="t16 bite-q">${c.q}</span></div>
         <div class="bite-b">${c.ex ? c.ex() : ''}<p class="t12 bite-take">${c.take}</p></div></div>
-        <div class="stack8 mt16">${done ? '' : `<button class="btn full light" style="box-shadow:inset 0 0 0 1px var(--g3)" data-act="conceptOk" data-v="${c.id}">알았어요</button>`}
+        <div class="stack8 mt16">${done ? '' : `<button class="btn full light" style="box-shadow:inset 0 0 0 1px var(--g3)" data-act="conceptOk" data-v="${c.id}">이해했어요</button>`}
         ${c.go ? `<button class="btn full" ${c.go[1]}>${c.go[0]}${ic('arrow', 18)}</button>` : ''}</div>`; }
     case 'bites': return head('한 입 금융', '필요한 순간에 하나씩 보여 드린 개념이에요') + `<div class="stack mt24">${Object.keys(BITES).map(id => bite(id, { force:true, noGo:true })).join('')}</div>`;
     case 'menu': return head('메뉴') + `<div class="stack8 mt24"><button class="card c-paper setrow" style="text-align:left" data-act="diag"><span class="ib ink">${ic('spark', 20)}</span><span><span class="t14" style="display:block">내 진단 결과</span><span class="t12 mute">${PERSONA[S.persona].name} · 2026.10.15 진단</span></span>${ic('arrow', 18)}</button>${[['link','연동 계좌·카드 관리','6개 계좌 · 카드 2 · 간편결제 1'],['bell','알림 설정','예산 초과 위험 · 정산 · 입금'],['sliders','기본 설정 바꾸기·해제','선저축 · 비상금 · 예산 · 고정 지출'],['refresh','재진단','마지막 2026.06.12']].map(([i, t, s]) => `<button class="card c-paper setrow" style="text-align:left" data-act="${i === 'refresh' ? 'rediag' : i === 'sliders' ? 'tab' : 'toast'}" data-tab="plan" data-msg="${t} 화면은 데모에서 생략했어요"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(i, 20)}</span><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${s}</span></span>${ic('arrow', 18)}</button>`).join('')}</div>
@@ -2802,7 +2802,7 @@ document.addEventListener('click', e => {
     case 'naGo': { const tr = el.closest('.na-wrap').querySelector('.na-track'); tr.scrollTo({ left:+v * (tr.firstElementChild.offsetWidth + 12), behavior:'smooth' }); break; }
     case 'learnArea': S.learnArea = v; render(); break;
     case 'concept': S.conceptId = v; if (el.dataset.go) { S.mode = 'app'; S.sub = null; S.tab = el.dataset.go; S.learnView = 'bite'; render(false); } openSheet('concept'); break;
-    case 'conceptOk': { const c = conceptOf(v); c.b ? S.bitesDone.add(c.b) : S.conceptDone.add(v); refreshSheet(); render(); break; }
+    case 'conceptOk': { const c = conceptOf(v); c.b ? S.bitesDone.add(c.b) : S.conceptDone.add(v); closeSheet(); render(); break; }
     case 'aiOpen': aiDock(true); break;
     case 'diag': closeSheet(); S.mode = 'app'; S.sub = 'diag'; render(false); break;
     case 'subClose': S.sub = null; render(false); break;
