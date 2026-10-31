@@ -1566,18 +1566,19 @@ function practiceBlock() {
   </section>`;
 }
 // 홈 '알아볼 것': 행동 추천 카드 모양으로 한입 금융 개념을 넘겨 본다
-// 진단에서 '잘 모르겠어요'를 고른 영역 → 지금 집중 영역 → 나머지 순. 읽은 개념은 '완료'로 맨 뒤에 남긴다
+// 진단에서 '잘 모르겠어요'를 고른 영역 → 지금 집중 영역 → 나머지 순으로 3개를 한 번 고르고,
+// 읽은 개념은 그 자리에서 '완료'로 바뀐다 (다음 개념으로 채우지 않아 학습이 한 번에 끝난다)
 function knowCards() {
   const unk = unkAreas(), fa = focusArea(), pr = c => unk.has(c.a) ? 0 : c.a === fa ? 1 : 2;
-  const all = CONCEPTS.map(c => conceptOf(c.id)).filter(c => !c.known).sort((x, y) => pr(x) - pr(y));
-  const recs = [...all.filter(c => !conceptDone(c)).slice(0, 3), ...all.filter(conceptDone)].slice(0, 5);
+  if (!S.knowPick) S.knowPick = CONCEPTS.map(c => conceptOf(c.id)).filter(c => !c.known && !conceptDone(c)).sort((x, y) => pr(x) - pr(y)).slice(0, 3).map(c => c.id);
+  const recs = S.knowPick.map(conceptOf);
   if (!recs.length) return '';
   const total = recs.length;
   const card = (c, k) => { const done = conceptDone(c);
     return `<div class="card ${done ? 'na-done' : 'c-sky'} na-card">
     <div class="na-head"><span>알아볼 것${total > 1 ? ` ${k + 1}/${total}` : ''}</span>${done ? `<span class="na-chip done">${ic('check', 10)}완료</span>` : `<button class="na-chip" data-act="tab" data-tab="learn" data-lv="bite" aria-label="알기에서 ${areaName(c.a)} 보기">${areaName(c.a)}</button>`}</div>
     <div class="na-body"><div><div class="na-title">${c.q}</div><p class="na-desc">${c.k} · 1분이면 돼요<br>${unk.has(c.a) ? '진단에서 ‘잘 모르겠어요’를 고른 영역이에요' : c.a === fa ? '지금 집중할 영역과 이어지는 개념이에요' : '알기에서 더 많은 개념을 볼 수 있어요'}</p></div>
-      ${done ? `<span class="ib na-go done" aria-label="${c.k} 읽음">${ic('check', 22)}</span>` : `<button class="ib na-go" data-act="concept" data-v="${c.id}" data-go="learn" aria-label="${c.k} 알아보기">${ic('ur', 22)}</button>`}</div>
+      ${done ? `<span class="ib na-go done" aria-label="${c.k} 읽음">${ic('check', 22)}</span>` : `<button class="ib na-go" data-act="concept" data-v="${c.id}" aria-label="${c.k} 알아보기">${ic('ur', 22)}</button>`}</div>
   </div>`; };
   return `<div class="na-wrap"><div class="na-track" onscroll="naDots(this)">${recs.map(card).join('')}</div>
   ${total > 1 ? `<div class="na-dots">${recs.map((_, k) => `<i class="${k === (S.naIdx || 0) ? 'on' : ''}" data-act="naGo" data-v="${k}" role="button" tabindex="0" aria-label="알아볼 것 ${k + 1}/${total} 보기"></i>`).join('')}</div>` : ''}
