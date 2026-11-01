@@ -666,6 +666,7 @@ button.ph-tag{color:var(--mute)}
 .lr-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * var(--m));padding:0 var(--m)}
 .lr-chips::-webkit-scrollbar{display:none}
 .lr-chips .chip{flex:none}
+.lr-chips{cursor:grab}.lr-chips.dragging{cursor:grabbing;user-select:none}
 .lr-list{display:flex;flex-direction:column;gap:28px;margin-top:16px;padding-left:10px}
 .lr-row{display:flex;align-items:center;width:100%;text-align:left}
 .lr-row .th{flex:none;display:grid;place-items:center;color:#181818;width:100px;height:100px;margin:0 20px;border-radius:50px;background:#D9D9D9;transition:width .32s cubic-bezier(.2,.8,.2,1),height .32s cubic-bezier(.2,.8,.2,1),margin .32s cubic-bezier(.2,.8,.2,1),border-radius .32s cubic-bezier(.2,.8,.2,1)}
@@ -1208,8 +1209,8 @@ function vResult(ctx = 'ob') {
 // 행동 추천 카드: 마우스로 끌어서 넘기기. 놓으면 가까운 카드에 맞추고, 끌었던 경우 버튼 클릭은 막는다
 let naDrag = null;
 document.addEventListener('pointerdown', e => {
-  const tr = e.pointerType === 'mouse' && e.button === 0 && e.target.closest('.na-track'); if (!tr) return;
-  naDrag = { tr, x:e.clientX, left:tr.scrollLeft, moved:false };
+  const tr = e.pointerType === 'mouse' && e.button === 0 && e.target.closest('.na-track, .lr-chips'); if (!tr) return;
+  naDrag = { tr, x:e.clientX, left:tr.scrollLeft, moved:false, free:tr.classList.contains('lr-chips') };
 });
 document.addEventListener('pointermove', e => {
   const d = naDrag; if (!d) return;
@@ -1219,10 +1220,11 @@ document.addEventListener('pointermove', e => {
 });
 document.addEventListener('pointerup', e => {
   const d = naDrag; naDrag = null; if (!d || !d.moved) return;
+  const stop = ev => { ev.stopPropagation(); ev.preventDefault(); }; document.addEventListener('click', stop, { capture:true, once:true }); setTimeout(() => document.removeEventListener('click', stop, true), 0);
+  if (d.free) { d.tr.classList.remove('dragging'); return; }   // 영역 칩 줄은 놓은 자리에 그대로
   const w = d.tr.firstElementChild.offsetWidth + 12, dx = e.clientX - d.x, from = Math.round(d.left / w);
   const to = Math.max(0, Math.min(d.tr.children.length - 1, Math.abs(dx) > w * .15 ? from + (dx < 0 ? 1 : -1) : from));
   d.tr.classList.remove('dragging'); d.tr.scrollTo({ left:to * w, behavior:'smooth' });
-  const stop = ev => { ev.stopPropagation(); ev.preventDefault(); }; document.addEventListener('click', stop, { capture:true, once:true }); setTimeout(() => document.removeEventListener('click', stop, true), 0);
 });
 document.addEventListener('click', e => {
   const c = e.target.closest && e.target.closest('.orbit .pc'); if (!c || c.dataset.tapped || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -2636,6 +2638,7 @@ function render(keepScroll = true) {
   const homeEnter = key === 'tabhome' && key !== lastKey && S.linked;
   if (homeEnter) S.tuck = false;
   const st = keepScroll && key === lastKey ? view.scrollTop : 0;
+  const lcX = (view.querySelector('.lr-chips') || {}).scrollLeft || 0;
   const dark = S.mode === 'onboard' ? (S.ob === 1 || S.ob === 3) : S.sub === 'diag';
   screen.classList.toggle('dark', dark);
   screen.classList.toggle('nonav', S.mode === 'onboard' || !!S.sub);
@@ -2649,6 +2652,9 @@ function render(keepScroll = true) {
     if (h) { const w = document.createElement('div'); w.className = 'shead'; h.before(w); w.append(h); let t = w.nextElementSibling; while (t && (t.classList.contains('utabs') || t.classList.contains('lr-fixed'))) { const nx = t.nextElementSibling; w.append(t); t = nx; } }
     const ut = view.querySelector('.utabs'); if (ut) { ut.style.setProperty('--n', ut.children.length); ut.style.setProperty('--i', [...ut.children].findIndex(b => b.classList.contains('on'))); } }
   view.scrollTop = st;
+  // 알기 › 영역 칩: 보던 위치에서 고른 칩이 가운데 오도록 부드럽게 옮긴다
+  const lc = view.querySelector('.lr-chips'), lon = lc && lc.querySelector('.on');
+  if (lc) { lc.scrollLeft = lcX; if (lon) lc.scrollTo({ left: lon.offsetLeft - lc.offsetLeft - (lc.clientWidth - lon.offsetWidth) / 2, behavior:'smooth' }); }
   // 행동 추천: 보던 카드 위치를 유지하고, 추천을 끝낸 직후에는 다음 카드로 부드럽게 넘긴다
   const tr = view.querySelector('.na-track');
   if (tr && S.naIdx) { const x = S.naIdx * (tr.firstElementChild.offsetWidth + 12);
