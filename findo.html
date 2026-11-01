@@ -1505,21 +1505,21 @@ const P_CAFE = ['텀블러 인증', () => S.chalCert.has('cafe'), PG('plan', 'da
 const P_ALLOC = ['외주비 나누기', () => S.allocDone, 'data-act="sheet" data-sheet="alloc"'];
 const P_COMPARE = t => [t, () => S.seen.has('sheet-compare'), 'data-act="sheet" data-sheet="compare"'];
 const PRACTICE = {
-  cog: { d:'바로 실행할 수 있는 것부터<br>지혜님에게 맞춰 골랐어요', items:[
+  cog: { d:'카드를 선택해 바로 실천해보세요<br>하고 나면 체크로 바뀌어요', items:[
     P_CUT, P_FIXED, P_ALLOC, P_DEDUCT,
     ['배달 한도 알림', () => S.autoOn.has('dlv'), 'data-act="autoOn" data-v="dlv"'],
     P_RECEIPT, P_ZERO ] },
-  low: { d:'1분이면 끝나는 작은 것부터<br>지혜님에게 맞춰 골랐어요', items:[
+  low: { d:'카드를 선택해 바로 실천해보세요<br>하고 나면 체크로 바뀌어요', items:[
     ['예산 알림 켜기', () => S.autoOn.has('b80'), 'data-act="autoOn" data-v="b80"'],
     P_FIXED,
     ['한입 금융', () => S.bitesDone.size + S.conceptDone.size > 0, PG('learn', 'data-lv="bite"', '.lr-row', '개념 하나를 눌러 읽고 ‘이해했어요’를 눌러 주세요')],
     P_DEDUCT, P_CUT, P_RECEIPT, P_ZERO ] },
-  habit: { d:'지금 습관 위에 더 나은 선택을<br>지혜님에게 맞춰 골랐어요', items:[
+  habit: { d:'카드를 선택해 바로 실천해보세요<br>하고 나면 체크로 바뀌어요', items:[
     ['카드 실적 확인', () => S.deductOk, PG('benefit', '', '#cardRatio', '남은 기간에는 체크카드가 유리해요. 보고 ‘확인했어요’를 눌러 주세요')],
     P_COMPARE('적금 금리 비교'),
     ['목표 단계 보기', () => S.seen.has('plan-goal'), PG('plan', 'data-pv="goal"', '#stageSec', '독립 자금이 지금 몇 단계인지, 다음 단계까지 얼마 남았는지 볼 수 있어요')],
     P_LINK, P_ALLOC, P_ZERO, P_CAFE ] },
-  self: { d:'다음 영역으로 넓히는 것을<br>지혜님에게 맞춰 골랐어요', items:[
+  self: { d:'카드를 선택해 바로 실천해보세요<br>하고 나면 체크로 바뀌어요', items:[
     ['월세 지원 준비', () => !!S.rentPrep, PG('benefit', '', '#rentBtn', '‘청년 월세 지원 신청 준비’를 눌러 필요한 서류를 담아 주세요')],
     P_FIXED,
     ['포인트 모으기', () => S.pointsMoved, PG('benefit', '', '[data-act="ptMove"]', '‘현금으로 바꿔 독립 자금에 넣기’를 눌러 주세요')],
