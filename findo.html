@@ -2481,9 +2481,10 @@ function sheetHTML(name) {
       <p class="t10 mute mt12" style="line-height:1.6">목표 돈을 지키려고 카드 할부나 대출을 쓰면 이자 때문에 더 비싸져요. 급한 지출이라면 비상금부터 쓰는 게 좋아요.</p>
       <div class="card c-paper mt24"><div class="t12 mute">그래도 꺼내면 목표가 이렇게 바뀌어요</div>
         <div class="row between mt16"><div><div class="t10 mute">진행률</div><div class="n24 mt4">${pct(S.goalSaved / 5000000)} → ${pct(after / 5000000)}</div></div><div style="text-align:right"><div class="t10 mute">달성 예정</div><div class="n24 mt4">${dt(m1)}</div></div></div>
-        <div style="position:relative;height:40px;margin-top:20px"><div style="position:absolute;left:0;right:0;top:16px;height:1px;background:var(--g3)"></div>
-          <span style="position:absolute;left:40%;top:10px;width:13px;height:13px;border-radius:50%;background:#181818"></span><span class="t10 mute" style="position:absolute;left:40%;top:28px;transform:translateX(-30%)">${dt(m0)}</span>
-          <span style="position:absolute;left:${40 + (m1 - m0) * 12}%;top:10px;width:13px;height:13px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--warn)"></span><span class="t10" style="position:absolute;left:${40 + (m1 - m0) * 12}%;top:28px">${dt(m1)}</span></div>
+        <div style="position:relative;height:10px;margin-top:20px;border-radius:999px;background:var(--g2);overflow:hidden" role="img" aria-label="목표 5,000,000원 중 ${pct(S.goalSaved / 5000000)}에서 ${pct(after / 5000000)}로">
+          <i style="position:absolute;left:0;top:0;bottom:0;width:${after / 50000}%;background:linear-gradient(90deg,#B5CBFF,#081F40)"></i>
+          <i style="position:absolute;top:0;bottom:0;left:${after / 50000}%;width:${a / 50000}%;background:repeating-linear-gradient(-45deg,var(--warn) 0 2px,rgba(255,96,228,.25) 2px 5px)"></i></div>
+        <div class="row between t10 mute mt8"><span class="row g12"><span class="row g4"><i style="width:8px;height:8px;border-radius:2px;background:#424F62"></i>남는 돈 ${W(after)}</span><span class="row g4"><i style="width:8px;height:8px;border-radius:2px;background:var(--warn)"></i>꺼내는 돈 ${W(a)}</span></span><span class="num">목표 5,000,000원</span></div>
         <p class="t14 mt12">${m1 - m0 > 0 ? `목표 달성이 ${m1 - m0}개월 늦어져요` : '달성 시점은 그대로예요'}</p></div>
       <p class="t12 mute mt12">꺼낼 수는 있어요. 다만 다시 채우려면 한 달에 ${W(Math.ceil(a / 6 / 1000) * 1000)}씩 6개월이 필요해요.</p>
       <div class="row g8 mt16"><button class="btn ghost" style="flex:1" data-act="wDo">그래도 꺼내기</button><button class="btn" style="flex:1" data-act="closeSheet">꺼내지 않기</button></div>`;
