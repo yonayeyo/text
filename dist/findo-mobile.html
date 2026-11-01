@@ -920,9 +920,10 @@ const OCT_TX = {
   12:[['08:40','지하철','교통',2800],['08:55','편의점 커피','카페·간식',2100],['12:30','회사 앞 백반','외식',9500],['19:20','올리브영','쇼핑',9000]],
   14:[['08:42','지하철','교통',2800],['12:10','김치찌개','외식',9000],['18:30','다이소','기타',4200],['20:40','배달의민족 · 족발','배달',29000]],
 };
+// 독립 자금 · 생활비 · 비상금 잔액은 외주비 나누기 · 저축 꺼내기 · 환급금 옮기기에 따라 바뀐다
 const ACCOUNTS = [
-  { n:'적금', a:5000000, k:'save', raw:'가나은행 정기적금 ··3381' }, { n:'투자', a:2500000, k:'inv', raw:'나다증권 위탁계좌 ··0927' }, { n:'독립 자금', a:2300000, k:'goal', raw:'다라은행 자유적금 ··1150' },
-  { n:'생활비', a:1240000, k:'life', raw:'다라은행 입출금 ··7710' }, { n:'비상금', a:1100000, k:'emer', raw:'라마은행 파킹통장 ··4412' }, { n:'경조사비', a:260000, k:'evt', raw:'가나은행 입출금 ··5098' },
+  { n:'적금', a:5000000, k:'save', raw:'가나은행 정기적금 ··3381' }, { n:'투자', a:2500000, k:'inv', raw:'나다증권 위탁계좌 ··0927' }, { n:'독립 자금', get a() { return S.goalSaved; }, k:'goal', raw:'다라은행 자유적금 ··1150' },
+  { n:'생활비', get a() { return 1240000 + (S.lifeAdd || 0); }, k:'life', raw:'다라은행 입출금 ··7710' }, { n:'비상금', get a() { return S.emergency; }, k:'emer', raw:'라마은행 파킹통장 ··4412' }, { n:'경조사비', a:260000, k:'evt', raw:'가나은행 입출금 ··5098' },
 ];
 // 계좌 용도는 사용자가 정한다(원칙 1): Fin.do는 이름·거래를 보고 추측만 하고, 연동할 때 사용자가 확인·변경
 const USES = ['적금','투자','독립 자금','생활비','비상금','경조사비','여행','기타'];
@@ -1374,11 +1375,11 @@ function squarify(vals, Wd, Ht) {
 const ACC_INK = { life:'#FCFCFC', emer:'#FCFCFC', goal:'#FCFCFC' };
 const ACC_IC = { save:'coin', inv:'ur', goal:'flag', life:'wallet', emer:'shield', evt:'gift' };
 function accountsTree() {
-  const total = ACCOUNTS.reduce((t, a) => t + a.a, 0), Wd = 313, Ht = 208, B = squarify(ACCOUNTS.map(a => a.a), Wd, Ht);
+  const total = ACCOUNTS.reduce((t, a) => t + a.a, 0), Wd = 313, Ht = 208, B = (() => { const o = ACCOUNTS.map((a, k) => k).sort((x, y) => ACCOUNTS[y].a - ACCOUNTS[x].a), L = squarify(o.map(k => ACCOUNTS[k].a), Wd, Ht), out = []; o.forEach((k, i) => out[k] = L[i]); return out; })();
   const sel = ACCOUNTS.find(a => a.k === S.acctSel);
   const tiles = ACCOUNTS.map((a, k) => { const b = B[k], fit = b.w > 64 && b.h > 44, ink = ACC_INK[a.k] || '#181818', on = sel === a;
     return `<button data-act="acctSel" data-v="${a.k}" aria-pressed="${on}" aria-label="${useOf(a)} ${W(a.a)} 자세히" style="position:absolute;left:${b.x / Wd * 100}%;top:${b.y / Ht * 100}%;width:${b.w / Wd * 100}%;height:${b.h / Ht * 100}%;padding:2px;text-align:left;opacity:${sel && !on ? .4 : 1};transition:opacity .2s"><div style="box-sizing:border-box;height:100%;${on ? 'outline:1.5px dashed #181818;outline-offset:1px;' : ''}border-radius:10px;background:${ACC_FILL[a.k]};color:${ink};padding:${fit ? 10 : 0}px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;${a.k === 'evt' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}">
-      ${fit ? `<span class="t12" style="white-space:nowrap;${a.k === 'evt' ? 'background:#FCFCFC;color:#181818;border-radius:4px;padding:0 4px;align-self:flex-start' : ''}">${useOf(a)} <span class="t10" style="opacity:.7">${pct(a.a / total)}</span></span>
+      ${fit ? `<span class="t12" style="white-space:nowrap;${a.k === 'evt' ? 'background:#FCFCFC;color:#181818;border-radius:4px;padding:0 4px;align-self:flex-start' : ''}">${useOf(a)}${b.w < 100 ? "<br>" : " "}<span class="t10" style="opacity:.7">${pct(a.a / total)}</span></span>
       <span class="num" style="font-family:var(--f-num);font-weight:300;font-size:${b.w > 120 ? 20 : 14}px;${a.k === 'evt' ? 'background:#FCFCFC;color:#181818;border-radius:4px;padding:0 4px;align-self:flex-start' : ''}">${won(a.a)}</span>` : ''}</div></button>`; }).join('');
   return `<div class="mt12" style="position:relative;aspect-ratio:${Wd}/${Ht}" role="img" aria-label="통합 자산 ${won(total)}원 중 ${ACCOUNTS.map(a => `${useOf(a)} ${pct(a.a / total)}`).join(', ')}">${tiles}</div>
     <div class="row between t10 mute mt8"><span>크기 = 잔액 · 색 = 용도</span><span>${sel ? '다시 누르면 전체 보기' : '칸을 눌러 자세히 보기'}</span></div>
@@ -1390,7 +1391,7 @@ function accountsTree() {
 function accountsCard(home) {
   return `<div class="card c-paper">
       ${home ? `<button class="row between" style="width:100%;text-align:left" data-act="tab" data-tab="plan" data-pv="bank"><span class="t14">자산 구성</span><span class="row g4 t10 mute">6개 계좌${ic('arrow', 14)}</span></button>`
-        : `<div class="row between"><span class="t14">자산 구성</span><span class="t10 mute">6개 계좌</span></div>`}
+        : `<div class="row between"><span class="t14">자산 구성</span><button class="row g4 t10 mute" data-act="sheet" data-sheet="accounts" aria-label="계좌 ${ACCOUNTS.length}개와 용도 보기">${ACCOUNTS.length}개 계좌${ic('arrow', 14)}</button></div>`}
       <div class="row between mt12" style="align-items:baseline"><span class="t12 mute">통합 자산</span><span class="n24">${won(ACCOUNTS.reduce((t, a) => t + a.a, 0))}<span class="cur t12">₩</span></span></div>
       ${home ? accountsBlock() : accountsTree()}
     </div>`;
@@ -1512,7 +1513,7 @@ function focusStrip(noLabel) {
 // 홈 궤도: 유형별 오늘의 실천 항목. [제목, 완료 조건, 누르면 하는 일]
 // 누르면 바로 끝나거나(알림 켜기), 시트가 열리거나(외주비 나누기·금리 비교), 해야 할 곳으로 이동해 그 부분을 강조하고 할 일을 알려 준다(pgo)
 const PG = (tab, sub, focus, hint, extra = '') => `data-act="pgo" data-tab="${tab}" ${sub} data-focus='${focus}' data-hint="${hint}" ${extra}`;
-const P_LINK = ['계좌 연동', () => S.linked, PG('plan', 'data-pv="bank"', '.acct-list', '연동한 계좌 6개와 용도예요. 다르면 눌러서 바꿀 수 있어요')];
+const P_LINK = ['계좌 연동', () => S.linked, PG('plan', 'data-pv="bank"', '#assetCard', '‘6개 계좌’를 누르면 연동한 계좌와 용도를 볼 수 있어요')];
 const P_DEDUCT = ['연말정산 카드 확인', () => S.deductOk,
   PG('benefit', '', '#cardRatio', '공제율을 비교해 보고 ‘확인했어요’를 눌러 주세요')];
 const P_FIXED = ['매달 나가는 돈', () => S.fixedSet, PG('plan', 'data-pv="rule"', '#fixedCard', '자동으로 찾은 4건이 맞는지 보고 ‘맞아요, 4건 등록’을 눌러 주세요')];
@@ -2111,11 +2112,7 @@ function vPlan(pvOver, noHead) {
   </section>`}`;
   // 통장: 용도별 통장 · 비상금 · 저축 꺼내기 · 투자
   if (pv === 'bank') return head + (S.persona === 'habit' ? planLead() : '') + `
-  <section class="mt16">${accountsCard(false)}</section>
-  <section class="sec">
-    <div class="sec-h"><div><div class="t18">계좌와 용도</div><div class="sec-d">눌러서 용도를 바꿀 수 있어요</div></div></div>
-    ${acctRows()}
-  </section>
+  <section class="mt16" id="assetCard">${accountsCard(false)}</section>
   ${S.persona === 'habit' ? '' : `<div class="mt24">${bite('comp')}</div>`}
   <section class="sec">
     <div class="sec-h"><div><div class="t18">비상금</div><div class="sec-d">생활비 3개월 기준</div></div></div>
@@ -2504,6 +2501,7 @@ function sheetHTML(name) {
     case 'compare': return head('적금 비교', '월 350,000원 · 12개월 · 세금 뺀 이자 (예시)') + `<div class="stack mt24">${[['지금 쓰는 적금','3.1%',59700,1],['가나은행 청년 적금','4.2%',80800,0],['나다은행 자유 적금','3.6%',69300,0]].map(([n, r, i, cur]) => `<div class="card ${cur ? 'c-paper' : 'c-sky'}"><div class="row between"><span class="t14">${n}</span>${cur ? '<span class="tag line">사용 중</span>' : `<span class="tag ink">+${won(i - 59700)}원</span>`}</div><div class="row between mt12" style="align-items:baseline"><span class="n24">${r}</span><span class="t14 num">이자 ${W(i)}</span></div></div>`).join('')}
       <p class="t12 mute">금리는 우대 조건(급여이체·카드 실적)을 모두 채웠을 때 기준이에요.</p></div>
       <div class="mt16">${bite('tax', { force:true })}</div>`;
+    case 'accounts': return head('계좌와 용도', `${ACCOUNTS.length}개 계좌 · 눌러서 용도를 바꿀 수 있어요`) + `<div class="mt24">${acctRows()}</div>`;
     case 'use': { const a = ACCOUNTS.find(x => x.k === S.useK); return head('용도 고르기', `${a.raw} · ${W(a.a)}`) + `<div class="mt16">${USES.map(u => `<button class="use-opt" data-act="acctUse" data-k="${a.k}" data-v="${u}"><span>${u}</span>${useOf(a) === u ? ic('check', 18) : ''}</button>`).join('')}</div>`; }
     case 'concept': { const c = conceptOf(S.conceptId), done = conceptDone(c), ar = AREAS.find(a => a.id === c.a);
       return head(c.k, `한 입 금융 · ${ar.name}${ar.now ? '' : ' · 확장 예정'}`) + `<div class="card bite c-know mt24">
@@ -2816,8 +2814,8 @@ document.addEventListener('click', e => {
     case 'ob': S.mode = 'onboard'; S.ob = +v; closeSheet(); render(false); break;
     case 'toApp': S.mode = 'app'; S.tab = 'home'; S.linked = false; S.focus = null; render(false); break;
     case 'linkStart': closeSheet(); S.mode = 'app'; S.sub = 'link'; render(false); break;
-    case 'usePick': S.useK = v; openSheet('use'); break;
-    case 'acctUse': S.acctUse[el.dataset.k] = v; closeSheet(); render(); break;
+    case 'usePick': S.useK = v; S.useFrom = S.sheet; openSheet('use'); break;
+    case 'acctUse': S.acctUse[el.dataset.k] = v; if (S.useFrom === 'accounts') { S.useFrom = null; openSheet('accounts'); } else closeSheet(); render(); break;
     case 'linkDone': // 연동 완료 알림을 먼저 보여 주고, 알림이 닫힌 뒤에 정산 알림을 띄운다
       S.linked = true; S.sub = null; S.tab = 'home'; S.holdSettle = true; render(false); simpleToast(`계좌 ${ACCOUNTS.length}개를 연동했어요`);
       setTimeout(() => { S.holdSettle = false; if (S.tab !== 'home' || S.sub || S.mode !== 'app') return; render(); popOut(); tuckSoon(); }, 3600); break;
@@ -2860,7 +2858,7 @@ document.addEventListener('click', e => {
     case 'mic': simpleToast('음성 입력은 데모에서 지원하지 않아요'); break;
     case 'settleDo': S.settled = true; S.spent -= 36000; closeSheet(); render(); simpleToast(`정산 처리 · 오늘 쓸 수 있는 돈 ${W(D().daily)}`); break;
     case 'alloc': S.alloc = v; render(); refreshSheet(); break;
-    case 'allocDo': { const r = { bal:.5, save:.7, free:.3 }[S.alloc]; S.allocDone = true; S.naIdx = 1; S.naSlide = true; S.incomeIn = false; S.emergency += 320000 * ({ bal:.3, save:.2, free:.2 }[S.alloc]); closeSheet(); goalBump(320000 * r, '외주비 배분 완료'); break; }
+    case 'allocDo': { const r = { bal:.5, save:.7, free:.3 }[S.alloc]; S.allocDone = true; S.naIdx = 1; S.naSlide = true; S.incomeIn = false; S.emergency += 320000 * ({ bal:.3, save:.2, free:.2 }[S.alloc]); S.lifeAdd = (S.lifeAdd || 0) + 320000 * ({ bal:.2, save:.1, free:.5 }[S.alloc]); closeSheet(); goalBump(320000 * r, '외주비 배분 완료'); break; }
     case 'sv': subTap(v); break;
     case 'ledDay': S.ledDay = +v; render(false); break;
     case 'period': S.period = v; S.topSel = null; render(); break;
@@ -2877,9 +2875,9 @@ document.addEventListener('click', e => {
     case 'catSel': S.catSel = S.catSel === v ? null : v; render(); break;
     case 'step': S.cat[el.dataset.c] = Math.max(0, S.cat[el.dataset.c] + +el.dataset.d); render(); break;
     case 'wAmt': S.wAmt = +v; refreshSheet(); break;
-    case 'wEmer': { const amt = S.wAmt; S.emergency -= amt; closeSheet(); render(); simpleToast(`비상금에서 ${W(amt)}을 생활비 통장으로 옮겼어요 · 목표는 그대로예요`); break; }
+    case 'wEmer': { const amt = S.wAmt; S.emergency -= amt; S.lifeAdd = (S.lifeAdd || 0) + amt; closeSheet(); render(); simpleToast(`비상금에서 ${W(amt)}을 생활비 통장으로 옮겼어요 · 목표는 그대로예요`); break; }
     case 'wBudget': { const amt = S.wAmt; closeSheet(); render(); simpleToast(`이번 달 예산에서 ${W(amt)}을 마련했어요 · 목표는 그대로예요`); break; }
-    case 'wDo': { const amt = S.wAmt; S.goalSaved -= amt; closeSheet(); render(); simpleToast(`${W(amt)}을 생활비 통장으로 옮겼어요`); break; }
+    case 'wDo': { const amt = S.wAmt; S.goalSaved -= amt; S.lifeAdd = (S.lifeAdd || 0) + amt; closeSheet(); render(); simpleToast(`${W(amt)}을 생활비 통장으로 옮겼어요`); break; }
     case 'goalSel': S.goalSel = v; render(); break;
     case 'gType': S.gNew.type = v; refreshSheet(); break;
     case 'gAmt': S.gNew.amt = +v; refreshSheet(); break;
@@ -2896,7 +2894,7 @@ document.addEventListener('click', e => {
     case 'league': S.league = v; render(); break;
     case 'like': S.liked.has(+v) ? S.liked.delete(+v) : S.liked.add(+v); render(); break;
     case 'deductOk': S.deductOk = true; render(); simpleToast('남은 기간에는 체크카드로 쓰면 공제에 더 유리해요'); break;
-    case 'benMove': S.benefitMoved = true; S.emergency += 12300; render(); simpleToast('12,300원을 비상금으로 옮겼어요'); break;
+    case 'benMove': S.benefitMoved = true; S.emergency += 12300; S.lifeAdd = (S.lifeAdd || 0) - 12300; render(); simpleToast('12,300원을 비상금으로 옮겼어요'); break;
     case 'ptMove': S.pointsMoved = true; goalBump(32440, '포인트 현금 전환'); break;
     case 'topSel': S.topSel = v; render(); break;
     case 'topView': S.topView = v; S.topSel = null; render(); break;
