@@ -617,6 +617,13 @@ button.ph-tag{color:var(--mute)}
 .h-hero .ib{background:#181818}
 /* Bitcount 숫자는 글자 상자 안에서 위쪽에 그려져서, 선·버튼을 숫자 가운데(3.5px 위)에 맞춘다 */
 .h-hero .hl,.h-hero .rw .ib{transform:translateY(-3.5px)}
+.h-delta{position:absolute;right:0;top:-2px;height:22px;padding:0 10px;border-radius:999px;display:inline-flex;align-items:center;font-size:12px;font-variant-numeric:tabular-nums;color:var(--ink);pointer-events:none;animation:hDelta 2.8s cubic-bezier(.2,.8,.2,1) both}
+.h-delta.up{background:var(--aura)}
+.h-delta.down{background:rgba(255,96,228,.16)}
+@keyframes hDelta{0%{opacity:0;transform:translateY(8px)}12%,78%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-6px)}}
+.dotnum.bump{animation:dnBump .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes dnBump{40%{transform:scale(1.04)}}
+@media (prefers-reduced-motion:reduce){.h-delta,.dotnum.bump{animation:none}}
 .dotnum{font-family:"Bitcount Grid Single",var(--f-num);font-weight:400;font-size:47px;line-height:1;color:#000;font-variant-numeric:tabular-nums;white-space:nowrap}
 /* 오늘의 실천 항목 궤도 — 시안 좌표(402 프레임, y 170 기준) · 카드 80 × 100 · 모서리 9 · 왼쪽 위 기준 ±5° 회전 */
 .orbit-wrap{margin:8px calc(-1 * var(--m)) 0;overflow:hidden}
@@ -2652,6 +2659,12 @@ function render(keepScroll = true) {
     if (h) { const w = document.createElement('div'); w.className = 'shead'; h.before(w); w.append(h); let t = w.nextElementSibling; while (t && (t.classList.contains('utabs') || t.classList.contains('lr-fixed'))) { const nx = t.nextElementSibling; w.append(t); t = nx; } }
     const ut = view.querySelector('.utabs'); if (ut) { ut.style.setProperty('--n', ut.children.length); ut.style.setProperty('--i', [...ut.children].findIndex(b => b.classList.contains('on'))); } }
   view.scrollTop = st;
+  // 홈 '오늘 쓸 수 있는 금액'이 바뀌었으면(정산·결제 등) 이전 값에서 새 값까지 숫자를 굴리고 증감을 잠깐 보여 준다
+  if (key === 'tabhome' && S.linked) { const dn = view.querySelector('.dotnum'), now = D().daily, was = S.lastDaily;
+    if (was != null && was !== now) S.dailyAnim = { from: was, to: now, t0: performance.now() };
+    S.lastDaily = now;
+    // 바로 이어서 다시 그려져도(시트 닫기 → 실행 후 다시 그리기 등) 진행 중인 움직임을 이어 간다
+    const a = S.dailyAnim; if (dn && a && performance.now() - a.t0 < 2800) animDaily(dn, a); }
   // 알기 › 영역 칩: 보던 위치에서 고른 칩이 가운데 오도록 부드럽게 옮긴다
   const lc = view.querySelector('.lr-chips'), lon = lc && lc.querySelector('.on');
   if (lc) { lc.scrollLeft = lcX; if (lon) lc.scrollTo({ left: lon.offsetLeft - lc.offsetLeft - (lc.clientWidth - lon.offsetWidth) / 2, behavior:'smooth' }); }
@@ -2762,6 +2775,18 @@ document.addEventListener('pointerup', tearEnd); document.addEventListener('poin
 function reprint(id) { const p = document.getElementById(id); if (!p) return; p.classList.remove('printing'); void p.offsetWidth; p.classList.add('printing'); }
 
 /* ---------- realtime feedback ---------- */
+function animDaily(dn, a) {
+  const { from, to, t0 } = a, diff = to - from, hero = dn.closest('.h-hero'), el = performance.now() - t0, b = document.createElement('span');
+  b.className = 'h-delta ' + (diff > 0 ? 'up' : 'down'); b.textContent = `${diff > 0 ? '+' : '−'}${won(Math.abs(diff))}원`;
+  b.style.animationDelay = `-${el}ms`; hero.append(b); setTimeout(() => b.remove(), 2800 - el);
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const start = t0 + 250, dur = 900, ease = t => 1 - Math.pow(1 - t, 3);
+  dn.classList.add('bump');
+  const step = () => { if (!dn.isConnected) return; const k = Math.max(0, Math.min(1, (performance.now() - start) / dur));
+    dn.textContent = won(Math.round((from + diff * ease(k)) / 100) * 100);
+    if (k < 1) requestAnimationFrame(step); else { dn.textContent = won(to); dn.classList.remove('bump'); } };
+  step();
+}
 function payment() {
   const before = D(); S.spent += 18000; const after = D();
   render();
