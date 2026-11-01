@@ -572,6 +572,15 @@ button.ph-tag{color:var(--mute)}
 .grid-ov.on{display:grid}
 .grid-ov i{background:rgba(255,118,156,.12);border-left:1px solid rgba(255,118,156,.5);border-right:1px solid rgba(255,118,156,.5)}
 .ai-a{border-radius:24px;padding:16px 20px;font-size:14px;line-height:1.6}
+.sheet.ai{padding-bottom:0;transition:transform .3s cubic-bezier(.2,.8,.2,1),max-height .35s cubic-bezier(.2,.8,.2,1),min-height .35s cubic-bezier(.2,.8,.2,1),border-radius .35s,padding-top .35s}
+.sheet.ai.full{max-height:100%;min-height:100%;border-radius:0;padding-top:58px}
+.sheet.ai{display:flex;flex-direction:column}.sheet.ai > *{flex:none}
+.sheet.ai.full > .stack{margin-bottom:16px}.sheet.ai.full > .ai-in{margin-top:auto}
+.sheet.ai .grab{position:relative;cursor:grab;touch-action:none}
+.sheet.ai .grab::before{content:"";position:absolute;inset:-14px -60px}
+.ai-in{position:sticky;bottom:0;z-index:1;display:flex;align-items:center;gap:8px;margin:16px calc(-1 * var(--m)) 0;padding:12px var(--m) calc(env(safe-area-inset-bottom,0px) + 24px);background:var(--bg)}
+.ai-in input{flex:1;min-width:0;height:48px;border:0;border-radius:999px;padding:0 20px;background:var(--g2);color:var(--ink);font-size:14px;outline:0}
+.ai-in input::placeholder{color:var(--g6)}
 .ai-q{justify-self:end;max-width:80%;background:var(--ink);color:var(--paper);border-radius:24px;padding:12px 18px;font-size:14px}
 /* 휴대폰에서 열면 기기 프레임·패널 없이 전체 화면 앱으로 동작 (사용성 테스트용) */
 @media (max-width:520px){
@@ -2508,7 +2517,8 @@ function sheetHTML(name) {
       <div class="row g8 mt16"><button class="btn ghost" style="flex:3;padding:0 12px" data-act="logClear">기록 지우기</button><button class="btn" style="flex:7" data-act="logCopy">복사</button></div>`;
     case 'ai': return head('AI 조언', '연동된 자산·예산·목표 데이터 기준') + `<div class="stack mt24" style="display:grid">
       ${S.chat.map(c => c.q ? `<div class="ai-q">${c.q}</div>` : `<div class="ai-a c-sky">${c.a}<div class="t10 mute mt8">근거 · ${c.src}</div></div>`).join('')}
-      <div class="row g8" style="flex-wrap:wrap">${['오늘 얼마 더 써도 돼?','외주비 어떻게 나눌까?','적금 깨도 될까?'].map(q => `<button class="chip" data-act="aiAsk" data-v="${q}">${q}</button>`).join('')}</div></div>`;
+      <div class="row g8" style="flex-wrap:wrap">${['오늘 얼마 더 써도 돼?','외주비 어떻게 나눌까?','적금 깨도 될까?'].map(q => `<button class="chip" data-act="aiAsk" data-v="${q}">${q}</button>`).join('')}</div></div>
+      <form class="ai-in" id="aiSheetForm"><input id="aiSheetInput" placeholder="이어서 물어보세요" autocomplete="off" aria-label="AI에게 이어서 묻기"><button type="submit" class="ib ink" aria-label="보내기">${ic('send', 20)}</button></form>`;
   }
   return '';
 }
@@ -2688,7 +2698,7 @@ function setPageColor(c) {
 const narrowMQ = matchMedia('(max-width:520px)');
 function applyPageBg() { const on = narrowMQ.matches; [document.documentElement, document.body, document.querySelector('.device')].forEach(el => el.style.backgroundColor = on ? pageColorNow : ''); }
 narrowMQ.addEventListener('change', applyPageBg);
-function openSheet(name) { if (name !== 'log') log('시트 ' + name); S.seen.add('sheet-' + name); if (S.sheet && S.sheet !== name && S.sheet !== 'log') log(`시트 닫기 ${S.sheet} · ${Math.round((Date.now() - (S.sheetAt || Date.now())) / 100) / 10}s · 다른 시트로 이동`); if (S.sheet !== name) S.sheetAt = Date.now(); S.sheet = name; document.getElementById('sheet').innerHTML = sheetHTML(name); document.getElementById('layer').classList.add('open'); }
+function openSheet(name) { if (name !== 'log') log('시트 ' + name); S.seen.add('sheet-' + name); if (S.sheet && S.sheet !== name && S.sheet !== 'log') log(`시트 닫기 ${S.sheet} · ${Math.round((Date.now() - (S.sheetAt || Date.now())) / 100) / 10}s · 다른 시트로 이동`); if (S.sheet !== name) S.sheetAt = Date.now(); S.sheet = name; const sh = document.getElementById('sheet'); sh.className = 'sheet' + (name === 'ai' ? ' ai' + (S.aiFull ? ' full' : '') : ''); sh.innerHTML = sheetHTML(name); document.getElementById('layer').classList.add('open'); }
 function refreshSheet() { if (S.sheet) document.getElementById('sheet').innerHTML = sheetHTML(S.sheet); }
 // 기록용: 어떤 항목(data-k·data-c)에 어떤 값을 골랐는지, 알림 버튼이면 어떤 메시지였는지까지 남긴다
 function tapDetail(el) {
@@ -2701,7 +2711,7 @@ function tapDetail(el) {
   return out;
 }
 // 시트를 닫을 때 몇 초 봤는지와 어떻게 닫았는지(닫기 버튼 · 바깥 탭 · 실행 후 자동) 남긴다
-function closeSheet(how = '실행 후 자동') { if (S.sheet && S.sheet !== 'log') log(`시트 닫기 ${S.sheet} · ${Math.round((Date.now() - (S.sheetAt || Date.now())) / 100) / 10}s · ${how}`); S.sheet = null; document.getElementById('layer').classList.remove('open'); }
+function closeSheet(how = '실행 후 자동') { if (S.sheet && S.sheet !== 'log') log(`시트 닫기 ${S.sheet} · ${Math.round((Date.now() - (S.sheetAt || Date.now())) / 100) / 10}s · ${how}`); S.sheet = null; S.aiFull = false; document.getElementById('layer').classList.remove('open'); }
 let toastT;
 function toast(html, ms = 3200) {
   const t = document.getElementById('toast'); document.getElementById('toastIn').innerHTML = html;
@@ -2876,7 +2886,23 @@ document.addEventListener('click', e => {
     case 'aiAsk': ask(v); break;
   }
 });
-function ask(q) { if (!q.trim()) return; const r = aiAnswer(q); S.chat.push({ q }, r); if (S.chat.length > 6) S.chat = S.chat.slice(-6); openSheet('ai'); const sh = document.getElementById('sheet'); sh.scrollTop = sh.scrollHeight; }
+function ask(q, keep) { if (!q.trim()) return; const r = aiAnswer(q); S.chat.push({ q }, r); if (S.chat.length > 20) S.chat = S.chat.slice(-20); openSheet('ai'); const sh = document.getElementById('sheet'); sh.scrollTop = sh.scrollHeight; if (keep) document.getElementById('aiSheetInput').focus({ preventScroll:true }); }
+// AI 조언 시트 안에서 이어서 묻기
+document.addEventListener('submit', e => { if (e.target.id !== 'aiSheetForm') return; e.preventDefault(); const i = document.getElementById('aiSheetInput'); if (i.value.trim()) ask(i.value, true); });
+// AI 조언 시트: 손잡이를 위로 끌면 전체 화면, 아래로 끌면 원래 크기(원래 크기에서 더 내리면 닫기). 손잡이를 누르기만 하면 전환
+document.addEventListener('pointerdown', e => {
+  const g = e.target.closest('.sheet.ai .grab'); if (!g) return;
+  const sh = document.getElementById('sheet'), y0 = e.clientY; let dy = 0;
+  g.setPointerCapture(e.pointerId); sh.style.transition = 'none';
+  const mv = ev => { dy = ev.clientY - y0; sh.style.transform = dy > 0 ? `translateY(${dy}px)` : ''; };
+  const up = () => { g.removeEventListener('pointermove', mv); g.removeEventListener('pointerup', up); g.removeEventListener('pointercancel', up);
+    sh.style.transition = ''; sh.style.transform = '';
+    if (Math.abs(dy) < 6) S.aiFull = !S.aiFull;
+    else if (dy < -30) S.aiFull = true;
+    else if (dy > 30) { if (S.aiFull) S.aiFull = false; else return closeSheet('아래로 내림'); }
+    sh.classList.toggle('full', !!S.aiFull); log('AI 조언 ' + (S.aiFull ? '전체 화면' : '기본 크기')); };
+  g.addEventListener('pointermove', mv); g.addEventListener('pointerup', up); g.addEventListener('pointercancel', up);
+});
 document.getElementById('aiDock').addEventListener('submit', e => { e.preventDefault(); const i = document.getElementById('aiInput'); ask(i.value || '오늘 얼마 더 써도 돼?'); i.value = ''; aiDock(false); });
 document.querySelector('#aiDock [data-act="mic"]').innerHTML = ic('mic', 20);
 document.querySelector('#aiDock .ai-fab').innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.8 2.9c.7 4.6 2.4 7.2 9.3 9.8c-6.9 2.6-8.6 5.2-9.3 9.8c-.7-4.6-2.4-7.2-9.3-9.8c6.9-2.6 8.6-5.2 9.3-9.8z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M20.2.6c.3 1.6.9 2.3 2.6 3.1c-1.7.8-2.3 1.5-2.6 3.1c-.3-1.6-.9-2.3-2.6-3.1c1.7-.8 2.3-1.5 2.6-3.1z" fill="currentColor"/></svg>';
