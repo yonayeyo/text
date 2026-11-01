@@ -2717,7 +2717,9 @@ function tapDetail(el) {
   return out;
 }
 // 시트를 닫을 때 몇 초 봤는지와 어떻게 닫았는지(닫기 버튼 · 바깥 탭 · 실행 후 자동) 남긴다
-function closeSheet(how = '실행 후 자동') { if (S.sheet && S.sheet !== 'log') log(`시트 닫기 ${S.sheet} · ${Math.round((Date.now() - (S.sheetAt || Date.now())) / 100) / 10}s · ${how}`); S.sheet = null; S.aiFull = false; document.getElementById('layer').classList.remove('open'); }
+function closeSheet(how = '실행 후 자동') { if (S.sheet && S.sheet !== 'log') log(`시트 닫기 ${S.sheet} · ${Math.round((Date.now() - (S.sheetAt || Date.now())) / 100) / 10}s · ${how}`); S.sheet = null; S.aiFull = false; document.getElementById('layer').classList.remove('open');
+  // 홈에서 연 시트(예: 적금 비교)를 보고 닫으면 실천 항목 완료가 바로 보이도록 홈을 다시 그린다
+  if (S.mode === 'app' && !S.sub && S.tab === 'home') render(); }
 let toastT;
 function toast(html, ms = 3200) {
   const t = document.getElementById('toast'); document.getElementById('toastIn').innerHTML = html;
