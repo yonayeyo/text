@@ -837,7 +837,7 @@ button.focus-strip{display:block;color:inherit}
 .h-hero .h-bar i{display:block;height:100%;background:var(--ink);border-radius:2px}
 .h-hero .h-left{font-size:12px;line-height:16px;color:var(--g4)}
 .fan-ttl{font-family:var(--f-kr);font-size:20px;line-height:28px;font-weight:600;letter-spacing:-.02em}
-.fan-sub{font-family:var(--f-mono);font-size:12px;padding-bottom:4px;color:var(--g4)}
+.fan-sub{font-family:var(--f-kr);font-size:12px;line-height:16px;padding-bottom:6px;color:var(--g4)}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -1786,10 +1786,10 @@ function fanItems() {
 function practiceFan() {
   const xs = fanItems(), n = xs.length, doneN = xs.filter(x => x.done).length;
   S.fanXs = xs; S.fanSel = -1; if (S.fanPos == null) S.fanPos = 0;
-  return `<section class="fan-sec" aria-label="오늘 할 일 ${n}개 중 ${doneN}개 완료">
-    <div class="fan-head"><h2 class="fan-ttl">할 일</h2><span class="fan-sub num">${doneN} / ${n}</span></div>
-    <div class="fan-stage" id="fanStage" tabindex="0" role="listbox" aria-label="오늘 할 일 카드">
-      ${xs.map((x, k) => `<button type="button" class="fc im${k % 7} ${x.done ? 'done' : ''}" data-k="${k}" role="option" aria-label="${pad2(k + 1)} ${x.t}${x.done ? ' · 완료' : ''}"><span class="ix">${pad2(k + 1)}</span>${x.done ? `<span class="ck"><span class="ck-i">${ic('check', 22)}</span><b>완료</b></span>` : ''}</button>`).join('')}
+  return `<section class="fan-sec" aria-label="오늘의 카드 ${n}장 중 ${doneN}장 해 봤어요">
+    <div class="fan-head"><h2 class="fan-ttl">오늘의 카드</h2><span class="fan-sub">${doneN ? `${doneN}장 해 봤어요` : `${n}장`}</span></div>
+    <div class="fan-stage" id="fanStage" tabindex="0" role="listbox" aria-label="오늘의 카드">
+      ${xs.map((x, k) => `<button type="button" class="fc im${k % 7} ${x.done ? 'done' : ''}" data-k="${k}" role="option" aria-label="${pad2(k + 1)} ${x.t}${x.done ? ' · 해 봤어요' : ''}"><span class="ix">${pad2(k + 1)}</span>${x.done ? `<span class="ck"><span class="ck-i">${ic('check', 22)}</span><b>해 봤어요</b></span>` : ''}</button>`).join('')}
     </div>
     <div class="fan-cap" id="fanCap"></div>
   </section>`;
@@ -1807,7 +1807,7 @@ function fanCaption(i) {
   const cap = view.querySelector('#fanCap'), x = S.fanXs[i], n = S.fanXs.length; if (!cap) return;
   cap.classList.add('swap'); clearTimeout(fanCaption.t);
   fanCaption.t = setTimeout(() => { const c2 = view.querySelector('#fanCap'); if (!c2) return;
-    c2.innerHTML = `<span class="fc-no">${pad2(i + 1)} / ${pad2(n)}</span><span class="fc-t">${x.t}</span><span class="fc-ds">${x.done ? '완료했어요' : x.m[1]}</span>
+    c2.innerHTML = `<span class="fc-no">${pad2(i + 1)} / ${pad2(n)}</span><span class="fc-t">${x.t}</span><span class="fc-ds">${x.done ? '오늘 이미 해 봤어요. 다시 보고 싶으면 눌러 보세요' : x.m[1]}</span>
       <button type="button" class="fc-go" ${x.act}>${x.done ? '다시 보기' : '시작하기'}<i>${ic('arrow', 14)}</i></button>`;
     c2.classList.remove('swap'); }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 120);
 }
@@ -2957,7 +2957,7 @@ function practiceCheck() {
   if (S.mode !== 'app' || !S.linked) return;
   const items = practiceItems(), now = new Set(items.filter(i => i[1]()).map(i => i[0]));
   if (pPersona === S.persona && pDone) { const fresh = [...now].filter(t => !pDone.has(t));
-    if (fresh.length) setTimeout(() => toast(`<div class="row g12"><span class="ib" style="background:#2a2a2a;width:32px;height:32px">${ic('check', 18)}</span><span class="t14">오늘의 실천 항목 ‘${fresh[0]}’ 완료 · ${now.size}/${items.length}</span></div>`), 1800); }
+    if (fresh.length) setTimeout(() => toast(`<div class="row g12"><span class="ib" style="background:#2a2a2a;width:32px;height:32px">${ic('check', 18)}</span><span class="t14">‘${fresh[0]}’ 해 봤어요</span></div>`), 1800); }
   pDone = now; pPersona = S.persona;
 }
 // Safari는 theme-color 값 변경만으로는 상단 색을 다시 칠하지 않을 때가 있어, 태그를 새로 넣고 고정 레이어 배경도 함께 바꾼다
