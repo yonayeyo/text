@@ -878,6 +878,19 @@ button.focus-strip{display:block;color:inherit}
 .nb-fill{height:30px;padding:0 12px;font-size:12px}
 .ht-end.dark-end{background:#181818;margin-left:calc(-1 * var(--m));margin-right:calc(-1 * var(--m))}
 .dark-band + .ht-end.dark-end{margin-top:0}
+
+/* 자산 구성 트리맵 · 12개월 흐름 */
+.tm-box{position:relative}
+.tm-t{position:absolute;padding:2px;text-align:left;transition:left .5s cubic-bezier(.22,1,.36,1),top .5s cubic-bezier(.22,1,.36,1),width .5s cubic-bezier(.22,1,.36,1),height .5s cubic-bezier(.22,1,.36,1),opacity .2s}
+.tm-in{box-sizing:border-box;height:100%;border-radius:10px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+.tm-delta{margin-top:2px;text-align:right}
+.tm-scrub{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-top:16px}
+.tm-scrub button{height:24px;display:grid;place-items:center}
+.tm-scrub i{width:100%;height:4px;border-radius:2px;background:var(--g3);transition:background .2s,height .2s}
+.tm-scrub button.on i{background:var(--ink);height:6px}
+.tm-lb{margin-top:4px;align-items:center}
+.tm-play{display:inline-flex;align-items:center;gap:4px;color:var(--ink);font-size:11px}
+@media (prefers-reduced-motion:reduce){.tm-t{transition:none}}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -1533,25 +1546,73 @@ function squarify(vals, Wd, Ht) {
 // 저축 › 통장: 통합 자산 트리맵. 크기 = 잔액, 색 = 용도(홈의 막대와 같은 색)
 const ACC_INK = { life:'#FCFCFC', emer:'#FCFCFC', goal:'#FCFCFC' };
 const ACC_IC = { save:'coin', inv:'ur', goal:'flag', life:'wallet', emer:'shield', evt:'gift' };
+
+// 계좌별 월말 잔액 (2025.11 → 2026.10). 마지막 달은 지금 잔액을 그대로 쓴다
+const TM_MONTHS = ['25.11','25.12','26.01','26.02','26.03','26.04','26.05','26.06','26.07','26.08','26.09','26.10'];
+const TM_HIST = {
+  save:[3200000,3350000,3500000,3650000,3800000,3950000,4100000,4250000,4400000,4550000,4700000,5000000],
+  inv: [1800000,1850000,1700000,1950000,2100000,2000000,2200000,2350000,2250000,2400000,2450000,2500000],
+  goal:[0,0,0,0,300000,650000,1000000,1300000,1500000,1800000,2050000,2300000],
+  life:[980000,1120000,860000,1050000,1180000,940000,1210000,1020000,1150000,990000,1260000,1240000],
+  emer:[550000,600000,650000,700000,750000,800000,850000,900000,950000,1000000,1050000,1100000],
+  evt: [200000,180000,230000,210000,250000,220000,240000,260000,230000,250000,240000,260000],
+};
+const tmVal = (a, i) => i === TM_MONTHS.length - 1 ? a.a : TM_HIST[a.k][i];
+function tmLayout(i) {
+  const Wd = 313, Ht = 208, vals = ACCOUNTS.map(a => Math.max(1, tmVal(a, i)));
+  const o = ACCOUNTS.map((a, k) => k).sort((x, y) => vals[y] - vals[x]), L = squarify(o.map(k => vals[k]), Wd, Ht), out = [];
+  o.forEach((k, j) => out[k] = L[j]); return { B:out, Wd, Ht };
+}
+function tmTile(a, b, i, total) {
+  const v = tmVal(a, i), fit = b.w > 64 && b.h > 44, ink = ACC_INK[a.k] || '#181818', ev = a.k === 'evt' ? 'background:#FCFCFC;color:#181818;border-radius:4px;padding:0 4px;align-self:flex-start' : '';
+  return `<div class="tm-in" style="background:${ACC_FILL[a.k]};color:${ink};padding:${fit ? 10 : 0}px;${a.k === 'evt' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}">
+    ${fit ? `<span class="t12" style="white-space:nowrap;${ev}">${useOf(a)}${b.w < 100 ? '<br>' : ' '}<span class="t10" style="opacity:.7">${pct(v / total)}</span></span>
+    <span class="num" style="font-family:var(--f-num);font-weight:300;font-size:${b.w > 120 ? 20 : 14}px;${ev}">${won(v)}</span>` : ''}</div>`;
+}
+const tmTotal = i => ACCOUNTS.reduce((t, a) => t + tmVal(a, i), 0);
+function tmDelta(i) {
+  const now = tmTotal(TM_MONTHS.length - 1), then = tmTotal(0), cur = tmTotal(i);
+  return i === TM_MONTHS.length - 1 ? `1년 전보다 ${now >= then ? '+' : '−'}${won(Math.abs(now - then))}원 (${now >= then ? '+' : '−'}${Math.round(Math.abs(now - then) / then * 100)}%)`
+    : `20${TM_MONTHS[i].replace('.', '년 ')}월 기준 · 지금보다 ${cur >= now ? '+' : '−'}${won(Math.abs(cur - now))}원`;
+}
+// 달을 바꿀 때는 다시 그리지 않고 칸의 위치 · 크기만 바꿔서 부드럽게 옮겨 간다
+function tmUpdate(i) {
+  S.tmIdx = i; const box = view.querySelector('#tmBox'); if (!box) return;
+  const { B, Wd, Ht } = tmLayout(i), total = tmTotal(i);
+  box.querySelectorAll('.tm-t').forEach(btn => { const k = ACCOUNTS.findIndex(a => a.k === btn.dataset.v), a = ACCOUNTS[k], b = B[k];
+    Object.assign(btn.style, { left:`${b.x / Wd * 100}%`, top:`${b.y / Ht * 100}%`, width:`${b.w / Wd * 100}%`, height:`${b.h / Ht * 100}%` });
+    btn.innerHTML = tmTile(a, b, i, total); btn.setAttribute('aria-label', `${useOf(a)} ${W(tmVal(a, i))} 자세히`); });
+  view.querySelector('#tmTotal').innerHTML = `${won(total)}<span class="cur t12">₩</span>`;
+  view.querySelector('#tmDelta').textContent = tmDelta(i);
+  view.querySelectorAll('.tm-scrub button').forEach((b, j) => { b.classList.toggle('on', j === i); b.setAttribute('aria-pressed', j === i); });
+  const sel = ACCOUNTS.find(a => a.k === S.acctSel), d = view.querySelector('#tmSel');
+  if (sel && d) d.innerHTML = tmSelHTML(sel, i);
+}
+function tmSelHTML(sel, i) {
+  const v = tmVal(sel, i), y0 = tmVal(sel, 0), last = TM_MONTHS.length - 1;
+  return `<span class="ib" style="background:var(--paper)">${ic(ACC_IC[sel.k] || 'wallet', 20)}</span>
+    <div><div class="t14">${useOf(sel)} · ${W(v)}</div><div class="t12 mute">${i === last ? `1년 전 ${W(y0)} · ${v >= y0 ? '+' : '−'}${won(Math.abs(v - y0))}원` : sel.raw}</div></div>`;
+}
+let tmPlayT = 0;
+function tmPlay() {
+  clearInterval(tmPlayT); let i = 0; tmUpdate(0);
+  tmPlayT = setInterval(() => { i++; if (i >= TM_MONTHS.length || !view.querySelector('#tmBox')) { clearInterval(tmPlayT); return; } tmUpdate(i); }, 420);
+}
 function accountsTree() {
-  const total = ACCOUNTS.reduce((t, a) => t + a.a, 0), Wd = 313, Ht = 208, B = (() => { const o = ACCOUNTS.map((a, k) => k).sort((x, y) => ACCOUNTS[y].a - ACCOUNTS[x].a), L = squarify(o.map(k => ACCOUNTS[k].a), Wd, Ht), out = []; o.forEach((k, i) => out[k] = L[i]); return out; })();
-  const sel = ACCOUNTS.find(a => a.k === S.acctSel);
-  const tiles = ACCOUNTS.map((a, k) => { const b = B[k], fit = b.w > 64 && b.h > 44, ink = ACC_INK[a.k] || '#181818', on = sel === a;
-    return `<button data-act="acctSel" data-v="${a.k}" aria-pressed="${on}" aria-label="${useOf(a)} ${W(a.a)} 자세히" style="position:absolute;left:${b.x / Wd * 100}%;top:${b.y / Ht * 100}%;width:${b.w / Wd * 100}%;height:${b.h / Ht * 100}%;padding:2px;text-align:left;opacity:${sel && !on ? .4 : 1};transition:opacity .2s"><div style="box-sizing:border-box;height:100%;${on ? 'outline:1.5px dashed #181818;outline-offset:1px;' : ''}border-radius:10px;background:${ACC_FILL[a.k]};color:${ink};padding:${fit ? 10 : 0}px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;${a.k === 'evt' ? 'box-shadow:inset 0 0 0 1px #181818' : ''}">
-      ${fit ? `<span class="t12" style="white-space:nowrap;${a.k === 'evt' ? 'background:#FCFCFC;color:#181818;border-radius:4px;padding:0 4px;align-self:flex-start' : ''}">${useOf(a)}${b.w < 100 ? "<br>" : " "}<span class="t10" style="opacity:.7">${pct(a.a / total)}</span></span>
-      <span class="num" style="font-family:var(--f-num);font-weight:300;font-size:${b.w > 120 ? 20 : 14}px;${a.k === 'evt' ? 'background:#FCFCFC;color:#181818;border-radius:4px;padding:0 4px;align-self:flex-start' : ''}">${won(a.a)}</span>` : ''}</div></button>`; }).join('');
-  return `<div class="mt12" style="position:relative;aspect-ratio:${Wd}/${Ht}" role="img" aria-label="통합 자산 ${won(total)}원 중 ${ACCOUNTS.map(a => `${useOf(a)} ${pct(a.a / total)}`).join(', ')}">${tiles}</div>
-    <div class="row between t10 mute mt8"><span>크기 = 잔액 · 색 = 용도</span><span>${sel ? '다시 누르면 전체 보기' : '칸을 눌러 자세히 보기'}</span></div>
-    ${sel ? `<div class="row g12" style="padding:12px;margin:20px -8px 0;border-radius:999px;background:var(--g2)">
-      <span class="ib" style="background:var(--paper)">${ic(ACC_IC[sel.k] || 'wallet', 20)}</span>
-      <div><div class="t14">${useOf(sel)} ${pct(sel.a / total)} · ${W(sel.a)}</div><div class="t12 mute">${sel.raw}</div></div>
-    </div>` : ''}`;
+  const last = TM_MONTHS.length - 1, i = S.tmIdx ?? last, { B, Wd, Ht } = tmLayout(i), total = tmTotal(i), sel = ACCOUNTS.find(a => a.k === S.acctSel);
+  const tiles = ACCOUNTS.map((a, k) => { const b = B[k], on = sel === a;
+    return `<button class="tm-t" data-act="acctSel" data-v="${a.k}" aria-pressed="${on}" aria-label="${useOf(a)} ${W(tmVal(a, i))} 자세히" style="left:${b.x / Wd * 100}%;top:${b.y / Ht * 100}%;width:${b.w / Wd * 100}%;height:${b.h / Ht * 100}%;opacity:${sel && !on ? .4 : 1}">${tmTile(a, b, i, total)}</button>`; }).join('');
+  return `<div class="tm-box mt12" id="tmBox" style="aspect-ratio:${Wd}/${Ht}" role="img" aria-label="자산 구성 트리맵">${tiles}</div>
+    <div class="tm-scrub" role="group" aria-label="월별 자산 구성">${TM_MONTHS.map((m, j) => `<button type="button" class="${j === i ? 'on' : ''}" data-act="tmIdx" data-v="${j}" aria-pressed="${j === i}" aria-label="20${m.replace('.', '년 ')}월"><i></i></button>`).join('')}</div>
+    <div class="row between t10 mute tm-lb"><span class="num">${TM_MONTHS[0]}</span><button type="button" class="tm-play" data-act="tmPlay">${ic('refresh', 12)}1년 흐름 보기</button><span class="num">${TM_MONTHS[last]}</span></div>
+    ${sel ? `<div class="row g12" id="tmSel" style="padding:12px;margin:16px -8px 0;border-radius:999px;background:var(--g2)">${tmSelHTML(sel, i)}</div>` : ''}`;
 }
 function accountsCard(home) {
   return `<div class="card c-paper">
       ${home ? `<button class="row between" style="width:100%;text-align:left" data-act="tab" data-tab="plan" data-pv="bank"><span class="t14">자산 구성</span><span class="row g4 t10 mute">6개 계좌${ic('arrow', 14)}</span></button>`
         : `<div class="row between"><span class="t14">자산 구성</span><button class="row g4 t10 mute" data-act="sheet" data-sheet="accounts" aria-label="계좌 ${ACCOUNTS.length}개와 용도 보기">${ACCOUNTS.length}개 계좌${ic('arrow', 14)}</button></div>`}
-      <div class="row between mt12" style="align-items:baseline"><span class="t12 mute">통합 자산</span><span class="n24">${won(ACCOUNTS.reduce((t, a) => t + a.a, 0))}<span class="cur t12">₩</span></span></div>
+      <div class="row between mt12" style="align-items:baseline"><span class="t12 mute">통합 자산</span><span class="n24" id="tmTotal">${won(home ? ACCOUNTS.reduce((t, a) => t + a.a, 0) : tmTotal(S.tmIdx ?? TM_MONTHS.length - 1))}<span class="cur t12">₩</span></span></div>
+      ${home ? '' : `<div class="t12 mute tm-delta" id="tmDelta">${tmDelta(S.tmIdx ?? TM_MONTHS.length - 1)}</div>`}
       ${home ? accountsBlock() : accountsTree()}
     </div>`;
 }
@@ -1954,7 +2015,7 @@ const CONCEPTS = [
   { id:'small', i:'coffee', a:'spend', k:'소액 반복 지출', q:'편의점 커피 한 잔,<br>한 달이면 얼마일까요?', take:'2,100원짜리 커피도 23번이면 48,300원이에요. 한 번은 작아도 자주 반복되는 지출이 한 달 예산을 가장 많이 흔들어요.', go:['작은 돈 보기', 'data-act="tab" data-tab="spend" data-sv="analysis"'] },
   { id:'infl', i:'coffee', a:'save', b:'infl' },
   { id:'comp', i:'coins', a:'save', b:'comp' },
-  { id:'emer', i:'shield', a:'save', k:'비상금', known:true, q:'갑자기 병원비가 생기면<br>어디서 꺼낼까요?', take:'갑작스러운 지출을 위해 따로 모아 둔 돈이에요. 보통 생활비 3개월치를 권해요. 비상금이 있으면 적금을 깨거나 할부를 쓰지 않아도 돼요.', go:['비상금 보기', 'data-act="tab" data-tab="plan" data-pv="bank"'] },
+  { id:'emer', i:'shield', a:'save', k:'비상금', known:true, q:'갑자기 병원비가 생기면<br>어디서 꺼낼까요?', take:'갑작스러운 지출을 위해 따로 모아 둔 돈이에요. 보통 생활비 3개월치를 권해요. 비상금이 있으면 적금을 깨거나 할부를 쓰지 않아도 돼요.', go:['비상금 목표 보기', 'data-act="goalGo" data-v="emer"'] },
   { id:'pre', i:'calendar', a:'save', k:'선저축', known:true, q:'월급날 먼저 모으면<br>뭐가 달라질까요?', take:'쓰고 남은 돈을 모으면 남는 돈이 거의 없어요. 월급이 들어오자마자 저축부터 옮기면 남은 돈 안에서 생활하게 돼요.', go:['자동 설정 보기', 'data-act="tab" data-tab="plan" data-pv="rule"'] },
   { id:'credit', i:'card', a:'credit', k:'신용점수', q:'카드값을 늦게 내면<br>무엇이 달라질까요?', take:'신용점수는 돈을 제때 갚는지를 점수로 매긴 거예요. 연체가 생기면 점수가 내려가고, 대출 금리가 높아지거나 대출이 어려워질 수 있어요.', go:['납부 자동이체 확인', 'data-act="tab" data-tab="plan" data-pv="rule"'] },
   { id:'loan', i:'coin', a:'credit', k:'대출 이자', q:'월 1% 이자,<br>1년이면 12%일까요?', take:'갚지 않은 이자에 다시 이자가 붙으면 1년 뒤 갚을 돈은 12%보다 많아져요. 빌린 돈에도 복리가 붙는다는 걸 기억해 두세요.', go:['복리 알아보기', 'data-act="concept" data-v="comp"'] },
@@ -1966,7 +2027,7 @@ const CONCEPTS = [
   { id:'sub', a:'spend', k:'구독 정리', i:'refresh', q:'잊고 있던 구독,<br>1년이면 얼마일까요?', take:'월 13,500원 OTT도 1년이면 162,000원이에요. 석 달 동안 쓰지 않은 구독은 해지하고, 필요할 때 다시 가입하는 편이 대부분 이득이에요.', go:['고정 지출 확인', 'data-act="tab" data-tab="plan" data-pv="rule"'] },
   { id:'dutch', a:'spend', k:'더치페이 정리', i:'users', q:'대신 낸 돈도<br>내 지출일까요?', take:'친구 몫까지 결제하면 가계부에는 전부 내 지출로 잡혀요. 받을 돈을 정리해야 이번 달에 실제로 쓴 돈과 남은 예산이 정확해져요.', go:['정산하기', 'data-act="sheet" data-sheet="settle"'] },
   { id:'deposit', a:'save', k:'예금과 적금', i:'calendar', q:'목돈이 있을 땐 예금,<br>없을 땐 적금?', take:'예금은 한 번에 맡기고, 적금은 매달 나눠 넣어요. 같은 금리라도 적금은 넣은 기간만큼만 이자가 붙어서 실제로 받는 이자는 예금의 절반 정도예요.', go:['적금 비교하기', 'data-act="sheet" data-sheet="compare"'] },
-  { id:'parking', a:'save', k:'파킹통장', i:'wallet', q:'잠깐 둘 돈,<br>어디에 둘까요?', take:'언제든 넣고 뺄 수 있으면서 입출금 통장보다 이자가 높은 통장이에요. 비상금처럼 바로 꺼낼 수 있어야 하는 돈을 두기 좋아요.', go:['비상금 보기', 'data-act="tab" data-tab="plan" data-pv="bank"'] },
+  { id:'parking', a:'save', k:'파킹통장', i:'wallet', q:'잠깐 둘 돈,<br>어디에 둘까요?', take:'언제든 넣고 뺄 수 있으면서 입출금 통장보다 이자가 높은 통장이에요. 비상금처럼 바로 꺼낼 수 있어야 하는 돈을 두기 좋아요.', go:['비상금 목표 보기', 'data-act="goalGo" data-v="emer"'] },
   { id:'etf', a:'save', k:'분산 투자', i:'coins', q:'한 종목에<br>몰아도 될까요?', take:'여러 회사에 나눠 담으면 한 곳이 떨어져도 전체 손실이 작아져요. 지수를 따라가는 ETF는 한 번에 여러 종목을 사는 방법이에요. 원금 손실이 날 수 있어요.', go:['매주 조금씩 투자', 'data-act="tab" data-tab="plan" data-pv="bank"'] },
   { id:'protect', a:'save', k:'예금자 보호', i:'shield', q:'은행이 문을 닫으면<br>내 돈은요?', take:'은행·저축은행 예금은 한 곳당 원금과 이자를 합쳐 1억 원까지 보호돼요. 투자 상품은 보호 대상이 아니에요.', go:null },
   { id:'revolving', a:'credit', k:'리볼빙', i:'card', q:'카드값 일부만 내면<br>나머지는 어떻게 될까요?', take:'남은 카드값이 다음 달로 넘어가면서 높은 이자(연 15~19%)가 붙어요. 최소 금액만 내는 게 편해 보여도 빚이 계속 불어나요.', go:['납부 자동이체 확인', 'data-act="tab" data-tab="plan" data-pv="rule"'] },
@@ -2402,14 +2463,6 @@ function vPlan(pvOver, noHead) {
   <section class="mt16" id="assetCard">${accountsCard(false)}</section>
   ${S.persona === 'habit' ? '' : `<div class="mt24">${bite('comp')}</div>`}
   <section class="sec">
-    <div class="sec-h"><div><div class="t18">비상금</div><div class="sec-d">생활비 3개월 기준</div></div></div>
-    <div class="card c-paper">
-      <div class="row between" style="align-items:baseline"><span class="n24">${won(S.emergency)}<span class="cur t12">₩</span></span><span class="t12 mute num">/ 2,400,000원</span></div>
-      <div class="glowbar mt16" style="height:8px"><i style="width:${S.emergency / 2400000 * 100}%"></i></div>
-      <div class="row between t10 mute mt8"><span>매월 25일 100,000원씩 자동 적립</span><span>${pct(S.emergency / 2400000)}</span></div>
-    </div>
-  </section>
-  <section class="sec">
     <div class="sec-h"><div class="t18">목표 자금 인출</div></div>
     <button class="card c-paper row between" style="width:100%" data-act="sheet" data-sheet="withdraw"><span class="setrow" style="grid-template-columns:40px 1fr"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic('coin', 20)}</span><span><span class="t16" style="display:block">인출 전 대안 확인</span><span class="t12 mute">비상금 · 이번 달 예산 등 다른 방법을 먼저 보여 드려요</span></span></span>${ic('arrow', 20)}</button>
   </section>
@@ -2557,7 +2610,7 @@ function vChal() {
 }
 function vGoal() {
   const g = S.goals.find(x => x.id === S.goalSel) || S.goals[0];
-  const indep = g.id === 'indep'; const saved = indep ? S.goalSaved : g.saved;
+  const indep = g.id === 'indep'; const saved = indep ? S.goalSaved : g.id === 'emer' ? S.emergency : g.saved;
   const pa = planActual(); const d = D();
   const msCur = (() => { const i = STAGES.findIndex(st => saved < st.a); return i < 0 ? STAGES.length - 1 : i; })();
   const msMonths = Math.max(1, Math.ceil((STAGES[msCur].a - saved) / 350000)), msDate = new Date(2026, 9 + msMonths, 1);
@@ -2569,7 +2622,7 @@ function vGoal() {
     <div class="row g8 mt24" style="align-items:baseline"><span class="n56" style="font-size:48px">${pct(saved / g.target)}</span></div>
     <div class="row between mt12 t12"><span class="num">${W(saved)}</span><span class="mute num">/ ${W(g.target)}</span></div>
     <div class="glowbar mt12"><i style="width:${saved / g.target * 100}%"></i></div>
-    <div class="row between mt16 t12 mute"><span>월 ${indep ? '350,000' : won(Math.ceil((g.target - g.saved) / 5 / 1000) * 1000)}원 자동이체</span><span>남은 ${W(g.target - saved)}</span></div>
+    <div class="row between mt16 t12 mute"><span>월 ${indep ? '350,000' : g.id === 'emer' ? '100,000' : won(Math.ceil((g.target - g.saved) / 5 / 1000) * 1000)}원 자동이체${g.id === 'emer' ? ' · 생활비 3개월 기준' : ''}</span><span>남은 ${W(g.target - saved)}</span></div>
   </div>
   ${indep ? `
   <section class="sec" id="stageSec">
@@ -3173,6 +3226,8 @@ document.addEventListener('click', e => {
     case 'ratioOk': S.ratioOk = true; S.ratioEdit = false; render(); break;
     case 'ratioEdit': S.ratioEdit = !S.ratioEdit; render(); break;
     case 'acctSel': S.acctSel = S.acctSel === v ? null : v; render(); break;
+    case 'tmIdx': clearInterval(tmPlayT); tmUpdate(+v); break;
+    case 'tmPlay': tmPlay(); break;
     case 'catSel': S.catSel = S.catSel === v ? null : v; render(); break;
     case 'step': S.cat[el.dataset.c] = Math.max(0, S.cat[el.dataset.c] + +el.dataset.d); render(); break;
     case 'wAmt': S.wAmt = +v; refreshSheet(); break;
@@ -3180,6 +3235,7 @@ document.addEventListener('click', e => {
     case 'wBudget': { const amt = S.wAmt; closeSheet(); render(); simpleToast(`이번 달 예산에서 ${W(amt)}을 마련했어요 · 목표는 그대로예요`); break; }
     case 'wDo': { const amt = S.wAmt; S.goalSaved -= amt; S.lifeAdd = (S.lifeAdd || 0) + amt; closeSheet(); render(); simpleToast(`${W(amt)}을 생활비 통장으로 옮겼어요`); break; }
     case 'goalSel': S.goalSel = v; render(); break;
+    case 'goalGo': closeSheet(); S.mode = 'app'; S.sub = null; S.tab = 'plan'; S.planView = 'goal'; S.goalSel = v; render(false); break;
     case 'gType': S.gNew.type = v; refreshSheet(); break;
     case 'gAmt': S.gNew.amt = +v; refreshSheet(); break;
     case 'gMon': S.gNew.months = +v; refreshSheet(); break;
