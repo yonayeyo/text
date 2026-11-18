@@ -2859,7 +2859,7 @@ function sheetHTML(name) {
     case 'accounts': return head('계좌와 용도', `${ACCOUNTS.length}개 계좌 · 눌러서 용도를 바꿀 수 있어요`) + `<div class="mt24">${acctRows()}</div>`;
     case 'use': { const a = ACCOUNTS.find(x => x.k === S.useK); return head('용도 고르기', `${a.raw} · ${W(a.a)}`) + `<div class="mt16">${USES.map(u => `<button class="use-opt" data-act="acctUse" data-k="${a.k}" data-v="${u}"><span>${u}</span>${useOf(a) === u ? ic('check', 18) : ''}</button>`).join('')}</div>`; }
     case 'concept': { const c = conceptOf(S.conceptId), done = conceptDone(c), ar = AREAS.find(a => a.id === c.a);
-      return head(c.k, `경제 개념 · ${ar.name}${ar.now ? '' : ' · 확장 예정'}`) + `<div class="card bite c-know mt24">
+      return head(c.k, `${ar.name}${ar.now ? '' : ' · 확장 예정'}`) + `<div class="card bite c-know mt24">
         <div class="bite-h"><span class="bite-k">${ic('spark', 14)}경제 개념 · ${c.k}${done ? `<span class="tag line" style="height:18px;margin-left:6px">${ic('check', 10)}&nbsp;알아봤어요</span>` : ''}</span><span class="t16 bite-q">${c.q}</span></div>
         <div class="bite-b">${c.ex ? c.ex() : ''}<p class="t12 bite-take">${c.take}</p></div></div>
         <div class="stack8 mt16">${done ? '' : `<button class="btn full light" style="box-shadow:inset 0 0 0 1px var(--g3)" data-act="conceptOk" data-v="${c.id}">이해했어요</button>`}
