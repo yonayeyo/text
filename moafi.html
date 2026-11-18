@@ -833,6 +833,13 @@ button.focus-strip{display:block;color:inherit}
 .fan-sec{margin-top:var(--h16)}
 .fan-stage{margin-top:0}
 .fan-cap{min-height:76px}
+
+/* 실천 항목 보기 전환 칩 (궤도 / 카드) */
+.hv-sw{display:flex;justify-content:flex-end;gap:4px;margin-top:var(--h24)}
+.hv-sw button{height:26px;padding:0 10px;border-radius:999px;font-size:11px;line-height:1;color:var(--g4);box-shadow:inset 0 0 0 1px var(--g3)}
+.hv-sw button.on{background:var(--ink);color:#fff;box-shadow:none}
+.hv-sw + .fan-sec{margin-top:var(--h4)}
+.hv-sw + .orbit-wrap{margin-top:0}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -2005,7 +2012,8 @@ function vHome() {
       <div class="h-sb num">10월 남은 예산 ${W(d.remain)} / ${d.left}일</div>
       <div class="rw"><span class="dotnum">${won(d.daily)}</span><span class="hl" aria-hidden="true"></span><button class="ib ink" data-act="tab" data-tab="spend" data-sv="budget" aria-label="예산 자세히 보기">${ic('ur', 20)}</button></div>
     </section>
-    ${practiceFan()}
+    <div class="hv-sw" role="tablist" aria-label="실천 항목 보기 방식">${[['orbit', '궤도'], ['fan', '카드']].map(([k, l]) => `<button type="button" role="tab" aria-selected="${(S.homeView || 'fan') === k}" class="${(S.homeView || 'fan') === k ? 'on' : ''}" data-act="homeView" data-v="${k}">${l}</button>`).join('')}</div>
+    ${S.homeView === 'orbit' ? orbit() : practiceFan()}
     <section class="sec"><div class="dot-h">지금 집중할 영역</div>${focusStrip(true)}</section>
     <section class="sec"><div class="dot-h">1분 금융 공부</div>${knowCards()}</section>`;
 }
@@ -3082,6 +3090,7 @@ document.addEventListener('click', e => {
     case 'extraOn': S.extras.add(v); if (v === 'tips') S.learnView = 'tips'; render(false); simpleToast(`‘${EXTRAS[v][0]}’을 켰어요 · 메뉴에서 끌 수 있어요`); break;
     case 'extraToggle': S.extras.has(v) ? S.extras.delete(v) : S.extras.add(v); if (!S.extras.has('tips')) S.learnView = 'bite'; refreshSheet(); render(); break;
     case 'deckClose': deckT.forEach(clearTimeout); deckT = []; deckSet(false); break;
+    case 'homeView': if ((S.homeView || 'fan') !== v) { S.homeView = v; render(); if (v === 'fan') fanIntro(); } break;
     case 'todayMore': S.todayMore = !S.todayMore; render(); break;
     case 'tab':
       if (S.mode === 'app' && !S.sub) S.from = el.classList.contains('tab') || S.tab === el.dataset.tab ? null : (S.from && S.from.tab === el.dataset.tab ? null : { tab:S.from ? S.from.tab : S.tab });
