@@ -1,0 +1,310 @@
+<title>moafi 정보구조도</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* 레이아웃: 위에서 요약 → 중복 지점 → 탭별 열(진단·홈·지출·저축·알기·혜택·공통). 항목을 눌러 유지/검토/삭제 표시 */
+:root{
+  --bg:#F4F5F7; --surface:#FFFFFF; --sunken:#F2F4F6; --line:#E5E8EB;
+  --fg:#191F28; --fg2:#4E5968; --fg3:#8B95A1;
+  --primary:#3269FF; --primary-c:#EBF0FF; --on-primary-c:#1D45C2;
+  --secondary:#7A59FF; --secondary-c:#F1EDFF; --on-secondary-c:#4B2FC4;
+  --tertiary:#FF46A9; --tertiary-c:#FFEBF5; --on-tertiary-c:#C0186F;
+  --keep:#1B9E5A; --keep-c:#E6F6EE;
+  --f-sans:"Noto Sans KR","Apple SD Gothic Neo",-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#101318; --surface:#1A1F27; --sunken:#222833; --line:#2C3340;
+  --fg:#EEF1F5; --fg2:#B4BDC9; --fg3:#7F8A98;
+  --primary:#6B91FF; --primary-c:#1D2A4D; --on-primary-c:#B9CBFF;
+  --secondary:#9C83FF; --secondary-c:#2A2350; --on-secondary-c:#D3C8FF;
+  --tertiary:#FF6BBA; --tertiary-c:#4A1D36; --on-tertiary-c:#FFC2E1;
+  --keep:#46C485; --keep-c:#163A29; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101318; --surface:#1A1F27; --sunken:#222833; --line:#2C3340;
+  --fg:#EEF1F5; --fg2:#B4BDC9; --fg3:#7F8A98;
+  --primary:#6B91FF; --primary-c:#1D2A4D; --on-primary-c:#B9CBFF;
+  --secondary:#9C83FF; --secondary-c:#2A2350; --on-secondary-c:#D3C8FF;
+  --tertiary:#FF6BBA; --tertiary-c:#4A1D36; --on-tertiary-c:#FFC2E1;
+  --keep:#46C485; --keep-c:#163A29; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-sans);font-size:14px;line-height:1.5;word-break:keep-all;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 64px}
+.wrap{max-width:1320px;margin:0 auto;display:grid;gap:32px}
+h1{font-size:28px;line-height:36px;font-weight:700;letter-spacing:-.02em;margin:0;text-wrap:balance}
+h2{font-size:18px;line-height:26px;font-weight:600;margin:0}
+p{margin:0}
+.lead{color:var(--fg2);max-width:68ch;margin-top:8px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
+.stat{background:var(--surface);border-radius:16px;padding:16px}
+.stat b{display:block;font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.stat span{color:var(--fg3);font-size:12px}
+.sec-h{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.sec-h p{color:var(--fg3);font-size:12px;margin-top:2px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--fg2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+
+/* 중복 지점 */
+.dups{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.dup{background:var(--surface);border-radius:16px;padding:16px;text-align:left;border:1.5px solid transparent;font:inherit;color:inherit;cursor:pointer;display:grid;gap:8px;align-content:start}
+.dup:hover{border-color:var(--line)}
+.dup[aria-pressed="true"]{border-color:var(--tertiary)}
+.dup:focus-visible,.item:focus-visible,.btn:focus-visible,.chip:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.dup .top{display:flex;align-items:center;gap:8px}
+.dup .n{margin-left:auto;font-size:12px;color:var(--on-tertiary-c);background:var(--tertiary-c);border-radius:999px;padding:2px 8px;font-variant-numeric:tabular-nums}
+.dup p{color:var(--fg2);font-size:13px}
+.dup ul{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:4px}
+.dup li{font-size:11px;color:var(--fg2);background:var(--sunken);border-radius:6px;padding:2px 6px}
+
+/* 도구 막대 */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.chip{font:inherit;font-size:12px;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.btn{font:inherit;font-size:13px;font-weight:600;height:36px;padding:0 16px;border-radius:999px;border:0;background:var(--primary);color:#fff;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)}
+.counts{margin-left:auto;display:flex;gap:12px;font-size:12px;color:var(--fg2);font-variant-numeric:tabular-nums;flex-wrap:wrap}
+
+/* 트리 */
+.tree{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;align-items:start}
+.col{background:var(--surface);border-radius:20px;padding:20px;display:grid;gap:16px;min-width:0}
+.col-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.col-h h2{font-size:20px}
+.col-h .k{font-family:var(--f-mono);font-size:11px;color:var(--fg3);letter-spacing:.06em}
+.col-h .meta{margin-left:auto;font-size:12px;color:var(--fg3);font-variant-numeric:tabular-nums}
+.col-note{font-size:12px;color:var(--fg2);background:var(--sunken);border-radius:10px;padding:8px 10px}
+.scr{display:grid;gap:4px;min-width:0}
+.scr-h{display:flex;align-items:center;gap:8px;padding:4px 0 6px;border-bottom:1px solid var(--line);margin-bottom:2px}
+.scr-h b{font-size:14px;font-weight:600}
+.scr-h .cnt{margin-left:auto;font-size:11px;color:var(--fg3);font-variant-numeric:tabular-nums}
+.scr-h .cnt.hi{color:var(--on-tertiary-c);background:var(--tertiary-c);border-radius:999px;padding:1px 7px}
+.item{display:grid;grid-template-columns:1fr auto;gap:2px 8px;align-items:start;width:100%;text-align:left;font:inherit;color:inherit;background:transparent;border:0;border-radius:10px;padding:7px 8px;cursor:pointer;transition:opacity .15s,background .15s}
+.item:hover{background:var(--sunken)}
+.item .t{font-size:13px;line-height:19px;min-width:0}
+.item .d{grid-column:1;font-size:11px;line-height:16px;color:var(--fg3)}
+.item .tags{grid-column:1;display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+.item .mark{grid-row:1/4;grid-column:2;align-self:center;font-size:11px;font-weight:600;border-radius:999px;padding:2px 8px;white-space:nowrap;color:var(--fg3);border:1px dashed var(--line)}
+.item[data-state="keep"] .mark{color:var(--keep);background:var(--keep-c);border:0}
+.item[data-state="review"] .mark{color:var(--on-secondary-c);background:var(--secondary-c);border:0}
+.item[data-state="cut"] .mark{color:var(--on-tertiary-c);background:var(--tertiary-c);border:0}
+.item[data-state="cut"] .t{text-decoration:line-through;color:var(--fg3)}
+.item.dim{opacity:.28}
+.item.hit{background:var(--tertiary-c)}
+.tg{font-size:10px;line-height:16px;border-radius:5px;padding:0 5px;white-space:nowrap}
+.tg.s{background:var(--primary-c);color:var(--on-primary-c)}
+.tg.p{background:var(--secondary-c);color:var(--on-secondary-c)}
+.tg.x{background:var(--tertiary-c);color:var(--on-tertiary-c);font-family:var(--f-mono)}
+.tg.o{background:var(--sunken);color:var(--fg3)}
+.foot{color:var(--fg3);font-size:12px;display:grid;gap:4px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);font-size:13px;border-radius:999px;padding:10px 18px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+textarea.copy{position:absolute;left:-9999px}
+@media (prefers-reduced-motion:reduce){.item,.toast{transition:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>moafi 정보구조도</h1>
+    <p class="lead">현재 프로토타입(moafi.html)에 실제로 들어 있는 화면, 세부 탭, 시트, 기능을 그대로 옮겼어요. 항목을 누를 때마다 <b>유지 → 검토 → 삭제 → 표시 없음</b> 순서로 바뀌니, 남길 기능을 고르는 데 쓰세요. 표시한 내용은 이 브라우저에만 저장돼요.</p>
+  </header>
+
+  <section class="stats" id="stats" aria-label="요약"></section>
+
+  <section>
+    <div class="sec-h"><div><h2>같은 기능이 여러 곳에 있는 지점</h2><p>카드를 누르면 아래 구조도에서 해당 항목만 강조해요. 다시 누르면 해제돼요.</p></div></div>
+    <div class="dups" id="dups"></div>
+  </section>
+
+  <section>
+    <div class="bar" id="bar">
+      <button class="chip" type="button" id="fPersona" aria-pressed="false">유형별로 달라지는 항목만</button>
+      <button class="chip" type="button" id="fSheet" aria-pressed="false">시트로 열리는 항목만</button>
+      <button class="btn" type="button" id="copyBtn">정리 결과 복사</button>
+      <button class="btn ghost" type="button" id="resetBtn">표시 모두 지우기</button>
+      <div class="counts" id="counts" aria-live="polite"></div>
+    </div>
+    <div class="legend" style="margin:12px 0 16px">
+      <span><i class="tg s">시트</i>아래에서 올라오는 창</span>
+      <span><i class="tg p">유형별</i>진단 유형(4종)에 따라 내용이 바뀜</span>
+      <span><i class="tg x">A</i>중복 지점 기호</span>
+      <span><i class="tg o">→ 이동</i>누르면 다른 화면으로 이동</span>
+    </div>
+    <div class="tree" id="tree"></div>
+  </section>
+
+  <footer class="foot">
+    <p>기준: moafi.html 2026.11.18 버전. 데모 데이터는 ‘지혜, 만 27세, 10월 15일’ 기준이에요.</p>
+    <p>코드에는 있지만 지금 화면에 나오지 않는 기능: 유형별 ‘행동 추천’ 카드 묶음, 첫 주 할 일 체크 목록(완료 여부만 실천 항목·집중 영역에 쓰임).</p>
+  </footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+// 항목 표기: [이름, 설명, 태그] — 태그: S 시트 · P 유형별 · 대문자 한 글자(A~I) 중복 지점 · '>화면' 이동
+const IA = [
+  { id:'ob', k:'ONBOARDING', name:'진단 · 연동', note:'처음 실행할 때 한 번 거치는 흐름. 결과 화면은 메뉴에서 다시 볼 수 있어요.', screens:[
+    { id:'ob1', name:'진단 시작', items:[
+      ['20문항 · 약 5분 안내'], ['5개 금융 영역 소개', '소비와 지출 · 저축과 투자 · 대출과 신용 · 보험과 은퇴 · 세금과 혜택 (2개는 확장 예정)'], ['진단 시작 / 둘러보기만 할게요'] ] },
+    { id:'ob2', name:'자기평가', items:[ ['금융 지식 1~10점'], ['실천 수준 1~10점'] ] },
+    { id:'ob3', name:'진단 문항 20개', items:[ ['영역별 관심 1 · 지식 1 · 실천 2 문항'], ['영역 진행 표시 (5칸 × 4)'], ['지식 문항의 ‘잘 모르겠어요’'] ] },
+    { id:'ob4', name:'진단 결과', items:[
+      ['금융 유형 4종', '인지우세형 · 저관여형 · 습관우세형 · 자기관리형'], ['사분면 차트', '내 생각과 진단 위치 비교'], ['생각과의 차이(Gap)', '지식 · 실천 각각'],
+      ['5개 영역 레이더 + 영역별 해석', '관심 · 실천 점수, 지식 정답 여부'], ['시작 영역 추천'], ['계좌 연동하고 시작 / 둘러보기'], ['3개월 재진단 안내', '', 'F'] ] },
+    { id:'ob5', name:'계좌 연동 · 용도 확인', items:[ ['찾은 계좌 6개와 잔액'], ['계좌별 용도 고르기', '적금 · 투자 · 독립 자금 · 생활비 · 비상금 · 경조사비 등', 'S'] ] },
+    { id:'ob6', name:'연동 전 둘러보기', items:[
+      ['홈 빈 상태 + 계좌 연동하기'], ['연동 없이 할 수 있는 것 3개', '내 진단 결과 · 한입 금융 · 혜택 확인', 'B'], ['지출 · 저축 빈 상태'] ] },
+  ]},
+  { id:'home', k:'TAB 1', name:'홈', note:'한 화면(세부 탭 없음). 위에서부터 순서대로.', screens:[
+    { id:'h1', name:'홈', items:[
+      ['헤더: 인사 · 날짜 · 알림 · 메뉴', '알림 3건, 메뉴', 'S'],
+      ['정산 알림 배너', '더치페이 2건 36,000원 · 2.4초 뒤 알림(종)으로 들어감', 'D S'],
+      ['오늘 쓸 수 있는 금액', '남은 예산 ÷ 남은 일수 · 바뀌면 증감 표시', 'A >지출›예산'],
+      ['오늘의 실천 항목 (카드 7 + 새 항목)', '유형마다 다른 7개. 누르면 해당 화면으로 이동해 위치를 강조하거나 시트가 열림', 'P C E G'],
+      ['지금 집중할 영역', '지출 → 저축 → 혜택 단계 표시', 'P'],
+      ['알아볼 것 (개념 카드 최대 5장)', '‘잘 모르겠어요’ 영역 → 집중 영역 순', 'B >알기'] ] },
+  ]},
+  { id:'spend', k:'TAB 2', name:'지출', note:'세부 탭 3개: 가계부 · 분석 · 예산', screens:[
+    { id:'s1', name:'가계부', items:[
+      ['10월 지출 합계 · 무지출 · 초과 일수'], ['지출 달력 (날짜별 농도)', '하루 예산 25,800원 기준 5단계'], ['날짜별 결제 내역', '더치페이 받을 돈 표시', 'D'] ] },
+    { id:'s2', name:'분석', items:[
+      ['주간 / 월간 전환'], ['Top spend', '상위 4개 원 그래프 / 전체 트리맵 전환'], ['한입 금융: 인플레이션', '', 'B'],
+      ['어디서 늘고 줄었나', '지난 기간 대비 카테고리별 증감'], ['작은 돈이 모이면', '소액 반복 지출 3종'],
+      ['10월 돈의 흐름', '들어온 돈 → 간 곳 · 내 계좌 간 이체 제외 · 더치페이 정리 버튼', 'C D S'],
+      ['영수증 출력 · 뜯기', '항목 · 목표/실제 · 다음 예산 제안 반영 · 다음 단계 · 재진단', 'E F'],
+      ['예산 반영 바로가기', '', '>지출›예산'] ] },
+    { id:'s3', name:'예산', items:[
+      ['월말 예상 지출', '지금 속도로 쓰면 월말에 남거나 넘는 금액', 'A'],
+      ['유형별 맞춤 카드', '인지우세형: 알림 스위치 3개 · 저관여형: 고정 지출 확인 · 자기관리형: 세액공제/투자', 'P H'],
+      ['10월 예산 요약', '쓴 돈 · 오늘 쓸 수 있는 돈 · 월말 예상 · 남은 기간', 'A'],
+      ['카테고리별 예산 (꽃잎 차트)', '6개 카테고리 사용률'],
+      ['줄이기 계획 3단계', '줄이지 않을 지출 7개 → 제안 4개 담기 → 11월 예산에 반영', 'E'],
+      ['이렇게 나눠 보면 (수입 배분 제안)', '고정 · 생활비 · 저축 · 여유 비율 + 카테고리 금액 수정/수락', 'E'] ] },
+  ]},
+  { id:'plan', k:'TAB 3', name:'저축', note:'세부 탭 3개: 통장 · 목표 · 자동 규칙', screens:[
+    { id:'p1', name:'통장', items:[
+      ['습관우세형 전용: 적금 비교 카드', '', 'P G'],
+      ['자산 구성 (트리맵)', '통합 자산 · 계좌 6개 · 칸 눌러 자세히', ''],
+      ['계좌와 용도 바꾸기', '', 'S'],
+      ['한입 금융: 복리', '', 'B'],
+      ['비상금 진행률', '생활비 3개월 기준 2,400,000원', 'I'],
+      ['저축한 금액 꺼내기', '대안(비상금 · 이번 달 예산) → 목표 영향 → 꺼내기', 'S I'],
+      ['투자: 매주 조금씩', '필수 설정 4개를 마치면 열림 · 확장 예정 영역 2개 표시'] ] },
+    { id:'p2', name:'목표', items:[
+      ['목표 전환 칩 3개 + 새 목표', '독립 자금 · 오사카 여행 · 비상금 / 유형 · 금액 · 기간', 'S I'],
+      ['목표 진행 카드', '진행률 · 금액 · 자동이체'],
+      ['중간 목표 4단계', '이사 준비금 → 보증금 절반 → 전액 → 가전·이사비'],
+      ['계획 대비 실제 그래프', '누적 저축 · 지금 속도 예상'],
+      ['참여 중인 챌린지 (최대 3개)', '달력 · 오늘 인증 · 추가 / 그만두기', 'P'],
+      ['리그 순위', '전체 리그 / 친구 리그'],
+      ['배지와 포인트'] ] },
+    { id:'p3', name:'자동 규칙', items:[
+      ['필수 설정 4개 진행 표시'],
+      ['필수 항목 4개', '월급날 먼저 모으기 · 비상금 · 월 예산 · 매달 나가는 돈 등록 (켜기/끄기)', 'H I'],
+      ['외주비가 들어오면', '균형 · 저축 우선 · 쓰기 우선으로 나누기', 'C'] ] },
+  ]},
+  { id:'learn', k:'TAB 4', name:'알기', note:'세부 탭 2개: 한입 금융 · 팁과 소식. 이 탭에서만 AI 입력창이 보여요.', screens:[
+    { id:'l1', name:'한입 금융', items:[
+      ['알아본 개념 수 (12 / 136) + 모아보기', '', 'S B'], ['영역 필터 칩 6개'],
+      ['개념 목록 26개 (스크롤 시 하나씩 크게)', '', 'B'], ['개념 상세: 이해했어요 · 관련 화면으로', '', 'S'] ] },
+    { id:'l2', name:'팁과 소식', items:[ ['절약 팁 · 정책 정보 카드', '도움돼요'], ['팁 공유', '데모에서는 미구현'] ] },
+    { id:'l3', name:'AI 조언', items:[ ['하단 AI 입력창', '음성 입력 버튼 포함'], ['AI 조언 시트', '추천 질문 3개 · 이어서 묻기 · 전체 화면', 'S A'] ] },
+  ]},
+  { id:'benefit', k:'TAB 5', name:'혜택', note:'세부 탭 없음. 집중 영역이 아니면 처음엔 요약 미리보기를 먼저 보여 줘요.', screens:[
+    { id:'b0', name:'요약 미리보기 (단계형 공개)', items:[ ['혜택 총액 요약 + 할 수 있는 것 3개', '', 'P'], ['전체 둘러보기 / 지금 집중 영역으로'] ] },
+    { id:'b1', name:'혜택', items:[
+      ['내 조건 태그 4개 + 조건 수정', '만 27세 · 연소득 · 무주택 1인 · 직장인'],
+      ['올해 받을 수 있는 혜택 총액'],
+      ['받은 혜택: 환급금 비상금으로 옮기기', '', 'I J'],
+      ['나에게 해당되는 혜택 (조건 매트릭스 4건)', '청년 월세 지원 신청 준비 버튼 포함'],
+      ['체크카드가 유리해요', '연말정산 카드 사용 비율 · 확인했어요'],
+      ['신청 일정 3건'],
+      ['흩어진 포인트 → 독립 자금', '', 'J'],
+      ['곧 열려요: 대출과 신용 · 보험과 은퇴', '열리면 알림 받기'] ] },
+  ]},
+  { id:'common', k:'GLOBAL', name:'공통', note:'어느 탭에서나 열리는 것들', screens:[
+    { id:'c1', name:'하단 탭바', items:[ ['홈 · 지출 · 저축 · 알기 · 혜택'] ] },
+    { id:'c2', name:'메뉴 시트', items:[
+      ['내 진단 결과 (6월 진단과 비교 · 다시 진단)', '', 'S F'], ['연동 계좌 · 카드 관리'], ['알림 설정'], ['기본 설정 바꾸기 · 해제'], ['재진단', '', 'F'],
+      ['테스트 진행자용', '결제 발생 · 외주비 입금 · 정산 다시 · 탭 기록 · 사용자 유형 전환 · 처음부터 다시'] ] },
+    { id:'c3', name:'알림 시트', items:[ ['정산할 더치페이', '', 'S D'], ['예산 초과 위험 (배달)', '', 'S A'], ['외주비 입금 배분 제안', '', 'S C'] ] },
+    { id:'c4', name:'단독 시트', items:[
+      ['정산하기', '더치페이 2건 · 송금 요청 · 정산 처리', 'S D'], ['외주비 나누기', '', 'S C'], ['적금 비교 + 세후 이자 설명', '', 'S G B'] ] },
+    { id:'c5', name:'즉시 피드백 (토스트)', items:[ ['결제 직후 예산 변화', '잔여율 · 월말 예상 · 오늘 쓸 수 있는 돈 · 목표 영향', 'A'], ['실천 항목 완료 알림'] ] },
+  ]},
+];
+const DUPS = {
+  A:{ n:'남은 예산 · 오늘 쓸 수 있는 돈', d:'같은 예산 계산이 여러 숫자와 카드로 반복돼요.' },
+  B:{ n:'한입 금융 (개념 설명)', d:'알기 탭 말고도 홈 · 분석 · 통장 · 시트 · 연동 전 화면에 따로 나와요.' },
+  C:{ n:'외주비(비정기 수입) 나누기', d:'같은 배분 기능의 입구가 4곳이에요.' },
+  D:{ n:'더치페이 정산', d:'배너 · 알림 · 가계부 · 돈의 흐름에서 각각 정산으로 이어져요.' },
+  E:{ n:'다음 달 예산 조정 제안', d:'줄이기 계획 · 영수증 제안 · 수입 배분 제안, 세 가지 방식이 따로 있어요.' },
+  F:{ n:'진단 결과 · 재진단', d:'결과 화면 · 영수증 · 메뉴에서 각각 재진단으로 이어져요.' },
+  G:{ n:'적금 금리 비교', d:'실천 항목 · 습관우세형 카드 · 시트에서 같은 비교를 보여 줘요.' },
+  H:{ n:'자동 알림 · 자동 설정 스위치', d:'지출›예산의 유형별 카드와 저축›자동 규칙에 비슷한 스위치가 나뉘어 있어요.' },
+  I:{ n:'비상금', d:'통장 · 목표 · 자동 규칙 · 꺼내기 · 혜택에 비상금이 각각 나와요.' },
+  J:{ n:'혜택을 저축으로 옮기기', d:'환급금은 비상금으로, 포인트는 독립 자금으로 따로 옮겨요.' },
+};
+const LABEL = { keep:'유지', review:'검토', cut:'삭제' }, ORDER = [null, 'keep', 'review', 'cut'];
+let marks = {}; try { marks = JSON.parse(localStorage.getItem('moafi-ia-marks') || '{}') || {}; } catch (e) { marks = {}; }
+const save = () => { try { localStorage.setItem('moafi-ia-marks', JSON.stringify(marks)); } catch (e) {} };
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const parse = tags => (tags || '').split(' ').filter(Boolean);
+const all = []; IA.forEach(c => c.screens.forEach(s => s.items.forEach((it, i) => all.push({ col:c, scr:s, id:`${s.id}-${i}`, t:it[0], d:it[1] || '', tags:parse(it[2]) }))));
+
+// 요약
+const dupHits = k => all.filter(x => x.tags.includes(k));
+document.getElementById('stats').innerHTML = [
+  [5, '하단 탭'], [10, '탭 안 세부 화면'], [6, '진단 · 연동 화면'],
+  [all.filter(x => x.tags.includes('S')).length, '시트로 열리는 항목'], [all.length, '기능 항목'], [Object.keys(DUPS).length, '중복 지점'],
+].map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join('');
+
+// 중복 지점 카드
+let dupSel = null;
+document.getElementById('dups').innerHTML = Object.entries(DUPS).map(([k, g]) => { const h = dupHits(k);
+  return `<button class="dup" type="button" data-dup="${k}" aria-pressed="false"><span class="top"><i class="tg x">${k}</i><b>${g.n}</b><span class="n">${h.length}곳</span></span><p>${g.d}</p>
+    <ul>${h.map(x => `<li>${x.col.name} › ${x.scr.name}</li>`).join('')}</ul></button>`; }).join('');
+
+// 구조도
+const tagHTML = tags => tags.map(t => t === 'S' ? '<i class="tg s">시트</i>' : t === 'P' ? '<i class="tg p">유형별</i>' : t[0] === '>' ? `<i class="tg o">→ ${esc(t.slice(1))}</i>` : `<i class="tg x" title="${esc(DUPS[t].n)}">${t}</i>`).join('');
+document.getElementById('tree').innerHTML = IA.map(c => { const n = c.screens.reduce((t, s) => t + s.items.length, 0);
+  return `<article class="col"><div class="col-h"><span class="k">${c.k}</span><h2>${c.name}</h2><span class="meta">화면 ${c.screens.length} · 항목 ${n}</span></div>
+    <p class="col-note">${c.note}</p>
+    ${c.screens.map(s => `<div class="scr"><div class="scr-h"><b>${s.name}</b><span class="cnt ${s.items.length >= 7 ? 'hi' : ''}">${s.items.length}개</span></div>
+      ${s.items.map((it, i) => { const id = `${s.id}-${i}`, tags = parse(it[2]);
+        return `<button class="item" type="button" data-id="${id}" data-tags="${tags.join(' ')}"><span class="t">${esc(it[0])}</span>${it[1] ? `<span class="d">${esc(it[1])}</span>` : ''}${tags.length ? `<span class="tags">${tagHTML(tags)}</span>` : ''}<span class="mark"></span></button>`; }).join('')}
+    </div>`).join('')}</article>`; }).join('');
+
+const items = [...document.querySelectorAll('.item')];
+let fP = false, fS = false;
+function paint() {
+  items.forEach(el => { const st = marks[el.dataset.id] || null, tg = el.dataset.tags.split(' ');
+    el.dataset.state = st || ''; el.querySelector('.mark').textContent = st ? LABEL[st] : '표시';
+    el.setAttribute('aria-label', `${el.querySelector('.t').textContent}, ${st ? LABEL[st] : '표시 없음'}. 눌러서 바꾸기`);
+    const hit = dupSel && tg.includes(dupSel), fil = (fP && !tg.includes('P')) || (fS && !tg.includes('S'));
+    el.classList.toggle('hit', !!hit); el.classList.toggle('dim', (!!dupSel && !hit) || fil); });
+  const c = { keep:0, review:0, cut:0 }; Object.values(marks).forEach(v => c[v] != null && c[v]++);
+  document.getElementById('counts').innerHTML = `<span>유지 ${c.keep}</span><span>검토 ${c.review}</span><span>삭제 ${c.cut}</span><span>표시 안 함 ${all.length - c.keep - c.review - c.cut}</span>`;
+}
+document.getElementById('tree').addEventListener('click', e => { const el = e.target.closest('.item'); if (!el) return;
+  const id = el.dataset.id, nx = ORDER[(ORDER.indexOf(marks[id] || null) + 1) % ORDER.length];
+  if (nx) marks[id] = nx; else delete marks[id]; save(); paint(); });
+document.getElementById('dups').addEventListener('click', e => { const b = e.target.closest('.dup'); if (!b) return;
+  dupSel = dupSel === b.dataset.dup ? null : b.dataset.dup;
+  document.querySelectorAll('.dup').forEach(x => x.setAttribute('aria-pressed', x.dataset.dup === dupSel));
+  paint(); if (dupSel) document.getElementById('bar').scrollIntoView({ behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); });
+document.getElementById('fPersona').addEventListener('click', e => { fP = !fP; e.currentTarget.setAttribute('aria-pressed', fP); paint(); });
+document.getElementById('fSheet').addEventListener('click', e => { fS = !fS; e.currentTarget.setAttribute('aria-pressed', fS); paint(); });
+document.getElementById('resetBtn').addEventListener('click', () => { marks = {}; save(); paint(); toast('표시를 모두 지웠어요'); });
+let tt; function toast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 2200); }
+document.getElementById('copyBtn').addEventListener('click', () => {
+  const lines = ['moafi 기능 정리'];
+  ['keep', 'review', 'cut'].forEach(st => { const xs = all.filter(x => marks[x.id] === st); lines.push('', `[${LABEL[st]}] ${xs.length}개`); xs.forEach(x => lines.push(`- ${x.col.name} › ${x.scr.name} › ${x.t}`)); });
+  const rest = all.filter(x => !marks[x.id]); lines.push('', `[표시 안 함] ${rest.length}개`);
+  const txt = lines.join('\n');
+  const fallback = () => { const ta = document.createElement('textarea'); ta.className = 'copy'; ta.value = txt; document.body.append(ta); ta.select(); toast('텍스트를 선택했어요. 복사해서 붙여 넣으세요'); setTimeout(() => ta.remove(), 8000); };
+  try { navigator.clipboard.writeText(txt).then(() => toast('정리 결과를 복사했어요'), fallback); } catch (e) { fallback(); }
+});
+paint();
+</script>
