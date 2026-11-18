@@ -915,6 +915,39 @@ button.focus-strip{display:block;color:inherit}
 .focus-strip .fs-head > svg{flex:none;color:var(--n400)}
 /* 서브 기능 켜기 */
 .extra-off{width:100%;display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:center;text-align:left;color:var(--n900)}
+
+/* ===== 오늘 할 일 덱 (3D) ===== */
+.deck3{position:relative;height:440px;margin:0 calc(-1 * var(--m));perspective:1000px;perspective-origin:50% 45%;cursor:pointer}
+.deck3.open{cursor:default}
+.stage3{position:absolute;inset:0;transform-style:preserve-3d}
+.pc3{position:absolute;left:50%;top:50%;width:104px;height:136px;margin:-68px 0 0 -52px;border-radius:16px;padding:12px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 14px 30px -14px rgba(25,31,40,.5),0 0 0 .5px rgba(25,31,40,.06);
+  transform:translate3d(0,calc(var(--i) * 4px - 12px),calc((8 - var(--i)) * 3px)) rotateZ(var(--dr));
+  transition:transform .9s cubic-bezier(.22,1,.36,1),box-shadow .4s}
+.deck3.open .pc3{transform:translate3d(var(--sx),var(--sy),var(--sz)) rotateZ(var(--sr)) rotateY(var(--sry));box-shadow:0 18px 34px -16px rgba(25,31,40,.45)}
+.deck3.open .pc3:active{transform:translate3d(var(--sx),var(--sy),calc(var(--sz) - 20px)) rotateZ(var(--sr)) rotateY(var(--sry))}
+.p3-top{display:flex;justify-content:space-between;align-items:flex-start}
+.p3-ic{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(255,255,255,.2)}
+.p3-no{font-size:11px;font-weight:600;opacity:.7}
+.p3-t{font-size:14px;line-height:19px;font-weight:600;letter-spacing:-.01em}
+.pc3.k0{background:var(--primary);color:#fff}
+.pc3.k1{background:var(--secondary);color:#fff}
+.pc3.k2{background:var(--n900);color:#fff}
+.pc3.k3{background:#fff;color:var(--n900)}
+.pc3.k4{background:#DCE5FF;color:var(--on-primary-container)}
+.pc3.k5{background:var(--secondary-container);color:var(--on-secondary-container)}
+.pc3.k6{background:#9DB6FF;color:var(--n900)}
+.pc3.k3 .p3-ic,.pc3.k4 .p3-ic,.pc3.k6 .p3-ic{background:rgba(255,255,255,.7);color:var(--primary)}
+.pc3.k5 .p3-ic{background:rgba(255,255,255,.7);color:var(--secondary)}
+.pc3.done{background:#fff;color:var(--n500)}
+.pc3.done .p3-ic{background:var(--primary);color:#fff}
+.deck-hint{position:absolute;left:50%;top:calc(50% + 96px);transform:translateX(-50%);font-size:12px;font-weight:600;color:var(--primary);background:var(--primary-container);border-radius:999px;padding:4px 12px;transition:opacity .3s;pointer-events:none}
+.deck3.open .deck-hint,.deck3.intro .deck-hint{opacity:0}
+.deck-cap{text-align:center;font-size:12px;color:var(--n500);min-height:32px}
+.deck-cap .cap-o{display:none;align-items:center;justify-content:center;gap:8px}
+.deck-sec:has(.deck3.open) .cap-c{display:none}.deck-sec:has(.deck3.open) .cap-o{display:inline-flex}
+.deck-cap button{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 12px;border-radius:999px;background:var(--n0);color:var(--n900);font-weight:600}
+@media (prefers-reduced-motion:reduce){.pc3{transition:none}}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -1150,7 +1183,7 @@ const S = {
   gNew:{ type:'전세 자금', amt:10000000, months:24 },
   cert:false, printed:new Set(), chalOn:['zero','cafe'], chalCert:new Set(), chalPick:'all', calOpen:false, league:'all', liked:new Set(), benefitMoved:false, deductOk:false, pointsMoved:false, interest:new Set(),
   switches:{ pre:true, emer:true, budget:true, fixed:false },
-  extras:new Set(), todayMore:false, from:null,
+  extras:new Set(), todayMore:false, from:null, deckOpen:false,
   chat:[], flowSel:null, topSel:null, topView:'circle', acctSel:null, cutApplied:null,
 };
 /* ---------- 사용성 테스트 기록: 화면 이동과 탭을 시간순으로 남김 (이 기기에만 저장) ---------- */
@@ -1797,6 +1830,54 @@ function crumbHTML() {
   const sv = { spend:S.spendView, plan:S.planView, learn:S.learnView }[S.tab], sub = sv && SUB_NAME[S.tab] ? SUB_NAME[S.tab][sv] : '';
   return `<div class="crumb"><button data-act="back" aria-label="${TAB_LABEL[S.from.tab]}으로 돌아가기">${ic('chevL', 16)}${TAB_LABEL[S.from.tab]}</button><span>지금 여기 <b>${TAB_LABEL[S.tab]}${sub ? ` › ${sub}` : ''}</b></span></div>`;
 }
+
+/* 오늘 할 일 덱: 겹친 덱 → 깊이·좌우·기울기가 다른 자리로 차례로 퍼짐 → 잠시 멈춤 → 퍼진 반대 순서로 다시 덱
+   모바일: 홈에 들어올 때 한 번 자동 재생. 이후엔 덱을 누르면 펼쳐지고, 펼친 카드를 눌러 바로 실행 */
+const DECK_TILT = [0,-3,3,-5,5,-2,2];
+const DECK_SKIN = ['k0','k1','k2','k3','k4','k5','k6'];
+let deckT = [];
+function practiceDeck() {
+  const all = practiceItems().map(([t, done, act]) => ({ t, done:done(), act, m:P_META[t] || ['arrow', ''] }));
+  const order = [...all.filter(x => !x.done), ...all.filter(x => x.done)], n = order.length, doneN = all.filter(x => x.done).length;
+  // 카드 수에 맞춰 줄을 나눈다: 6장 이하 = 3 + 나머지, 7장 = 3 + 2 + 2
+  const rows = n <= 3 ? [n] : n <= 6 ? [3, n - 3] : [3, 2, 2], XS = { 1:[0], 2:[-62, 62], 3:[-116, 0, 116] };
+  const H = rows.length === 1 ? 210 : rows.length === 2 ? 350 : 470, Y0 = -(rows.length - 1) * 79;
+  const slots = rows.flatMap((c, r) => XS[c].map(x => [x, Y0 + r * 158]));
+  const JY = [6, -10, 8, -4, 6, -6, 4], JZ = [40, -40, 20, 70, -20, 0, 50], JR = [-8, 5, 9, -5, 7, 6, -7], JRY = [12, -8, -14, 10, -12, 14, -10];
+  const cards = order.map((x, i) => { const [sx, sy0] = slots[i], sy = sy0 + JY[i % 7], sz = JZ[i % 7], sr = JR[i % 7], sry = JRY[i % 7];
+    return `<button class="pc3 ${x.done ? 'done' : DECK_SKIN[i % 7]}" style="--i:${i};--dr:${DECK_TILT[i % 7]}deg;--sx:${sx}px;--sy:${sy}px;--sz:${sz}px;--sr:${sr}deg;--sry:${sry}deg" ${x.act} aria-label="${x.t}${x.done ? ' · 완료' : ''}">
+      <span class="p3-top"><span class="p3-ic">${ic(x.done ? 'check' : x.m[0], 18)}</span><span class="p3-no num">${String(i + 1).padStart(2, '0')}</span></span>
+      <span class="p3-t">${x.t}</span></button>`; }).join('');
+  return `<section class="sec deck-sec">
+    <div class="sec-h"><div><div class="t18">오늘 할 일</div><div class="sec-d">${PERSONA[S.persona].name}에게 먼저 필요한 순서예요</div></div><span class="today-cnt num">${doneN} / ${n}</span></div>
+    <div class="deck3 ${S.deckOpen ? 'open' : ''}" style="height:${H}px" role="group" aria-label="오늘 할 일 카드 ${n}장"><div class="stage3">${cards}</div>
+      <span class="deck-hint" aria-hidden="true">눌러서 펼치기</span></div>
+    <div class="deck-cap"><span class="cap-c">맨 위 카드부터 해 보세요 · 카드를 누르면 펼쳐져요</span><span class="cap-o">할 일을 골라 누르세요<button data-act="deckClose">${ic('minus', 14)}모으기</button></span></div>
+  </section>`;
+}
+function deckSet(open) {
+  const st = view.querySelector('.deck3'); if (!st) return;
+  const cs = [...st.querySelectorAll('.pc3')], n = cs.length;
+  // 펼칠 때는 1번부터, 모을 때는 펼친 순서의 반대로
+  cs.forEach((c, i) => { c.style.transitionDelay = `${(open ? i : n - 1 - i) * 90}ms`; });
+  S.deckOpen = open; st.classList.toggle('open', open);
+}
+function deckIntro() {
+  deckT.forEach(clearTimeout); deckT = [];
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const st = view.querySelector('.deck3'); if (!st) return;
+  const n = st.querySelectorAll('.pc3').length, spread = (n - 1) * 90 + 900;
+  st.classList.add('intro');
+  deckT.push(setTimeout(() => deckSet(true), 450));
+  deckT.push(setTimeout(() => deckSet(false), 450 + spread + 1600));       // 모든 카드가 보이는 상태로 1.6초 멈춤
+  deckT.push(setTimeout(() => { const s2 = view.querySelector('.deck3'); s2 && s2.classList.remove('intro'); }, 450 + spread * 2 + 1600));
+}
+// 덱이 모여 있을 때 누르면 실행하지 않고 펼친다
+document.addEventListener('click', e => {
+  const st = e.target.closest && e.target.closest('.deck3'); if (!st) return;
+  if (st.classList.contains('intro')) { deckT.forEach(clearTimeout); deckT = []; st.classList.remove('intro'); if (!st.classList.contains('open')) { e.stopPropagation(); e.preventDefault(); deckSet(true); } return; }
+  if (!st.classList.contains('open')) { e.stopPropagation(); e.preventDefault(); deckSet(true); }
+}, true);
 function practiceBlock() {
   const tasks = TASKS[focusArea()], n = tasks.filter(t => t.done()).length;
   const chals = CHALS.filter(c => S.chalOn.includes(c.id) && c.id !== 'coin');
@@ -1975,7 +2056,7 @@ function vHome() {
       <div class="h-sb num">10월 남은 예산 ${W(d.remain)} / ${d.left}일</div>
       <div class="rw"><span class="dotnum">${won(d.daily)}</span><span class="hl" aria-hidden="true"></span><button class="ib ink" data-act="tab" data-tab="spend" data-sv="budget" aria-label="예산 자세히 보기">${ic('ur', 20)}</button></div>
     </section>
-    ${practiceToday()}
+    ${practiceDeck()}
     <section class="sec"><div class="dot-h">지금 집중할 영역</div>${focusStrip(true)}</section>
     <section class="sec"><div class="dot-h">1분 금융 공부</div>${knowCards()}</section>`;
 }
@@ -2860,7 +2941,7 @@ function tuckSoon() {
 function render(keepScroll = true) {
   const key = S.mode === 'onboard' ? 'ob' + S.ob : S.sub ? 'sub' + S.sub : 'tab' + S.tab;
   const homeEnter = key === 'tabhome' && key !== lastKey && S.linked;
-  if (homeEnter) S.tuck = false;
+  if (homeEnter) { S.tuck = false; S.deckOpen = false; }
   const st = keepScroll && key === lastKey ? view.scrollTop : 0;
   const lcX = (view.querySelector('.lr-chips') || {}).scrollLeft || 0;
   const dark = S.mode === 'onboard' ? (S.ob === 1 || S.ob === 3) : S.sub === 'diag';
@@ -2889,7 +2970,7 @@ function render(keepScroll = true) {
   const tr = view.querySelector('.na-track');
   if (tr && S.naIdx) { const x = S.naIdx * (tr.firstElementChild.offsetWidth + 12);
     if (S.naSlide) { S.naSlide = false; setTimeout(() => tr.scrollTo({ left:x, behavior:'smooth' }), 350); } else tr.scrollLeft = x; }
-  if (homeEnter) { popOut(); tuckSoon(); }
+  if (homeEnter) { popOut(); tuckSoon(); deckIntro(); }
   // 홈으로 돌아오면 항상 처음 위치(맨 위)에서 시작: 남아 있는 관성 스크롤까지 멈추고 다시 맞춘다
   if (key === 'tabhome' && key !== lastKey) { view.style.overflowY = 'hidden'; view.scrollTop = 0; requestAnimationFrame(() => { view.style.overflowY = ''; view.scrollTop = 0; }); }
   // 알기 › 한입 금융: 목록이 개념마다 탁탁 걸리도록 스크롤 스냅 (고정 영역 아래 16px에 맞춤)
@@ -3050,6 +3131,7 @@ document.addEventListener('click', e => {
     case 'back': { const f = S.from; S.from = null; if (f) { S.tab = f.tab; S.mode = 'app'; S.sub = null; } render(false); break; }
     case 'extraOn': S.extras.add(v); if (v === 'tips') S.learnView = 'tips'; render(false); simpleToast(`‘${EXTRAS[v][0]}’을 켰어요 · 메뉴에서 끌 수 있어요`); break;
     case 'extraToggle': S.extras.has(v) ? S.extras.delete(v) : S.extras.add(v); if (!S.extras.has('tips')) S.learnView = 'bite'; refreshSheet(); render(); break;
+    case 'deckClose': deckT.forEach(clearTimeout); deckT = []; deckSet(false); break;
     case 'todayMore': S.todayMore = !S.todayMore; render(); break;
     case 'tab':
       if (S.mode === 'app' && !S.sub) S.from = el.classList.contains('tab') || S.tab === el.dataset.tab ? null : (S.from && S.from.tab === el.dataset.tab ? null : { tab:S.from ? S.from.tab : S.tab });
