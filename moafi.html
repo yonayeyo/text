@@ -791,7 +791,8 @@ button.focus-strip{display:block;color:inherit}
 :root{--h4:4px;--h8:8px;--h12:12px;--h16:16px;--h24:24px;--h32:32px;--h40:40px;--fan-pad-t:24px;--fan-card:206px;--fan-pad-b:28px}
 .h-hero{margin-top:var(--h24)}
 .fan-sec{margin-top:var(--h40)}
-.fan-head{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--h12)}
+.fan-head{display:flex;justify-content:flex-start;align-items:flex-end;gap:var(--h12)}
+.fan-head .fan-sub{padding-bottom:0}
 .fan-ttl{margin:0;font-family:var(--f-num);font-weight:300;font-size:56px;line-height:56px;letter-spacing:-.05em;color:var(--ink)}
 .fan-sub{font-size:12px;line-height:16px;color:var(--g4);padding-bottom:8px}
 .fan-stage{position:relative;height:calc(var(--fan-pad-t) + var(--fan-card) + var(--fan-pad-b));margin:var(--h16) calc(-1 * var(--m)) 0;perspective:900px;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab}
@@ -1770,7 +1771,7 @@ function practiceFan() {
   const xs = fanItems(), n = xs.length, doneN = xs.filter(x => x.done).length;
   S.fanXs = xs; S.fanSel = -1; if (S.fanPos == null) S.fanPos = 0;
   return `<section class="fan-sec" aria-label="오늘 할 일 ${n}개 중 ${doneN}개 완료">
-    <div class="fan-head"><h2 class="fan-ttl">Today</h2><span class="fan-sub">오늘의 실천 항목 ${n} · ${doneN}개 완료</span></div>
+    <div class="fan-head"><span class="fan-sub">오늘의 실천 항목 ${n} · ${doneN}개 완료</span></div>
     <div class="fan-stage" id="fanStage" tabindex="0" role="listbox" aria-label="오늘 할 일 카드">
       ${xs.map((x, k) => `<button type="button" class="fc im${k % 7} ${x.done ? 'done' : ''}" data-k="${k}" role="option" aria-label="${pad2(k + 1)} ${x.t}${x.done ? ' · 완료' : ''}"><span class="ix">${pad2(k + 1)}</span>${x.done ? `<span class="ck"><span class="ck-i">${ic('check', 22)}</span><b>완료</b></span>` : ''}</button>`).join('')}
     </div>
