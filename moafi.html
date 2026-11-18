@@ -870,6 +870,12 @@ button.focus-strip{display:block;color:inherit}
 .nb-tot{padding-top:12px;align-items:baseline}
 .rc-row{width:100%;display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;text-align:left}
 .rc-sheet{margin-left:calc(-1 * var(--m));margin-right:calc(-1 * var(--m));padding-top:8px;border-radius:24px}
+
+.xfer{display:inline-flex;align-items:center;gap:4px;margin-top:10px;height:26px;padding:0 10px;border-radius:999px;background:var(--g2);font-size:11px;color:var(--g6)}
+.lrow.dutch{width:100%;text-align:left;cursor:pointer}
+.lr-amt{display:grid;justify-items:end;gap:2px}
+.lr-go{display:inline-flex;align-items:center;gap:2px;color:var(--ink);font-weight:500}
+.nb-fill{height:30px;padding:0 12px;font-size:12px}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -1055,6 +1061,8 @@ const CUT_CAT = { s1:'배달', s2:'쇼핑', s3:'카페·간식' };
 // 10월 일별 지출 (1–11일) · 하루 예산 800,000 / 31 ≈ 25,800
 const OCT_DAILY = [38000,0,41000,38000,21500,0,34800,21700,48000,25000,12000,23400,0,45000];
 // 10월 일별 결제 내역 (가계부) — [시간, 사용처, 카테고리, 금액, 메모]. 날짜별 합계 = OCT_DAILY
+// 내 계좌끼리 옮긴 돈: 지출에서 자동으로 뺀다
+const TRANSFERS = [['10.02', '생활비 → 비상금', 100000], ['10.05', '생활비 → 독립 준비 자금', 150000], ['10.12', '생활비 → 경조사비', 50000]];
 const OCT_TX = {
   1:[['08:42','지하철','교통',2800],['09:10','스타벅스','카페·간식',5800],['19:30','배달의민족 · 치킨','배달',23000],['22:15','GS25','카페·간식',6400]],
   3:[['12:20','성수 브런치','외식',16500],['14:05','카페 어니언','카페·간식',6500],['16:40','무신사','쇼핑',18000]],
@@ -1667,7 +1675,7 @@ const P_DEDUCT = ['연말정산 카드 확인', () => S.deductOk,
   PG('benefit', '', '#cardRatio', '공제율을 비교해 보고 ‘확인했어요’를 눌러 주세요')];
 const P_FIXED = ['고정 지출', () => S.fixedSet, PG('plan', 'data-pv="rule"', '#fixedCard', '자동으로 찾은 4건이 맞는지 보고 ‘4건 등록’을 눌러 주세요')];
 const P_CUT = ['절약 제안 적용', () => !!S.nextSaved, PG('spend', 'data-sv="budget"', '#cutPlan', '해 볼 제안을 담고 ‘11월 예산으로 저장’을 눌러 주세요', 'data-more="1"')];
-const P_RECEIPT = ['영수증 출력', () => S.printed.size > 0, 'data-act="sheet" data-sheet="receipt"'];
+const P_RECEIPT = ['영수증 출력', () => S.printed.size > 0, PG('spend', 'data-sv="analysis"', '#receiptSec', '‘출력하기’를 눌러 9월 영수증을 뽑아 보세요')];
 const P_ZERO = ['배달 없는 날', () => S.chalCert.has('deliv'), PG('spend', 'data-sv="list"', '[data-act="chalCert"][data-v="deliv"]', '오늘 배달 앱 결제가 없었다면 ‘오늘 인증’을 눌러 주세요'), 'chal:deliv'];
 const P_CAFE = ['텀블러 인증', () => S.chalCert.has('cafe'), PG('spend', 'data-sv="list"', '[data-act="chalCert"][data-v="cafe"]', '오늘 카페·간식 결제가 없었다면 ‘오늘 인증’을 눌러 주세요'), 'chal:cafe'];
 const P_ALLOC = ['비정기 수입 배분', () => S.allocDone, 'data-act="sheet" data-sheet="alloc"'];
@@ -2216,13 +2224,15 @@ function vLedger() {
         : `<button class="ld ${d === T ? 'today' : lv(a)}${sel ? ' sel' : ''}" data-act="ledDay" data-v="${d}" aria-pressed="${sel}" aria-label="10월 ${d}일 ${a ? won(a) + '원' : '무지출'}"><b>${d}</b>${a || d === T || chs.length ? '' : '<span class="ld-star" aria-hidden="true">✦</span>'}<i>${a ? short(a) : d === T ? '오늘' : '무지출'}</i>${dots(d)}</button>`; }).join('');
   const d = S.ledDay, a = amt(d), tx = OCT_TX[d] || [], wd = ['일','월','화','수','목','금','토'][(d + 3) % 7];
   const diff = a - lim;
-  const rows = tx.map(([t, n, c, v, memo]) => `<div class="lrow"><span class="ib">${ic(CAT_IC[c] || 'receipt', 18)}</span>
+  const rows = tx.map(([t, n, c, v, memo]) => { const dutch = memo === 'dutch' && !S.settled;
+    return `<${dutch ? 'button data-act="sheet" data-sheet="settle"' : 'div'} class="lrow${dutch ? ' dutch' : ''}"><span class="ib">${ic(CAT_IC[c] || 'receipt', 18)}</span>
       <div><div class="t14">${n}</div><div class="t10 mute">${t} · ${c}${memo === 'dutch' ? ` · ${S.settled ? '더치페이 정산 완료' : '더치페이 받을 돈 있음'}` : ''}</div></div>
-      <span class="t14 num">${won(v)}원</span></div>`).join('');
+      <span class="lr-amt"><span class="t14 num">${won(v)}원</span>${dutch ? `<span class="t10 lr-go">정산하기${ic('arrow', 10)}</span>` : ''}</span></${dutch ? 'button' : 'div'}>`; }).join('');
   return `<section class="mt16">
     <div class="card c-paper">
       <div class="row between"><div><div class="t12 mute">10월 생활비 지출</div><div class="row g8 mt4" style="align-items:baseline"><span class="n24">${won(S.spent)}</span><span class="cur t12">₩</span></div></div>
         <div class="t10 mute" style="text-align:right;line-height:1.6">무지출 ${zeroN}일<br>하루 예산 초과 ${overN}일</div></div>
+      <button class="xfer" data-act="sheet" data-sheet="transfers">${ic('refresh', 12)}내 계좌 간 이체 ${TRANSFERS.length}건 제외됨${ic('arrow', 12)}</button>
       <div class="ledcal mt16" role="group" aria-label="10월 지출 달력">${cells}</div>
       <div class="row between mt16 t10 mute"><span>하루 예산 ${won(lim)}원 기준</span>
         <span class="row g8"><span class="row g4"><i class="lg l0z"></i>무지출</span><span class="row g4">적게<i class="lg l1"></i><i class="lg l2"></i><i class="lg l3"></i><i class="lg l4"></i>많이</span></span></div>
@@ -2233,7 +2243,7 @@ function vLedger() {
       ${a ? `<span class="tag ${diff > 0 ? 'dash' : 'line'}">하루 예산보다 ${won(Math.abs(diff))}원 ${diff > 0 ? '더' : '덜'}</span>` : ''}</div>
     ${tx.length ? `<div class="card c-paper" style="padding:8px 20px">${rows}</div>`
       : `<div class="card c-paper"><p class="t14">${d === T ? `오늘 쓸 수 있는 금액은 ${W(D().daily)}이에요.` : '✦ 이날은 한 푼도 쓰지 않았어요.'}</p></div>`}
-    <p class="t10 mute mt12">계좌·카드 결제를 자동으로 기록해요. 월세 같은 고정 지출과 내 계좌 간 이체는 빠져 있어요.</p>
+    <p class="t10 mute mt12">계좌·카드 결제를 자동으로 기록해요. 고정 지출은 예산에서 따로 관리해요.</p>
   </section>
   <section class="sec" id="ledChal">
     <div class="sec-h"><div><div class="t18">챌린지</div><div class="sec-d">${chs.length ? '달력 칸 오른쪽 위 점 = 성공한 날' : '참여하면 달력에 날마다 성공 여부가 표시돼요'}</div></div></div>
@@ -2269,8 +2279,10 @@ function vSpend() {
       </div>
       ${knowLow() ? '' : `<div class="mt12">${bite('infl', { dark:true })}</div>`}
     </section>
-    <button class="card c-paper rc-row mt24" id="receiptSec" data-act="sheet" data-sheet="receipt"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic('receipt', 20)}</span>
-      <span><span class="t16" style="display:block">${m ? '9월' : '이번 주'} 영수증 받기</span><span class="t12 mute">${m ? '한 달' : '한 주'} 지출을 영수증 한 장으로 · 매주 월요일, 매월 1일 발행</span></span>${ic('arrow', 18)}</button>`;
+    <section class="sec dark-band" id="receiptSec">
+      <div class="sec-h"><div><div class="t18">${m ? '9월' : '이번 주'} 영수증</div><div class="sec-d">${m ? '한 달' : '한 주'} 지출을 영수증 한 장으로 · 매주 월요일, 매월 1일 발행</div></div></div>
+      ${printer('pReport-' + S.period, receiptReport())}
+    </section>`;
 }
 
 /* =========================================================
@@ -2329,8 +2341,10 @@ function halfDonut() {
     <div class="grid2 mt16" style="gap:8px 12px">${parts.map(([n, p, c]) => `<div class="row g8 t12"><i style="width:10px;height:10px;border-radius:50%;display:inline-block;background:${c.startsWith('url') ? 'var(--aura)' : c}"></i><span style="flex:1">${n}</span><span class="num">${p}%</span></div>`).join('')}</div>`;
 }
 // 11월 예산 = 10월 카테고리 예산 − 담은 제안 + 직접 조정
+// 9월 지출 패턴(카드 내역)으로 계산한 카테고리 예산
+const DATA_BUDGET = { '식비':240000, '배달':150000, '카페·간식':90000, '교통':90000, '쇼핑':110000, '기타':80000 };
 function nextBudget() {
-  const nb = { ...S.cat };
+  const nb = { ...(S.nextBase || S.cat) };
   SUGG.forEach(sg => { const c = CUT_CAT[sg.id]; if (c && S.applied.has(sg.id)) nb[c] = Math.max(0, Math.round((nb[c] - sg.save) / 1000) * 1000); });
   Object.entries(S.nextAdj || {}).forEach(([c, d]) => { if (nb[c] != null) nb[c] = Math.max(0, nb[c] + d); });
   return nb;
@@ -2372,7 +2386,7 @@ function vPlan(pvOver, noHead) {
         <span class="pick" style="grid-row:1/3;grid-column:3" aria-hidden="true">${on ? ic('check', 16) : ''}</span>
         <span class="t12 mute">${sg.c} · ${sg.sub}</span></button>`; }).join('')}</div>
     <div class="card c-paper mt12 nb-card" aria-live="polite">
-      <div class="row between"><span class="t14">11월 카테고리 예산</span><span class="t12 mute num">10월 ${won(cTot)}원</span></div>
+      <div class="row between"><span class="t14">11월 카테고리 예산</span>${S.nextBase ? '<span class="tag line">지출 기록 기준</span>' : `<button class="btn sm ghost nb-fill" data-act="nextFill">지출 기록 기준으로 채우기</button>`}</div>
       <div class="nb-rows">${Object.keys(S.cat).map(k => { const cur = S.cat[k], nx = nb[k], ch = nx !== cur;
         return `<div class="nb-row"><span class="t14">${k}</span><span class="t12 mute num nb-cur">${ch ? won(cur) : ''}</span>
           <span class="stepper"><button data-act="nstep" data-c="${k}" data-d="-10000" aria-label="${k} 줄이기">−</button><span class="num t14 nb-v ${ch ? 'ch' : ''}">${won(nx)}</span><button data-act="nstep" data-c="${k}" data-d="10000" aria-label="${k} 늘리기">+</button></span></div>`; }).join('')}</div>
@@ -2764,6 +2778,8 @@ function sheetHTML(name) {
       <button class="btn full mt16" data-act="gCreate">목표 만들기</button>`;
     }
     case 'receipt': return head(S.period === 'month' ? '9월 영수증' : '이번 주 영수증', '출력한 뒤 옆으로 당기면 뜯겨요') + `<div class="dark-band rc-sheet mt16">${printer('pReport-' + S.period, receiptReport())}</div>`;
+    case 'transfers': return head('제외한 이체', `내 계좌끼리 옮긴 ${TRANSFERS.length}건 · ${W(TRANSFERS.reduce((t, x) => t + x[2], 0))}`) + `<div class="card c-paper mt16" style="padding:8px 20px">${TRANSFERS.map(([d, n, v]) => `<div class="lrow"><span class="ib">${ic('refresh', 18)}</span><div><div class="t14">${n}</div><div class="t10 mute">${d}</div></div><span class="t14 num">${won(v)}원</span></div>`).join('')}</div>
+      <p class="t12 mute mt12">연동한 계좌끼리 옮긴 돈은 쓴 돈이 아니라서 지출과 예산 계산에서 뺐어요.</p>`;
     case 'compare': return head('적금 비교', '월 350,000원 · 12개월 · 세금 뺀 이자 (예시)') + `<div class="stack mt24">${[['지금 쓰는 적금','3.1%',59700,1],['가나은행 청년 적금','4.2%',80800,0],['나다은행 자유 적금','3.6%',69300,0]].map(([n, r, i, cur]) => `<div class="card ${cur ? 'c-paper' : 'c-sky'}"><div class="row between"><span class="t14">${n}</span>${cur ? '<span class="tag line">사용 중</span>' : `<span class="tag ink">+${won(i - 59700)}원</span>`}</div><div class="row between mt12" style="align-items:baseline"><span class="n24">${r}</span><span class="t14 num">이자 ${W(i)}</span></div></div>`).join('')}
       <p class="t12 mute">금리는 우대 조건(급여이체·카드 실적)을 모두 채웠을 때 기준이에요.</p></div>
       <div class="mt16">${bite('tax', { force:true })}</div>`;
@@ -3141,8 +3157,9 @@ document.addEventListener('click', e => {
     case 'tear': if (!el.closest('.feed').dataset.dragged) tearOff(v, 1); break;
     case 'printGo': S.printed.add(v); render(); refreshSheet(); reprint(v); break;
     case 'keep': S.keeps.has(v) ? S.keeps.delete(v) : S.keeps.add(v); render(); break;
-    case 'sugg': S.applied.has(v) ? S.applied.delete(v) : S.applied.add(v); S.nextSaved = false; render(); break;
+    case 'sugg': S.applied.has(v) ? S.applied.delete(v) : S.applied.add(v); S.nextBase = null; S.nextSaved = false; render(); break;
     case 'nstep': { const a = S.nextAdj || (S.nextAdj = {}); a[el.dataset.c] = (a[el.dataset.c] || 0) + +el.dataset.d; S.nextSaved = false; render(); break; }
+    case 'nextFill': S.nextBase = { ...DATA_BUDGET }; S.applied.clear(); S.nextAdj = {}; S.nextSaved = false; render(); simpleToast('9월 카드 내역을 기준으로 카테고리 예산을 채웠어요'); break;
     case 'nextSave': S.nextSaved = true; render(); simpleToast('11월 예산으로 저장했어요'); break;
     case 'nextUndo': S.nextSaved = false; render(); break;
     case 'repApply': S.applied.has(v) ? S.applied.delete(v) : S.applied.add(v); render(); break;
