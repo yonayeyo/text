@@ -361,7 +361,7 @@ svg{display:block}
 .fs-step.on b{background:var(--fg);color:var(--inv);box-shadow:none}
 .ph-tag{vertical-align:middle;margin-left:8px;position:relative;top:-3px;height:20px;font-weight:400;letter-spacing:0}
 button.ph-tag{color:var(--mute)}
-/* 한입 금융 */
+/* 경제 개념 */
 .bite{padding:24px 20px}
 /* 카드 색 규칙 — 검정: 현재 상황 · 하늘색: 제안 · 그라데이션: 목표·보상 · 연회색: 한 입 지식 · 흰색: 기본 정보 · 점선: 아직 없음 */
 .c-know{background:#F1F1F1;color:var(--ink);--fg:var(--ink);--inv:var(--paper);--mute:var(--g6);--line:#DADADA}
@@ -662,11 +662,11 @@ button.ph-tag{color:var(--mute)}
 .orbit .oc .od{font-size:10px;font-weight:400;line-height:14px;color:#999;margin-top:2px}
 .dot-h{display:flex;align-items:center;gap:8px;font-size:16px;margin-bottom:12px}
 .dot-h::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ink)}
-/* 알기 탭: 상단 입력창 · 개념 원반 · 홈 '?' 금융 상식 조각 */
+/* 알기 탭: 상단 입력창 · 개념 원반 · 홈 '?' 경제 개념 조각 */
 .ai-fab svg{display:block;margin:auto}
 .screen .ai-dock:not(.open) > [type="submit"]{background:rgba(17,17,17,.85);box-shadow:inset 1px 1px 1.1px rgba(255,255,255,.52),inset -1px -1px 1.1px rgba(255,255,255,.52),inset 0 0 4px rgba(255,255,255,.9)}
 .screen .ai-dock:not(.open) > [type="submit"]::before{display:none}
-/* 알기 › 한입 금융 (시안 13) */
+/* 알기 › 경제 개념 (시안 13) */
 .lr-h{margin-top:16px}
 .lr-known{display:grid;justify-items:end;gap:2px;flex:none}
 .lr-cnt{display:flex;align-items:baseline;gap:2px}
@@ -1692,7 +1692,7 @@ function vPreview() {
 }
 // 연동 전(둘러보기): 데이터가 없는 상태를 그대로 보여 주고, 연동 없이 해 볼 수 있는 것을 안내
 function vEmpty() {
-  const T = { home:['', ''], spend:['지출', '가계부 · 분석 · 예산'], plan:['자산', '통장 · 목표 · 자동 설정'], learn:['지식', '한입 금융 · 팁과 소식'] }[S.tab];
+  const T = { home:['', ''], spend:['지출', '가계부 · 분석 · 예산'], plan:['자산', '통장 · 목표 · 자동 설정'], learn:['지식', '경제 개념 · 팁과 소식'] }[S.tab];
   const msg = { home:['계좌를 연동하면<br>오늘 쓸 수 있는 금액을 알려 드려요', '예산 · 지출 · 목표가 연동한 계좌 기준으로 채워져요.'],
     spend:['연동하면 결제 내역이<br>자동으로 기록돼요', '가계부 · 분석 · 예산은 연동 후에 열려요.'],
     plan:['연동하면 통장 용도에 맞춰<br>목표와 자동 설정을 제안해요', '계좌마다 용도를 직접 정한 뒤 시작해요.'], }[S.tab];
@@ -1706,7 +1706,7 @@ function vEmpty() {
       <button class="btn mt24" data-act="linkStart">${ic('link', 18)}계좌 연동하기</button>
     </div>
     ${S.tab === 'home' ? `<section class="sec"><div class="sec-h"><div><div class="t18">연동 없이 이용 가능</div><div class="sec-d">계좌 없이 둘러보기</div></div></div>
-      <div class="stack8">${[['spark', '내 진단 결과 보기', '유형과 시작 영역', 'data-act="diag"'], ['book', '한입 금융', '인플레이션 · 복리 · 실제로 받는 이자', 'data-act="tab" data-tab="learn"'], ['gift', '받을 수 있는 혜택 확인', '나이·소득 조건만으로 볼 수 있어요', 'data-act="tab" data-tab="benefit"']].map(([i, t, d, a]) => `<button class="card c-paper setrow" style="text-align:left" ${a}><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(i, 20)}</span><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${d}</span></span>${ic('arrow', 18)}</button>`).join('')}</div></section>` : ''}`;
+      <div class="stack8">${[['spark', '내 진단 결과 보기', '유형과 시작 영역', 'data-act="diag"'], ['book', '경제 개념', '인플레이션 · 복리 · 실제로 받는 이자', 'data-act="tab" data-tab="learn"'], ['gift', '받을 수 있는 혜택 확인', '나이·소득 조건만으로 볼 수 있어요', 'data-act="tab" data-tab="benefit"']].map(([i, t, d, a]) => `<button class="card c-paper setrow" style="text-align:left" ${a}><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(i, 20)}</span><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${d}</span></span>${ic('arrow', 18)}</button>`).join('')}</div></section>` : ''}`;
 }
 
 /* =========================================================
@@ -1769,7 +1769,7 @@ const PRACTICE = {
   low: { d:'카드를 선택해 바로 실천해보세요<br>하고 나면 체크로 바뀌어요', items:[
     ['예산 80% 알림', () => S.autoOn.has('b80'), 'data-act="autoOn" data-v="b80"'],
     P_FIXED,
-    ['한입 금융', () => S.bitesDone.size + S.conceptDone.size > 0, PG('learn', 'data-lv="bite"', '.lr-row', '개념 하나를 눌러 읽고 ‘이해했어요’를 눌러 주세요')],
+    ['경제 개념', () => S.bitesDone.size + S.conceptDone.size > 0, PG('learn', 'data-lv="bite"', '.lr-row', '개념 하나를 눌러 읽고 ‘이해했어요’를 눌러 주세요')],
     P_DEDUCT, P_CUT, P_RECEIPT, P_ZERO ] },
   habit: { d:'카드를 선택해 바로 실천해보세요<br>하고 나면 체크로 바뀌어요', items:[
     ['카드 실적 확인', () => S.deductOk, PG('benefit', '', '#cardRatio', '남은 기간에는 체크카드가 유리해요. 보고 ‘확인했어요’를 눌러 주세요')],
@@ -1817,7 +1817,7 @@ const P_META = {
   '절약 제안 적용':['receipt','지난달 지출에서 아낄 방법을 골라 다음 달 예산에 넣어요'], '고정 지출':['calendar','자동으로 찾은 고정 지출 4건이 맞는지 확인해요'],
   '비정기 수입 배분':['coins','들어온 320,000원을 목표 · 비상금 · 소비로 나눠요'], '연말정산 카드 확인':['card','남은 기간 체크카드와 신용카드 중 어느 쪽이 유리한지 봐요'],
   '배달 한도 알림':['bell','배달 결제 전에 남은 한도를 알려 줘요'], '영수증 출력':['receipt','9월 지출을 영수증 한 장으로 받아 봐요'], '무지출 데이':['spark','오늘 한 푼도 안 썼다면 인증해요'],
-  '예산 80% 알림':['bell','예산 80%를 넘기 전에 한 번만 알려 줘요'], '한입 금융':['book','개념 하나를 1분 동안 읽어요'], '카드 실적 확인':['card','이번 달 남은 카드 실적을 확인해요'],
+  '예산 80% 알림':['bell','예산 80%를 넘기 전에 한 번만 알려 줘요'], '경제 개념':['book','개념 하나를 1분 동안 읽어요'], '카드 실적 확인':['card','이번 달 남은 카드 실적을 확인해요'],
   '적금 금리 비교':['coin','지금 적금보다 이자가 높은 상품을 비교해요'], '목표 단계 보기':['flag','독립 준비 자금이 지금 몇 단계인지 봐요'], '계좌 연동':['link','연동한 계좌와 용도를 확인해요'],
   '텀블러 인증':['coffee','오늘 카페 결제가 없었다면 인증해요'], '배달 없는 날':['bag','오늘 배달 앱 결제가 없었다면 인증해요'], '월세 지원 준비':['home2','청년 월세 지원 신청 서류를 챙겨요'], '포인트 전환':['gift','포인트 현황를 독립 준비 자금에 넣어요'],
   '세후 이자 확인':['coin','세금을 뺀 실제 이자가 얼마인지 알아봐요'], '환급금 비상금 이체':['shield','K-패스 환급 12,300원을 비상금으로 옮겨요'],
@@ -1826,7 +1826,7 @@ const P_META = {
 const P_FILL = [P_RECEIPT,
   ['예산 80% 알림', () => S.autoOn.has('b80'), 'data-act="autoOn" data-v="b80"'],
   P_FIXED, P_CUT, P_COMPARE('적금 금리 비교'),
-  ['한입 금융', () => S.bitesDone.size + S.conceptDone.size > 0, PG('learn', 'data-lv="bite"', '.lr-row', '개념 하나를 눌러 읽고 ‘이해했어요’를 눌러 주세요')],
+  ['경제 개념', () => S.bitesDone.size + S.conceptDone.size > 0, PG('learn', 'data-lv="bite"', '.lr-row', '개념 하나를 눌러 읽고 ‘이해했어요’를 눌러 주세요')],
   P_DEDUCT, P_ALLOC];
 const practiceItems = () => {
   const on = t => !t || (t.startsWith('chal:') ? S.chalOn.includes(t.slice(5)) : S.extras.has(t));
@@ -1849,7 +1849,7 @@ function practiceToday() {
   </section>`;
 }
 /* 다른 탭으로 보낸 뒤 지금 위치를 알려 주는 머리말 */
-const SUB_NAME = { spend:{ list:'가계부', analysis:'분석', budget:'예산' }, plan:{ bank:'통장', goal:'목표', rule:'자동 설정' }, learn:{ bite:'한입 금융', tips:'팁과 소식' } };
+const SUB_NAME = { spend:{ list:'가계부', analysis:'분석', budget:'예산' }, plan:{ bank:'통장', goal:'목표', rule:'자동 설정' }, learn:{ bite:'경제 개념', tips:'팁과 소식' } };
 const TAB_LABEL = { home:'홈', spend:'지출', plan:'자산', learn:'지식', benefit:'혜택' };
 function crumbHTML() {
   const sv = { spend:S.spendView, plan:S.planView, learn:S.learnView }[S.tab], sub = sv && SUB_NAME[S.tab] ? SUB_NAME[S.tab][sv] : '';
@@ -1984,7 +1984,7 @@ function practiceBlock() {
       <button class="row between t12 mute mt12" style="width:100%" data-act="tab" data-tab="plan" data-pv="goal"><span>챌린지 달력 · 리그 순위</span>${ic('arrow', 14)}</button></div>` : ''}
   </section>`;
 }
-// 홈 '금융 상식': 행동 추천 카드 모양으로 한입 금융 개념을 넘겨 본다
+// 홈 '경제 개념': 행동 추천 카드 모양으로 경제 개념 개념을 넘겨 본다
 // 진단에서 '잘 모르겠어요'를 고른 영역 → 지금 집중 영역 → 나머지 순으로 안 읽은 개념 3개를 보여 준다
 // 읽은 카드는 그 자리에서 '완료'로 바뀌고, 새 개념은 맨 뒤에만 붙는다(보던 카드가 다음 개념으로 바뀌지 않게). 최대 5장
 function knowCards() {
@@ -1997,17 +1997,17 @@ function knowCards() {
   const total = recs.length;
   const card = (c, k) => { const done = conceptDone(c);
     return `<div class="card ${done ? 'na-done' : 'c-sky'} na-card">
-    <div class="na-head"><span>금융 상식${total > 1 ? ` ${k + 1}/${total}` : ''}</span>${done ? `<span class="na-chip done">${ic('check', 10)}완료</span>` : `<button class="na-chip" data-act="tab" data-tab="learn" data-lv="bite" aria-label="지식에서 ${areaName(c.a)} 보기">${areaName(c.a)}</button>`}</div>
+    <div class="na-head"><span>경제 개념${total > 1 ? ` ${k + 1}/${total}` : ''}</span>${done ? `<span class="na-chip done">${ic('check', 10)}완료</span>` : `<button class="na-chip" data-act="tab" data-tab="learn" data-lv="bite" aria-label="지식에서 ${areaName(c.a)} 보기">${areaName(c.a)}</button>`}</div>
     <div class="na-body"><div><div class="na-title">${c.q}</div><p class="na-desc">${c.k} · 1분이면 돼요<br>${unk.has(c.a) ? '진단에서 ‘잘 모르겠어요’를 고른 영역이에요' : c.a === fa ? '지금 집중할 영역과 이어지는 개념이에요' : '지식 탭에서 더 많은 개념을 볼 수 있어요'}</p></div>
-      ${done ? `<span class="ib na-go done" aria-label="${c.k} 읽음">${ic('check', 22)}</span>` : `<button class="ib na-go" data-act="concept" data-v="${c.id}" aria-label="${c.k} 알아보기">${ic('ur', 22)}</button>`}</div>
+      ${done ? `<span class="ib na-go done" aria-label="${c.k} 읽음">${ic('check', 22)}</span>` : `<button class="ib na-go" data-act="concept" data-v="${c.id}" aria-label="${c.k} 알아보기">${ic('plus', 22)}</button>`}</div>
   </div>`; };
   return `<div class="na-wrap"><div class="na-track" onscroll="naDots(this)">${recs.map(card).join('')}</div>
-  ${total > 1 ? `<div class="na-dots">${recs.map((_, k) => `<i class="${k === (S.naIdx || 0) ? 'on' : ''}" data-act="naGo" data-v="${k}" role="button" tabindex="0" aria-label="금융 상식 ${k + 1}/${total} 보기"></i>`).join('')}</div>` : ''}
+  ${total > 1 ? `<div class="na-dots">${recs.map((_, k) => `<i class="${k === (S.naIdx || 0) ? 'on' : ''}" data-act="naGo" data-v="${k}" role="button" tabindex="0" aria-label="경제 개념 ${k + 1}/${total} 보기"></i>`).join('')}</div>` : ''}
   <p class="na-why"><span class="na-star" aria-hidden="true">✦</span><span>${unk.size ? '진단에서 ‘잘 모르겠어요’를 고른 영역부터 골랐어요' : '지금 집중할 영역부터 골랐어요'}</span></p></div>`;
 }
 
 /* =========================================================
-   한입 금융(적시 교육): 그 개념이 필요한 화면에서, 질문 → 생활 예시 → 한 줄 정리 순서로 보여 준다
+   경제 개념(적시 교육): 그 개념이 필요한 화면에서, 질문 → 생활 예시 → 한 줄 정리 순서로 보여 준다
    연구 1에서 가장 낮았던 인플레이션, 전국민 조사에서 가장 낮았던 복리, 비교 화면에 필요한 세후 이자
    ========================================================= */
 const bar2 = (rows, max) => `<div class="bite-bars">${rows.map(([l, v, t, hi]) => `<div class="bb-row"><span class="t10 mute">${l}</span><span class="bb-track"><i class="${hi ? 'hi' : ''}" style="width:${v / max * 100}%"></i></span><span class="t12 num">${t}</span></div>`).join('')}</div>`;
@@ -2025,7 +2025,7 @@ const BITES = {
     take:'예금·적금 이자에는 보통 15.4%의 세금이 붙어요. 상품을 비교할 땐 세금을 뺀 이자(세후 이자)를 봐야 실제로 받는 돈을 알 수 있어요. 비과세 혜택이 있는 상품은 이 세금이 없어요.',
     go:null },
 };
-// 알기 › 한입 금융: 5개 영역의 개념 원반. b = 생활 예시가 있는 기존 개념 카드(BITES), known = 이미 알아본 개념(예시)
+// 알기 › 경제 개념: 5개 영역의 개념 원반. b = 생활 예시가 있는 기존 개념 카드(BITES), known = 이미 알아본 개념(예시)
 const CONCEPT_TOTAL = 136, CONCEPT_KNOWN = 12;   // 전체 136개 중 데모에 담은 개념만 보여 준다
 const CONCEPTS = [
   { id:'budget', i:'wallet', a:'spend', k:'예산', known:true, q:'한 달 예산,<br>어떻게 정할까요?', take:'월급에서 고정 지출과 먼저 모을 돈을 뺀 나머지가 한 달 예산이에요. 이걸 남은 날로 나누면 오늘 쓸 수 있는 금액이 돼요.', go:['예산 보기', 'data-act="tab" data-tab="spend" data-sv="budget"'] },
@@ -2065,8 +2065,8 @@ function bite(id, o = {}) {
   const b = BITES[id], done = S.bitesDone.has(id);
   const open = o.force || (id in S.biteOpen ? S.biteOpen[id] : knowLow() && !done);
   return `<div class="card bite c-know ${open ? 'open' : ''} ${o.cls || ''}">
-    ${o.force ? `<div class="bite-h"><span class="bite-k">${ic('spark', 14)}한입 금융 · ${b.k}</span><span class="t16 bite-q">${b.q}</span></div>`
-    : `<button class="bite-h" data-act="bite" data-v="${id}" aria-expanded="${open}"><span class="bite-k">${ic('spark', 14)}한입 금융 · ${b.k}${done ? `<span class="tag line" style="height:18px;margin-left:6px">${ic('check', 10)}&nbsp;알아봤어요</span>` : ''}</span><span class="t16 bite-q">${b.q}</span><span class="bite-tg">${ic(open ? 'minus' : 'plus', 16)}</span></button>`}
+    ${o.force ? `<div class="bite-h"><span class="bite-k">${ic('spark', 14)}경제 개념 · ${b.k}</span><span class="t16 bite-q">${b.q}</span></div>`
+    : `<button class="bite-h" data-act="bite" data-v="${id}" aria-expanded="${open}"><span class="bite-k">${ic('spark', 14)}경제 개념 · ${b.k}${done ? `<span class="tag line" style="height:18px;margin-left:6px">${ic('check', 10)}&nbsp;알아봤어요</span>` : ''}</span><span class="t16 bite-q">${b.q}</span><span class="bite-tg">${ic(open ? 'minus' : 'plus', 16)}</span></button>`}
     ${open ? `<div class="bite-b">${b.ex()}<p class="t12 bite-take">${b.take}</p>
       <div class="row g8 mt16">${o.force ? '' : `<button class="btn sm ${o.dark ? 'light' : ''}" data-act="biteOk" data-v="${id}">${done ? '접기' : '이해했어요'}</button>`}${b.go && !o.noGo ? `<button class="btn sm ghost" ${b.go[1]}>${b.go[0]}</button>` : ''}${o.force || S.tab === 'learn' ? '' : `<button class="btn sm ghost" style="box-shadow:none;color:var(--mute);padding:0 4px;margin-left:auto;gap:2px" data-act="tab" data-tab="learn" data-lv="bite">모아보기${ic('arrow', 14)}</button>`}</div></div>` : ''}
   </div>`;
@@ -2151,7 +2151,7 @@ function vHome() {
     <div class="hv-sw" role="tablist" aria-label="실천 항목 보기 방식">${[['orbit', '궤도'], ['fan', '카드']].map(([k, l]) => `<button type="button" role="tab" aria-selected="${(S.homeView || 'fan') === k}" class="${(S.homeView || 'fan') === k ? 'on' : ''}" data-act="homeView" data-v="${k}">${l}</button>`).join('')}</div>
     ${S.homeView === 'orbit' ? orbit() : practiceFan()}
     <section class="sec"><div class="dot-h">지금 집중할 영역</div>${focusStrip(true)}</section>
-    <section class="sec"><div class="dot-h">금융 상식</div>${knowCards()}</section>`;
+    <section class="sec"><div class="dot-h">경제 개념</div>${knowCards()}</section>`;
 }
 
 /* =========================================================
@@ -2664,12 +2664,12 @@ function vGoal() {
 }
 
 /* =========================================================
-   LEARN (알기): 한입 금융 · 팁과 소식 · 상단 AI 입력창
+   LEARN (알기): 경제 개념 · 팁과 소식 · 상단 AI 입력창
    ========================================================= */
 function vLearn() {
   const tips = S.extras.has('tips'), lv = tips ? S.learnView : 'bite';
-  const head = `<header class="top"><div><div class="ph-title">지식</div><div class="ph-sub">${tips ? '한입 금융 · 팁과 소식' : '1분이면 읽는 금융 개념'}</div></div></header>
-  ${tips ? '' : '<!--'}<div class="utabs" role="tablist">${[['bite','한입 금융'],['tips','팁과 소식']].map(([k, n]) => `<button class="${lv === k ? 'on' : ''}" data-act="lv" data-v="${k}" role="tab" aria-selected="${lv === k}">${n}</button>`).join('')}</div>${tips ? '' : '-->'}`;
+  const head = `<header class="top"><div><div class="ph-title">지식</div><div class="ph-sub">${tips ? '경제 개념 · 팁과 소식' : '1분이면 읽는 금융 개념'}</div></div></header>
+  ${tips ? '' : '<!--'}<div class="utabs" role="tablist">${[['bite','경제 개념'],['tips','팁과 소식']].map(([k, n]) => `<button class="${lv === k ? 'on' : ''}" data-act="lv" data-v="${k}" role="tab" aria-selected="${lv === k}">${n}</button>`).join('')}</div>${tips ? '' : '-->'}`;
   if (lv === 'tips') return head + `
   <section style="margin-top:16px">
     <div class="sec-h"><div><div class="t18">절약 팁 · 정책 정보</div><div class="sec-d">함께 실천하는 사람들의 팁과 정책 소식</div></div><button class="btn sm ghost" data-act="toast" data-msg="팁 작성 화면은 다음 버전에서 열려요">${ic('plus', 14)}공유</button></div>
@@ -2686,7 +2686,7 @@ function vLearn() {
       <span class="tx"><span class="ca">${areaName(c.a)}</span><span class="nm">${c.k}</span><span class="ds">${c.q.replace(/<br>/g, ' ')}</span></span></button>`).join('')
     : '<p class="t14 mute">이 영역의 개념은 모두 알아봤어요.</p>'}</div>${tips ? '' : extraOff('tips')}`;
 }
-// 한입 금융 목록: 스크롤할 때 목록에서 가장 위에 보이는 개념을 크게(둥근 사각형) 보여 준다
+// 경제 개념 목록: 스크롤할 때 목록에서 가장 위에 보이는 개념을 크게(둥근 사각형) 보여 준다
 function learnActive() {
   const l = document.getElementById('lrList'); if (!l) return;
   const sh = view.querySelector('.shead'), top = (sh ? sh.getBoundingClientRect().bottom : view.getBoundingClientRect().top) + 24;
@@ -2859,12 +2859,12 @@ function sheetHTML(name) {
     case 'accounts': return head('계좌와 용도', `${ACCOUNTS.length}개 계좌 · 눌러서 용도를 바꿀 수 있어요`) + `<div class="mt24">${acctRows()}</div>`;
     case 'use': { const a = ACCOUNTS.find(x => x.k === S.useK); return head('용도 고르기', `${a.raw} · ${W(a.a)}`) + `<div class="mt16">${USES.map(u => `<button class="use-opt" data-act="acctUse" data-k="${a.k}" data-v="${u}"><span>${u}</span>${useOf(a) === u ? ic('check', 18) : ''}</button>`).join('')}</div>`; }
     case 'concept': { const c = conceptOf(S.conceptId), done = conceptDone(c), ar = AREAS.find(a => a.id === c.a);
-      return head(c.k, `한입 금융 · ${ar.name}${ar.now ? '' : ' · 확장 예정'}`) + `<div class="card bite c-know mt24">
-        <div class="bite-h"><span class="bite-k">${ic('spark', 14)}한입 금융 · ${c.k}${done ? `<span class="tag line" style="height:18px;margin-left:6px">${ic('check', 10)}&nbsp;알아봤어요</span>` : ''}</span><span class="t16 bite-q">${c.q}</span></div>
+      return head(c.k, `경제 개념 · ${ar.name}${ar.now ? '' : ' · 확장 예정'}`) + `<div class="card bite c-know mt24">
+        <div class="bite-h"><span class="bite-k">${ic('spark', 14)}경제 개념 · ${c.k}${done ? `<span class="tag line" style="height:18px;margin-left:6px">${ic('check', 10)}&nbsp;알아봤어요</span>` : ''}</span><span class="t16 bite-q">${c.q}</span></div>
         <div class="bite-b">${c.ex ? c.ex() : ''}<p class="t12 bite-take">${c.take}</p></div></div>
         <div class="stack8 mt16">${done ? '' : `<button class="btn full light" style="box-shadow:inset 0 0 0 1px var(--g3)" data-act="conceptOk" data-v="${c.id}">이해했어요</button>`}
         ${c.go ? `<button class="btn full" ${c.go[1]}>${c.go[0]}${ic('arrow', 18)}</button>` : ''}</div>`; }
-    case 'bites': return head('한입 금융', '필요한 순간에 하나씩 보여 드린 개념이에요') + `<div class="stack mt24">${Object.keys(BITES).map(id => bite(id, { force:true, noGo:true })).join('')}</div>`;
+    case 'bites': return head('경제 개념', '필요한 순간에 하나씩 보여 드린 개념이에요') + `<div class="stack mt24">${Object.keys(BITES).map(id => bite(id, { force:true, noGo:true })).join('')}</div>`;
     case 'menu': return head('메뉴') + `<div class="stack8 mt24"><button class="card c-paper setrow" style="text-align:left" data-act="diag"><span class="ib ink">${ic('spark', 20)}</span><span><span class="t14" style="display:block">내 진단 결과</span><span class="t12 mute">${PERSONA[S.persona].name} · 2026.10.15 진단</span></span>${ic('arrow', 18)}</button>${[['link','연동 계좌·카드 관리','6개 계좌 · 카드 2 · 간편결제 1'],['bell','알림 설정','예산 초과 위험 · 정산 · 입금'],['sliders','기본 설정 바꾸기·해제','선저축 · 비상금 · 예산 · 고정 지출'],['refresh','재진단','마지막 2026.06.12']].map(([i, t, s]) => `<button class="card c-paper setrow" style="text-align:left" data-act="${i === 'refresh' ? 'rediag' : i === 'sliders' ? 'tab' : 'toast'}" data-tab="plan" data-msg="${t} 화면은 데모에서 생략했어요"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(i, 20)}</span><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${s}</span></span>${ic('arrow', 18)}</button>`).join('')}</div>
       <div class="t12 mute mt24">추가 기능 · 필요할 때만 켜세요</div>
       <div class="card c-paper mt8" style="padding:4px 20px">${Object.entries(EXTRAS).map(([k, [t, d]]) => `<div class="kr" style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px 0"><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${d}</span></span><button class="switch ${S.extras.has(k) ? 'on' : ''}" data-act="extraToggle" data-v="${k}" role="switch" aria-checked="${S.extras.has(k)}" aria-label="${t}"></button></div>`).join('')}</div>
@@ -3032,7 +3032,7 @@ function render(keepScroll = true) {
   if (homeEnter) { popOut(); tuckSoon(); fanIntro(); }
   // 홈으로 돌아오면 항상 처음 위치(맨 위)에서 시작: 남아 있는 관성 스크롤까지 멈추고 다시 맞춘다
   if (key === 'tabhome' && key !== lastKey) { view.style.overflowY = 'hidden'; view.scrollTop = 0; requestAnimationFrame(() => { view.style.overflowY = ''; view.scrollTop = 0; }); }
-  // 알기 › 한입 금융: 목록이 개념마다 탁탁 걸리도록 스크롤 스냅 (고정 영역 아래 16px에 맞춤)
+  // 알기 › 경제 개념: 목록이 개념마다 탁탁 걸리도록 스크롤 스냅 (고정 영역 아래 16px에 맞춤)
   const snap = S.mode === 'app' && !S.sub && S.tab === 'learn' && S.learnView === 'bite';
   view.classList.toggle('snap', snap);
   if (snap) { const sh = view.querySelector('.shead'); view.style.setProperty('--snapTop', ((sh ? sh.getBoundingClientRect().bottom : 0) - view.getBoundingClientRect().top + 16) + 'px'); learnActive(); }
@@ -3321,7 +3321,7 @@ document.querySelector('#aiDock [type="submit"]').innerHTML = ic('send', 20);
 /* ---------- side panel ---------- */
 function renderPanel() {
   const cur = S.mode === 'onboard' ? 'ob' + S.ob : S.sub === 'diag' ? 'diag' : S.sub === 'link' ? 'link' : !S.linked && S.tab === 'home' ? 'empty' : S.tab === 'spend' ? 'spend-' + S.spendView : S.tab === 'plan' ? 'plan-' + S.planView : S.tab === 'learn' ? 'learn-' + S.learnView : S.tab;
-  const sc = [ ['ob0','진단 시작'], ['ob1','자기평가'], ['ob2','진단 문항'], ['ob3','진단 결과'], ['diag','내 진단 결과'], ['link','계좌 연동 · 용도 확인'], ['empty','홈 · 연동 전'], ['home','홈'], ['spend-list','지출 · 가계부'], ['spend-analysis','지출 · 분석·영수증'], ['spend-budget','지출 · 예산'], ['plan-bank','자산 · 통장'], ['plan-goal','자산 · 목표'], ['plan-rule','자산 · 자동 설정'], ['learn-bite','지식 · 한입 금융'], ['learn-tips','지식 · 팁과 소식'], ['benefit','혜택'] ];
+  const sc = [ ['ob0','진단 시작'], ['ob1','자기평가'], ['ob2','진단 문항'], ['ob3','진단 결과'], ['diag','내 진단 결과'], ['link','계좌 연동 · 용도 확인'], ['empty','홈 · 연동 전'], ['home','홈'], ['spend-list','지출 · 가계부'], ['spend-analysis','지출 · 분석·영수증'], ['spend-budget','지출 · 예산'], ['plan-bank','자산 · 통장'], ['plan-goal','자산 · 목표'], ['plan-rule','자산 · 자동 설정'], ['learn-bite','지식 · 경제 개념'], ['learn-tips','지식 · 팁과 소식'], ['benefit','혜택'] ];
   document.getElementById('navScreens').innerHTML = sc.map(([k, n]) => `<button type="button" class="${cur === k ? 'on' : ''}" data-go="${k}">${n}</button>`).join('');
   document.getElementById('navPersona').innerHTML = Object.entries(PERSONA).map(([k, p]) => `<button type="button" class="${S.persona === k ? 'on' : ''}" data-persona="${k}">${p.name}</button>`).join('');
   document.getElementById('navScen').innerHTML = [ ['pay','결제 발생 → 실시간 피드백'], ['income','외주비 입금 → 배분'], ['settle','더치페이 정산'], ['withdraw','저축 인출 확인'], ['ai','AI 조언 묻기'] ].map(([k, n]) => `<button type="button" data-scen="${k}">${n}</button>`).join('');
