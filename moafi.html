@@ -876,6 +876,8 @@ button.focus-strip{display:block;color:inherit}
 .lr-amt{display:grid;justify-items:end;gap:2px}
 .lr-go{display:inline-flex;align-items:center;gap:2px;color:var(--ink);font-weight:500}
 .nb-fill{height:30px;padding:0 12px;font-size:12px}
+.ht-end.dark-end{background:#181818;margin-left:calc(-1 * var(--m));margin-right:calc(-1 * var(--m))}
+.dark-band + .ht-end.dark-end{margin-top:0}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -2976,7 +2978,10 @@ function render(keepScroll = true) {
   dock.hidden = !(S.mode === 'app' && !S.sub && S.tab === 'learn');
   if (dock.hidden) aiDock(false);
   view.style.paddingBottom = S.mode === 'onboard' || S.sub ? (S.ob === 3 || S.sub ? '0' : '24px') : '0';
-  if (S.mode === 'app' && !S.sub) { const h = document.createElement('div'); h.className = 'ht-end'; h.style.height = (dock.hidden ? 140 : 200) + 'px'; h.style.marginTop = '24px'; view.append(h); const gap = view.clientHeight - (h.getBoundingClientRect().bottom - view.getBoundingClientRect().top + view.scrollTop); if (gap > 0) h.style.marginTop = (24 + gap) + 'px'; view.scrollTop = st; }
+  if (S.mode === 'app' && !S.sub) { const h = document.createElement('div'); h.className = 'ht-end'; h.style.height = (dock.hidden ? 140 : 200) + 'px'; h.style.marginTop = '24px'; view.append(h); const gap = view.clientHeight - (h.getBoundingClientRect().bottom - view.getBoundingClientRect().top + view.scrollTop); if (gap > 0) h.style.marginTop = (24 + gap) + 'px';
+    // 마지막 구역이 어두운 띠(영수증)면 그 아래 남는 공간도 같은 검정으로 이어서 채운다
+    const prev = h.previousElementSibling; if (prev && prev.classList.contains('dark-band')) { h.classList.add('dark-end'); h.style.height = (parseFloat(h.style.height) + parseFloat(h.style.marginTop)) + 'px'; h.style.marginTop = '0px'; }
+    view.scrollTop = st; }
   renderPanel();
   practiceCheck();
 }
