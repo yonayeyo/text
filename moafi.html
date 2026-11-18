@@ -1703,7 +1703,17 @@ const P_META = {
   '텀블러 인증':['coffee','오늘 카페 결제가 없었다면 인증해요'], '월세 지원 준비':['home2','청년 월세 지원 신청 서류를 챙겨요'], '포인트 모으기':['gift','흩어진 포인트를 독립 준비 자금에 넣어요'],
   '적금 실제 이자 보기':['coin','세금을 뺀 실제 이자가 얼마인지 알아봐요'], '환급금 비상금으로':['shield','K-패스 환급 12,300원을 비상금으로 옮겨요'],
 };
-const practiceItems = () => PRACTICE[S.persona].items.filter(i => !i[3] || S.extras.has(i[3]));
+// 실천 항목은 항상 7개(+ 새 항목). 챌린지를 꺼 두면 챌린지 카드 자리를 다른 실천 항목으로 같은 자리에 채운다
+const P_FILL = [P_RECEIPT,
+  ['예산 알림 켜기', () => S.autoOn.has('b80'), 'data-act="autoOn" data-v="b80"'],
+  P_FIXED, P_CUT, P_COMPARE('적금 금리 비교'),
+  ['한입 금융', () => S.bitesDone.size + S.conceptDone.size > 0, PG('learn', 'data-lv="bite"', '.lr-row', '개념 하나를 눌러 읽고 ‘이해했어요’를 눌러 주세요')],
+  P_DEDUCT, P_ALLOC];
+const practiceItems = () => {
+  const base = PRACTICE[S.persona].items, keep = base.map(i => !i[3] || S.extras.has(i[3]) ? i : null);
+  const used = new Set(keep.filter(Boolean).map(i => i[0])), pool = P_FILL.filter(i => !used.has(i[0]));
+  return keep.map(i => i || pool.shift()).filter(Boolean).slice(0, 7);
+};
 function practiceToday() {
   const all = practiceItems().map(([t, done, act]) => ({ t, done:done(), act, m:P_META[t] || ['arrow', ''] }));
   const todo = all.filter(x => !x.done), doneN = all.length - todo.length, main = todo[0], next = todo.slice(1, 3);
