@@ -1,0 +1,305 @@
+<title>moafi 홈 카드 모션 시안</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Urbanist:wght@300;400&display=swap" rel="stylesheet">
+<style>
+/* 레이아웃: 세 시안을 실제 휴대폰 화면 크기(353px 콘텐츠)로 나란히 → 아래에 사용성 기준 비교와 추천.
+   이 페이지는 findo 프로토타입의 밝은 화면 하나만 쓰도록 의도적으로 라이트 고정 */
+:root{
+  color-scheme:light;
+  --page:#E7E7E5; --screen:#FAFAFA; --paper:#FCFCFC; --ink:#181818; --g6:#606060; --g4:#9C9C9C; --g3:#DEDEDE; --g2:#EFEFEF;
+  --navy:#081F40; --sky:#B5CBFF; --pale:#D5E3FF;
+  --f-kr:"Noto Sans KR","Apple SD Gothic Neo",-apple-system,sans-serif; --f-num:"Urbanist","Noto Sans KR",sans-serif;
+  --sh:0 1px 2px rgba(0,0,0,.08),0 12px 28px -14px rgba(0,0,0,.45);   /* 무채색 그림자만 */
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--f-kr);font-size:14px;line-height:1.5;word-break:keep-all;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 72px}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:inherit;padding:0}
+button:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+svg{display:block}
+.wrap{max-width:1240px;margin:0 auto;display:grid;gap:40px}
+h1{font-size:28px;line-height:36px;font-weight:700;letter-spacing:-.02em;margin:0;text-wrap:balance}
+h2{font-size:20px;line-height:28px;font-weight:700;margin:0}
+h3{font-size:16px;font-weight:600;margin:0}
+p{margin:0}
+.lead{color:var(--g6);max-width:72ch;margin-top:8px}
+.why{background:var(--paper);border-radius:20px;padding:20px;display:grid;gap:8px;max-width:820px}
+.why ul{margin:0;padding-left:18px;color:var(--g6);display:grid;gap:4px}
+
+.demos{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(375px,100%),1fr));gap:24px;align-items:start}
+.demo{display:grid;gap:14px;min-width:0}
+.demo-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.demo-h .k{font-family:var(--f-num);font-size:13px;color:var(--g4);letter-spacing:.1em}
+.demo-h .rec{font-size:11px;font-weight:600;background:var(--ink);color:#fff;border-radius:999px;padding:2px 9px}
+.demo-d{font-size:13px;color:var(--g6)}
+.phone{width:min(375px,100%);margin:0 auto;background:var(--screen);border-radius:36px;box-shadow:0 0 0 8px #0E0E0E,0 30px 60px -24px rgba(0,0,0,.4);overflow:hidden;position:relative}
+.scr{padding:22px 20px 24px;height:560px;overflow:hidden;position:relative}
+.hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px}
+.hd .t{font-size:18px;font-weight:600}
+.hd .c{font-family:var(--f-num);font-size:14px;color:var(--g6)}
+.sub{font-size:12px;color:var(--g4);margin-bottom:16px}
+.ctl{display:flex;gap:8px;justify-content:center}
+.ctl button{height:36px;padding:0 16px;border-radius:999px;background:var(--paper);font-size:13px;font-weight:500;box-shadow:inset 0 0 0 1px var(--g3)}
+.pros{display:grid;gap:6px;font-size:13px}
+.pros div{display:grid;grid-template-columns:44px 1fr;gap:8px}
+.pros b{font-size:11px;font-weight:600;color:var(--g4);padding-top:2px}
+
+/* 카드 공통 (findo 궤도 카드 바탕 4종) */
+.sk-ink{background:#181818}
+.sk-grad{background:radial-gradient(ellipse 91.69% 77.81% at 50% 43%,#020211 0%,#49627C 100%)}
+.sk-img1{background:#0C1A2E url(data:image/jpeg;base64,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) center/cover}
+.sk-img2{background:#14261F url(data:image/jpeg;base64,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) center/cover}
+.ic{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.14);color:#fff;flex:none}
+.no{font-family:var(--f-num);font-size:12px;opacity:.65}
+.go{display:inline-flex;align-items:center;gap:4px;height:34px;padding:0 14px;border-radius:999px;background:#fff;color:#181818;font-size:13px;font-weight:600}
+
+/* A. 포토 캐러셀 */
+.car{margin:0 -20px;perspective:900px}
+.car-track{display:flex;gap:0;overflow-x:auto;scroll-snap-type:x mandatory;padding:18px 82px 26px;scrollbar-width:none;perspective:900px}
+.car-track::-webkit-scrollbar{display:none}
+.car-card{flex:0 0 210px;margin:0 -22px;position:relative;height:300px;border-radius:22px;scroll-snap-align:center;color:#fff;padding:18px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;
+  box-shadow:var(--sh);transform-origin:50% 50%;will-change:transform}
+.car-card .top{display:flex;justify-content:space-between;align-items:flex-start}
+.car-card .tt{font-size:22px;line-height:29px;font-weight:700;letter-spacing:-.02em}
+.car-card .ds{font-size:13px;line-height:19px;opacity:.78;margin-top:6px}
+.car-card .act{margin-top:14px;transition:opacity .25s}
+.car-card:not(.on) .act{opacity:0}
+.car-card.done{background:#F1F1F1;color:#8A8A8A}.car-card.done .ic{background:#181818}
+.car-dots{display:flex;justify-content:center;gap:6px;margin-top:-6px}
+.car-dots i{width:6px;height:6px;border-radius:3px;background:var(--g3);transition:width .3s var(--ease),background .3s}
+.car-dots i.on{width:18px;background:var(--ink)}
+.car.intro .car-card{animation:carIn .9s var(--ease) both;animation-delay:calc(var(--i) * 70ms)}
+@keyframes carIn{from{transform:translateX(160px) rotateY(-55deg) translateZ(-120px);opacity:0}}
+
+/* B. 도미노 플립 */
+.dom{display:grid;gap:8px;perspective:800px}
+.dom-hero{height:150px;border-radius:20px;color:#fff;padding:18px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;box-shadow:var(--sh)}
+.dom-hero .tt{font-size:20px;font-weight:700;letter-spacing:-.02em}
+.dom-hero .ds{font-size:12px;opacity:.75}
+.flip{height:64px;position:relative;transform-style:preserve-3d;transition:transform .7s var(--ease)}
+.flip .f,.flip .b{position:absolute;inset:0;border-radius:16px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;align-items:center;gap:12px;padding:0 14px 0 12px}
+.flip .f{background:var(--paper);box-shadow:0 0 0 .5px #E5E5E5}
+.flip .f .ic{background:#181818;width:36px;height:36px}
+.flip .f .tt{flex:1;font-size:14px;font-weight:500}
+.flip .f .ch{color:var(--g4)}
+.flip .b{background:#181818;color:#fff;transform:rotateX(180deg);justify-content:space-between}
+.flip .b .ds{font-size:12px;line-height:17px;opacity:.8;flex:1}
+.flip .b .go{height:30px;padding:0 12px;font-size:12px;flex:none}
+.flip.open{transform:rotateX(180deg)}
+.flip.done .f .tt{color:var(--g4);text-decoration:line-through;text-decoration-color:var(--g3)}
+.dom.intro .flip,.dom.intro .dom-hero{animation:domIn .8s var(--ease) both;animation-delay:calc(var(--i) * 90ms)}
+@keyframes domIn{from{transform:rotateX(-100deg);opacity:0}40%{opacity:1}}
+.dom .dom-hero,.dom.intro .flip{transform-origin:50% 0}
+.flip{transform-origin:50% 50%}
+
+/* C. 아코디언 언폴드 */
+.acc-hero{border-radius:20px;color:#fff;padding:18px;display:grid;gap:6px;text-align:left;box-shadow:var(--sh);position:relative;z-index:2}
+.acc-hero .row{display:flex;justify-content:space-between;align-items:flex-start}
+.acc-hero .tt{font-size:22px;line-height:29px;font-weight:700;letter-spacing:-.02em;margin-top:22px}
+.acc-hero .ds{font-size:13px;opacity:.78}
+.acc-hero .go{justify-self:start;margin-top:8px}
+.fold{perspective:700px;margin-top:-6px;position:relative;z-index:1}
+.panel{height:58px;display:flex;align-items:center;gap:12px;padding:0 14px;background:var(--paper);box-shadow:0 0 0 .5px #E2E2E2;text-align:left;width:100%;
+  transform-origin:50% 0;transition:transform .55s var(--ease),margin .55s var(--ease),filter .55s,border-radius .55s;border-radius:0}
+.panel:first-child{padding-top:6px}
+.panel:last-child{border-radius:0 0 18px 18px}
+.panel .ic{width:32px;height:32px;border-radius:10px;background:#181818}
+.panel .tt{flex:1;font-size:14px;font-weight:500}
+.panel .ch{color:var(--g4)}
+.panel.done .tt{color:var(--g4)}
+/* 접힌 상태: 띠가 카드 밑으로 접혀 들어가 얇은 종이 가장자리만 겹겹이 보인다 */
+.panel > *{transition:opacity .3s}
+.fold:not(.open) .panel{margin-top:-49px;transform:rotateX(38deg) scaleX(calc(1 - (var(--i) + 1) * .04));box-shadow:0 0 0 .5px #CFCFCF,0 3px 4px -2px rgba(0,0,0,.12)}
+.fold:not(.open) .panel:first-child{margin-top:-28px}
+.fold:not(.open) .panel:nth-child(even){background:#F3F3F3}
+.fold:not(.open) .panel > *{opacity:0}
+.fold:not(.open) .panel:last-child{border-radius:0 0 14px 14px}
+.fold.open .panel{transition-delay:calc(var(--i) * 70ms)}
+.fold:not(.open) .panel{transition-delay:calc((var(--n) - var(--i)) * 50ms)}
+.fold-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:40px;margin-top:10px;font-size:13px;color:var(--g6)}
+.fold-btn svg{transition:transform .4s var(--ease)}
+.fold.open + .fold-btn svg{transform:rotate(180deg)}
+.perf{height:10px;margin:0 6px;background:conic-gradient(from -45deg at bottom,var(--paper) 90deg,transparent 0) 50%/10px 100%;position:relative;z-index:0}
+
+/* 비교 표 */
+.tbl{overflow-x:auto;background:var(--paper);border-radius:20px}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:13px}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--g2);vertical-align:top}
+th{font-size:12px;color:var(--g4);font-weight:600}
+tr:last-child td{border-bottom:0}
+td:first-child{color:var(--g6);white-space:nowrap}
+.dot3{display:inline-flex;gap:3px;margin-right:6px;vertical-align:1px}.dot3 i{width:7px;height:7px;border-radius:50%;background:var(--g3)}.dot3 i.on{background:var(--ink)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#181818;color:#fff;font-size:13px;border-radius:999px;padding:10px 18px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>moafi 홈 카드 모션 시안</h1>
+    <p class="lead">홈 ‘오늘 할 일’ 카드 배치를 세 가지 방식으로 실제 크기 화면에 만들었어요. 각 화면을 직접 넘기고 눌러 보세요. 카드 바탕은 findo 궤도 카드의 검정 · 네이비 · 사진 2종 그대로이고, 그림자는 색 없이 무채색만 썼어요.</p>
+  </header>
+
+  <section class="why">
+    <h3>덱 방식을 다시 본 이유</h3>
+    <ul>
+      <li>모여 있을 때 맨 위 한 장만 보여서 나머지 할 일이 숨어요. 테스트에서 나온 ‘무엇이 있는지 한눈에 보고 싶다’(U5 · U8)와 반대예요.</li>
+      <li>펼치려면 한 번 더 눌러야 하고, 모인 카드는 눌러도 바로 실행되지 않아요. ‘눌러야 하는 카드인 줄 몰랐다’(U6)를 더 키울 수 있어요.</li>
+      <li>홈에 들어올 때마다 4초 재생을 기다려야 해요. 홈에 오래 머물지 않는 사용자(U2 · U3 · U6)에게는 방해가 돼요.</li>
+    </ul>
+    <p style="font-size:13px;color:var(--g6)">그래서 세 시안 모두 <b>할 일 하나는 크게, 나머지는 눌러서 바로 실행되는 상태로 보이게</b> 하고, 3D 모션은 처음 등장할 때와 사용자가 직접 조작할 때만 넣었어요.</p>
+  </section>
+
+  <section class="demos">
+    <article class="demo">
+      <div class="demo-h"><span class="k">A</span><h2>포토 캐러셀</h2></div>
+      <p class="demo-d">가운데 카드가 정면, 양옆 카드는 뒤로 물러나며 비스듬히 돌아가요. 넘기는 손가락을 따라 각도와 깊이가 계속 바뀌어요. 정면 카드에만 설명과 ‘시작하기’가 보여요.</p>
+      <div class="phone"><div class="scr">
+        <div class="hd"><span class="t">오늘 할 일</span><span class="c" id="carCnt">1 / 6</span></div><div class="sub">인지우세형에게 먼저 필요한 순서예요</div>
+        <div class="car" id="car"><div class="car-track" id="carTrack"></div></div>
+        <div class="car-dots" id="carDots"></div>
+      </div></div>
+      <div class="ctl"><button type="button" data-replay="car">등장 다시 보기</button></div>
+      <div class="pros"><div><b>좋은 점</b><span>한 번에 하나만 보여 부담이 적고(U9), 순서가 곧 우선순위예요(U11). 사진 카드가 가장 크게 보여 findo 감도를 살리기 좋아요.</span></div>
+        <div><b>걱정</b><span>옆 카드를 넘겨 봐야 해서 전체 개수를 한눈에 파악하기 어려워요. 숫자 표시(1 / 6)로 보완했어요.</span></div></div>
+    </article>
+
+    <article class="demo">
+      <div class="demo-h"><span class="k">B</span><h2>도미노 플립</h2></div>
+      <p class="demo-d">첫 할 일은 큰 카드, 나머지는 한 줄 목록이에요. 처음 들어오면 위에서부터 도미노처럼 차례로 넘어오고, 줄을 누르면 그 자리에서 뒤집혀 설명과 ‘시작’ 버튼이 나와요.</p>
+      <div class="phone"><div class="scr">
+        <div class="hd"><span class="t">오늘 할 일</span><span class="c">0 / 6</span></div><div class="sub">줄을 누르면 뒤집혀서 설명이 보여요</div>
+        <div class="dom" id="dom"></div>
+      </div></div>
+      <div class="ctl"><button type="button" data-replay="dom">등장 다시 보기</button></div>
+      <div class="pros"><div><b>좋은 점</b><span>모든 할 일이 처음부터 다 보여요(U5 · U8). 화면을 옮기지 않고 그 자리에서 내용을 확인할 수 있어요. 완료하면 줄이 다시 뒤집히며 체크로 바뀌는 피드백을 줄 수 있어요.</span></div>
+        <div><b>걱정</b><span>목록에 가까워서 셋 중 가장 차분해요. 재미 요소는 등장과 뒤집기에만 있어요.</span></div></div>
+    </article>
+
+    <article class="demo">
+      <div class="demo-h"><span class="k">C</span><h2>아코디언 언폴드</h2><span class="rec">추천</span></div>
+      <p class="demo-d">첫 할 일은 사진 카드로 크게, 나머지는 그 아래 접힌 종이 묶음이에요. 누르면 영수증을 펼치듯 띠가 한 장씩 3D로 펴지고, 다시 누르면 반대 순서로 접혀요.</p>
+      <div class="phone"><div class="scr">
+        <div class="hd"><span class="t">오늘 할 일</span><span class="c">0 / 6</span></div><div class="sub">하나만 먼저, 나머지는 펼쳐서 보세요</div>
+        <div id="acc"></div>
+      </div></div>
+      <div class="ctl"><button type="button" data-replay="acc">접기 · 펼치기</button></div>
+      <div class="pros"><div><b>좋은 점</b><span>‘하나는 크게, 나머지는 작게’ 위계가 가장 분명해요(U9 · U11). 접힌 묶음 두께로 남은 개수가 보이고, 사용자가 원할 때만 펼쳐요. findo의 영수증 출력(U2 · U7 · U11이 가장 신기해한 기능)과 같은 종이 은유라 앱의 개성과 이어져요.</span></div>
+        <div><b>걱정</b><span>펼치기 한 번이 더 필요해요. 처음 한 번은 펼친 상태로 보여 주고 이후엔 접어 두는 방식으로 줄일 수 있어요.</span></div></div>
+    </article>
+  </section>
+
+  <section style="display:grid;gap:14px">
+    <h2>사용성 테스트 기준으로 비교</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>기준 (근거)</th><th>지금 덱</th><th>A 포토 캐러셀</th><th>B 도미노 플립</th><th>C 아코디언 언폴드</th></tr></thead>
+      <tbody id="cmp"></tbody>
+    </table></div>
+    <p class="lead" style="margin:0">추천은 <b>C 아코디언 언폴드</b>예요. 테스트에서 가장 많이 나온 ‘할 일이 많아 부담스럽다’와 ‘무엇부터 할지’를 가장 직접적으로 풀고, findo만의 영수증 · 종이 감성을 홈까지 이어 줘요. 사진 카드를 더 살리고 싶다면 A를, 정보를 빠짐없이 보이는 쪽을 원하면 B를 고르면 돼요. 고르시면 그 안으로 프로토타입 홈을 바꿀게요.</p>
+  </section>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const IC = {
+  receipt:'<path d="M6 3h12v18l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5L6 21z"/><path d="M9 8h6M9 12h6"/>',
+  calendar:'<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>',
+  coins:'<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.66 3.58 3 8 3s8-1.34 8-3V6"/><path d="M4 10c0 1.66 3.58 3 8 3s8-1.34 8-3"/><path d="M4 14c0 1.66 3.58 3 8 3s8-1.34 8-3"/>',
+  card:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h4"/>',
+  bell:'<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
+  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>', chev:'<path d="M6 9l6 6 6-6"/>', check:'<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+};
+const ic = (n, s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+const ITEMS = [
+  ['줄이기 제안 담기', 'receipt', '지난달 지출에서 아낄 방법을 골라 다음 달 예산에 넣어요', 'sk-img1'],
+  ['매달 나가는 돈', 'calendar', '자동으로 찾은 고정 지출 4건이 맞는지 확인해요', 'sk-grad'],
+  ['외주비 나누기', 'coins', '들어온 320,000원을 목표 · 비상금 · 자유롭게로 나눠요', 'sk-ink'],
+  ['연말정산 카드 확인', 'card', '남은 기간 체크카드와 신용카드 중 어느 쪽이 유리한지 봐요', 'sk-img2'],
+  ['배달 한도 알림', 'bell', '배달 결제 전에 남은 한도를 알려 줘요', 'sk-grad'],
+  ['영수증 출력', 'receipt', '9월 지출을 영수증 한 장으로 받아 봐요', 'sk-ink'],
+];
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let tt; const toast = m => { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 1800); };
+const run = t => toast(`‘${t}’ 화면으로 이동해요 (시안)`);
+
+/* A. 포토 캐러셀 */
+const track = document.getElementById('carTrack'), car = document.getElementById('car');
+track.innerHTML = ITEMS.map(([t, i, d, sk], k) => `<button type="button" class="car-card ${sk}" style="--i:${k}" data-k="${k}">
+  <span class="top"><span class="ic">${ic(i)}</span><span class="no">${String(k + 1).padStart(2, '0')}</span></span>
+  <span><span class="tt" style="display:block">${t}</span><span class="ds" style="display:block">${d}</span><span class="act" style="display:block"><span class="go">시작하기 ${ic('arrow', 15)}</span></span></span></button>`).join('');
+document.getElementById('carDots').innerHTML = ITEMS.map(() => '<i></i>').join('');
+const cards = [...track.children], dots = [...document.getElementById('carDots').children];
+function carUpdate() {
+  const mid = track.scrollLeft + track.clientWidth / 2; let best = 0, bd = 1e9;
+  cards.forEach((c, k) => { const cx = c.offsetLeft + c.offsetWidth / 2, d = (cx - mid) / c.offsetWidth, a = Math.max(-1.6, Math.min(1.6, d));
+    if (Math.abs(d) < bd) { bd = Math.abs(d); best = k; }
+    if (!car.classList.contains('intro')) c.style.transform = `rotateY(${-a * 32}deg) translateZ(${-Math.abs(a) * 90}px) scale(${1 - Math.abs(a) * .06})`;
+    c.style.zIndex = 10 - Math.round(Math.abs(d) * 2); c.style.filter = `brightness(${1 - Math.min(.25, Math.abs(a) * .18)})`; });
+  cards.forEach((c, k) => c.classList.toggle('on', k === best)); dots.forEach((d, k) => d.classList.toggle('on', k === best));
+  document.getElementById('carCnt').textContent = `${best + 1} / ${ITEMS.length}`;
+}
+let raf; track.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(carUpdate); }, { passive:true });
+track.addEventListener('click', e => { const c = e.target.closest('.car-card'); if (!c) return;
+  if (c.classList.contains('on')) run(ITEMS[+c.dataset.k][0]); else c.scrollIntoView({ behavior:reduce ? 'auto' : 'smooth', inline:'center', block:'nearest' }); });
+function carIntro() { if (reduce) { carUpdate(); return; } car.classList.remove('intro'); track.scrollLeft = 0; void car.offsetWidth; car.classList.add('intro'); cards.forEach(c => c.style.transform = '');
+  setTimeout(() => { car.classList.remove('intro'); carUpdate(); }, 900 + ITEMS.length * 70); }
+
+/* B. 도미노 플립 */
+const dom = document.getElementById('dom');
+function domRender() {
+  const [h, ...rest] = ITEMS;
+  dom.innerHTML = `<button type="button" class="dom-hero ${h[3]}" style="--i:0" data-run="${h[0]}"><span style="display:flex;justify-content:space-between"><span class="ic">${ic(h[1])}</span><span class="no">01</span></span>
+    <span><span class="tt" style="display:block">${h[0]}</span><span class="ds" style="display:block">${h[2]}</span></span></button>`
+  + rest.map(([t, i, d], k) => `<div class="flip" style="--i:${k + 1}"><button type="button" class="f" data-flip aria-label="${t} 설명 보기"><span class="ic">${ic(i, 18)}</span><span class="tt">${t}</span><span class="ch">${ic('chev', 18)}</span></button>
+    <div class="b"><span class="ds">${d}</span><button type="button" class="go" data-run="${t}">시작</button></div></div>`).join('');
+}
+domRender();
+dom.addEventListener('click', e => {
+  const r = e.target.closest('[data-run]'); if (r) { run(r.dataset.run); return; }
+  const f = e.target.closest('.flip'); if (!f) return;
+  const was = f.classList.contains('open'); dom.querySelectorAll('.flip.open').forEach(x => x.classList.remove('open')); if (!was) f.classList.add('open');
+});
+dom.addEventListener('click', e => { if (e.target.closest('.b') && !e.target.closest('[data-run]')) e.target.closest('.flip').classList.remove('open'); });
+function domIntro() { if (reduce) return; dom.classList.remove('intro'); void dom.offsetWidth; dom.classList.add('intro'); setTimeout(() => dom.classList.remove('intro'), 800 + ITEMS.length * 90); }
+
+/* C. 아코디언 언폴드 */
+const acc = document.getElementById('acc');
+(function accRender() {
+  const [h, ...rest] = ITEMS;
+  acc.innerHTML = `<button type="button" class="acc-hero ${h[3]}" data-run="${h[0]}"><span class="row"><span class="ic">${ic(h[1])}</span><span class="no">01</span></span>
+    <span class="tt">${h[0]}</span><span class="ds">${h[2]}</span><span class="go">시작하기 ${ic('arrow', 15)}</span></button>
+    <div class="fold" id="fold" style="--n:${rest.length}">${rest.map(([t, i], k) => `<button type="button" class="panel" style="--i:${k}" data-run="${t}" tabindex="-1"><span class="ic">${ic(i, 16)}</span><span class="tt">${t}</span><span class="ch">${ic('arrow', 16)}</span></button>`).join('')}</div>
+    <button type="button" class="fold-btn" id="foldBtn" aria-expanded="false"><span id="foldTx">나머지 ${rest.length}개 펼치기</span>${ic('chev', 16)}</button>`;
+})();
+const fold = document.getElementById('fold'), foldBtn = document.getElementById('foldBtn');
+function setFold(open) { fold.classList.toggle('open', open); foldBtn.setAttribute('aria-expanded', open);
+  document.getElementById('foldTx').textContent = open ? '접기' : `나머지 ${ITEMS.length - 1}개 펼치기`;
+  fold.querySelectorAll('.panel').forEach(p => p.tabIndex = open ? 0 : -1); }
+acc.addEventListener('click', e => {
+  if (e.target.closest('#foldBtn')) { setFold(!fold.classList.contains('open')); return; }
+  if (e.target.closest('.fold') && !fold.classList.contains('open')) { setFold(true); return; }
+  const r = e.target.closest('[data-run]'); if (r) run(r.dataset.run);
+});
+
+document.querySelectorAll('[data-replay]').forEach(b => b.addEventListener('click', () => {
+  const k = b.dataset.replay;
+  if (k === 'car') carIntro(); if (k === 'dom') domIntro(); if (k === 'acc') setFold(!fold.classList.contains('open'));
+}));
+
+/* 비교 표 */
+const CMP = [
+  ['할 일 전체가 보이나 (U5 · U8)', [1, '맨 위 한 장'], [2, '넘겨서 확인'], [3, '모두 보임'], [2, '두께로 개수, 펼치면 모두']],
+  ['우선순위가 분명한가 (U9 · U11)', [2, '맨 위 = 먼저'], [3, '정면 카드 하나'], [2, '큰 카드 하나'], [3, '큰 카드 + 접힌 묶음']],
+  ['누를 수 있다는 게 보이나 (U6)', [1, '모이면 실행 안 됨'], [3, '시작하기 버튼'], [2, '줄 + 화살표'], [3, '시작하기 + 화살표']],
+  ['기다리지 않고 바로 쓰나 (U2 · U3 · U6)', [1, '매번 4초 재생'], [3, '등장 1초'], [3, '등장 1초'], [3, '등장 없음, 원할 때 펼침']],
+  ['재미 · 디자인 감도 (U12 · U11)', [3, '가장 화려함'], [3, '사진 카드가 크게'], [2, '차분함'], [3, '영수증과 같은 종이 은유']],
+];
+const dots3 = n => `<span class="dot3">${[1, 2, 3].map(i => `<i class="${i <= n ? 'on' : ''}"></i>`).join('')}</span>`;
+document.getElementById('cmp').innerHTML = CMP.map(([k, ...v]) => `<tr><td>${k}</td>${v.map(([n, t]) => `<td>${dots3(n)}${t}</td>`).join('')}</tr>`).join('');
+
+/* 처음 한 번 등장 */
+requestAnimationFrame(() => { carIntro(); domIntro(); });
+</script>
