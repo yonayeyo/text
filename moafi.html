@@ -799,8 +799,14 @@ button.focus-strip{display:block;color:inherit}
 .fc{position:absolute;left:50%;top:var(--fan-pad-t);width:150px;height:var(--fan-card);margin-left:-75px;border-radius:16px;background-color:#E8E8E6;background-size:cover;background-position:center;will-change:transform;
   box-shadow:0 1px 1px rgba(0,0,0,.05),0 18px 24px -18px rgba(0,0,0,.45)}
 .fc .ix{position:absolute;left:12px;top:10px;font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;color:rgba(255,255,255,.9);mix-blend-mode:difference}
-.fc.done{filter:grayscale(1) contrast(.9) brightness(1.06)}
-.fc .ck{position:absolute;right:10px;top:10px;width:22px;height:22px;border-radius:50%;background:#fff;color:#181818;display:grid;place-items:center}
+.fc{overflow:hidden}
+/* 완료: 검정 반투명 막을 덮고 가운데에 체크 + '완료' */
+.fc.done::after{content:"";position:absolute;inset:0;border-radius:inherit;background:rgba(10,10,10,.72)}
+.fc .ck{position:absolute;inset:0;z-index:1;display:grid;place-content:center;justify-items:center;gap:8px;color:#fff}
+.fc .ck-i{width:48px;height:48px;border-radius:50%;background:#fff;color:#181818;display:grid;place-items:center}
+.fc .ck b{font-size:13px;font-weight:500;letter-spacing:.02em}
+.fc .ix{z-index:2}
+.fc.done .ix{color:#fff;mix-blend-mode:normal}
 .fan-cap{display:grid;min-height:124px;align-content:start;transition:opacity .2s,transform .3s cubic-bezier(.22,1,.36,1)}
 .fan-cap.swap{opacity:0;transform:translateY(4px)}
 .fc-no{font-family:var(--f-mono);font-size:11px;line-height:16px;color:var(--g4)}
@@ -1766,7 +1772,7 @@ function practiceFan() {
   return `<section class="fan-sec" aria-label="오늘 할 일 ${n}개 중 ${doneN}개 완료">
     <div class="fan-head"><h2 class="fan-ttl">Today</h2><span class="fan-sub num">할 일 ${n} · 완료 ${doneN}</span></div>
     <div class="fan-stage" id="fanStage" tabindex="0" role="listbox" aria-label="오늘 할 일 카드">
-      ${xs.map((x, k) => `<button type="button" class="fc im${k % 7} ${x.done ? 'done' : ''}" data-k="${k}" role="option" aria-label="${pad2(k + 1)} ${x.t}${x.done ? ' · 완료' : ''}"><span class="ix">${pad2(k + 1)}</span>${x.done ? `<span class="ck">${ic('check', 12)}</span>` : ''}</button>`).join('')}
+      ${xs.map((x, k) => `<button type="button" class="fc im${k % 7} ${x.done ? 'done' : ''}" data-k="${k}" role="option" aria-label="${pad2(k + 1)} ${x.t}${x.done ? ' · 완료' : ''}"><span class="ix">${pad2(k + 1)}</span>${x.done ? `<span class="ck"><span class="ck-i">${ic('check', 22)}</span><b>완료</b></span>` : ''}</button>`).join('')}
     </div>
     <div class="fan-cap" id="fanCap"></div>
   </section>`;
