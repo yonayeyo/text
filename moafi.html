@@ -840,6 +840,17 @@ button.focus-strip{display:block;color:inherit}
 .hv-sw button.on{background:var(--ink);color:#fff;box-shadow:none}
 .hv-sw + .fan-sec{margin-top:var(--h4)}
 .hv-sw + .orbit-wrap{margin-top:0}
+
+/* 카드 보기: 새 항목 카드 · 위치 표시 막대(1~7 + 새 항목) */
+.fc.fc-new{background:#FCFCFC;box-shadow:inset 0 0 0 1.5px var(--g3),0 18px 24px -18px rgba(0,0,0,.25);display:grid;place-content:center;justify-items:center;gap:10px;color:var(--ink)}
+.fc-new .fn-i{width:48px;height:48px;border-radius:50%;border:1.5px dashed var(--g4);display:grid;place-items:center}
+.fc-new b{font-size:13px;font-weight:500}
+.fan-rail{display:flex;align-items:center;gap:4px;margin:var(--h4) 0 var(--h16)}
+.fan-rail i{flex:1;height:2px;border-radius:2px;background:var(--g3);transition:background .3s,height .3s}
+.fan-rail i.dn{background:var(--g4)}
+.fan-rail i.on{background:var(--ink);height:3px}
+.fan-rail i.rl-new{flex:none;width:14px;height:14px;background:none;color:var(--g4);display:grid;place-items:center}
+.fan-rail i.rl-new.on{color:var(--ink);height:14px}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -1684,7 +1695,7 @@ function orbit() {
     ${[[20,315,10],[274,180,10],[240,473,4],[352,275,4],[305,577,10]].map(([x, y, r]) => `<span class="deco" style="left:${(x + OX).toFixed(1)}px;top:${y - OY}px;width:${r}px;height:${r}px" aria-hidden="true"></span>`).join('')}
     ${items.map(([t, done, act], k) => { const [x, y, r] = ORBIT[k];
       return `<button class="pc ${done ? 'done' : `todo sk-${ORBIT_SKIN[k]}`}${wig.has(t) ? ' wiggle' : ''}" style="${pos(x, y, r)}" ${act} aria-label="${t}${done ? ' · 완료' : ''}">${done ? `<span class="pk" aria-hidden="true">${ic('check', 10)}</span>` : ''}${t}</button>`; }).join('')}
-    <button class="pc new" style="${pos(...ORBIT_NEW)}" ${PG('plan', 'data-pv="goal"', '.ch-more', '함께 할 챌린지를 골라 ‘참여’를 눌러 주세요', 'data-chal="1"')} aria-label="새 실천 항목 추가">새 항목</button>
+    <button class="pc new" style="${pos(...ORBIT_NEW)}" ${NEW_ACT()} aria-label="새 실천 항목 추가">새 항목</button>
     <div class="oc"><div class="ow" aria-label="moafi">moafi</div><div class="ot">오늘의 실천 항목</div><div class="od">${P.d}</div></div>
   </section></div>`;
 }
@@ -1790,34 +1801,40 @@ const FAN_TILT = [-9, 7, -4, 11, -7, 5, -11];
 let fanAnim = 0, fanDr = null;
 const fanWrap = (d, n) => { d = ((d % n) + n) % n; return d > n / 2 ? d - n : d; };
 const pad2 = n => String(n).padStart(2, '0');
+const NEW_ACT = () => S.extras.has('chal')
+  ? PG('plan', 'data-pv="goal"', '.ch-more', '함께 할 챌린지를 골라 ‘참여’를 눌러 주세요', 'data-chal="1"')
+  : PG('plan', 'data-pv="goal"', '.extra-off', '‘챌린지 · 리그 · 배지 켜기’를 누르면 새 실천 항목을 더할 수 있어요');
 function fanItems() {
   const all = practiceItems().map(([t, done, act]) => ({ t, done:done(), act, m:P_META[t] || ['arrow', ''] }));
   return [...all.filter(x => !x.done), ...all.filter(x => x.done)];
 }
 function practiceFan() {
-  const xs = fanItems(), n = xs.length, doneN = xs.filter(x => x.done).length;
-  S.fanXs = xs; S.fanSel = -1; if (S.fanPos == null) S.fanPos = 0;
+  const items = fanItems(), n = items.length, doneN = items.filter(x => x.done).length;
+  const xs = [...items, { t:'새 항목 추가', isNew:true, act:NEW_ACT(), m:['plus', '챌린지를 고르거나 해 보고 싶은 실천을 더해요'] }];
+  S.fanXs = xs; S.fanN = n; S.fanSel = -1; if (S.fanPos == null) S.fanPos = 0; S.fanPos = Math.max(0, Math.min(xs.length - 1, S.fanPos));
   return `<section class="fan-sec" aria-label="오늘 할 일 ${n}개 중 ${doneN}개 완료">
     <div class="fan-stage" id="fanStage" tabindex="0" role="listbox" aria-label="오늘 할 일 카드">
-      ${xs.map((x, k) => `<button type="button" class="fc im${k % 7} ${x.done ? 'done' : ''}" data-k="${k}" role="option" aria-label="${pad2(k + 1)} ${x.t}${x.done ? ' · 완료' : ''}"><span class="ix">${pad2(k + 1)}</span>${x.done ? `<span class="ck"><span class="ck-i">${ic('check', 22)}</span><b>완료</b></span>` : ''}</button>`).join('')}
+      ${xs.map((x, k) => x.isNew ? `<button type="button" class="fc fc-new" data-k="${k}" role="option" aria-label="새 실천 항목 추가"><span class="fn-i">${ic('plus', 22)}</span><b>새 항목</b></button>`
+        : `<button type="button" class="fc im${k % 7} ${x.done ? 'done' : ''}" data-k="${k}" role="option" aria-label="${pad2(k + 1)} ${x.t}${x.done ? ' · 완료' : ''}"><span class="ix">${pad2(k + 1)}</span>${x.done ? `<span class="ck"><span class="ck-i">${ic('check', 22)}</span><b>완료</b></span>` : ''}</button>`).join('')}
     </div>
+    <div class="fan-rail" id="fanRail" aria-hidden="true">${xs.map((x, k) => x.isNew ? `<i class="rl-new">${ic('plus', 10)}</i>` : `<i class="${x.done ? 'dn' : ''}"></i>`).join('')}</div>
     <div class="fan-cap" id="fanCap"></div>
   </section>`;
 }
 function fanDraw() {
   const st = view.querySelector('#fanStage'); if (!st || !S.fanXs) return;
   const n = S.fanXs.length;
-  st.querySelectorAll('.fc').forEach(c => { const k = +c.dataset.k, d = fanWrap(k - S.fanPos, n), far = Math.abs(d), on = Math.max(0, 1 - far);
+  st.querySelectorAll('.fc').forEach(c => { const k = +c.dataset.k, d = k - S.fanPos, far = Math.abs(d), on = Math.max(0, 1 - far);
     c.style.transform = `translate3d(${(d * 90).toFixed(1)}px,${(Math.min(far, 1) * 6 - on * 12).toFixed(1)}px,${(on * 40 - far * 16).toFixed(1)}px) rotateZ(${(FAN_TILT[k % 7] * (1 - on)).toFixed(1)}deg) rotateY(${(-d * 9).toFixed(1)}deg) scale(${(1 + on * .06).toFixed(3)})`;
     c.style.zIndex = 100 - Math.round(far * 10); c.style.opacity = far > 3.4 ? 0 : 1; c.setAttribute('aria-selected', far < .5); });
-  const sel = ((Math.round(S.fanPos) % n) + n) % n;
-  if (sel !== S.fanSel) { S.fanSel = sel; fanCaption(sel); }
+  const sel = Math.max(0, Math.min(n - 1, Math.round(S.fanPos)));
+  if (sel !== S.fanSel) { S.fanSel = sel; fanCaption(sel); view.querySelectorAll('#fanRail i').forEach((r, j) => r.classList.toggle('on', j === sel)); }
 }
 function fanCaption(i) {
   const cap = view.querySelector('#fanCap'), x = S.fanXs[i], n = S.fanXs.length; if (!cap) return;
   cap.classList.add('swap'); clearTimeout(fanCaption.t);
   fanCaption.t = setTimeout(() => { const c2 = view.querySelector('#fanCap'); if (!c2) return;
-    c2.innerHTML = `<span class="fc-no">${pad2(i + 1)} / ${pad2(n)}</span><span class="fc-t">${x.t}</span><span class="fc-ds">${x.done ? '완료했어요' : x.m[1]}</span>
+    c2.innerHTML = `<span class="fc-no">${x.isNew ? '새 항목' : `${pad2(i + 1)} / ${pad2(S.fanN)}`}</span><span class="fc-t">${x.t}</span><span class="fc-ds">${x.done ? '완료했어요' : x.m[1]}</span>
       <button type="button" class="fc-go" hidden ${x.act}>${x.done ? '다시 보기' : '시작하기'}<i>${ic('arrow', 14)}</i></button>`;
     c2.classList.remove('swap'); }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 120);
 }
@@ -1828,17 +1845,20 @@ function fanTween(to, dur) {
   const step = now => { const k = Math.min(1, (now - t0) / dur); S.fanPos = from + (to - from) * ease(k); fanDraw(); if (k < 1) fanAnim = requestAnimationFrame(step); };
   fanAnim = requestAnimationFrame(step);
 }
-function fanGo(k) { const n = S.fanXs.length; let t = k; while (t - S.fanPos > n / 2) t -= n; while (S.fanPos - t > n / 2) t += n; fanTween(t, 520 + Math.abs(t - S.fanPos) * 110); }
-function fanIntro() { if (!view.querySelector('#fanStage')) return; const to = Math.round(S.fanPos || 0); S.fanPos = to - S.fanXs.length; fanDraw(); fanTween(to, 1700); }
+function fanGo(k) { const t = Math.max(0, Math.min(S.fanXs.length - 1, k)); fanTween(t, 520 + Math.abs(t - S.fanPos) * 110); }
+// 들어올 때는 오른쪽에서 밀려 들어와 1번에서 멈춘다(처음과 끝이 있는 줄)
+function fanIntro() { if (!view.querySelector('#fanStage')) return; const to = Math.round(S.fanPos || 0); S.fanPos = to - 4; fanDraw(); fanTween(to, 1500); }
 document.addEventListener('pointerdown', e => { const st = e.target.closest && e.target.closest('#fanStage'); if (!st) return;
   cancelAnimationFrame(fanAnim); fanDr = { st, x:e.clientX, p0:S.fanPos, moved:false, id:e.pointerId, card:e.target.closest('.fc'), h:[[performance.now(), e.clientX]] }; });
 document.addEventListener('pointermove', e => { const d = fanDr; if (!d) return; const dx = e.clientX - d.x;
   if (!d.moved && Math.abs(dx) > 5) { d.moved = true; try { d.st.setPointerCapture(d.id); } catch (er) {} }
-  if (!d.moved) return; S.fanPos = d.p0 - dx / 90; fanDraw(); d.h.push([performance.now(), e.clientX]); if (d.h.length > 6) d.h.shift(); });
+  if (!d.moved) return; const last = S.fanXs.length - 1; let q = d.p0 - dx / 90;
+  if (q < 0) q *= .3; if (q > last) q = last + (q - last) * .3;   // 양 끝에서는 고무줄처럼 버티고 되돌아간다
+  S.fanPos = q; fanDraw(); d.h.push([performance.now(), e.clientX]); if (d.h.length > 6) d.h.shift(); });
 const fanUp = () => { const d = fanDr; if (!d) return; fanDr = null;
-  if (!d.moved) { if (d.card) { const k = +d.card.dataset.k; if (k === S.fanSel && Math.abs(fanWrap(S.fanPos - k, S.fanXs.length)) < .3) { const g = view.querySelector('.fc-go'); g && g.click(); } else fanGo(k); } return; }
+  if (!d.moved) { if (d.card) { const k = +d.card.dataset.k; if (k === S.fanSel && Math.abs(S.fanPos - k) < .3) { const g = view.querySelector('.fc-go'); g && g.click(); } else fanGo(k); } return; }
   const [t0, x0] = d.h[0], [t1, x1] = d.h[d.h.length - 1], v = (x1 - x0) / Math.max(16, t1 - t0);
-  const target = Math.round(S.fanPos + Math.max(-2, Math.min(2, -v * 150 / 90)));
+  const target = Math.max(0, Math.min(S.fanXs.length - 1, Math.round(S.fanPos + Math.max(-2, Math.min(2, -v * 150 / 90)))));
   fanTween(target, 620 + Math.min(500, Math.abs(target - S.fanPos) * 120)); };
 document.addEventListener('pointerup', fanUp); document.addEventListener('pointercancel', fanUp);
 document.addEventListener('keydown', e => { if (!e.target.closest || !e.target.closest('#fanStage')) return;
