@@ -841,16 +841,10 @@ button.focus-strip{display:block;color:inherit}
 .hv-sw + .fan-sec{margin-top:var(--h4)}
 .hv-sw + .orbit-wrap{margin-top:0}
 
-/* 카드 보기: 새 항목 카드 · 위치 표시 막대(1~7 + 새 항목) */
+/* 카드 보기: 새 항목 카드 */
 .fc.fc-new{background:#FCFCFC;box-shadow:inset 0 0 0 1.5px var(--g3),0 18px 24px -18px rgba(0,0,0,.25);display:grid;place-content:center;justify-items:center;gap:10px;color:var(--ink)}
 .fc-new .fn-i{width:48px;height:48px;border-radius:50%;border:1.5px dashed var(--g4);display:grid;place-items:center}
 .fc-new b{font-size:13px;font-weight:500}
-.fan-rail{display:flex;align-items:center;gap:4px;margin:var(--h4) 0 var(--h16)}
-.fan-rail i{flex:1;height:2px;border-radius:2px;background:var(--g3);transition:background .3s,height .3s}
-.fan-rail i.dn{background:var(--g4)}
-.fan-rail i.on{background:var(--ink);height:3px}
-.fan-rail i.rl-new{flex:none;width:14px;height:14px;background:none;color:var(--g4);display:grid;place-items:center}
-.fan-rail i.rl-new.on{color:var(--ink);height:14px}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -1817,7 +1811,6 @@ function practiceFan() {
       ${xs.map((x, k) => x.isNew ? `<button type="button" class="fc fc-new" data-k="${k}" role="option" aria-label="새 실천 항목 추가"><span class="fn-i">${ic('plus', 22)}</span><b>새 항목</b></button>`
         : `<button type="button" class="fc im${k % 7} ${x.done ? 'done' : ''}" data-k="${k}" role="option" aria-label="${pad2(k + 1)} ${x.t}${x.done ? ' · 완료' : ''}"><span class="ix">${pad2(k + 1)}</span>${x.done ? `<span class="ck"><span class="ck-i">${ic('check', 22)}</span><b>완료</b></span>` : ''}</button>`).join('')}
     </div>
-    <div class="fan-rail" id="fanRail" aria-hidden="true">${xs.map((x, k) => x.isNew ? `<i class="rl-new">${ic('plus', 10)}</i>` : `<i class="${x.done ? 'dn' : ''}"></i>`).join('')}</div>
     <div class="fan-cap" id="fanCap"></div>
   </section>`;
 }
@@ -1828,7 +1821,7 @@ function fanDraw() {
     c.style.transform = `translate3d(${(d * 90).toFixed(1)}px,${(Math.min(far, 1) * 6 - on * 12).toFixed(1)}px,${(on * 40 - far * 16).toFixed(1)}px) rotateZ(${(FAN_TILT[k % 7] * (1 - on)).toFixed(1)}deg) rotateY(${(-d * 9).toFixed(1)}deg) scale(${(1 + on * .06).toFixed(3)})`;
     c.style.zIndex = 100 - Math.round(far * 10); c.style.opacity = far > 3.4 ? 0 : 1; c.setAttribute('aria-selected', far < .5); });
   const sel = Math.max(0, Math.min(n - 1, Math.round(S.fanPos)));
-  if (sel !== S.fanSel) { S.fanSel = sel; fanCaption(sel); view.querySelectorAll('#fanRail i').forEach((r, j) => r.classList.toggle('on', j === sel)); }
+  if (sel !== S.fanSel) { S.fanSel = sel; fanCaption(sel); }
 }
 function fanCaption(i) {
   const cap = view.querySelector('#fanCap'), x = S.fanXs[i], n = S.fanXs.length; if (!cap) return;
