@@ -1692,7 +1692,7 @@ function vPreview() {
 }
 // 연동 전(둘러보기): 데이터가 없는 상태를 그대로 보여 주고, 연동 없이 해 볼 수 있는 것을 안내
 function vEmpty() {
-  const T = { home:['', ''], spend:['지출', '가계부 · 분석 · 예산'], plan:['자산', '통장 · 목표 · 자동 설정'], learn:['알기', '한입 금융 · 팁과 소식'] }[S.tab];
+  const T = { home:['', ''], spend:['지출', '가계부 · 분석 · 예산'], plan:['자산', '통장 · 목표 · 자동 설정'], learn:['지식', '한입 금융 · 팁과 소식'] }[S.tab];
   const msg = { home:['계좌를 연동하면<br>오늘 쓸 수 있는 금액을 알려 드려요', '예산 · 지출 · 목표가 연동한 계좌 기준으로 채워져요.'],
     spend:['연동하면 결제 내역이<br>자동으로 기록돼요', '가계부 · 분석 · 예산은 연동 후에 열려요.'],
     plan:['연동하면 통장 용도에 맞춰<br>목표와 자동 설정을 제안해요', '계좌마다 용도를 직접 정한 뒤 시작해요.'], }[S.tab];
@@ -1850,7 +1850,7 @@ function practiceToday() {
 }
 /* 다른 탭으로 보낸 뒤 지금 위치를 알려 주는 머리말 */
 const SUB_NAME = { spend:{ list:'가계부', analysis:'분석', budget:'예산' }, plan:{ bank:'통장', goal:'목표', rule:'자동 설정' }, learn:{ bite:'한입 금융', tips:'팁과 소식' } };
-const TAB_LABEL = { home:'홈', spend:'지출', plan:'자산', learn:'알기', benefit:'혜택' };
+const TAB_LABEL = { home:'홈', spend:'지출', plan:'자산', learn:'지식', benefit:'혜택' };
 function crumbHTML() {
   const sv = { spend:S.spendView, plan:S.planView, learn:S.learnView }[S.tab], sub = sv && SUB_NAME[S.tab] ? SUB_NAME[S.tab][sv] : '';
   return `<div class="crumb"><button data-act="back" aria-label="${TAB_LABEL[S.from.tab]}으로 돌아가기">${ic('chevL', 16)}${TAB_LABEL[S.from.tab]}</button><span>지금 여기 <b>${TAB_LABEL[S.tab]}${sub ? ` › ${sub}` : ''}</b></span></div>`;
@@ -1997,8 +1997,8 @@ function knowCards() {
   const total = recs.length;
   const card = (c, k) => { const done = conceptDone(c);
     return `<div class="card ${done ? 'na-done' : 'c-sky'} na-card">
-    <div class="na-head"><span>금융 상식${total > 1 ? ` ${k + 1}/${total}` : ''}</span>${done ? `<span class="na-chip done">${ic('check', 10)}완료</span>` : `<button class="na-chip" data-act="tab" data-tab="learn" data-lv="bite" aria-label="알기에서 ${areaName(c.a)} 보기">${areaName(c.a)}</button>`}</div>
-    <div class="na-body"><div><div class="na-title">${c.q}</div><p class="na-desc">${c.k} · 1분이면 돼요<br>${unk.has(c.a) ? '진단에서 ‘잘 모르겠어요’를 고른 영역이에요' : c.a === fa ? '지금 집중할 영역과 이어지는 개념이에요' : '알기에서 더 많은 개념을 볼 수 있어요'}</p></div>
+    <div class="na-head"><span>금융 상식${total > 1 ? ` ${k + 1}/${total}` : ''}</span>${done ? `<span class="na-chip done">${ic('check', 10)}완료</span>` : `<button class="na-chip" data-act="tab" data-tab="learn" data-lv="bite" aria-label="지식에서 ${areaName(c.a)} 보기">${areaName(c.a)}</button>`}</div>
+    <div class="na-body"><div><div class="na-title">${c.q}</div><p class="na-desc">${c.k} · 1분이면 돼요<br>${unk.has(c.a) ? '진단에서 ‘잘 모르겠어요’를 고른 영역이에요' : c.a === fa ? '지금 집중할 영역과 이어지는 개념이에요' : '지식 탭에서 더 많은 개념을 볼 수 있어요'}</p></div>
       ${done ? `<span class="ib na-go done" aria-label="${c.k} 읽음">${ic('check', 22)}</span>` : `<button class="ib na-go" data-act="concept" data-v="${c.id}" aria-label="${c.k} 알아보기">${ic('ur', 22)}</button>`}</div>
   </div>`; };
   return `<div class="na-wrap"><div class="na-track" onscroll="naDots(this)">${recs.map(card).join('')}</div>
@@ -2668,7 +2668,7 @@ function vGoal() {
    ========================================================= */
 function vLearn() {
   const tips = S.extras.has('tips'), lv = tips ? S.learnView : 'bite';
-  const head = `<header class="top"><div><div class="ph-title">알기</div><div class="ph-sub">${tips ? '한입 금융 · 팁과 소식' : '1분이면 읽는 금융 개념'}</div></div></header>
+  const head = `<header class="top"><div><div class="ph-title">지식</div><div class="ph-sub">${tips ? '한입 금융 · 팁과 소식' : '1분이면 읽는 금융 개념'}</div></div></header>
   ${tips ? '' : '<!--'}<div class="utabs" role="tablist">${[['bite','한입 금융'],['tips','팁과 소식']].map(([k, n]) => `<button class="${lv === k ? 'on' : ''}" data-act="lv" data-v="${k}" role="tab" aria-selected="${lv === k}">${n}</button>`).join('')}</div>${tips ? '' : '-->'}`;
   if (lv === 'tips') return head + `
   <section style="margin-top:16px">
@@ -2898,8 +2898,8 @@ function aiAnswer(q) {
 /* =========================================================
    render
    ========================================================= */
-const SCREEN_NAME = k => ({ ob0:'진단 시작', ob1:'자기평가', ob2:'진단 문항', ob3:'진단 결과', subdiag:'내 진단 결과', sublink:'계좌 연동 · 용도 확인', tabhome:'홈', tabspend:'지출', tabplan:'자산', tablearn:'알기', tabbenefit:'혜택' }[k] || k);
-const TABS = [ ['home','홈','tHome'], ['spend','지출','tWallet'], ['plan','자산','tStack'], ['learn','알기','tNotes'], ['benefit','혜택','tGift'] ];
+const SCREEN_NAME = k => ({ ob0:'진단 시작', ob1:'자기평가', ob2:'진단 문항', ob3:'진단 결과', subdiag:'내 진단 결과', sublink:'계좌 연동 · 용도 확인', tabhome:'홈', tabspend:'지출', tabplan:'자산', tablearn:'지식', tabbenefit:'혜택' }[k] || k);
+const TABS = [ ['home','홈','tHome'], ['spend','지출','tWallet'], ['plan','자산','tStack'], ['learn','지식','tNotes'], ['benefit','혜택','tGift'] ];
 const screen = document.getElementById('screen'), view = document.getElementById('view');
 let learnRaf = 0;
 view.addEventListener('scroll', () => { cancelAnimationFrame(learnRaf); learnRaf = requestAnimationFrame(learnActive); }, { passive:true });
@@ -3321,7 +3321,7 @@ document.querySelector('#aiDock [type="submit"]').innerHTML = ic('send', 20);
 /* ---------- side panel ---------- */
 function renderPanel() {
   const cur = S.mode === 'onboard' ? 'ob' + S.ob : S.sub === 'diag' ? 'diag' : S.sub === 'link' ? 'link' : !S.linked && S.tab === 'home' ? 'empty' : S.tab === 'spend' ? 'spend-' + S.spendView : S.tab === 'plan' ? 'plan-' + S.planView : S.tab === 'learn' ? 'learn-' + S.learnView : S.tab;
-  const sc = [ ['ob0','진단 시작'], ['ob1','자기평가'], ['ob2','진단 문항'], ['ob3','진단 결과'], ['diag','내 진단 결과'], ['link','계좌 연동 · 용도 확인'], ['empty','홈 · 연동 전'], ['home','홈'], ['spend-list','지출 · 가계부'], ['spend-analysis','지출 · 분석·영수증'], ['spend-budget','지출 · 예산'], ['plan-bank','자산 · 통장'], ['plan-goal','자산 · 목표'], ['plan-rule','자산 · 자동 설정'], ['learn-bite','알기 · 한입 금융'], ['learn-tips','알기 · 팁과 소식'], ['benefit','혜택'] ];
+  const sc = [ ['ob0','진단 시작'], ['ob1','자기평가'], ['ob2','진단 문항'], ['ob3','진단 결과'], ['diag','내 진단 결과'], ['link','계좌 연동 · 용도 확인'], ['empty','홈 · 연동 전'], ['home','홈'], ['spend-list','지출 · 가계부'], ['spend-analysis','지출 · 분석·영수증'], ['spend-budget','지출 · 예산'], ['plan-bank','자산 · 통장'], ['plan-goal','자산 · 목표'], ['plan-rule','자산 · 자동 설정'], ['learn-bite','지식 · 한입 금융'], ['learn-tips','지식 · 팁과 소식'], ['benefit','혜택'] ];
   document.getElementById('navScreens').innerHTML = sc.map(([k, n]) => `<button type="button" class="${cur === k ? 'on' : ''}" data-go="${k}">${n}</button>`).join('');
   document.getElementById('navPersona').innerHTML = Object.entries(PERSONA).map(([k, p]) => `<button type="button" class="${S.persona === k ? 'on' : ''}" data-persona="${k}">${p.name}</button>`).join('');
   document.getElementById('navScen').innerHTML = [ ['pay','결제 발생 → 실시간 피드백'], ['income','외주비 입금 → 배분'], ['settle','더치페이 정산'], ['withdraw','저축 인출 확인'], ['ai','AI 조언 묻기'] ].map(([k, n]) => `<button type="button" data-scen="${k}">${n}</button>`).join('');
