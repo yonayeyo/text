@@ -845,6 +845,21 @@ button.focus-strip{display:block;color:inherit}
 .fc.fc-new{background:#FCFCFC;box-shadow:inset 0 0 0 1.5px var(--g3),0 18px 24px -18px rgba(0,0,0,.25);display:grid;place-content:center;justify-items:center;gap:10px;color:var(--ink)}
 .fc-new .fn-i{width:48px;height:48px;border-radius:50%;border:1.5px dashed var(--g4);display:grid;place-items:center}
 .fc-new b{font-size:13px;font-weight:500}
+
+/* 가계부 달력 · 챌린지 */
+.ld{position:relative}
+.ld .ld-ch{position:absolute;right:5px;top:6px;display:flex;gap:2px}
+.ld .ld-ch u{width:5px;height:5px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--cc),0 0 0 1px rgba(255,255,255,.85);background:transparent}
+.ld .ld-ch u.y{background:var(--cc)}
+.lc-chal{margin-top:var(--h16,16px);padding-top:var(--h16,16px);border-top:1px solid var(--line);display:grid;gap:4px}
+.lcc{display:grid;grid-template-columns:10px 1fr auto 20px;gap:12px;align-items:center;padding:10px 0}
+.lcc + .lcc{border-top:1px solid var(--g2)}
+.lcc-dot{width:10px;height:10px;border-radius:50%;background:var(--cc)}
+.lcc-tx{display:grid;gap:2px;min-width:0}
+.lcc-x{color:var(--g4);display:grid;place-items:center}
+.lcc-more{border-radius:16px;background:var(--g2);padding:4px 14px;margin-top:4px}
+.lcc-more .lcc{grid-template-columns:10px 1fr auto}
+.lcc-add{display:inline-flex;align-items:center;gap:6px;justify-self:start;height:32px;margin-top:4px;font-size:13px;color:var(--g6)}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -1077,7 +1092,7 @@ const S = {
   goalSaved:2300000, emergency:1100000, wAmt:200000,
   goalSel:'indep', goals:[ { id:'indep', n:'독립 준비 자금', target:5000000, saved:2300000, due:'2027.06' }, { id:'trip', n:'오사카 여행', target:1200000, saved:420000, due:'2027.02' }, { id:'emer', n:'비상금', target:2400000, saved:1100000, due:'2027.03' } ],
   gNew:{ type:'전세 자금', amt:10000000, months:24 },
-  cert:false, printed:new Set(), chalOn:['zero','cafe'], chalCert:new Set(), chalPick:'all', calOpen:false, league:'all', liked:new Set(), benefitMoved:false, deductOk:false, pointsMoved:false, interest:new Set(),
+  cert:false, printed:new Set(), chalOn:['zero'], chalCert:new Set(), chalPick:'all', calOpen:false, league:'all', liked:new Set(), benefitMoved:false, deductOk:false, pointsMoved:false, interest:new Set(),
   switches:{ pre:true, emer:true, budget:true, fixed:false },
   extras:new Set(), todayMore:false, from:null, deckOpen:false,
   chat:[], flowSel:null, topSel:null, topView:'circle', acctSel:null, cutApplied:null,
@@ -1643,8 +1658,8 @@ const P_DEDUCT = ['연말정산 카드 확인', () => S.deductOk,
 const P_FIXED = ['매달 나가는 돈', () => S.fixedSet, PG('plan', 'data-pv="rule"', '#fixedCard', '자동으로 찾은 4건이 맞는지 보고 ‘맞아요, 4건 등록’을 눌러 주세요')];
 const P_CUT = ['줄이기 제안 담기', () => S.applied.size > 0 || !!S.cutApplied, PG('spend', 'data-sv="budget"', '#cutPlan', '해 볼 제안을 눌러 담고 ‘11월 예산에 반영’을 눌러 주세요', 'data-more="1"')];
 const P_RECEIPT = ['영수증 출력', () => S.printed.size > 0, PG('spend', 'data-sv="analysis"', '#receiptSec', '‘출력하기’를 눌러 9월 영수증을 뽑아 보세요')];
-const P_ZERO = ['무지출 데이', () => S.chalCert.has('zero'), PG('plan', 'data-pv="goal"', '[data-act="chalCert"][data-v="zero"]', '오늘 한 푼도 쓰지 않았다면 ‘오늘 인증’을 눌러 주세요'), 'chal'];
-const P_CAFE = ['텀블러 인증', () => S.chalCert.has('cafe'), PG('plan', 'data-pv="goal"', '[data-act="chalCert"][data-v="cafe"]', '오늘 카페·간식 결제가 없었다면 ‘오늘 인증’을 눌러 주세요'), 'chal'];
+const P_ZERO = ['무지출 데이', () => S.chalCert.has('zero'), PG('spend', 'data-sv="list"', '[data-act="chalCert"][data-v="zero"]', '오늘 한 푼도 쓰지 않았다면 ‘오늘 인증’을 눌러 주세요'), 'chal:zero'];
+const P_CAFE = ['텀블러 인증', () => S.chalCert.has('cafe'), PG('spend', 'data-sv="list"', '[data-act="chalCert"][data-v="cafe"]', '오늘 카페·간식 결제가 없었다면 ‘오늘 인증’을 눌러 주세요'), 'chal:cafe'];
 const P_ALLOC = ['외주비 나누기', () => S.allocDone, 'data-act="sheet" data-sheet="alloc"'];
 const P_COMPARE = t => [t, () => S.seen.has('sheet-compare'), 'data-act="sheet" data-sheet="compare"'];
 const PRACTICE = {
@@ -1696,7 +1711,7 @@ function orbit() {
 // 오늘의 실천 항목: 첫 주 할 일 + 유형별 행동 추천 + 참여 중인 챌린지 인증을 한곳에
 
 /* 서브 기능: 기본은 꺼 두고, 원하는 사람만 켠다 (메뉴 › 추가 기능에서도 켜고 끌 수 있음) */
-const EXTRAS = { chal:['챌린지 · 리그 · 배지', '무지출 데이처럼 작은 실천을 인증하고 순위를 봐요'], tips:['팁과 소식', '다른 사람들의 절약 팁과 청년 정책 소식을 봐요'] };
+const EXTRAS = { tips:['팁과 소식', '다른 사람들의 절약 팁과 청년 정책 소식을 봐요'] };
 const extraOff = k => `<button class="card c-dash extra-off mt32" data-act="extraOn" data-v="${k}"><span class="ib" style="background:var(--paper)">${ic('plus', 18)}</span><span><span class="t14" style="display:block;font-weight:600">${EXTRAS[k][0]} 켜기</span><span class="t12 mute">${EXTRAS[k][1]}</span></span></button>`;
 /* 오늘 할 일: 하나를 크게, 다음 두 개는 작게, 나머지는 접어 둔다 */
 const P_META = {
@@ -1715,7 +1730,8 @@ const P_FILL = [P_RECEIPT,
   ['한입 금융', () => S.bitesDone.size + S.conceptDone.size > 0, PG('learn', 'data-lv="bite"', '.lr-row', '개념 하나를 눌러 읽고 ‘이해했어요’를 눌러 주세요')],
   P_DEDUCT, P_ALLOC];
 const practiceItems = () => {
-  const base = PRACTICE[S.persona].items, keep = base.map(i => !i[3] || S.extras.has(i[3]) ? i : null);
+  const on = t => !t || (t.startsWith('chal:') ? S.chalOn.includes(t.slice(5)) : S.extras.has(t));
+  const base = PRACTICE[S.persona].items, keep = base.map(i => on(i[3]) ? i : null);
   const used = new Set(keep.filter(Boolean).map(i => i[0])), pool = P_FILL.filter(i => !used.has(i[0]));
   return keep.map(i => i || pool.shift()).filter(Boolean).slice(0, 7);
 };
@@ -1795,9 +1811,7 @@ const FAN_TILT = [-9, 7, -4, 11, -7, 5, -11];
 let fanAnim = 0, fanDr = null;
 const fanWrap = (d, n) => { d = ((d % n) + n) % n; return d > n / 2 ? d - n : d; };
 const pad2 = n => String(n).padStart(2, '0');
-const NEW_ACT = () => S.extras.has('chal')
-  ? PG('plan', 'data-pv="goal"', '.ch-more', '함께 할 챌린지를 골라 ‘참여’를 눌러 주세요', 'data-chal="1"')
-  : PG('plan', 'data-pv="goal"', '.extra-off', '‘챌린지 · 리그 · 배지 켜기’를 누르면 새 실천 항목을 더할 수 있어요');
+const NEW_ACT = () => PG('spend', 'data-sv="list"', '#ledChal', '함께 할 챌린지를 골라 ‘참여’를 눌러 주세요', 'data-chal="1"');
 function fanItems() {
   const all = practiceItems().map(([t, done, act]) => ({ t, done:done(), act, m:P_META[t] || ['arrow', ''] }));
   return [...all.filter(x => !x.done), ...all.filter(x => x.done)];
@@ -2205,10 +2219,12 @@ function vLedger() {
   const lv = a => a == null ? 'fut' : a === 0 ? 'l0' : a <= lim / 2 ? 'l1' : a <= lim ? 'l2' : a <= lim * 1.5 ? 'l3' : 'l4';
   const short = a => a >= 10000 ? (a / 10000).toFixed(1).replace(/\.0$/, '') + '만' : (a / 1000).toFixed(1).replace(/\.0$/, '') + '천';
   const zeroN = OCT_DAILY.filter(a => a === 0).length, overN = OCT_DAILY.filter(a => a > lim).length;
+  const chs = CHALS.filter(c => S.chalOn.includes(c.id)), cOk = (c, d) => d < T ? c.ok(d) : d === T ? (c.id === 'coin' || S.chalCert.has(c.id)) : null;
+  const dots = d => chs.length && d <= T ? `<span class="ld-ch" aria-hidden="true">${chs.map(c => `<u class="${cOk(c, d) ? 'y' : ''}" style="--cc:${CH_COL[c.id]}"></u>`).join('')}</span>` : '';
   const cells = ['일','월','화','수','목','금','토'].map(w => `<span class="wd">${w}</span>`).join('') + '<span></span>'.repeat(4)
     + Array.from({ length:31 }, (_, i) => { const d = i + 1, a = amt(d), sel = S.ledDay === d;
       return a == null ? `<span class="ld fut"><b>${d}</b></span>`
-        : `<button class="ld ${d === T ? 'today' : lv(a)}${sel ? ' sel' : ''}" data-act="ledDay" data-v="${d}" aria-pressed="${sel}" aria-label="10월 ${d}일 ${a ? won(a) + '원' : '무지출'}"><b>${d}</b>${a || d === T ? '' : '<span class="ld-star" aria-hidden="true">✦</span>'}<i>${a ? short(a) : d === T ? '오늘' : '무지출'}</i></button>`; }).join('');
+        : `<button class="ld ${d === T ? 'today' : lv(a)}${sel ? ' sel' : ''}" data-act="ledDay" data-v="${d}" aria-pressed="${sel}" aria-label="10월 ${d}일 ${a ? won(a) + '원' : '무지출'}"><b>${d}</b>${a || d === T || chs.length ? '' : '<span class="ld-star" aria-hidden="true">✦</span>'}<i>${a ? short(a) : d === T ? '오늘' : '무지출'}</i>${dots(d)}</button>`; }).join('');
   const d = S.ledDay, a = amt(d), tx = OCT_TX[d] || [], wd = ['일','월','화','수','목','금','토'][(d + 3) % 7];
   const diff = a - lim;
   const rows = tx.map(([t, n, c, v, memo]) => `<div class="lrow"><span class="ib">${ic(CAT_IC[c] || 'receipt', 18)}</span>
@@ -2221,10 +2237,21 @@ function vLedger() {
       <div class="ledcal mt16" role="group" aria-label="10월 지출 달력">${cells}</div>
       <div class="row between mt16 t10 mute"><span>하루 예산 ${won(lim)}원 기준</span>
         <span class="row g8"><span class="row g4"><i class="lg l0z"></i>무지출</span><span class="row g4">적게<i class="lg l1"></i><i class="lg l2"></i><i class="lg l3"></i><i class="lg l4"></i>많이</span></span></div>
+      <div class="lc-chal" id="ledChal">
+        <div class="row between"><span class="t14">챌린지</span><span class="t10 mute">${chs.length ? '칸 오른쪽 위 점 = 성공한 날' : '달력에 매일 성공 여부가 표시돼요'}</span></div>
+        ${chs.map(c => { const cert = c.id === 'coin' || S.chalCert.has(c.id), n = Array.from({ length:T - 1 }, (_, k) => c.ok(k + 1)).filter(Boolean).length + (cert ? 1 : 0);
+          return `<div class="lcc"><i class="lcc-dot" style="--cc:${CH_COL[c.id]}"></i><span class="lcc-tx"><span class="t14">${c.n}</span><span class="t10 mute">${c.goal} · 10월 ${n}일 성공</span></span>
+            ${c.id === 'coin' ? '<span class="tag line">자동 인증</span>' : `<button class="btn sm ${cert ? 'ghost' : ''}" data-act="chalCert" data-v="${c.id}">${cert ? ic('check', 14) + '오늘 완료' : '오늘 인증'}</button>`}
+            <button class="lcc-x" data-act="chalLeave" data-v="${c.id}" aria-label="${c.n} 그만하기">${ic('close', 14)}</button></div>`; }).join('')}
+        ${S.chalMore ? `<div class="lcc-more">${CHALS.filter(c => !S.chalOn.includes(c.id)).map(c => `<div class="lcc"><i class="lcc-dot" style="--cc:${CH_COL[c.id]}"></i><span class="lcc-tx"><span class="t14">${c.n}</span><span class="t10 mute">${c.goal} · ${won(c.ppl)}명 참여 중</span></span>
+            <button class="btn sm ${S.chalOn.length >= 3 ? 'ghost' : ''}" data-act="chalJoin" data-v="${c.id}" ${S.chalOn.length >= 3 ? 'disabled style="opacity:.4"' : ''}>참여</button></div>`).join('')}
+            ${S.chalOn.length >= 3 ? '<p class="t10 mute">3개까지 함께 할 수 있어요. 하나를 그만두면 새로 참여할 수 있어요.</p>' : ''}</div>` : ''}
+        <button class="lcc-add" data-act="chalMore" aria-expanded="${!!S.chalMore}">${ic(S.chalMore ? 'minus' : 'plus', 14)}${S.chalMore ? '닫기' : '챌린지 추가'}</button>
+      </div>
     </div>
   </section>
   <section class="sec">
-    <div class="sec-h"><div><div class="t18">${a ? won(a) + '원' : d === T ? '아직 쓴 돈이 없어요' : '무지출 데이'}</div><div class="sec-d">10월 ${d}일 ${wd}요일${d === T ? ' · 오늘' : ''}</div></div>
+    <div class="sec-h"><div><div class="t18">${a ? won(a) + '원' : d === T ? '아직 쓴 돈이 없어요' : '무지출 데이'}</div><div class="sec-d">10월 ${d}일 ${wd}요일${d === T ? ' · 오늘' : ''}${chs.length ? ' · ' + chs.map(c => `${c.s} ${cOk(c, d) ? '성공' : d === T ? '인증 전' : '실패'}`).join(' · ') : ''}</div></div>
       ${a ? `<span class="tag ${diff > 0 ? 'dash' : 'line'}">하루 예산보다 ${won(Math.abs(diff))}원 ${diff > 0 ? '더' : '덜'}</span>` : ''}</div>
     ${tx.length ? `<div class="card c-paper" style="padding:8px 20px">${rows}</div>`
       : `<div class="card c-paper"><p class="t14">${d === T ? `오늘 쓸 수 있는 돈은 ${W(D().daily)}이에요.` : '✦ 이날은 한 푼도 쓰지 않았어요.'}</p></div>`}
@@ -2333,7 +2360,7 @@ function vPlan(pvOver, noHead) {
   const locked = !!S.cutApplied;
   const head = noHead ? '' : `<header class="top"><div><div class="ph-title">저축${areaTag('plan')}</div><div class="ph-sub">통장 · 목표 · 자동 저축</div></div><button class="ib glass" data-act="sheet" data-sheet="menu" aria-label="설정 메뉴">${ic('sliders', 20)}</button></header>
   <div class="utabs" role="tablist">${[['bank','통장'],['goal','목표'],['rule','자동 저축']].map(([k, n]) => `<button class="${pv === k ? 'on' : ''}" data-act="pv" data-v="${k}" role="tab" aria-selected="${pv === k}">${n}</button>`).join('')}</div>`;
-  if (pv === 'goal') return head + vGoal() + (S.extras.has('chal') ? vChal() : extraOff('chal'));
+  if (pv === 'goal') return head + vGoal();
   // 예산: 이번 달 예산 현황 · 카테고리별 배분 · 줄이기 계획
   if (pv === 'budget') return head + `<div class="mt16">${projCard()}</div>` + (S.persona === 'habit' ? '' : planLead()) + `
   <div class="bsum">
@@ -2487,6 +2514,7 @@ function planActual() {
   </svg>` };
 }
 /* 챌린지: 여러 챌린지 중 골라 참여(최대 3개) → 달력에서 참여한 챌린지의 날짜별 성공 여부 → 전체/친구 리그 순위 */
+const CH_COL = { zero:'#181818', cafe:'#2F6BFF', deliv:'#FF60E4', taxi:'#16A37B', coin:'#F2A33A' };
 const CHALS = [
   { id:'zero',  n:'무지출 데이',        s:'무지출',   goal:'한 푼도 안 쓰는 날 · 주 2회',   ppl:1284, i:'spark',  ok:d => OCT_DAILY[d - 1] === 0 },
   { id:'cafe',  n:'카페 대신 텀블러',    s:'텀블러',   goal:'카페·간식 결제 없는 날',        ppl:862,  i:'coffee', ok:d => !(OCT_TX[d] || []).some(t => t[2] === '카페·간식') },
@@ -3173,7 +3201,7 @@ document.addEventListener('click', e => {
       S.goals.push({ id, n:g.type, target:g.amt, saved:0, due:`${t.getFullYear()}.${String(t.getMonth() + 1).padStart(2, '0')}` }); S.goalSel = id; closeSheet(); render(); simpleToast(`${g.type} 목표를 만들었어요`); break; }
     case 'cert': S.cert = !S.cert; render(); break;
     case 'chalCert': S.chalCert.has(v) ? S.chalCert.delete(v) : S.chalCert.add(v); render(); break;
-    case 'chalJoin': if (S.chalOn.length < 3 && !S.chalOn.includes(v)) S.chalOn.push(v); render(); simpleToast(`‘${CHALS.find(c => c.id === v).n}’ 챌린지에 참여했어요`); break;
+    case 'chalJoin': if (S.chalOn.length < 3 && !S.chalOn.includes(v)) S.chalOn.push(v); S.chalMore = false; render(); simpleToast(`‘${CHALS.find(c => c.id === v).n}’ 챌린지에 참여했어요`); break;
     case 'chalLeave': S.chalOn = S.chalOn.filter(x => x !== v); S.chalCert.delete(v); if (S.chalPick === v) S.chalPick = 'all'; render(); break;
     case 'chalPick': S.chalPick = v; render(); break;
     case 'chalMore': S.chalMore = !S.chalMore; render(); break;
