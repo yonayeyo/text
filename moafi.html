@@ -1798,8 +1798,8 @@ function accountsTree() {
 function accountsCard(home) {
   return `<div class="card c-paper">
       ${home ? `<button class="row between" style="width:100%;text-align:left" data-act="tab" data-tab="plan" data-pv="bank"><span class="t14">자산 구성</span><span class="row g4 t10 mute">6개 계좌${ic('arrow', 14)}</span></button>`
-        : `<div class="row between"><span class="t14">자산 구성</span><button class="row g4 t10 mute" data-act="sheet" data-sheet="accounts" aria-label="계좌 ${ACCOUNTS.length}개와 용도 보기">${ACCOUNTS.length}개 계좌${ic('arrow', 14)}</button></div>`}
-      <div class="row between mt12" style="align-items:baseline"><span class="t12 mute">통합 자산</span><span class="n24" id="tmTotal">${won(home ? ACCOUNTS.reduce((t, a) => t + a.a, 0) : tmTotal(S.tmIdx ?? TM_MONTHS.length - 1))}<span class="cur t12">₩</span></span></div>
+        : ''}
+      <div class="row between ${home ? 'mt12' : ''}" style="align-items:baseline"><span class="t12 mute">통합 자산</span><span class="n24" id="tmTotal">${won(home ? ACCOUNTS.reduce((t, a) => t + a.a, 0) : tmTotal(S.tmIdx ?? TM_MONTHS.length - 1))}<span class="cur t12">₩</span></span></div>
       ${home ? '' : `<div class="t12 mute tm-delta" id="tmDelta">${tmDelta(S.tmIdx ?? TM_MONTHS.length - 1)}</div>`}
       ${home ? accountsBlock() : accountsTree()}
     </div>`;
@@ -2648,7 +2648,7 @@ function vPlan(pvOver, noHead) {
   </section>`}`; }
   // 통장: 용도별 통장 · 비상금 · 저축 꺼내기 · 투자
   if (pv === 'bank') return head + (S.persona === 'habit' ? planLead() : '') + `
-  <section class="mt16" id="assetCard">${accountsCard(false)}</section>
+  <section class="mt24" id="assetCard"><div class="sec-h"><div><div class="t18">자산 구성</div><div class="sec-d">계좌별 잔액 · 12개월 흐름</div></div><button class="row g4 t12 mute" style="margin-top:4px" data-act="sheet" data-sheet="accounts" aria-label="계좌 ${ACCOUNTS.length}개와 용도 보기">${ACCOUNTS.length}개 계좌${ic('arrow', 14)}</button></div>${accountsCard(false)}</section>
   ${S.persona === 'habit' ? '' : `<div class="mt24">${bite('comp')}</div>`}
   <section class="sec">
     <div class="sec-h"><div class="t18">목표 자금 인출</div></div>
