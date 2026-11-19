@@ -68,12 +68,61 @@ section{margin-top:72px}
 .next{margin-top:72px;padding:28px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
 .next ol{margin:12px 0 0;padding-left:20px;display:grid;gap:6px}
 @media (max-width:560px){.read .card{grid-template-columns:1fr}.logo-stage > div{height:100px}}
+
+.roles{display:grid;gap:8px;margin-top:14px}
+.role{display:grid;grid-template-columns:36px 92px 1fr;gap:12px;align-items:center;font-size:13px}
+.role i{width:36px;height:36px;border-radius:10px;border:1px solid var(--line)}
+.role code{font-family:var(--f-mono);font-size:12px;color:var(--mute)}
+.mock2{margin-top:14px;border-radius:24px;padding:16px;background:#FAFAFA;color:#25333B;display:grid;gap:10px;font-family:var(--f-kr)}
+.mock2 .h{display:flex;justify-content:space-between;align-items:center;font-size:11px}
+.mock2 .bell{width:28px;height:28px;border-radius:50%;background:#fff;border:1px solid #E9ECEF;position:relative}
+.mock2 .bell::after{content:"";position:absolute;top:5px;right:6px;width:6px;height:6px;border-radius:50%;background:#FF46A9}
+.mock2 .hero{border-radius:16px;padding:14px;background:#D6E7FF}
+.mock2 .card2{border-radius:14px;padding:12px;background:#fff}
+.mock2 .t{font-size:13px;font-weight:700}.mock2 .s{font-size:10px;color:#6B7880}
+.mock2 .big{font-family:var(--f-num);font-weight:300;font-size:40px;line-height:1;letter-spacing:-.03em;margin-top:8px}
+.mock2 .tm{display:grid;grid-template-columns:1.5fr 1fr 1fr;grid-template-rows:42px 28px;gap:4px;margin-top:8px}
+.mock2 .tm i{border-radius:6px}.mock2 .tm i:first-child{grid-row:1/3}
+.mock2 .bar{height:6px;border-radius:3px;background:#EEF0F2;margin-top:8px;position:relative;overflow:hidden}
+.mock2 .bar i{position:absolute;inset:0 54% 0 0;background:#7A59FF;border-radius:3px}
+.mock2 .chips{display:flex;gap:6px;align-items:center}
+.mock2 .chip{height:22px;padding:0 9px;border-radius:999px;display:inline-flex;align-items:center;font-size:10px;font-weight:700}
+.mock2 .nav{height:40px;border-radius:999px;background:#25333B;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;padding:4px}
+.mock2 .nav span{height:32px;border-radius:999px;display:grid;place-items:center;font-size:9px;color:#fff;opacity:.6}
+.mock2 .nav span.on{opacity:1;background:rgba(255,255,255,.14);font-weight:700}
+.lg-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
+.lg-row > div{height:96px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--line);white-space:nowrap}
+.lg-row small{display:block;text-align:center;margin-top:6px;font-size:11px;color:var(--mute)}
+@media (max-width:720px){.lg-row{grid-template-columns:1fr}}
 </style>
 
 <div class="wrap">
   <div class="eyebrow">moafi · brand exploration 01</div>
   <h1>moafi, 어떻게 읽을까</h1>
   <p class="lead">이름에서 읽을 수 있는 뜻 네 가지를 정리하고, 그 뜻을 세 가지 브랜드 방향으로 묶었어요. 색과 로고 후보는 같은 앱 화면 위에 놓아 비교할 수 있게 했어요. 마음에 드는 조합을 골라 주시면 그 방향으로 디자인 시스템을 다듬을게요.</p>
+
+  <section id="pick" style="margin-top:56px">
+    <div class="eyebrow">고른 조합 · 02</div>
+    <h2 style="margin-top:6px">블루 · 바이올렛 · 핑크 + 소문자 워드마크</h2>
+    <p class="sec-d">보내 주신 9가지 색을 역할로 나눴어요. 예전 3색 시안이 난잡했던 이유는 세 색을 장식으로 섞어 썼기 때문이라, 이번에는 색마다 맡는 일을 하나로 정하고 화면의 대부분은 흰색 · 회색으로 두었어요.</p>
+    <div class="grid g2">
+      <div class="card">
+        <h3>색 역할</h3>
+        <div class="roles" id="roles"></div>
+        <p class="note">규칙: 한 화면에 색이 들어간 바탕(연한 블루 · 바이올렛 · 핑크) 카드는 하나만. 진한 색 세 가지는 글자 · 선 · 점 · 데이터에만.</p>
+      </div>
+      <div class="card">
+        <h3>앱에 입혀 보면</h3>
+        <div class="mock2" id="mock2"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>로고 · 소문자 워드마크</h3>
+      <p class="note" style="margin-top:6px">4번 스타일을 새 색으로 입혔어요. 끝의 점 색만 바꿔서 쓰임새를 나눌 수 있어요.</p>
+      <div class="lg-row" id="lgRow"></div>
+      <div class="icons" id="lgIcons" style="margin-top:18px"></div>
+    </div>
+  </section>
 
   <section>
     <h2>이름 해석</h2>
@@ -198,4 +247,34 @@ document.getElementById('logos').innerHTML = L.map((l, k) => `<div class="card">
   </div>
   <p class="note">${l.d}</p>
 </div>`).join('');
+
+const ROLES = [
+  ['#25333B','잉크','글자 · 탭바 · 기본 버튼 · 어두운 카드'],
+  ['#3269FF','블루','선택 상태 · 링크 · 진행 · 지출 데이터'],
+  ['#7A59FF','바이올렛','목표 · 모으는 돈(저축) 데이터'],
+  ['#FF46A9','핑크','경고만: 마감 임박 · 예산 초과 · 새 알림'],
+  ['#D6E7FF','연한 블루','홈 \'오늘 쓸 수 있는 금액\' 같은 대표 카드 바탕'],
+  ['#E4DEFF','연한 바이올렛','목표 · 경제 개념 카드 바탕'],
+  ['#FFDAF3','연한 핑크','처리할 일(정산 · 마감) 띠 바탕'],
+  ['#FAFAFA','바탕','화면 바탕'],
+  ['#FFFFFF','흰색','카드'],
+];
+document.getElementById('roles').innerHTML = ROLES.map(([h, n, u]) => `<div class="role"><i style="background:${h}"></i><span><b>${n}</b><br><code>${h}</code></span><span>${u}</span></div>`).join('');
+document.getElementById('mock2').innerHTML = `
+  <div class="h"><span><span class="s">Hello, 지혜</span><br><b style="font-size:12px">10월 15일 목요일</b></span><span class="bell"></span></div>
+  <div class="hero"><div class="t">오늘 쓸 수 있는 금액</div><div class="s">10월 남은 예산 451,600원 / 17일</div><div class="big">26,500</div></div>
+  <div class="card2"><div class="t" style="font-size:12px">자산 구성</div><div class="tm"><i style="background:#D6E7FF"></i><i style="background:#E4DEFF"></i><i style="background:#7A59FF"></i><i style="background:#25333B"></i><i style="background:#3269FF"></i></div></div>
+  <div class="card2"><div style="display:flex;justify-content:space-between"><span class="t" style="font-size:12px">독립 준비 자금</span><span class="s">46%</span></div><div class="bar"><i></i></div></div>
+  <div class="chips"><span class="chip" style="background:#FF46A9;color:#fff">D-15</span><span class="chip" style="background:#fff;color:#25333B;box-shadow:inset 0 0 0 1px #25333B33">가입가능</span><span style="margin-left:auto;font-size:10px;font-weight:700;color:#3269FF">바로가기</span></div>
+  <div class="nav"><span class="on">홈</span><span>지출</span><span>자산</span><span>지식</span><span>혜택</span></div>`;
+const wm = (c, dot) => `<span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:40px;letter-spacing:-.06em;color:${c};line-height:1">moafi<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${dot};margin-left:3px"></span></span>`;
+document.getElementById('lgRow').innerHTML = [
+  ['#FFFFFF', wm('#25333B', '#3269FF'), '기본 · 잉크 + 블루 점'],
+  ['#25333B', wm('#FFFFFF', '#FF46A9'), '어두운 바탕 · 핑크 점'],
+  ['#D6E7FF', wm('#25333B', '#7A59FF'), '연한 블루 바탕 · 바이올렛 점'],
+].map(([bg, m, t]) => `<div style="flex-direction:column"><div style="width:100%;height:96px;border-radius:12px;background:${bg};display:grid;place-items:center">${m}</div><small>${t}</small></div>`).join('');
+document.querySelectorAll('.lg-row > div').forEach(d => { d.style.height = 'auto'; d.style.border = '0'; });
+const mI = (c, dot) => `<span style="position:relative;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:38px;letter-spacing:-.06em;color:${c};line-height:1;transform:translateY(-2px)">m<span style="position:absolute;right:-8px;bottom:5px;width:7px;height:7px;border-radius:50%;background:${dot}"></span></span>`;
+document.getElementById('lgIcons').innerHTML = [['#25333B', '#FFFFFF', '#3269FF'], ['#3269FF', '#FFFFFF', '#FFDAF3'], ['#FFFFFF', '#25333B', '#FF46A9'], ['#7A59FF', '#FFFFFF', '#D6E7FF']]
+  .map(([bg, c, d]) => `<span class="appicon" style="background:${bg};${bg === '#FFFFFF' ? 'border:1px solid #E2E2DF' : ''}">${mI(c, d)}</span>`).join('');
 </script>
