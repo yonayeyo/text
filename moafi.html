@@ -945,6 +945,9 @@ button.focus-strip{display:block;color:inherit}
 .lr-askq{display:grid;grid-template-columns:16px 1fr 14px;gap:8px;align-items:center;width:100%;padding:14px 16px;border-radius:16px;background:var(--g2);text-align:left;font-size:14px}
 .lr-tag{height:20px;padding:0 8px;font-size:10px;margin-left:4px}
 .lr-qh .mute{font-weight:400}
+
+/* 혜택 · 조건 수정 (조건 태그 줄 끝) */
+.cond-edit{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 10px;border-radius:999px;font-size:12px;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -1170,6 +1173,7 @@ const TIPS = [
    state
    ========================================================= */
 const S = {
+  cond:{ home:'월세', job:'직장인' },
   mode:'onboard', ob:0, q:0, answers:Array(20).fill(null), self:{ k:8, p:3 }, showPrev:false,
   tab:'home', persona:'cog', focus:null, linked:true, explored:new Set(), seen:new Set(), acctUse:{}, bitesDone:new Set(), biteOpen:{}, autoOn:new Set(), planMore:false,
   spent:348400, budget:800000, day:15, days:31,
@@ -1393,6 +1397,7 @@ function areasCard(sc, unkAreas) {
     </div>`;
 }
 // ctx: 'ob' = 진단 직후 결과 · 'app' = 앱 안에서 언제든 다시 보는 '내 진단 결과'
+const MENU_BTN = () => `<button class="ib glass" data-act="sheet" data-sheet="menu" aria-label="메뉴 · AI에게 묻기">${ic('menu', 20)}</button>`;
 function vResult(ctx = 'ob') {
   const sc = scores(), P = PERSONA[sc.persona];
   const gk = sc.k10 - S.self.k, gp = sc.p10 - S.self.p, big = Math.abs(gk) >= Math.abs(gp) ? ['지식', gk] : ['실천', gp];
@@ -1721,7 +1726,7 @@ function vPreview() {
       rows:[['해당 혜택','나이·소득·주거 조건으로 찾아요',''],['신청 일정','마감이 가까운 순서',''],['포인트 현황','카드·통신사 포인트 모아 보기','']] },
   }[a];
   const subAttr = k => !k ? '' : a === 'spend' ? `data-sv="${k}"` : `data-pv="${k}"`;
-  return `<header class="top"><div><div class="ph-title">${P.t}${areaTag(S.tab)}</div><div class="ph-sub">${P.sub}</div></div></header>
+  return `<header class="top"><div><div class="ph-title">${P.t}${areaTag(S.tab)}</div><div class="ph-sub">${P.sub}</div></div>${MENU_BTN()}</header>
   <div class="card c-ink mt16">
     <div class="t12 mute">${P.k}</div>
     <div class="row g8 mt8" style="align-items:baseline"><span class="n32">${won(P.v)}</span><span class="cur t16">₩</span></div>
@@ -1742,7 +1747,7 @@ function vEmpty() {
     plan:['연동하면 통장 용도에 맞춰<br>목표와 자동 설정을 제안해요', '계좌마다 용도를 직접 정한 뒤 시작해요.'], }[S.tab];
   const head = S.tab === 'home' ? `<header class="top"><div style="display:grid;gap:2px;line-height:1.3"><span class="t12" style="color:var(--g4)">Hello</span><span class="t14">10월 ${S.day}일 ${'일월화수목금토'[(S.day + 3) % 7]}요일</span></div>
       <button class="ib glass" data-act="sheet" data-sheet="menu" aria-label="메뉴">${ic('menu', 20)}</button></header>${focusStrip()}`
-    : `<header class="top"><div><div class="ph-title">${T[0]}${areaTag(S.tab)}</div><div class="ph-sub">${T[1]}</div></div></header>`;
+    : `<header class="top"><div><div class="ph-title">${T[0]}${areaTag(S.tab)}</div><div class="ph-sub">${T[1]}</div></div>${MENU_BTN()}</header>`;
   return head + `<div class="card c-dash mt16 empty-card">
       ${S.tab === 'home' ? `<div class="t14 mute">✦ 오늘 쓸 수 있는 금액 ✦</div><div class="n56 num mute" style="opacity:.35">—</div>` : `<span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic('link', 20)}</span>`}
       <div class="t18 mt16" style="line-height:1.4">${msg[0]}</div>
@@ -2387,7 +2392,7 @@ function vLedger() {
 function vSpend() {
   const m = S.period === 'month', an = S.spendView === 'analysis', ls = S.spendView === 'list';
   const rep = REPEATS[S.period], repSum = rep.reduce((s, r) => s + r.k * r.u, 0);
-  const head = `<header class="top"><div><div class="ph-title">지출${areaTag('spend')}</div><div class="ph-sub">가계부 · 분석 · 예산</div></div></header>
+  const head = `<header class="top"><div><div class="ph-title">지출${areaTag('spend')}</div><div class="ph-sub">가계부 · 분석 · 예산</div></div>${MENU_BTN()}</header>
     <div class="utabs" role="tablist">${[['list','가계부'],['analysis','분석'],['budget','예산']].map(([k, n]) => `<button class="${S.spendView === k ? 'on' : ''}" data-act="sv" data-v="${k}" role="tab" aria-selected="${S.spendView === k}">${n}</button>`).join('')}</div>
     ${!an ? '' : `<div class="row between"><div class="row g8"><button class="chip pchip ${m ? '' : 'on'}" data-act="period" data-v="week">주간</button><button class="chip pchip ${m ? 'on' : ''}" data-act="period" data-v="month">월간</button></div>
 </div>`}`;
@@ -2492,7 +2497,7 @@ function vPlan(pvOver, noHead) {
   const remain = 5000000 - S.goalSaved, faster = Math.ceil(remain / 350000) - Math.ceil(remain / (350000 + save));
   const amtOf = c => (MONTH_ITEMS.find(i => i.c === c) || {}).a || 0;
   const locked = !!S.cutApplied;
-  const head = noHead ? '' : `<header class="top"><div><div class="ph-title">자산${areaTag('plan')}</div><div class="ph-sub">통장 · 목표 · 자동 설정</div></div><button class="ib glass" data-act="sheet" data-sheet="menu" aria-label="설정 메뉴">${ic('sliders', 20)}</button></header>
+  const head = noHead ? '' : `<header class="top"><div><div class="ph-title">자산${areaTag('plan')}</div><div class="ph-sub">통장 · 목표 · 자동 설정</div></div>${MENU_BTN()}</header>
   <div class="utabs" role="tablist">${[['bank','통장'],['goal','목표'],['rule','자동 설정']].map(([k, n]) => `<button class="${pv === k ? 'on' : ''}" data-act="pv" data-v="${k}" role="tab" aria-selected="${pv === k}">${n}</button>`).join('')}</div>`;
   if (pv === 'goal') return head + vGoal();
   // 예산: 이번 달 예산 현황 · 카테고리별 배분 · 줄이기 계획
@@ -2713,7 +2718,7 @@ function vGoal() {
 function vLearn() {
   const tips = S.extras.has('tips'), lv = tips ? S.learnView : 'bite';
   const known = conceptKnown();
-  const head = `<header class="top"><div><div class="ph-title">지식</div><button class="ph-sub lr-prog" data-act="sheet" data-sheet="bites" aria-label="알아본 개념 ${known}개 보기">5개 영역 · ${CONCEPT_TOTAL}개 중 <b>${known}개</b> 알아봄${ic('arrow', 12)}</button></div></header>
+  const head = `<header class="top"><div><div class="ph-title">지식</div><button class="ph-sub lr-prog" data-act="sheet" data-sheet="bites" aria-label="알아본 개념 ${known}개 보기">5개 영역 · ${CONCEPT_TOTAL}개 중 <b>${known}개</b> 알아봄${ic('arrow', 12)}</button></div>${MENU_BTN()}</header>
   ${lv === 'tips' ? '' : `<div class="lr-search"><label class="lr-in">${ic('search', 18)}<input id="lrQ" type="search" placeholder="개념이나 기능 검색" value="${(S.lrQ || '').replace(/"/g, '&quot;')}" autocomplete="off" aria-label="개념이나 기능 검색" oninput="lrSearch(this.value)"></label>
     <button class="lr-ai" data-act="aiAsk" data-v="" aria-label="AI에게 묻기">${aiIcon()}AI에게 묻기</button></div>`}
   ${tips ? '' : '<!--'}<div class="utabs" role="tablist">${[['bite','경제 개념'],['tips','팁과 소식']].map(([k, n]) => `<button class="${lv === k ? 'on' : ''}" data-act="lv" data-v="${k}" role="tab" aria-selected="${lv === k}">${n}</button>`).join('')}</div>${tips ? '' : '-->'}`;
@@ -2785,9 +2790,12 @@ function learnActive() {
 /* =========================================================
    BENEFIT (세금과 혜택)
    ========================================================= */
+const COND_OPT = { home:['월세', '전세', '자가 · 가족과 거주'], job:['직장인', '프리랜서 · 외주', '아르바이트', '소득 없음'] };
+const condTags = () => ['만 27세', '연소득 2,640만 원', S.cond.home === '자가 · 가족과 거주' ? '가족과 거주' : `무주택 · ${S.cond.home}`, S.cond.job];
 function vBenefit() {
   const bens = [
-    { n:'청년 월세 지원', amt:'월 200,000원 · 12개월', y:2400000, c:['y','y','y','c'], tag:'D-15', hot:true },
+    ...(S.cond.home === '월세' ? [{ n:'청년 월세 지원', amt:'월 200,000원 · 12개월', y:2400000, c:['y','y','y','c'], tag:'D-15', hot:true }] : []),
+    ...(S.cond.home === '전세' ? [{ n:'청년 전세자금 대출 이자 지원', amt:'대출 이자 연 최대 1.5%p', y:600000, c:['y','y','y','c'], tag:'상시' }] : []),
     { n:'청년도약계좌 정부기여금', amt:'월 최대 33,000원', y:396000, c:['y','y','n','y'], tag:'가입 가능' },
     { n:'연말정산 카드 소득공제', amt:'예상 환급 약 180,000원', y:180000, c:['n','y','n','y'], tag:'진행 중' },
     { n:'K-패스 교통비 환급', amt:'월 약 12,300원 (청년 30%)', y:147600, c:['y','n','n','y'], tag:'받는 중' },
@@ -2795,12 +2803,12 @@ function vBenefit() {
   const sum = bens.reduce((s, b) => s + b.y, 0);
   const cell = v => `<span class="c"><i class="${v === 'y' ? 'm-yes' : v === 'c' ? 'm-chk' : 'm-na'}"></i></span>`;
   const T = 8000000, X = v => v / T * 100;
-  return `<header class="top"><div><div class="ph-title">혜택${areaTag('benefit')}</div><div class="ph-sub">세금 공제 · 정부 지원금 · 포인트</div></div><button class="btn sm ghost" data-act="toast" data-msg="나이·소득·거주 조건을 수정할 수 있어요">조건 수정</button></header>
-  <div class="row g8 mt12" style="flex-wrap:wrap">${['만 27세','연소득 2,640만 원','무주택 1인 가구','직장인'].map(c => `<span class="tag line" style="height:28px;padding:0 12px">${c}</span>`).join('')}</div>
+  return `<header class="top"><div><div class="ph-title">혜택${areaTag('benefit')}</div><div class="ph-sub">세금 공제 · 정부 지원금 · 포인트</div></div>${MENU_BTN()}</header>
+  <div class="row g8 mt12" style="flex-wrap:wrap">${condTags().map(c => `<span class="tag line" style="height:28px;padding:0 12px">${c}</span>`).join('')}<button class="cond-edit" data-act="sheet" data-sheet="cond">${ic('sliders', 14)}조건 수정</button></div>
   <div class="card c-aura mt16">
     <div class="t12 mute">올해 받을 수 있는 혜택 (최대)</div>
     <div class="row g8 mt8" style="align-items:baseline"><span class="n32" style="font-size:40px">${won(sum)}</span><span class="cur t16">₩</span></div>
-    <p class="t12 mute mt8">4건 중 1건은 지금 신청해야 해요</p>
+    <p class="t12 mute mt8">${bens.length}건 중 ${bens.filter(b => b.hot).length ? `${bens.filter(b => b.hot).length}건은 지금 신청해야 해요` : `지금 마감이 가까운 건 없어요`}</p>
   </div>
   ${S.benefitMoved ? '' : `<div class="card c-sky mt12">
     <div class="row between"><span class="eng mute">받은 혜택</span><span class="t10 mute">10.10 입금</span></div>
@@ -2816,7 +2824,7 @@ function vBenefit() {
       <div class="stack mt12" style="gap:16px">${bens.map(b => `<div><div class="matrix"><span class="t14" style="color:var(--ink)">${b.n}</span>${b.c.map(cell).join('')}</div><div class="row between mt4"><span class="t12 mute">${b.amt}</span><span class="tag ${b.hot ? 'ink' : 'line'}">${b.tag}</span></div></div>`).join('')}</div>
       <hr class="hair mt16">
       <div class="row g16 t10 mute mt12"><span class="row g4"><i class="m-yes" style="width:10px;height:10px;border-radius:50%;display:inline-block"></i>충족</span><span class="row g4"><i class="m-chk" style="width:10px;height:10px;border-radius:50%;display:inline-block"></i>확인 필요</span><span class="row g4"><i style="width:10px;height:1.5px;background:var(--g4);display:inline-block"></i>조건 없음</span></div>
-      ${S.rentPrep ? `<div class="row g8 mt16 t14">${ic('check', 18)} 신청 서류 3개를 준비 목록에 담았어요</div>` : `<button class="btn full mt16" id="rentBtn" data-act="rentPrep">청년 월세 지원 신청 준비</button>`}
+      ${S.cond.home !== '월세' ? '' : S.rentPrep ? `<div class="row g8 mt16 t14">${ic('check', 18)} 신청 서류 3개를 준비 목록에 담았어요</div>` : `<button class="btn full mt16" id="rentBtn" data-act="rentPrep">청년 월세 지원 신청 준비</button>`}
     </div>
   </section>
   <section class="sec" id="cardRatio">
@@ -2941,6 +2949,9 @@ function sheetHTML(name) {
     case 'receipt': return head(S.period === 'month' ? '9월 영수증' : '이번 주 영수증', '출력한 뒤 옆으로 당기면 뜯겨요') + `<div class="dark-band rc-sheet mt16">${printer('pReport-' + S.period, receiptReport())}</div>`;
     case 'transfers': return head('제외한 이체', `내 계좌끼리 옮긴 ${TRANSFERS.length}건 · ${W(TRANSFERS.reduce((t, x) => t + x[2], 0))}`) + `<div class="card c-paper mt16" style="padding:8px 20px">${TRANSFERS.map(([d, n, v]) => `<div class="lrow"><span class="ib">${ic('refresh', 18)}</span><div><div class="t14">${n}</div><div class="t10 mute">${d}</div></div><span class="t14 num">${won(v)}원</span></div>`).join('')}</div>
       <p class="t12 mute mt12">연동한 계좌끼리 옮긴 돈은 쓴 돈이 아니라서 지출과 예산 계산에서 뺐어요.</p>`;
+    case 'cond': return head('내 조건', '혜택을 찾을 때 쓰는 조건이에요. 바꾸면 해당 혜택이 바로 바뀌어요') + `
+      <div class="card c-paper mt24"><div class="row between"><span class="t14">나이 · 연소득</span><span class="t12 mute">만 27세 · 2,640만 원 (연동 정보)</span></div></div>
+      ${[['home', '사는 곳'], ['job', '소득 형태']].map(([k, t]) => `<div class="t14 mt24">${t}</div><div class="row g8 mt8" style="flex-wrap:wrap">${COND_OPT[k].map(o => `<button class="chip ${S.cond[k] === o ? 'on' : ''}" data-act="cond" data-k="${k}" data-v="${o}" aria-pressed="${S.cond[k] === o}">${o}</button>`).join('')}</div>`).join('')}`;
     case 'compare': return head('적금 비교', '월 350,000원 · 12개월 · 세금 뺀 이자 (예시)') + `<div class="stack mt24">${[['지금 쓰는 적금','3.1%',59700,1],['가나은행 청년 적금','4.2%',80800,0],['나다은행 자유 적금','3.6%',69300,0]].map(([n, r, i, cur]) => `<div class="card ${cur ? 'c-paper' : 'c-sky'}"><div class="row between"><span class="t14">${n}</span>${cur ? '<span class="tag line">사용 중</span>' : `<span class="tag ink">+${won(i - 59700)}원</span>`}</div><div class="row between mt12" style="align-items:baseline"><span class="n24">${r}</span><span class="t14 num">이자 ${W(i)}</span></div></div>`).join('')}
       <p class="t12 mute">금리는 우대 조건(급여이체·카드 실적)을 모두 채웠을 때 기준이에요.</p></div>
       <div class="mt16">${bite('tax', { force:true })}</div>`;
@@ -3300,6 +3311,7 @@ document.addEventListener('click', e => {
     case 'rentPrep': S.rentPrep = true; render(); simpleToast('청년 월세 지원 신청 서류 3개를 준비 목록에 담았어요'); break;
     case 'naGo': { const tr = el.closest('.na-wrap').querySelector('.na-track'); tr.scrollTo({ left:+v * (tr.firstElementChild.offsetWidth + 12), behavior:'smooth' }); break; }
     case 'lrOpen': S.lrOpen = S.lrOpen === v ? null : v; render(); refreshSheet(); break;
+    case 'cond': S.cond[el.dataset.k] = v; render(); refreshSheet(); break;
     case 'lrMore': S.lrMore = S.lrMore === v ? null : v; render(); break;
     case 'concept': S.conceptId = v; if (el.dataset.go) { S.mode = 'app'; S.sub = null; S.tab = el.dataset.go; S.learnView = 'bite'; render(false); } openSheet('concept'); break;
     case 'conceptOk': { const c = conceptOf(v); c.b ? S.bitesDone.add(c.b) : S.conceptDone.add(v); if (S.lrOpen === v) S.lrOpen = null; closeSheet(); render(); simpleToast(`${c.k} · 알아봤어요`); break; }
