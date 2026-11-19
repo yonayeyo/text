@@ -2384,7 +2384,7 @@ const pad2 = n => String(n).padStart(2, '0');
 const NEW_ACT = () => PG('spend', 'data-sv="list"', '#ledChal', '함께 할 챌린지를 골라 ‘참여’를 눌러 주세요', 'data-chal="1"');
 function fanItems() {
   const all = practiceItems().map(([t, done, act]) => ({ t, done:done(), act, m:P_META[t] || ['arrow', ''] }));
-  return [...all.filter(x => !x.done), ...all.filter(x => x.done)];
+  return all;   // 완료해도 제자리 · 같은 번호
 }
 function practiceFan() {
   const items = fanItems(), n = items.length, doneN = items.filter(x => x.done).length;
@@ -2872,7 +2872,7 @@ function catPetals() {
     const outer = sector(R0 + IN, R - IN, a0, a1), inner = rf - IN > R0 + IN + 2 ? sector(R0 + IN, rf - IN, a0, a1) : '';
     // 라벨은 같은 반지름(바깥 쪽 78%)에 검정 글자로
     // 채움의 바깥 모서리에 글자가 걸치면 채움 안쪽으로 옮긴다
-    const rb = R * .78, rl = Math.abs(rf - rb) < 18 ? rf - 26 : rb, [lx, ly] = pt(rl, am), dim = sel && sel !== k, onDark = fast && p / pace <= 1.3 && rl < rf - 10, tc = onDark ? '#fff' : '#15181C', sc = onDark ? 'rgba(255,255,255,.75)' : '#5D6064';
+    const rb = R * .78, rl = Math.abs(rf - rb) < 18 ? rf - 26 : rb, [lx, ly] = pt(rl, am), dim = sel && sel !== k, onDark = fast && rl < rf - 10, tc = onDark ? '#fff' : '#15181C', sc = onDark ? 'rgba(255,255,255,.75)' : '#5D6064';
     return `<g data-act="catSel" data-v="${k}" style="cursor:pointer" opacity="${dim ? .4 : 1}" role="button" aria-label="${k} 예산 ${won(S.cat[k])}원 중 ${won(sp[k])}원 사용 (${pct(p)})">
       <path d="${outer}" fill="#ECEFF3" stroke="#ECEFF3" stroke-width="${IN * 2}" stroke-linejoin="round"/>
       ${inner ? `<path d="${inner}" fill="${fc}" stroke="${fc}" stroke-width="${IN * 2}" stroke-linejoin="round"/>` : ''}
@@ -2888,7 +2888,7 @@ function catPetals() {
     ${petals}</svg>
     <div class="row between t12 mt16" style="min-height:18px">${s1 ? `<span>${s1}</span><span class="num">${won(sp[s1])} <span class="mute">/ ${won(S.cat[s1])}원</span></span>`
       : `<span class="mute">항목을 누르면 금액을 보여드려요</span><span class="mute num">오늘까지 ${pct(pace)}</span>`}</div>
-    <div class="row g16 t10 mute mt12"><span class="row g4"><i class="pt-lg" style="background:#ECEFF3"></i>예산</span><span class="row g4"><i class="pt-lg" style="background:#B1C5DB"></i>쓴 돈</span><span class="row g4"><i class="pt-lg" style="background:#375F84"></i><i class="pt-lg" style="background:#00A8D8;margin-left:-2px"></i>날짜보다 빨리 쓰는 중</span></div>`;
+    <div class="row g16 t10 mute mt12"><span class="row g4"><i class="pt-lg" style="background:#ECEFF3"></i>예산</span><span class="row g4"><i class="pt-lg" style="background:#B1C5DB"></i>쓴 돈</span><span class="row g4"><i class="pt-lg" style="background:#24507A"></i>날짜보다 빨리 쓰는 중</span></div>`;
 }
 function halfDonut() {
   const parts = [ ['고정 지출',24,'#15181C'], ['생활비',33,'#5D6064'], ['저축',35,'url(#hd)'], ['여유',8,'#DBDEE2'] ];
