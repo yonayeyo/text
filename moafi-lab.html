@@ -2107,7 +2107,7 @@ function viewSwap(v) {
   const wraps = [...view.querySelectorAll('#fanStage, .orbit-wrap')]; wraps.forEach(w => w.style.overflow = 'visible');
   const now = homeCards(); let left = now.length;
   now.forEach(({ el, k }, i) => { const o = old.get(k); if (!o) { left--; return; }
-    const r = el.getBoundingClientRect(), fin = el.style.transform || 'none';
+    const r = el.getBoundingClientRect(), fin = getComputedStyle(el).transform || 'none';   // 궤도 카드는 CSS 변수로 기울어 있어서 계산된 값을 써야 끝 모양이 맞는다
     const dx = o.cx - (r.left + r.width / 2), dy = o.cy - (r.top + r.height / 2), da = o.a - ang(el), sx = o.w / el.offsetWidth, sy = o.h / el.offsetHeight;
     el.appendChild(o.clone);
     const dur = 700, del = i * 22, ease = 'cubic-bezier(.22,1,.36,1)';
