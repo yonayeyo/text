@@ -990,6 +990,18 @@ button.focus-strip{display:block;color:inherit}
 .b-box{padding:10px 12px;border-radius:8px;background:rgba(217,217,217,.16)}
 .b-rows{display:grid;gap:10px}
 .cond-edit{font-weight:500}
+
+/* 홈 위계: ① 섹션 제목 18/500 + 설명 12 회색 ② 카드 제목 16/500 ③ 카드 설명 12/300 #757575 ④ 라벨 10~11 #999 */
+.h-hero .h-sb{font-size:12px;line-height:1.4;font-weight:400;color:var(--g4);margin-top:4px}
+.fc-t{margin-top:6px;font-size:16px;line-height:22px;font-weight:500;letter-spacing:-.01em}
+.fc-ds{margin-top:2px;font-size:12px;line-height:18px;font-weight:300;color:#757575}
+.fc-no{font-size:10px;line-height:14px;color:#999}
+.focus-strip .fs-txt .t14{font-size:16px;font-weight:500;line-height:22px}
+.na-head{justify-content:flex-start}
+.na-cnt{margin-left:auto;font-size:10px;color:#999}
+.na-title{font-size:16px;line-height:22px;font-weight:500;color:#000}
+.na-desc{margin-top:4px;font-size:12px;line-height:18px;font-weight:300;color:#757575}
+.na-body{margin-top:12px}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -2090,13 +2102,13 @@ function knowCards() {
   const total = recs.length;
   const card = (c, k) => { const done = conceptDone(c);
     return `<div class="card ${done ? 'na-done' : 'c-sky'} na-card">
-    <div class="na-head"><span>경제 개념${total > 1 ? ` ${k + 1}/${total}` : ''}</span>${done ? `<span class="na-chip done">${ic('check', 10)}완료</span>` : `<button class="na-chip" data-act="tab" data-tab="learn" data-lv="bite" aria-label="지식에서 ${areaName(c.a)} 보기">${areaName(c.a)}</button>`}</div>
-    <div class="na-body"><div><div class="na-title">${c.q}</div><p class="na-desc">${c.k} · 1분이면 돼요<br>${unk.has(c.a) ? '진단에서 ‘잘 모르겠어요’를 고른 영역이에요' : c.a === fa ? '지금 집중할 영역과 이어지는 개념이에요' : '지식 탭에서 더 많은 개념을 볼 수 있어요'}</p></div>
+    <div class="na-head">${done ? `<span class="na-chip done">${ic('check', 10)}완료</span>` : `<button class="na-chip" data-act="tab" data-tab="learn" data-lv="bite" aria-label="지식에서 ${areaName(c.a)} 보기">${areaName(c.a)}</button>`}${total > 1 ? `<span class="na-cnt num">${k + 1} / ${total}</span>` : ''}</div>
+    <div class="na-body"><div><div class="na-title">${c.q}</div><p class="na-desc">${c.k} · 1분이면 돼요</p></div>
       ${done ? `<span class="ib na-go done" aria-label="${c.k} 읽음">${ic('check', 22)}</span>` : `<button class="ib na-go" data-act="concept" data-v="${c.id}" aria-label="${c.k} 알아보기">${ic('plus', 22)}</button>`}</div>
   </div>`; };
   return `<div class="na-wrap"><div class="na-track" onscroll="naDots(this)">${recs.map(card).join('')}</div>
   ${total > 1 ? `<div class="na-dots">${recs.map((_, k) => `<i class="${k === (S.naIdx || 0) ? 'on' : ''}" data-act="naGo" data-v="${k}" role="button" tabindex="0" aria-label="경제 개념 ${k + 1}/${total} 보기"></i>`).join('')}</div>` : ''}
-  <p class="na-why"><span class="na-star" aria-hidden="true">✦</span><span>${unk.size ? '진단에서 ‘잘 모르겠어요’를 고른 영역부터 골랐어요' : '지금 집중할 영역부터 골랐어요'}</span></p></div>`;
+</div>`;
 }
 
 /* =========================================================
@@ -2243,8 +2255,8 @@ function vHome() {
     </section>
     <div class="hv-sw" role="tablist" aria-label="실천 항목 보기 방식">${[['orbit', '궤도'], ['fan', '카드']].map(([k, l]) => `<button type="button" role="tab" aria-selected="${(S.homeView || 'fan') === k}" class="${(S.homeView || 'fan') === k ? 'on' : ''}" data-act="homeView" data-v="${k}">${l}</button>`).join('')}</div>
     ${S.homeView === 'orbit' ? orbit() : practiceFan()}
-    <section class="sec"><div class="dot-h">지금 집중할 영역</div>${focusStrip(true)}</section>
-    <section class="sec"><div class="dot-h">경제 개념</div>${knowCards()}</section>`;
+    <section class="sec"><div class="sec-h"><div><div class="t18">지금 집중할 영역</div><div class="sec-d">${PERSONA[S.persona].name} 진단 결과로 정한 순서예요</div></div></div>${focusStrip(true)}</section>
+    <section class="sec"><div class="sec-h"><div><div class="t18">경제 개념</div><div class="sec-d">${unkAreas().size ? '진단에서 ‘잘 모르겠어요’를 고른 영역부터 골랐어요' : '지금 집중할 영역부터 골랐어요'}</div></div></div>${knowCards()}</section>`;
 }
 
 /* =========================================================
