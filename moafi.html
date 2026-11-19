@@ -1027,6 +1027,16 @@ button.focus-strip{display:block;color:inherit}
 .tabbar.light .tab{color:rgba(24,24,24,.5)}
 .tabbar .tab{z-index:1}
 @media (prefers-reduced-motion:reduce){.tabbar::after{transition:none}}
+
+/* 전체 기능 보기 (사이트맵) */
+.sm-list{display:grid;gap:24px}
+.sm-h{display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:center}
+.sm-ic{width:36px;height:36px;background:var(--g2)}
+.sm-rows{margin:8px 0 0 48px;display:grid}
+.sm-row{display:grid;grid-template-columns:1fr 14px;gap:12px;align-items:center;width:100%;padding:10px 0;border-bottom:1px solid var(--g2);text-align:left;color:var(--ink)}
+.sm-row:last-child{border-bottom:0}
+.sm-t{display:block;font-size:14px;font-weight:400;line-height:20px}
+.sm-d{display:block;font-size:12px;font-weight:300;line-height:18px;color:#757575}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -3051,6 +3061,19 @@ function sheetHTML(name) {
     case 'cond': return head('내 조건', '혜택을 찾을 때 쓰는 조건이에요. 바꾸면 해당 혜택이 바로 바뀌어요') + `
       <div class="card c-paper mt24"><div class="row between"><span class="t14">나이 · 연소득</span><span class="t12 mute">만 27세 · 2,640만 원 (연동 정보)</span></div></div>
       ${[['home', '사는 곳'], ['job', '소득 형태']].map(([k, t]) => `<div class="t14 mt24">${t}</div><div class="row g8 mt8" style="flex-wrap:wrap">${COND_OPT[k].map(o => `<button class="chip ${S.cond[k] === o ? 'on' : ''}" data-act="cond" data-k="${k}" data-v="${o}" aria-pressed="${S.cond[k] === o}">${o}</button>`).join('')}</div>`).join('')}`;
+    case 'sitemap': { const T = { home:'tHome', spend:'tWallet', plan:'tStack', learn:'tNotes', benefit:'tGift' };
+      const SM = [
+        ['home', '홈', '오늘 쓸 수 있는 금액과 오늘 할 일', [['오늘 쓸 수 있는 금액', '남은 예산 ÷ 남은 날', 'data-act="tab" data-tab="home"'], ['실천 항목 7개', '카드 · 궤도 보기로 하나씩', 'data-act="tab" data-tab="home"'], ['지금 집중할 영역', '진단 결과로 정한 순서', 'data-act="tab" data-tab="home"'], ['알림', '정산 · 입금 · 예산', 'data-act="sheet" data-sheet="noti"']]],
+        ['spend', '지출', '가계부 · 분석 · 예산', [['가계부', '날짜별 결제 내역 · 챌린지', 'data-act="tab" data-tab="spend" data-sv="list"'], ['분석 · 영수증', '많이 쓴 곳 · 전월 대비 · 9월 영수증', 'data-act="tab" data-tab="spend" data-sv="analysis"'], ['예산', '이번 달 예산 · 11월 예산 만들기', 'data-act="tab" data-tab="spend" data-sv="budget"'], ['정산하기', '더치페이 · 대리 결제 정리', 'data-act="sheet" data-sheet="settle"']]],
+        ['plan', '자산', '통장 · 목표 · 자동 설정', [['통장', '자산 구성 · 1년 흐름', 'data-act="tab" data-tab="plan" data-pv="bank"'], ['목표', '독립 준비 자금 · 비상금', 'data-act="tab" data-tab="plan" data-pv="goal"'], ['자동 설정', '월급날 선저축 · 고정 지출', 'data-act="tab" data-tab="plan" data-pv="rule"'], ['적금 비교', '세후 이자로 상품 비교', 'data-act="sheet" data-sheet="compare"']]],
+        ['learn', '지식', '경제 개념 · 검색', [['경제 개념', '지금 볼 개념 · 영역별 개념', 'data-act="tab" data-tab="learn" data-lv="bite"'], ['알아본 개념', '다시 펼쳐 보기', 'data-act="sheet" data-sheet="bites"']]],
+        ['benefit', '혜택', '세금 공제 · 정부 지원금 · 포인트', [['해당 혜택 · 신청 일정', '내 조건에 맞는 혜택을 마감 순서로', 'data-act="tab" data-tab="benefit"'], ['내 조건', '사는 곳 · 소득 형태', 'data-act="sheet" data-sheet="cond"'], ['체크카드 공제율 비교', '연말정산 · 카드 사용 비율', 'data-act="tab" data-tab="benefit"'], ['포인트 현황', '카드 · 앱 포인트', 'data-act="tab" data-tab="benefit"']]],
+      ];
+      return head('전체 기능', '탭별 기능이에요. 누르면 그 화면으로 이동해요') + `<div class="sm-list mt24">${SM.map(([k, n, d, rows]) => `<section class="sm-sec">
+        <div class="sm-h"><span class="ib sm-ic">${ic(T[k], 18)}</span><div><div class="t16" style="font-weight:500">${n}</div><div class="t12 mute">${d}</div></div></div>
+        <div class="sm-rows">${rows.map(([t, sd, a]) => `<button class="sm-row" ${a}><span><span class="sm-t">${t}</span><span class="sm-d">${sd}</span></span>${ic('arrow', 14)}</button>`).join('')}</div></section>`).join('')}
+        <section class="sm-sec"><div class="sm-h"><span class="ib sm-ic">${aiIcon(18)}</span><div><div class="t16" style="font-weight:500">어느 탭에서나</div><div class="t12 mute">머리말 오른쪽 버튼</div></div></div>
+        <div class="sm-rows"><button class="sm-row" data-act="aiAsk" data-v=""><span><span class="sm-t">AI에게 묻기</span><span class="sm-d">내 예산 · 목표 기준으로 답해요</span></span>${ic('arrow', 14)}</button><button class="sm-row" data-act="diag"><span><span class="sm-t">내 진단 결과</span><span class="sm-d">유형 · 영역별 결과</span></span>${ic('arrow', 14)}</button></div></section></div>`; }
     case 'compare': return head('적금 비교', '월 350,000원 · 12개월 · 세금 뺀 이자 (예시)') + `<div class="stack mt24">${[['지금 쓰는 적금','3.1%',59700,1],['가나은행 청년 적금','4.2%',80800,0],['나다은행 자유 적금','3.6%',69300,0]].map(([n, r, i, cur]) => `<div class="card ${cur ? 'c-paper' : 'c-sky'}"><div class="row between"><span class="t14">${n}</span>${cur ? '<span class="tag line">사용 중</span>' : `<span class="tag ink">+${won(i - 59700)}원</span>`}</div><div class="row between mt12" style="align-items:baseline"><span class="n24">${r}</span><span class="t14 num">이자 ${W(i)}</span></div></div>`).join('')}
       <p class="t12 mute">금리는 우대 조건(급여이체·카드 실적)을 모두 채웠을 때 기준이에요.</p></div>
       <div class="mt16">${bite('tax', { force:true })}</div>`;
@@ -3064,7 +3087,7 @@ function sheetHTML(name) {
         ${c.go ? `<button class="btn full" ${c.go[1]}>${c.go[0]}${ic('arrow', 18)}</button>` : ''}</div>`; }
     case 'bites': { const done = CONCEPTS.map(c => conceptOf(c.id)).filter(conceptDone);
       return head('알아본 개념', `${CONCEPT_TOTAL}개 중 ${conceptKnown()}개 · 다시 펼쳐 볼 수 있어요`) + `<div class="lr-secs mt24">${AREAS.map(a => { const l = done.filter(c => c.a === a.id); return l.length ? `<div class="lr-sec"><div class="lr-sh"><span class="th a-${a.id}" aria-hidden="true">${ic(AR_IC[a.id], 16)}</span><span class="t16">${a.name}</span><span class="t12 mute num">${l.length}</span></div><div class="lr-qs b">${l.map(c => lrQRow(c, true)).join('')}</div></div>` : ''; }).join('')}</div>`; }
-    case 'menu': return head('메뉴') + `<div class="stack8 mt24"><button class="card c-paper setrow" style="text-align:left" data-act="diag"><span class="ib ink">${ic('spark', 20)}</span><span><span class="t14" style="display:block">내 진단 결과</span><span class="t12 mute">${PERSONA[S.persona].name} · 2026.10.15 진단</span></span>${ic('arrow', 18)}</button>${[['link','연동 계좌·카드 관리','6개 계좌 · 카드 2 · 간편결제 1'],['bell','알림 설정','예산 초과 위험 · 정산 · 입금'],['sliders','기본 설정 바꾸기·해제','선저축 · 비상금 · 예산 · 고정 지출'],['refresh','재진단','마지막 2026.06.12']].map(([i, t, s]) => `<button class="card c-paper setrow" style="text-align:left" data-act="${i === 'refresh' ? 'rediag' : i === 'sliders' ? 'tab' : 'toast'}" data-tab="plan" data-msg="${t} 화면은 데모에서 생략했어요"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(i, 20)}</span><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${s}</span></span>${ic('arrow', 18)}</button>`).join('')}</div>
+    case 'menu': return head('메뉴') + `<div class="stack8 mt24"><button class="card c-paper setrow" style="text-align:left" data-act="sheet" data-sheet="sitemap"><span class="ib ink">${ic('menu', 20)}</span><span><span class="t14" style="display:block">전체 기능 보기</span><span class="t12 mute">탭별로 어떤 기능이 있는지 한 번에 봐요</span></span>${ic('arrow', 18)}</button><button class="card c-paper setrow" style="text-align:left" data-act="diag"><span class="ib ink">${ic('spark', 20)}</span><span><span class="t14" style="display:block">내 진단 결과</span><span class="t12 mute">${PERSONA[S.persona].name} · 2026.10.15 진단</span></span>${ic('arrow', 18)}</button>${[['link','연동 계좌·카드 관리','6개 계좌 · 카드 2 · 간편결제 1'],['bell','알림 설정','예산 초과 위험 · 정산 · 입금'],['sliders','기본 설정 바꾸기·해제','선저축 · 비상금 · 예산 · 고정 지출'],['refresh','재진단','마지막 2026.06.12']].map(([i, t, s]) => `<button class="card c-paper setrow" style="text-align:left" data-act="${i === 'refresh' ? 'rediag' : i === 'sliders' ? 'tab' : 'toast'}" data-tab="plan" data-msg="${t} 화면은 데모에서 생략했어요"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(i, 20)}</span><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${s}</span></span>${ic('arrow', 18)}</button>`).join('')}</div>
       <div class="t12 mute mt24">추가 기능 · 필요할 때만 켜세요</div>
       <div class="card c-paper mt8" style="padding:4px 20px">${Object.entries(EXTRAS).map(([k, [t, d]]) => `<div class="kr" style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px 0"><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${d}</span></span><button class="switch ${S.extras.has(k) ? 'on' : ''}" data-act="extraToggle" data-v="${k}" role="switch" aria-checked="${S.extras.has(k)}" aria-label="${t}"></button></div>`).join('')}</div>
       <div class="eng mute mt24">테스트 진행자용</div>
