@@ -1214,10 +1214,10 @@ button.focus-strip{display:block;color:inherit}
 
 /* ===== 도표 통일: 모든 데이터 도형 = 같은 열 단계(가운데가 뜨겁고 가장자리로 식는 면) + 입자 =====
    th0 회색(중립) · th1 차가움 · th2 블루 · th3 바이올렛 · th4 가장 뜨거움(강조 · 초과) */
-.ld.l1,.lg.l1{background:radial-gradient(140% 140% at 50% 50%,#D5E0EC,#E9EFF5)}
-.ld.l2,.lg.l2{background:radial-gradient(140% 140% at 50% 50%,#92AECB,#CBD9E8)}
-.ld.l3,.lg.l3{background:radial-gradient(140% 140% at 50% 50%,#688CB1,#B1C6DC)}
-.ld.l4,.lg.l4{background:radial-gradient(140% 140% at 50% 50%,#94AFCC,#7799BC 55%,#B0C5DB);box-shadow:none}
+.ld.l1,.lg.l1{background:radial-gradient(140% 140% at 50% 50%,#D5E0EC,#EEF3F8)}
+.ld.l2,.lg.l2{background:radial-gradient(140% 140% at 50% 50%,#7FA0C3,#C9D8E8)}
+.ld.l3,.lg.l3{background:radial-gradient(140% 140% at 50% 50%,#2F5D8A,#7FA0C3 55%,#C2D3E5)}
+.ld.l4,.lg.l4{background:radial-gradient(140% 140% at 50% 50%,#0E2A3F,#24507A 50%,#8FAED0);box-shadow:none}
 .ld.l3,.ld.l4{color:#fff}.ld.l3 i,.ld.l4 i{color:rgba(255,255,255,.85)}
 .tm-in,.ld.l1,.ld.l2,.ld.l3,.ld.l4,.lg{position:relative}
 .tm-in::after,.ld.l1::after,.ld.l2::after,.ld.l3::after,.ld.l4::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:.18;mix-blend-mode:overlay;
@@ -1249,7 +1249,7 @@ button.focus-strip{display:block;color:inherit}
 
 /* ===== 쿨 모노: 쿨화이트 · 그레이 바탕 · 딥블루 글자 · 연한 블루→딥블루 단계 · 밝은 아쿠아는 경고 · 강조만 · 사진은 카드에서만 =====
    큰 숫자는 아주 가늘게, 작은 정보는 가는 대문자 · 넓은 자간, 여백은 넉넉하게 */
-:root{--ink:#0F1A24;--bg:#EEF0F3;--paper:#F8F9FB;--g2:#E5E8EC;--g3:#D6DAE0;--g4:#97A0AB;--g6:#6A7480;--warn:#00A8D8}
+:root{--ink:#0F1A24;--bg:#FAFAFA;--paper:#FFFFFF;--g2:#E5E8EC;--g3:#D6DAE0;--g4:#97A0AB;--g6:#6A7480;--warn:#00A8D8}
 .screen{background:var(--bg)}
 .dotnum,.n56,.n48,.n32,.b-big,.st-num,.pc-num{font-weight:200!important;letter-spacing:-.04em}
 .n24,.n20,.b-num{font-weight:300}
@@ -1264,6 +1264,9 @@ button.focus-strip{display:block;color:inherit}
 .sec{margin-top:48px}
 
 .pc.mg{text-shadow:none;box-shadow:inset 0 0 0 200px rgba(12,22,32,.36),0 6px 16px rgba(12,22,32,.14)!important}
+
+.screen:not(.dark){background:#FAFAFA}
+.ld.l3,.ld.l4{color:#fff}.ld.l3 i,.ld.l4 i{color:rgba(255,255,255,.85)}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -1296,9 +1299,9 @@ button.focus-strip{display:block;color:inherit}
         <button type="submit" class="ib ink" aria-label="보내기"></button>
       </form>
       <svg width="0" height="0" style="position:absolute" aria-hidden="true"><radialGradient id="th1" cx=".5" cy=".5" r=".9"><stop offset="0" stop-color="#D5E0EC"/><stop offset="1" stop-color="#E9EFF5"/></radialGradient>
-        <radialGradient id="th2" cx=".5" cy=".5" r=".9"><stop offset="0" stop-color="#92AECB"/><stop offset="1" stop-color="#CBD9E8"/></radialGradient>
-        <radialGradient id="th3" cx=".5" cy=".5" r=".9"><stop offset="0" stop-color="#688CB1"/><stop offset="1" stop-color="#B1C6DC"/></radialGradient>
-        <radialGradient id="th4" cx=".5" cy=".5" r=".9"><stop offset="0" stop-color="#94AFCC"/><stop offset=".55" stop-color="#7799BC"/><stop offset="1" stop-color="#B0C5DB"/></radialGradient>
+        <radialGradient id="th2" cx=".5" cy=".5" r=".9"><stop offset="0" stop-color="#7FA0C3"/><stop offset="1" stop-color="#C9D8E8"/></radialGradient>
+        <radialGradient id="th3" cx=".5" cy=".5" r=".9"><stop offset="0" stop-color="#2F5D8A"/><stop offset="0.55" stop-color="#7FA0C3"/><stop offset="1" stop-color="#C2D3E5"/></radialGradient>
+        <radialGradient id="th4" cx=".5" cy=".5" r=".9"><stop offset="0" stop-color="#0E2A3F"/><stop offset="0.5" stop-color="#24507A"/><stop offset="1" stop-color="#8FAED0"/></radialGradient>
         <radialGradient id="th0" cx=".5" cy=".5" r=".9"><stop offset="0" stop-color="#E3E6E8"/><stop offset="1" stop-color="#EFF2F4"/></radialGradient><filter id="glassRefract" x="0" y="0" width="100%" height="100%">
         <feTurbulence type="fractalNoise" baseFrequency="0.012 0.03" numOctaves="2" seed="7" result="n"/>
         <feDisplacementMap in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G"/></filter>
@@ -1914,7 +1917,7 @@ function sankey() {
     ${links}${nodes}</svg>`;
 }
 // 용도별 통장: 통합 자산 총액과, 그 안에서 각 통장이 차지하는 비율(한 줄 막대) + 잔액 목록
-const ACC_FILL = { save:'radial-gradient(140% 140% at 50% 50%,#92AECB,#CBD9E8)', goal:'radial-gradient(140% 140% at 50% 50%,#94AFCC,#7799BC 55%,#B0C5DB)', inv:'radial-gradient(140% 140% at 50% 50%,#D5E0EC,#E9EFF5)', life:'radial-gradient(140% 140% at 50% 50%,#688CB1,#B1C6DC)', emer:'radial-gradient(140% 140% at 50% 50%,#E3E6E8,#EFF2F4)', evt:'repeating-linear-gradient(-45deg,#15181C 0 1.5px,#FCFCFC 1.5px 4.5px)' };
+const ACC_FILL = { save:'radial-gradient(140% 140% at 50% 50%,#7FA0C3,#C9D8E8)', goal:'radial-gradient(140% 140% at 50% 50%,#0E2A3F,#24507A 50%,#8FAED0)', inv:'radial-gradient(140% 140% at 50% 50%,#D5E0EC,#EEF3F8)', life:'radial-gradient(140% 140% at 50% 50%,#2F5D8A,#7FA0C3 55%,#C2D3E5)', emer:'radial-gradient(140% 140% at 50% 50%,#E3E6E8,#EFF2F4)', evt:'repeating-linear-gradient(-45deg,#15181C 0 1.5px,#FCFCFC 1.5px 4.5px)' };
 function accountsBlock() {
   const total = ACCOUNTS.reduce((t, a) => t + a.a, 0);
   return `<div class="row g4 mt12" style="height:28px;border-radius:999px;overflow:hidden" role="img" aria-label="통합 자산 ${won(total)}원 중 ${ACCOUNTS.map(a => `${useOf(a)} ${pct(a.a / total)}`).join(', ')}">
@@ -2033,7 +2036,7 @@ function recapShow(el, i) {
 function recapClose() { clearTimeout(recapT); const el = document.querySelector('.story'); if (!el) return; el.classList.remove('in'); setTimeout(() => { el.remove(); render(); }, 260); }
 
 /* ===== 열화상 그래픽: 블롭의 '열'을 모아 팔레트로 색칠 (투명 → 연한 블루 → 블루 → 바이올렛 → 핑크 → 밝은 크림) ===== */
-const THERMO = [[0, [244, 247, 250, 0]], [.22, [225, 233, 242, 170]], [.48, [185, 204, 224, 240]], [.7, [111, 147, 184, 255]], [.88, [44, 85, 122, 255]], [1, [14, 42, 63, 255]]];
+const THERMO = [[0, [250, 250, 250, 0]], [.2, [225, 233, 242, 170]], [.42, [185, 204, 224, 240]], [.6, [111, 147, 184, 255]], [.78, [44, 85, 122, 255]], [1, [14, 42, 63, 255]]];
 function thermoCol(h) { for (let i = 1; i < THERMO.length; i++) if (h <= THERMO[i][0]) { const [a, ca] = THERMO[i - 1], [b, cb] = THERMO[i], t = (h - a) / (b - a); return ca.map((v, k) => v + (cb[k] - v) * t); } return THERMO[THERMO.length - 1][1]; }
 function thermoDraw(cv, t) {
   const W = cv.width, H = cv.height, kind = cv.dataset.kind, p = +cv.dataset.p || 0;
@@ -2879,8 +2882,8 @@ function catPetals() {
   const s1 = sel && S.cat[sel] != null ? sel : null;
   return `<svg viewBox="0 0 320 320" width="100%" role="img" aria-label="카테고리별 예산 사용률"><defs>
       <radialGradient id="pfA" gradientUnits="userSpaceOnUse" cx="160" cy="160" r="160"><stop offset=".1" stop-color="#E3EAF3"/><stop offset=".6" stop-color="#B5C9DE"/><stop offset="1" stop-color="#99B4CF"/></radialGradient>
-      <radialGradient id="pfB" gradientUnits="userSpaceOnUse" cx="160" cy="160" r="160"><stop offset=".1" stop-color="#D7E2EE"/><stop offset=".6" stop-color="#81A1C2"/><stop offset="1" stop-color="#688CB1"/></radialGradient>
-      <radialGradient id="pfC" gradientUnits="userSpaceOnUse" cx="160" cy="160" r="160"><stop offset=".1" stop-color="#D6E1ED"/><stop offset=".55" stop-color="#8DAAC8"/><stop offset="1" stop-color="#94AFCC"/></radialGradient></defs>
+      <radialGradient id="pfB" gradientUnits="userSpaceOnUse" cx="160" cy="160" r="160"><stop offset="0.1" stop-color="#D7E2EE"/><stop offset="0.6" stop-color="#5F86B0"/><stop offset="1" stop-color="#2F5D8A"/></radialGradient>
+      <radialGradient id="pfC" gradientUnits="userSpaceOnUse" cx="160" cy="160" r="160"><stop offset="0.1" stop-color="#C9D8E8"/><stop offset="0.55" stop-color="#24507A"/><stop offset="1" stop-color="#0E2A3F"/></radialGradient></defs>
     
     ${petals}</svg>
     <div class="row between t12 mt16" style="min-height:18px">${s1 ? `<span>${s1}</span><span class="num">${won(sp[s1])} <span class="mute">/ ${won(S.cat[s1])}원</span></span>`
