@@ -1270,7 +1270,7 @@ button.focus-strip{display:block;color:inherit}
 
 .utabs{position:sticky;z-index:4}
 
-.flip-ghost{filter:saturate(.5);position:absolute;z-index:40;pointer-events:none;background-size:cover;background-position:center;box-shadow:0 10px 24px rgba(15,26,36,.16);display:grid;place-items:center;font-size:14px;color:#0F1A24;border:.5px solid rgba(0,0,0,.08)}
+.flip-ghost{position:absolute;pointer-events:none}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -2095,27 +2095,27 @@ function homeCards() {
 }
 function viewSwap(v) {
   const sc = document.querySelector('.screen'), sr = sc.getBoundingClientRect(), still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const old = new Map(homeCards().map(({ el, k }) => { const r = el.getBoundingClientRect(), cs = getComputedStyle(el);
-    return [k, { r, bg:cs.backgroundImage, bc:cs.backgroundColor, br:cs.borderRadius, op:+cs.opacity, txt:el.classList.contains('new') || el.classList.contains('fc-new') ? '새 항목' : '' }]; }));
+  // 지금 모습 그대로 복제해 두고(필터 · 덮개 · 이름 포함), 새 보기의 모습과 서서히 겹쳐 바꾼다
+  const flat = c => { c.removeAttribute('id'); c.style.cssText += ';position:absolute;inset:0;left:0;top:0;width:100%;height:100%;margin:0;transform:none;opacity:1;animation:none;transition:none'; return c; };
+  const old = new Map(homeCards().map(({ el, k }) => [k, { r:el.getBoundingClientRect(), clone:flat(el.cloneNode(true)) }]));
   S.homeView = v; render();
-  if (still) { if (v === 'fan') fanDraw(); return; }
   if (v === 'fan') { S.fanPos = 0; fanDraw(); }
-  const now = homeCards(), ghosts = [];
+  if (still) return;
+  const now = homeCards();
   now.forEach(({ el, k }, i) => { const o = old.get(k); if (!o) return;
     const r = el.getBoundingClientRect(); if (r.width < 4 || o.r.width < 4) return;
-    const g = document.createElement('div'); g.className = 'flip-ghost';
-    Object.assign(g.style, { left:o.r.left - sr.left + 'px', top:o.r.top - sr.top + 'px', width:o.r.width + 'px', height:o.r.height + 'px', backgroundImage:o.bg, backgroundColor:o.bc, borderRadius:o.br });
-    if (o.txt) g.textContent = o.txt;
-    sc.appendChild(g); el.style.opacity = '0'; ghosts.push(g);
-    const tilt = (i % 2 ? 1 : -1) * (4 + i % 3 * 2);
-    g.animate([
-      { left:o.r.left - sr.left + 'px', top:o.r.top - sr.top + 'px', width:o.r.width + 'px', height:o.r.height + 'px', transform:'rotate(0deg)', opacity:o.op || 1 },
-      { transform:`rotate(${tilt}deg) scale(1.04)`, offset:.45 },
-      { left:r.left - sr.left + 'px', top:r.top - sr.top + 'px', width:r.width + 'px', height:r.height + 'px', transform:'rotate(0deg)', opacity:1 }
-    ], { duration:620 + i * 45, delay:i * 28, easing:'cubic-bezier(.22,1,.36,1)', fill:'forwards' })
-      .onfinish = () => { el.style.opacity = ''; g.remove(); };
+    const z = v === 'fan' ? 40 + (parseInt(el.style.zIndex) || 0) : 40 + (now.length - i);
+    const g = document.createElement('div'); g.className = 'flip-ghost'; g.style.zIndex = z;
+    const nc = flat(el.cloneNode(true)); nc.style.opacity = '0';
+    g.append(o.clone, nc); sc.appendChild(g); el.style.visibility = 'hidden';
+    const box = rr => ({ left:rr.left - sr.left + 'px', top:rr.top - sr.top + 'px', width:rr.width + 'px', height:rr.height + 'px' });
+    const dur = 640, del = i * 24, ease = 'cubic-bezier(.22,1,.36,1)';
+    const a = g.animate([box(o.r), box(r)], { duration:dur, delay:del, easing:ease, fill:'both' });
+    o.clone.animate([{ opacity:1 }, { opacity:0 }], { duration:dur * .55, delay:del + dur * .15, easing:'ease', fill:'both' });
+    nc.animate([{ opacity:0 }, { opacity:1 }], { duration:dur * .55, delay:del + dur * .15, easing:'ease', fill:'both' });
+    a.onfinish = () => { el.style.visibility = ''; g.remove(); };
   });
-  setTimeout(() => { ghosts.forEach(g => g.remove()); view.querySelectorAll('#fanStage .fc,.orbit .pc').forEach(c => c.style.opacity = c.style.opacity === '0' ? '' : c.style.opacity); }, 1400);
+  setTimeout(() => { sc.querySelectorAll('.flip-ghost').forEach(g => g.remove()); view.querySelectorAll('#fanStage .fc,.orbit .pc').forEach(c => c.style.visibility = ''); }, 1600);
 }
 let tmPlayT = 0;
 function tmPlay() {
