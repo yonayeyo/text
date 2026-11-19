@@ -1271,6 +1271,8 @@ button.focus-strip{display:block;color:inherit}
 .utabs{position:sticky;z-index:4}
 
 .flip-ghost{position:absolute;pointer-events:none}
+
+.swap-old{z-index:3;pointer-events:none;border-radius:inherit}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -2093,29 +2095,26 @@ function homeCards() {
   if (fan.length) return [...fan].map(c => ({ el:c, k:c.classList.contains('fc-new') ? 'new' : +c.dataset.k }));
   return [...orb].map((c, i) => ({ el:c, k:c.classList.contains('new') ? 'new' : i }));
 }
+// 진짜 카드를 그대로 움직인다(FLIP): 새 자리의 최종 모양에 '예전 자리 · 각도 · 크기'를 더해 시작하고, 그 차이만 줄여 간다
 function viewSwap(v) {
-  const sc = document.querySelector('.screen'), sr = sc.getBoundingClientRect(), still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // 지금 모습 그대로 복제해 두고(필터 · 덮개 · 이름 포함), 새 보기의 모습과 서서히 겹쳐 바꾼다
-  const flat = c => { c.removeAttribute('id'); c.style.cssText += ';position:absolute;inset:0;left:0;top:0;width:100%;height:100%;margin:0;transform:none;opacity:1;animation:none;transition:none'; return c; };
-  const old = new Map(homeCards().map(({ el, k }) => [k, { r:el.getBoundingClientRect(), clone:flat(el.cloneNode(true)) }]));
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ang = el => { const t = getComputedStyle(el).transform; if (!t || t === 'none') return 0; const m = t.match(/matrix(3d)?\(([^)]+)\)/); if (!m) return 0; const n = m[2].split(',').map(Number); return Math.atan2(n[1], n[0]) * 180 / Math.PI; };
+  const flat = c => { c.removeAttribute('id'); c.classList.add('swap-old'); c.style.cssText += ';position:absolute;inset:0;left:0;top:0;width:100%;height:100%;margin:0;transform:none;opacity:1;animation:none;transition:none;visibility:visible'; return c; };
+  const old = new Map(homeCards().map(({ el, k }) => { const r = el.getBoundingClientRect(); return [k, { cx:r.left + r.width / 2, cy:r.top + r.height / 2, w:el.offsetWidth, h:el.offsetHeight, a:ang(el), clone:flat(el.cloneNode(true)) }]; }));
   S.homeView = v; render();
   if (v === 'fan') { S.fanPos = 0; fanDraw(); }
   if (still) return;
-  const now = homeCards();
-  now.forEach(({ el, k }, i) => { const o = old.get(k); if (!o) return;
-    const r = el.getBoundingClientRect(); if (r.width < 4 || o.r.width < 4) return;
-    const z = v === 'fan' ? 40 + (parseInt(el.style.zIndex) || 0) : 40 + (now.length - i);
-    const g = document.createElement('div'); g.className = 'flip-ghost'; g.style.zIndex = z;
-    const nc = flat(el.cloneNode(true)); nc.style.opacity = '0';
-    g.append(o.clone, nc); sc.appendChild(g); el.style.visibility = 'hidden';
-    const box = rr => ({ left:rr.left - sr.left + 'px', top:rr.top - sr.top + 'px', width:rr.width + 'px', height:rr.height + 'px' });
-    const dur = 640, del = i * 24, ease = 'cubic-bezier(.22,1,.36,1)';
-    const a = g.animate([box(o.r), box(r)], { duration:dur, delay:del, easing:ease, fill:'both' });
-    o.clone.animate([{ opacity:1 }, { opacity:0 }], { duration:dur * .55, delay:del + dur * .15, easing:'ease', fill:'both' });
-    nc.animate([{ opacity:0 }, { opacity:1 }], { duration:dur * .55, delay:del + dur * .15, easing:'ease', fill:'both' });
-    a.onfinish = () => { el.style.visibility = ''; g.remove(); };
+  const wraps = [...view.querySelectorAll('#fanStage, .orbit-wrap')]; wraps.forEach(w => w.style.overflow = 'visible');
+  const now = homeCards(); let left = now.length;
+  now.forEach(({ el, k }, i) => { const o = old.get(k); if (!o) { left--; return; }
+    const r = el.getBoundingClientRect(), fin = el.style.transform || 'none';
+    const dx = o.cx - (r.left + r.width / 2), dy = o.cy - (r.top + r.height / 2), da = o.a - ang(el), sx = o.w / el.offsetWidth, sy = o.h / el.offsetHeight;
+    el.appendChild(o.clone);
+    const dur = 700, del = i * 22, ease = 'cubic-bezier(.22,1,.36,1)';
+    const a = el.animate([{ transform:`translate(${dx}px,${dy}px) rotate(${da}deg) scale(${sx},${sy}) ${fin === 'none' ? '' : fin}` }, { transform:fin }], { duration:dur, delay:del, easing:ease, fill:'backwards' });
+    o.clone.animate([{ opacity:1 }, { opacity:0 }], { duration:dur * .6, delay:del + dur * .1, easing:'ease', fill:'both' });
+    a.onfinish = () => { o.clone.remove(); if (--left <= 0) wraps.forEach(w => w.style.overflow = ''); };
   });
-  setTimeout(() => { sc.querySelectorAll('.flip-ghost').forEach(g => g.remove()); view.querySelectorAll('#fanStage .fc,.orbit .pc').forEach(c => c.style.visibility = ''); }, 1600);
 }
 let tmPlayT = 0;
 function tmPlay() {
