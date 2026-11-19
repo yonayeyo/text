@@ -915,6 +915,22 @@ button.focus-strip{display:block;color:inherit}
 .lr-row .tx,.lr-row.on .tx{display:grid;gap:4px;margin:0;transition:none}
 .lr-row .nm{font-size:16px;font-weight:500;line-height:23px;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .lr-row .ds{font-size:12px;line-height:17px;color:var(--g6);white-space:normal}
+
+/* 지식 · 지금 볼 개념 하나 + 영역별로 접어 두기 */
+.lr-now .bite-q{font-size:20px;line-height:1.4;font-weight:500}
+.lr-why{margin-top:12px}
+.lr-act{align-items:center}
+.lr-go{display:inline-flex;align-items:center;gap:3px;color:var(--fg,var(--ink));font-weight:500}
+.lr-areas{display:grid}
+.lr-area{border-bottom:1px solid var(--g2)}
+.lr-area:last-child{border-bottom:0}
+.lr-ah{display:grid;grid-template-columns:40px 1fr auto 32px;gap:12px;align-items:center;width:100%;padding:14px 0;text-align:left}
+.lr-ah .th{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:var(--navy);box-shadow:inset 0 0 0 .5px rgba(8,31,64,.08)}
+.lr-ah .th svg{width:20px;height:20px}
+.lr-qs{padding:0 0 12px 52px}
+.lr-q{border-top:1px solid var(--g2)}
+.lr-qh{display:grid;grid-template-columns:1fr 20px;gap:12px;align-items:center;width:100%;padding:12px 0;text-align:left;color:var(--ink)}
+.lr-q .bite-b{margin-top:0;padding:4px 0 16px;border-top:0}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -1782,7 +1798,7 @@ const PRACTICE = {
   low: { d:'카드를 선택해 바로 실천해보세요<br>하고 나면 체크로 바뀌어요', items:[
     ['예산 80% 알림', () => S.autoOn.has('b80'), 'data-act="autoOn" data-v="b80"'],
     P_FIXED,
-    ['경제 개념', () => S.bitesDone.size + S.conceptDone.size > 0, PG('learn', 'data-lv="bite"', '.lr-row', '개념 하나를 눌러 읽고 ‘이해했어요’를 눌러 주세요')],
+    ['경제 개념', () => S.bitesDone.size + S.conceptDone.size > 0, PG('learn', 'data-lv="bite"', '#lrNow', '+를 눌러 읽고 ‘이해했어요’를 눌러 주세요')],
     P_DEDUCT, P_CUT, P_RECEIPT, P_ZERO ] },
   habit: { d:'카드를 선택해 바로 실천해보세요<br>하고 나면 체크로 바뀌어요', items:[
     ['카드 실적 확인', () => S.deductOk, PG('benefit', '', '#cardRatio', '남은 기간에는 체크카드가 유리해요. 보고 ‘확인했어요’를 눌러 주세요')],
@@ -1839,7 +1855,7 @@ const P_META = {
 const P_FILL = [P_RECEIPT,
   ['예산 80% 알림', () => S.autoOn.has('b80'), 'data-act="autoOn" data-v="b80"'],
   P_FIXED, P_CUT, P_COMPARE('적금 금리 비교'),
-  ['경제 개념', () => S.bitesDone.size + S.conceptDone.size > 0, PG('learn', 'data-lv="bite"', '.lr-row', '개념 하나를 눌러 읽고 ‘이해했어요’를 눌러 주세요')],
+  ['경제 개념', () => S.bitesDone.size + S.conceptDone.size > 0, PG('learn', 'data-lv="bite"', '#lrNow', '+를 눌러 읽고 ‘이해했어요’를 눌러 주세요')],
   P_DEDUCT, P_ALLOC];
 const practiceItems = () => {
   const on = t => !t || (t.startsWith('chal:') ? S.chalOn.includes(t.slice(5)) : S.extras.has(t));
@@ -2689,14 +2705,30 @@ function vLearn() {
     <div class="sec-h"><div><div class="t18">절약 팁 · 정책 정보</div><div class="sec-d">함께 실천하는 사람들의 팁과 정책 소식</div></div><button class="btn sm ghost" data-act="toast" data-msg="팁 작성 화면은 다음 버전에서 열려요">${ic('plus', 14)}공유</button></div>
     <div class="stack">${TIPS.map((t, i) => `<div class="card c-paper"><div class="row between"><span class="tag ${t.k === '정책 정보' ? 'glow' : 'line'}">${t.k}</span><span class="t10 mute">${t.who}</span></div><p class="t14 mt12">${t.t}</p><button class="chip mt12 ${S.liked.has(i) ? 'on' : ''}" data-act="like" data-v="${i}">도움돼요 ${t.likes + (S.liked.has(i) ? 1 : 0)}</button></div>`).join('')}</div>
   </section>`;
-  const area = S.learnArea || 'all';
-  const list = CONCEPTS.map(c => conceptOf(c.id)).filter(c => !conceptDone(c) && (area === 'all' || c.a === area));
+  // 처음에는 '지금 볼 개념' 하나와 다섯 영역만. 영역을 펼쳐야 그 안의 개념이 보이고, 개념도 그 자리에서 펼친다
+  const unk = unkAreas(), fa = focusArea(), pr = c => unk.has(c.a) ? 0 : c.a === fa ? 1 : 2;
+  const todo = CONCEPTS.map(c => conceptOf(c.id)).filter(c => !conceptDone(c));
+  const now = [...todo].sort((x, y) => pr(x) - pr(y))[0];
+  const nowCard = now ? `<div class="card bite c-know lr-now" id="lrNow">
+      <button class="bite-h" data-act="lrOpen" data-v="${now.id}" aria-expanded="${S.lrOpen === now.id}"><span class="bite-k">${ic('spark', 14)}지금 볼 개념 · ${now.k}</span><span class="t20 bite-q">${now.q}</span><span class="bite-tg">${ic(S.lrOpen === now.id ? 'minus' : 'plus', 16)}</span></button>
+      ${S.lrOpen === now.id ? conceptBody(now) : `<p class="t12 mute lr-why">${unk.has(now.a) ? '진단에서 ‘잘 모르겠어요’를 고른 영역이에요' : now.a === fa ? '지금 집중할 영역과 이어지는 개념이에요' : areaName(now.a)}</p>`}
+    </div>` : '<p class="t14 mute mt16">준비된 개념을 모두 알아봤어요.</p>';
+  const AR_IC = { spend:'wallet', save:'coins', credit:'card', insure:'umbrella', tax:'receipt' };
+  const areas = AREAS.map(a => { const list = todo.filter(c => c.a === a.id && c !== now), on = S.lrArea === a.id;
+    return `<div class="lr-area ${on ? 'on' : ''}">
+      <button class="lr-ah" data-act="lrArea" data-v="${a.id}" aria-expanded="${on}"><span class="th a-${a.id}" aria-hidden="true">${ic(AR_IC[a.id], 20)}</span>
+        <span class="t16">${a.name}</span><span class="t12 mute num">${list.length ? `${list.length}개` : '다 봤어요'}</span><span class="bite-tg" aria-hidden="true">${ic(on ? 'minus' : 'plus', 16)}</span></button>
+      ${on ? `<div class="lr-qs">${list.map(c => { const o = S.lrOpen === c.id;
+        return `<div class="lr-q ${o ? 'on' : ''}"><button class="lr-qh" data-act="lrOpen" data-v="${c.id}" aria-expanded="${o}"><span class="t14">${c.q.replace(/<br>/g, ' ')}</span>${ic(o ? 'minus' : 'plus', 14)}</button>${o ? conceptBody(c) : ''}</div>`; }).join('') || '<p class="t12 mute" style="padding:12px 0">이 영역의 개념은 모두 알아봤어요.</p>'}</div>` : ''}
+    </div>`; }).join('');
   return head + `
-  <div class="lr-fixed">
-  <div class="lr-chips" role="tablist">${[['all', '전체'], ...AREAS.map(a => [a.id, a.name])].map(([k, n]) => `<button class="chip pchip ${area === k ? 'on' : ''}" data-act="learnArea" data-v="${k}" role="tab" aria-selected="${area === k}">${n}</button>`).join('')}</div></div>
-  <div class="lr-list" id="lrList">${list.length ? list.map(c => `<button class="lr-row" data-act="concept" data-v="${c.id}" aria-label="${c.k} 열기"><span class="th a-${c.a}" aria-hidden="true">${ic(c.i || 'spark', 20)}</span>
-      <span class="tx"><span class="nm">${c.q.replace(/<br>/g, ' ')}</span><span class="ds">${c.k}${area === 'all' ? ` · ${areaName(c.a)}` : ''}</span></span><span class="bite-tg" aria-hidden="true">${ic('plus', 16)}</span></button>`).join('')
-    : '<p class="t14 mute">이 영역의 개념은 모두 알아봤어요.</p>'}</div>${tips ? '' : extraOff('tips')}`;
+  <section class="mt16">${nowCard}</section>
+  <section class="sec"><div class="sec-h"><div><div class="t18">영역별 개념</div></div></div><div class="lr-areas">${areas}</div></section>${tips ? '' : extraOff('tips')}`;
+}
+// 그 자리에서 펼친 개념: 생활 예시 → 한 줄 정리 → 이해했어요 · 관련 화면
+function conceptBody(c) {
+  return `<div class="bite-b">${c.ex ? c.ex() : ''}<p class="t12 bite-take">${c.take}</p>
+    <div class="row between mt16 lr-act"><button class="btn sm" data-act="conceptOk" data-v="${c.id}">이해했어요</button>${c.go ? `<button class="lr-go t12" ${c.go[1]}>${c.go[0]}${ic('arrow', 12)}</button>` : ''}</div></div>`;
 }
 // 경제 개념 목록: 스크롤할 때 목록에서 가장 위에 보이는 개념을 크게(둥근 사각형) 보여 준다
 function learnActive() {
@@ -3222,9 +3254,10 @@ document.addEventListener('click', e => {
       break; }
     case 'rentPrep': S.rentPrep = true; render(); simpleToast('청년 월세 지원 신청 서류 3개를 준비 목록에 담았어요'); break;
     case 'naGo': { const tr = el.closest('.na-wrap').querySelector('.na-track'); tr.scrollTo({ left:+v * (tr.firstElementChild.offsetWidth + 12), behavior:'smooth' }); break; }
-    case 'learnArea': S.learnArea = v; render(); break;
+    case 'lrOpen': S.lrOpen = S.lrOpen === v ? null : v; render(); break;
+    case 'lrArea': S.lrArea = S.lrArea === v ? null : v; S.lrOpen = null; render(); break;
     case 'concept': S.conceptId = v; if (el.dataset.go) { S.mode = 'app'; S.sub = null; S.tab = el.dataset.go; S.learnView = 'bite'; render(false); } openSheet('concept'); break;
-    case 'conceptOk': { const c = conceptOf(v); c.b ? S.bitesDone.add(c.b) : S.conceptDone.add(v); closeSheet(); render(); break; }
+    case 'conceptOk': { const c = conceptOf(v); c.b ? S.bitesDone.add(c.b) : S.conceptDone.add(v); if (S.lrOpen === v) S.lrOpen = null; closeSheet(); render(); simpleToast(`${c.k} · 알아봤어요`); break; }
     case 'aiOpen': aiDock(true); break;
     case 'diag': closeSheet(); S.mode = 'app'; S.sub = 'diag'; render(false); break;
     case 'subClose': S.sub = null; render(false); break;
