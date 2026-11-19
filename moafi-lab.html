@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols+2&text=%E2%9C%A6&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&text=moafi&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Bitcount+Grid+Single:ELSH,wght@0..100,100..900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@200;300;400&family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600&family=IBM+Plex+Mono:wght@400;500&family=Nanum+Gothic+Coding:wght@400;700&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -1281,11 +1282,17 @@ button.focus-strip{display:block;color:inherit}
 
 .hv-sw{margin-top:12px}
 .hv-sw + .orbit-wrap{margin-top:-10px}
+
+/* 로고: 소문자 워드마크 (Bricolage Grotesque Bold) + 끝 점 */
+.wm{display:inline-flex;align-items:baseline;font-family:"Bricolage Grotesque",var(--f-num);font-weight:700;letter-spacing:-.06em;line-height:1;color:var(--ink)}
+.wm i{display:inline-block;width:.17em;height:.17em;border-radius:50%;background:#2C64A8;margin-left:.06em}
+.orbit .oc .ow.wm{font-size:28px;line-height:34px;font-family:"Bricolage Grotesque",var(--f-num);font-weight:700;color:var(--ink)}
+.screen.dark .wm{color:#fff}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
     <div>
-      <h1><span class="logo" role="img" aria-label="moafi" style="width:168px"></span></h1>
+      <h1><span class="wm" role="img" aria-label="moafi" style="font-size:34px">moafi<i></i></span></h1>
       <p class="lead mt8">청년층을 위한 금융 실천 앱. 오늘 나의 예산을 먼저 보여주고, 지출·리포트는 출력하여 본인의 자산 상태를 파악할 수 있도록 도와줍니다.</p>
     </div>
     <div><h2>화면</h2><div class="pl" id="navScreens"></div></div>
@@ -1633,7 +1640,7 @@ function allocBlock() {
    ========================================================= */
 function vIntro() {
   return `<div style="position:relative;min-height:690px;display:flex;flex-direction:column">
-    <div style="margin-top:24px"><span class="logo" role="img" aria-label="moafi" style="width:136px"></span></div>
+    <div style="margin-top:24px"><span class="wm" role="img" aria-label="moafi" style="font-size:30px">moafi<i></i></span></div>
     <div class="t12 mute">금융 상태 진단</div>
     <div class="aura-wrap"><canvas class="thermo" data-kind="aura" width="300" height="300" aria-hidden="true"></canvas>
       <span class="spec tl">SPECIMEN 01<br>5 AREAS / UNRESOLVED</span><span class="spec br">20 Q · 5 MIN</span></div>
@@ -2051,6 +2058,8 @@ function recapClose() { clearTimeout(recapT); const el = document.querySelector(
 
 /* ===== 열화상 그래픽: 블롭의 '열'을 모아 팔레트로 색칠 (투명 → 연한 블루 → 블루 → 바이올렛 → 핑크 → 밝은 크림) ===== */
 const THERMO = [[0, [250, 250, 250, 0]], [.2, [225, 233, 242, 170]], [.42, [185, 204, 224, 240]], [.6, [111, 147, 184, 255]], [.78, [44, 85, 122, 255]], [1, [14, 42, 63, 255]]];
+const THERMO_AURA = [[0, [250, 250, 250, 0]], [.16, [214, 228, 246, 170]], [.34, [143, 178, 227, 235]], [.52, [62, 111, 181, 255]], [.68, [123, 104, 214, 255]], [.82, [242, 169, 196, 255]], [.93, [255, 224, 206, 255]], [1, [255, 248, 240, 255]]];
+function thermoColA(h) { const T = THERMO_AURA; for (let i = 1; i < T.length; i++) if (h <= T[i][0]) { const [a, ca] = T[i - 1], [b, cb] = T[i], t = (h - a) / (b - a); return ca.map((v, k) => v + (cb[k] - v) * t); } return T[T.length - 1][1]; }
 function thermoCol(h) { for (let i = 1; i < THERMO.length; i++) if (h <= THERMO[i][0]) { const [a, ca] = THERMO[i - 1], [b, cb] = THERMO[i], t = (h - a) / (b - a); return ca.map((v, k) => v + (cb[k] - v) * t); } return THERMO[THERMO.length - 1][1]; }
 function thermoDraw(cv, t) {
   const W = cv.width, H = cv.height, kind = cv.dataset.kind, p = +cv.dataset.p || 0;
@@ -2081,9 +2090,9 @@ function thermoDraw(cv, t) {
       if (i < on) blob(cx + Math.cos(a) * R, cy + Math.sin(a) * R, 30 + 3 * Math.sin(t * .002 + i), .22 + .3 * k * k);
       else blob(cx + Math.cos(a) * R, cy + Math.sin(a) * R, 20, .06); }
   }
-  const gain = kind === 'aura' ? .82 : kind === 'type' ? 1.2 : kind === 'card' ? 1.75 : kind === 'dot' ? 1.5 : 1.15;
+  const gain = kind === 'aura' ? 1.15 : kind === 'type' ? 1.6 : kind === 'card' ? 1.75 : kind === 'dot' ? 1.5 : 1.15;
   const src = o.getImageData(0, 0, W, H).data, c = cv.getContext('2d'), img = c.createImageData(W, H), d = img.data;
-  for (let k = 0; k < src.length; k += 4) { const h = Math.min(1, src[k + 3] / 255 * gain), col = thermoCol(h), n = (Math.random() - .5) * 26;
+  for (let k = 0; k < src.length; k += 4) { const h = Math.min(1, src[k + 3] / 255 * gain), col = (kind === 'aura' || kind === 'type' ? thermoColA : thermoCol)(h), n = (Math.random() - .5) * 26;
     d[k] = col[0] + n; d[k + 1] = col[1] + n; d[k + 2] = col[2] + n; d[k + 3] = col[3]; }
   c.putImageData(img, 0, 0);
 }
@@ -2317,7 +2326,7 @@ function orbit() {
     ${items.map(([t, done, act], k) => { const [x, y, r] = ORBIT[k];
       return `<button class="pc ${done ? 'done' : `todo mg mg${k % 7}`}${wig.has(t) ? ' wiggle' : ''}" style="${pos(x, y, r)}" ${act} aria-label="${t}${done ? ' · 완료' : ''}">${done ? `<span class="pk" aria-hidden="true">${ic('check', 10)}</span>` : ''}${t}</button>`; }).join('')}
     <button class="pc new" style="${pos(...ORBIT_NEW)}" ${NEW_ACT()} aria-label="새 실천 항목 추가">새 항목</button>
-    <div class="oc"><div class="ow" aria-label="moafi">moafi</div><div class="ot">오늘의 실천 항목</div><div class="od">${P.d}</div></div>
+    <div class="oc"><div class="ow wm" aria-label="moafi">moafi<i></i></div><div class="ot">오늘의 실천 항목</div><div class="od">${P.d}</div></div>
   </section></div>`;
 }
 // 오늘의 실천 항목: 첫 주 할 일 + 유형별 행동 추천 + 참여 중인 챌린지 인증을 한곳에
