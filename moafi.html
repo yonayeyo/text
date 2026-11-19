@@ -1056,6 +1056,19 @@ button.focus-strip{display:block;color:inherit}
 .crumb b,.lr-prog b,.crumb button{font-weight:500}
 .lr-now .bite-q{font-size:16px;line-height:22px}
 .h-hero .h-sb{font-weight:400;color:var(--g6)}
+
+/* 자산 구성 카드: 금액 왼쪽 정렬 · 재생 버튼과 12칸 막대 · '지금' · 고른 달을 한 묶음으로 */
+.tm-sum{display:grid;gap:2px}
+.tm-tl{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;margin-top:14px}
+.tm-playb{width:28px;height:28px;margin-top:12px;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 1px var(--g3);color:var(--ink)}
+.tm-playb svg{fill:currentColor;stroke:none;margin-left:2px}
+.tm-trk{min-width:0}
+.tm-tl .tm-scrub{margin-top:14px;gap:3px}
+.tm-tl .tm-scrub button{height:12px}
+.tm-tl .tm-scrub button b{margin-bottom:0;line-height:12px}
+.tm-tl .tm-meta{padding-top:16px}
+.tm-tl .tm-cur{top:1px;font-size:10px;font-weight:400;color:var(--g4)}
+.tm-back{position:absolute;right:0;top:0;display:inline-flex;align-items:center;gap:2px;font-size:10px;font-weight:500;color:var(--ink)}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -1124,6 +1137,7 @@ const IC = {
   menu:'<path d="M5 8h14M5 12h14M5 16h14"/>',
   aichat:'<path d="M11.54 5.78A7 7 0 0 0 5.27 16.7L4.47 19.43 7.16 18.65A7 7 0 0 0 18.16 12.26"/><circle cx="8.4" cy="12.85" r=".95" fill="currentColor" stroke="none"/><circle cx="13.9" cy="12.85" r=".95" fill="currentColor" stroke="none"/><path d="M16.7 4.2c.4 2.25 1.05 2.9 3.3 3.3-2.25.4-2.9 1.05-3.3 3.3-.4-2.25-1.05-2.9-3.3-3.3 2.25-.4 2.9-1.05 3.3-3.3z" fill="currentColor"/>',
   plus:'<path d="M12 5v14M5 12h14"/>',
+  play:'<path d="M8.5 6.2v11.6L18 12z"/>',
   search:'<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/>',
   minus:'<path d="M5 12h14"/>',
   arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
@@ -1753,8 +1767,7 @@ function tmTile(a, b, i, total) {
 // 월 선택 막대 아래: 고른 달 이름이 그 칸 밑을 따라다니고, 지금이 아니면 '지금으로' 버튼
 function tmMeta(i) {
   const last = TM_MONTHS.length - 1, x = (i + .5) / TM_MONTHS.length * 100;
-  return `<span class="tm-cur num${i === last ? ' is-now' : ''}" style="left:${x}%">${i === last ? '지금' : TM_MONTHS[i]}</span>
-    <div class="row between tm-lb"><button type="button" class="tm-play" data-act="tmPlay">${ic('refresh', 12)}1년 흐름 보기</button>${i === last ? '' : `<button type="button" class="tm-play" data-act="tmIdx" data-v="${last}">지금으로${ic('arrow', 12)}</button>`}</div>`;
+  return `<span class="tm-cur num" style="left:${x}%">${i === last ? '1년 흐름' : TM_MONTHS[i]}</span>${i === last ? '' : `<button type="button" class="tm-back" data-act="tmIdx" data-v="${last}">지금으로${ic('arrow', 12)}</button>`}`;
 }
 const tmTotal = i => ACCOUNTS.reduce((t, a) => t + tmVal(a, i), 0);
 function tmDelta(i) {
@@ -1791,16 +1804,17 @@ function accountsTree() {
   const tiles = ACCOUNTS.map((a, k) => { const b = B[k], on = sel === a;
     return `<button class="tm-t" data-act="acctSel" data-v="${a.k}" aria-pressed="${on}" aria-label="${useOf(a)} ${W(tmVal(a, i))} 자세히" style="left:${b.x / Wd * 100}%;top:${b.y / Ht * 100}%;width:${b.w / Wd * 100}%;height:${b.h / Ht * 100}%;opacity:${sel && !on ? .4 : 1}">${tmTile(a, b, i, total)}</button>`; }).join('');
   return `<div class="tm-box mt12" id="tmBox" style="aspect-ratio:${Wd}/${Ht}" role="img" aria-label="자산 구성 트리맵">${tiles}</div>
-    <div class="tm-scrub" role="group" aria-label="월별 자산 구성">${TM_MONTHS.map((m, j) => `<button type="button" class="${j === i ? 'on' : ''}${j === last ? ' now' : ''}" data-act="tmIdx" data-v="${j}" aria-pressed="${j === i}" aria-label="20${m.replace('.', '년 ')}월${j === last ? ' · 지금' : ''}"><i></i>${j === last ? '<b>지금</b>' : ''}</button>`).join('')}</div>
-    <div class="tm-meta" id="tmMeta">${tmMeta(i)}</div>
+    <div class="tm-tl"><button type="button" class="tm-playb" data-act="tmPlay" aria-label="1년 흐름 재생">${ic('play', 14)}</button>
+      <div class="tm-trk"><div class="tm-scrub" role="group" aria-label="월별 자산 구성">${TM_MONTHS.map((m, j) => `<button type="button" class="${j === i ? 'on' : ''}${j === last ? ' now' : ''}" data-act="tmIdx" data-v="${j}" aria-pressed="${j === i}" aria-label="20${m.replace('.', '년 ')}월${j === last ? ' · 지금' : ''}"><i></i>${j === last ? '<b>지금</b>' : ''}</button>`).join('')}</div>
+      <div class="tm-meta" id="tmMeta">${tmMeta(i)}</div></div></div>
     ${sel ? `<div class="row g12" id="tmSel" style="padding:12px;margin:16px -8px 0;border-radius:999px;background:var(--g2)">${tmSelHTML(sel, i)}</div>` : ''}`;
 }
 function accountsCard(home) {
   return `<div class="card c-paper">
       ${home ? `<button class="row between" style="width:100%;text-align:left" data-act="tab" data-tab="plan" data-pv="bank"><span class="t14">자산 구성</span><span class="row g4 t10 mute">6개 계좌${ic('arrow', 14)}</span></button>`
         : ''}
-      <div class="row between ${home ? 'mt12' : ''}" style="align-items:baseline"><span class="t12 mute">통합 자산</span><span class="n24" id="tmTotal">${won(home ? ACCOUNTS.reduce((t, a) => t + a.a, 0) : tmTotal(S.tmIdx ?? TM_MONTHS.length - 1))}<span class="cur t12">₩</span></span></div>
-      ${home ? '' : `<div class="t12 mute tm-delta" id="tmDelta">${tmDelta(S.tmIdx ?? TM_MONTHS.length - 1)}</div>`}
+      ${home ? `<div class="row between mt12" style="align-items:baseline"><span class="t12 mute">통합 자산</span><span class="n24">${won(ACCOUNTS.reduce((t, a) => t + a.a, 0))}<span class="cur t12">₩</span></span></div>`
+        : `<div class="tm-sum"><span class="n24" id="tmTotal">${won(tmTotal(S.tmIdx ?? TM_MONTHS.length - 1))}<span class="cur t12">₩</span></span><div class="t12 mute" id="tmDelta">${tmDelta(S.tmIdx ?? TM_MONTHS.length - 1)}</div></div>`}
       ${home ? accountsBlock() : accountsTree()}
     </div>`;
 }
@@ -2648,7 +2662,7 @@ function vPlan(pvOver, noHead) {
   </section>`}`; }
   // 통장: 용도별 통장 · 비상금 · 저축 꺼내기 · 투자
   if (pv === 'bank') return head + (S.persona === 'habit' ? planLead() : '') + `
-  <section class="mt24" id="assetCard"><div class="sec-h"><div><div class="t18">자산 구성</div><div class="sec-d">계좌별 잔액 · 12개월 흐름</div></div><button class="row g4 t12 mute" style="margin-top:4px" data-act="sheet" data-sheet="accounts" aria-label="계좌 ${ACCOUNTS.length}개와 용도 보기">${ACCOUNTS.length}개 계좌${ic('arrow', 14)}</button></div>${accountsCard(false)}</section>
+  <section class="mt24" id="assetCard"><div class="sec-h"><div><div class="t18">자산 구성</div></div><button class="row g4 t12 mute" style="margin-top:4px" data-act="sheet" data-sheet="accounts" aria-label="계좌 ${ACCOUNTS.length}개와 용도 보기">${ACCOUNTS.length}개 계좌${ic('arrow', 14)}</button></div>${accountsCard(false)}</section>
   ${S.persona === 'habit' ? '' : `<div class="mt24">${bite('comp')}</div>`}
   <section class="sec">
     <div class="sec-h"><div class="t18">목표 자금 인출</div></div>
