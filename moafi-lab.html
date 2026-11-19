@@ -1200,6 +1200,18 @@ button.focus-strip{display:block;color:inherit}
 .ring-wrap{position:relative;width:240px;height:240px;margin:12px auto 0}
 .ring-wrap canvas{width:240px;height:240px;filter:blur(6px)}
 .ring-c{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:4px}
+
+/* 열화상 그래픽 확장: 홈 카드 · 진단 결과 유형 · 지식 영역 점 */
+.fc{background-image:none!important;background-color:#F2F2F0}
+.fc canvas.thermo{position:absolute;inset:0;width:100%;height:100%;filter:blur(5px)}
+.fc .holo{display:none}
+.fc .ix,.fc .pc-serial{color:#181818;mix-blend-mode:normal}
+.fc.done .ix,.fc.done .pc-serial{color:#fff}
+.type-aura{position:relative;height:200px;margin:12px -8px 0;display:grid;place-items:center}
+.type-aura canvas{width:260px;height:200px;filter:blur(8px)}
+.type-aura .spec{position:absolute;right:8px;bottom:6px;color:inherit;opacity:.6}
+.lr-sh .th.th-dot{background:none;overflow:visible}
+.th-dot canvas{width:28px;height:28px;filter:blur(1.5px)}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -1679,6 +1691,7 @@ function vResult(ctx = 'ob') {
     : `<div class="top"><span class="tag line" style="--line:#4a4a4a;height:28px;padding:0 12px">진단 완료 · 20문항</span>
     <button class="ib" style="box-shadow:inset 0 0 0 1px #3a3a3a" data-act="ob" data-v="2" aria-label="문항 다시 보기">${ic('refresh', 20)}</button></div>`}
   <div class="eng mute mt24">Your type · ${P.name}</div>
+  <div class="type-aura"><canvas class="thermo" data-kind="type" data-s="${['cog', 'low', 'habit', 'self'].indexOf(sc.persona)}" width="260" height="200" aria-hidden="true"></canvas><span class="spec">TYPE ${String(['cog', 'low', 'habit', 'self'].indexOf(sc.persona) + 1).padStart(2, '0')} / 04</span></div>
   <h1 class="ob-title mt8">${HEAD[sc.persona]}</h1>
   <p class="t12 mute mt12">${P.desc}</p>
   ${sc.filled ? `<p class="t10 mute mt8">답하지 않은 ${sc.filled}문항은 데모용 예시 응답으로 채웠어요.</p>` : ''}
@@ -1976,6 +1989,18 @@ function thermoDraw(cv, t) {
     for (let i = 0; i < 9; i++) { const a = i / 9 * 6.283 + t * .00025 * (i % 2 ? 1 : -1), rr = 40 + 28 * Math.sin(t * .0004 + i);
       blob(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr, 70 + 18 * Math.sin(t * .0006 + i * 2), .38); }
     blob(cx, cy, 60, .35);
+  } else if (kind === 'card' || kind === 'type' || kind === 'dot') {
+    const sd = +cv.dataset.s || 0, m = Math.min(W, H), sl = t * .0004;
+    const P = [
+      () => { for (let i = 0; i < 6; i++) { const a = i / 6 * 6.283 + sl; blob(cx + Math.cos(a) * m * .2, cy + Math.sin(a) * m * .2, m * .2, .34); } blob(cx, cy, m * .14, .5); },       // 꽃
+      () => { for (let i = 0; i < 16; i++) { const a = -1.6 + i / 16 * 4.6; blob(cx + Math.cos(a) * m * .3, cy + Math.sin(a) * m * .3, m * .13, .12 + i * .025); } },                      // 고리
+      () => { for (let i = 0; i < 7; i++) blob(cx + (i - 3) * m * .09 + Math.sin(sl + i) * 4, cy + (i - 3) * m * .12, m * (.12 + (i % 3) * .04), .3 + (i === 3) * .25); },                    // 사선 무리
+      () => { blob(cx, cy, m * .38, .55); blob(cx + m * .08, cy - m * .06, m * .18, .4); },                                                                                               // 구슬
+      () => { for (let i = 0; i < 9; i++) blob(cx + Math.sin(i * .9 + sl) * m * .22, cy + (i - 4) * m * .1, m * .14, .26 + (i % 2) * .12); },                                             // 물결
+      () => { blob(cx - m * .14, cy - m * .1, m * .26, .5); blob(cx + m * .16, cy + m * .14, m * .2, .42); blob(cx, cy, m * .1, .3); },                                                   // 두 구슬
+      () => { for (let i = 0; i < 4; i++) { const a = i * 1.5708 + sl * .5; for (let j = 1; j <= 3; j++) blob(cx + Math.cos(a) * m * .11 * j, cy + Math.sin(a) * m * .11 * j, m * .1, .42 - j * .08); } blob(cx, cy, m * .16, .55); }, // 별
+    ];
+    (P[sd % P.length])();
   } else {
     // 채운 구간은 처음엔 미지근(블루)하다가 지금 위치에 가까울수록 뜨거워진다. 남은 구간은 옅은 흔적만
     const n = 28, R = W * .36, on = Math.round(n * p);
@@ -1983,8 +2008,9 @@ function thermoDraw(cv, t) {
       if (i < on) blob(cx + Math.cos(a) * R, cy + Math.sin(a) * R, 30 + 3 * Math.sin(t * .002 + i), .22 + .3 * k * k);
       else blob(cx + Math.cos(a) * R, cy + Math.sin(a) * R, 20, .06); }
   }
+  const gain = kind === 'card' || kind === 'type' ? 1.75 : kind === 'dot' ? 1.5 : 1.15;
   const src = o.getImageData(0, 0, W, H).data, c = cv.getContext('2d'), img = c.createImageData(W, H), d = img.data;
-  for (let k = 0; k < src.length; k += 4) { const h = Math.min(1, src[k + 3] / 255 * 1.15), col = thermoCol(h), n = (Math.random() - .5) * 26;
+  for (let k = 0; k < src.length; k += 4) { const h = Math.min(1, src[k + 3] / 255 * gain), col = thermoCol(h), n = (Math.random() - .5) * 26;
     d[k] = col[0] + n; d[k + 1] = col[1] + n; d[k + 2] = col[2] + n; d[k + 3] = col[3]; }
   c.putImageData(img, 0, 0);
 }
@@ -1992,7 +2018,9 @@ let thermoRaf = 0;
 function thermoLoop() {
   cancelAnimationFrame(thermoRaf); const cvs = [...document.querySelectorAll('canvas.thermo')]; if (!cvs.length) return;
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const f = t => { cvs.forEach(cv => cv.isConnected && thermoDraw(cv, t)); if (!still && cvs.some(cv => cv.isConnected)) thermoRaf = requestAnimationFrame(f); };
+  const live = cv => cv.dataset.kind !== 'card' && cv.dataset.kind !== 'dot' || cv.closest('.fc[aria-selected="true"]');
+  cvs.forEach(cv => thermoDraw(cv, 0));
+  const f = t => { cvs.forEach(cv => cv.isConnected && live(cv) && thermoDraw(cv, t)); if (!still && cvs.some(cv => cv.isConnected)) thermoRaf = requestAnimationFrame(f); };
   thermoRaf = requestAnimationFrame(f);
 }
 let tmPlayT = 0;
@@ -2306,7 +2334,7 @@ function practiceFan() {
   return `<section class="fan-sec" aria-label="오늘 할 일 ${n}개 중 ${doneN}개 완료">
     <div class="fan-stage" id="fanStage" tabindex="0" role="listbox" aria-label="오늘 할 일 카드">
       ${xs.map((x, k) => x.isNew ? `<button type="button" class="fc fc-new" data-k="${k}" role="option" aria-label="새 실천 항목 추가"><span class="fn-i">${ic('plus', 22)}</span><b>새 항목</b></button>`
-        : `<button type="button" class="fc im${k % 7} ${x.done ? 'done' : ''}" data-k="${k}" role="option" aria-label="${pad2(k + 1)} ${x.t}${x.done ? ' · 완료' : ''}"><span class="holo" aria-hidden="true"></span><span class="ix">${pad2(k + 1)}</span><span class="pc-serial" aria-hidden="true">MOAFI&nbsp;&nbsp;PC-${pad2(k + 1)}/${pad2(n)}<br>2026 OCT · VOL.10</span>${x.done ? `<span class="ck"><span class="ck-i">${ic('check', 22)}</span><b>완료</b></span>` : ''}</button>`).join('')}
+        : `<button type="button" class="fc im${k % 7} ${x.done ? 'done' : ''}" data-k="${k}" role="option" aria-label="${pad2(k + 1)} ${x.t}${x.done ? ' · 완료' : ''}"><canvas class="thermo" data-kind="card" data-s="${k}" width="225" height="309" aria-hidden="true"></canvas><span class="ix">${pad2(k + 1)}</span><span class="pc-serial" aria-hidden="true">MOAFI&nbsp;&nbsp;PC-${pad2(k + 1)}/${pad2(n)}<br>2026 OCT · VOL.10</span>${x.done ? `<span class="ck"><span class="ck-i">${ic('check', 22)}</span><b>완료</b></span>` : ''}</button>`).join('')}
     </div>
     <div class="fan-cap" id="fanCap"></div>
   </section>`;
@@ -3113,7 +3141,7 @@ function learnBody() {
     </div>` : '<p class="t14 mute mt16">준비된 개념을 모두 알아봤어요.</p>';
   const areas = [...AREAS].sort((x, y) => pr(x.id) - pr(y.id)).map(a => { const list = todo.filter(c => c.a === a.id && c !== now);
     if (!list.length) return '';
-    const hd = `<div class="lr-sh"><span class="th a-${a.id}" aria-hidden="true">${ic(AR_IC[a.id], 16)}</span><span class="t16">${a.name}</span><span class="t12 mute num">${list.length}</span>${unk.has(a.id) ? '<span class="tag line lr-tag">잘 모르는 영역</span>' : ''}</div>`;
+    const hd = `<div class="lr-sh"><span class="th th-dot" aria-hidden="true"><canvas class="thermo" data-kind="dot" data-s="${AREAS.indexOf(a)}" width="56" height="56"></canvas></span><span class="t16">${a.name}</span><span class="t12 mute num">${list.length}</span>${unk.has(a.id) ? '<span class="tag line lr-tag">잘 모르는 영역</span>' : ''}</div>`;
     const more = S.lrMore === a.id, shown = more ? list : list.slice(0, 2);
     return `<div class="lr-sec">${hd}<div class="lr-qs b">${shown.map(c => lrQRow(c)).join('')}</div>
       ${list.length > 2 ? `<button class="lr-more t12" data-act="lrMore" data-v="${a.id}">${more ? '접기' : `${list.length - 2}개 더 보기`}${ic(more ? 'minus' : 'plus', 12)}</button>` : ''}</div>`; }).join('');
@@ -3327,7 +3355,7 @@ function sheetHTML(name) {
         <div class="stack8 mt16">${done ? '' : `<button class="btn full light" style="box-shadow:inset 0 0 0 1px var(--g3)" data-act="conceptOk" data-v="${c.id}">이해했어요</button>`}
         ${c.go ? `<button class="btn full" ${c.go[1]}>${c.go[0]}${ic('arrow', 18)}</button>` : ''}</div>`; }
     case 'bites': { const done = CONCEPTS.map(c => conceptOf(c.id)).filter(conceptDone);
-      return head('알아본 개념', `${CONCEPT_TOTAL}개 중 ${conceptKnown()}개 · 다시 펼쳐 볼 수 있어요`) + `<div class="lr-secs mt24">${AREAS.map(a => { const l = done.filter(c => c.a === a.id); return l.length ? `<div class="lr-sec"><div class="lr-sh"><span class="th a-${a.id}" aria-hidden="true">${ic(AR_IC[a.id], 16)}</span><span class="t16">${a.name}</span><span class="t12 mute num">${l.length}</span></div><div class="lr-qs b">${l.map(c => lrQRow(c, true)).join('')}</div></div>` : ''; }).join('')}</div>`; }
+      return head('알아본 개념', `${CONCEPT_TOTAL}개 중 ${conceptKnown()}개 · 다시 펼쳐 볼 수 있어요`) + `<div class="lr-secs mt24">${AREAS.map(a => { const l = done.filter(c => c.a === a.id); return l.length ? `<div class="lr-sec"><div class="lr-sh"><span class="th th-dot" aria-hidden="true"><canvas class="thermo" data-kind="dot" data-s="${AREAS.indexOf(a)}" width="56" height="56"></canvas></span><span class="t16">${a.name}</span><span class="t12 mute num">${l.length}</span></div><div class="lr-qs b">${l.map(c => lrQRow(c, true)).join('')}</div></div>` : ''; }).join('')}</div>`; }
     case 'menu': return head('메뉴') + `<div class="stack8 mt24"><button class="card c-paper setrow" style="text-align:left" data-act="sheet" data-sheet="sitemap"><span class="ib ink">${ic('menu', 20)}</span><span><span class="t14" style="display:block">전체 기능 보기</span><span class="t12 mute">탭별로 어떤 기능이 있는지 한 번에 봐요</span></span>${ic('arrow', 18)}</button><button class="card c-paper setrow" style="text-align:left" data-act="diag"><span class="ib ink">${ic('spark', 20)}</span><span><span class="t14" style="display:block">내 진단 결과</span><span class="t12 mute">${PERSONA[S.persona].name} · 2026.10.15 진단</span></span>${ic('arrow', 18)}</button>${[['link','연동 계좌·카드 관리','6개 계좌 · 카드 2 · 간편결제 1'],['bell','알림 설정','예산 초과 위험 · 정산 · 입금'],['sliders','기본 설정 바꾸기·해제','선저축 · 비상금 · 예산 · 고정 지출'],['refresh','재진단','마지막 2026.06.12']].map(([i, t, s]) => `<button class="card c-paper setrow" style="text-align:left" data-act="${i === 'refresh' ? 'rediag' : i === 'sliders' ? 'tab' : 'toast'}" data-tab="plan" data-msg="${t} 화면은 데모에서 생략했어요"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(i, 20)}</span><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${s}</span></span>${ic('arrow', 18)}</button>`).join('')}</div>
       <div class="t12 mute mt24">추가 기능 · 필요할 때만 켜세요</div>
       <div class="card c-paper mt8" style="padding:4px 20px">${Object.entries(EXTRAS).map(([k, [t, d]]) => `<div class="kr" style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px 0"><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${d}</span></span><button class="switch ${S.extras.has(k) ? 'on' : ''}" data-act="extraToggle" data-v="${k}" role="switch" aria-checked="${S.extras.has(k)}" aria-label="${t}"></button></div>`).join('')}</div>
