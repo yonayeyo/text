@@ -1002,6 +1002,13 @@ button.focus-strip{display:block;color:inherit}
 .na-title{font-size:16px;line-height:22px;font-weight:500;color:#000}
 .na-desc{margin-top:4px;font-size:12px;line-height:18px;font-weight:300;color:#757575}
 .na-body{margin-top:12px}
+
+/* 하단 탭바 · 라이트(밝은 유리) 버전 */
+.tabbar.light{background:rgba(252,252,252,.72);
+  -webkit-backdrop-filter:blur(14px) saturate(180%);backdrop-filter:url(#glassRefract) blur(12px) saturate(180%);
+  box-shadow:inset 1px 1px 1.1px rgba(255,255,255,.9),inset -1px -1px 1.1px rgba(255,255,255,.7),inset 0 0 0 .5px rgba(24,24,24,.08),0 10px 28px rgba(0,0,0,.12)}
+.tabbar.light .tab{color:rgba(24,24,24,.42)}
+.tabbar.light .tab.on{color:#181818}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -1012,6 +1019,7 @@ button.focus-strip{display:block;color:inherit}
     <div><h2>화면</h2><div class="pl" id="navScreens"></div></div>
     <div><h2>사용자 유형 · 실천 항목 구분</h2><div class="pl" id="navPersona"></div></div>
     <div><h2>상황 재현</h2><div class="pl" id="navScen"></div></div>
+    <div><h2>하단 탭바 (비교용)</h2><div class="pl" id="navTheme"></div></div>
   </aside>
 
   <div class="device">
@@ -3492,8 +3500,14 @@ function renderPanel() {
   const sc = [ ['ob0','진단 시작'], ['ob1','자기평가'], ['ob2','진단 문항'], ['ob3','진단 결과'], ['diag','내 진단 결과'], ['link','계좌 연동 · 용도 확인'], ['empty','홈 · 연동 전'], ['home','홈'], ['spend-list','지출 · 가계부'], ['spend-analysis','지출 · 분석·영수증'], ['spend-budget','지출 · 예산'], ['plan-bank','자산 · 통장'], ['plan-goal','자산 · 목표'], ['plan-rule','자산 · 자동 설정'], ['learn-bite','지식 · 경제 개념'], ['learn-tips','지식 · 팁과 소식'], ['benefit','혜택'] ];
   document.getElementById('navScreens').innerHTML = sc.map(([k, n]) => `<button type="button" class="${cur === k ? 'on' : ''}" data-go="${k}">${n}</button>`).join('');
   document.getElementById('navPersona').innerHTML = Object.entries(PERSONA).map(([k, p]) => `<button type="button" class="${S.persona === k ? 'on' : ''}" data-persona="${k}">${p.name}</button>`).join('');
+  document.getElementById('navTheme').innerHTML = [['dark', '다크 · 검은 유리'], ['light', '라이트 · 밝은 유리']].map(([k, n]) => `<button type="button" class="${(S.navTheme || 'dark') === k ? 'on' : ''}" data-navtheme="${k}">${n}</button>`).join('');
   document.getElementById('navScen').innerHTML = [ ['pay','결제 발생 → 실시간 피드백'], ['income','외주비 입금 → 배분'], ['settle','더치페이 정산'], ['withdraw','저축 인출 확인'], ['ai','AI 조언 묻기'] ].map(([k, n]) => `<button type="button" data-scen="${k}">${n}</button>`).join('');
 }
+// 탭바 테마 비교: 화면 상태는 그대로 두고 탭바 모양만 바꾼다
+document.getElementById('navTheme').addEventListener('click', e => {
+  const b = e.target.closest('[data-navtheme]'); if (!b) return; e.stopPropagation();
+  S.navTheme = b.dataset.navtheme; document.getElementById('tabbar').classList.toggle('light', S.navTheme === 'light'); renderPanel();
+});
 document.querySelector('.panel').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return; closeSheet(); S.sub = null; S.from = null;
   if (b.dataset.go) { const g = b.dataset.go;
