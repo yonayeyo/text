@@ -24,8 +24,8 @@
   · icons: 24 box, 1.5px line
 */
 :root{
-  --ink:#181818; --g6:#606060; --g3:#DEDEDE; --paper:#FCFCFC; --bg:#FAFAFA;
-  --g8:#2B2B2B; --g4:#9C9C9C; --g2:#EFEFEF;
+  --ink:#181818; --g6:#757575; --g3:#DEDEDE; --paper:#FCFCFC; --bg:#FAFAFA;
+  --g8:#2B2B2B; --g4:#999999; --g2:#EFEFEF;
   /* 포인트 컬러: 네이비 #081F40 · 슬레이트 #424F62 · 블루 #B5CBFF · 페일 블루 #D5E3FF */
   --navy:#081F40; --slate:#424F62; --blue:#B5CBFF; --pale:#D5E3FF;
   --warn:#FF60E4;   /* 경고: 알림 점 · 예산 초과 · 마감 임박 · 지출 증가 */
@@ -41,7 +41,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#E7E7E5}
-body{font-family:var(--f-kr);font-weight:500;color:var(--ink);-webkit-font-smoothing:antialiased;word-break:keep-all;line-height:1.45}
+body{font-family:var(--f-kr);font-weight:400;color:var(--ink);-webkit-font-smoothing:antialiased;word-break:keep-all;line-height:1.45}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:inherit}
 button:focus-visible,input:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
 input{font:inherit;color:inherit}
@@ -970,8 +970,8 @@ button.focus-strip{display:block;color:inherit}
 .bn-head{font-size:10px;line-height:12px;color:#999}
 .bn-row{padding-top:18px}
 .bn-row + .bn-row{padding-top:21px}
-.bn-n{font-size:16px;font-weight:500;line-height:20px;color:#000}
-.bn-amt{margin-top:3px;font-size:12px;font-weight:300;line-height:16px;color:#000}
+.bn-n{font-size:16px;font-weight:500;line-height:20px;color:var(--ink)}
+.bn-amt{margin-top:3px;font-size:12px;font-weight:300;line-height:16px;color:var(--ink)}
 .bn-meta{display:flex;align-items:center;gap:5px;height:34px;margin-top:5px;padding:0 10px 0 11px;border-radius:8px;background:rgba(217,217,217,.16);font-size:10px;line-height:14px;color:#757575}
 .bn-mt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bn-meta .tag{flex:none;height:17px;padding:0 7.5px;border-radius:39px;font-size:10px;line-height:1;background:#fff;color:#000;box-shadow:inset 0 0 0 .5px #595959}
@@ -983,13 +983,13 @@ button.focus-strip{display:block;color:inherit}
 /* 혜택 탭 규칙: 카드(흰 바탕 · 0.5px 테두리 · 13px · 17/20 여백) · 글자 4단계 · 안쪽 상자 */
 .card.bc{padding:17px 20px;border-radius:13px;background:#fff;box-shadow:none;outline:.5px solid rgba(0,0,0,.2);outline-offset:-.5px}
 .card.bc.accent{outline:0;background:linear-gradient(135deg,#F3F7FF,#DCE7FF)}
-.b-t{font-size:16px;font-weight:500;line-height:22px;color:#000}
-.b-v{font-size:12px;font-weight:300;line-height:18px;color:#000}
+.b-t{font-size:16px;font-weight:500;line-height:22px;color:var(--ink)}
+.b-v{font-size:12px;font-weight:300;line-height:18px;color:var(--ink)}
 .b-d{font-size:12px;font-weight:300;line-height:18px;color:#757575}
 .b-l{font-size:10px;font-weight:400;line-height:14px;color:#999}
-.b-big{font-family:var(--f-num);font-size:36px;font-weight:300;line-height:44px;letter-spacing:-.02em;color:#000}
-.b-num{font-family:var(--f-num);font-size:20px;font-weight:300;line-height:26px;color:#000}
-.b-cur{font-size:12px;font-weight:400;color:#000}
+.b-big{font-family:var(--f-num);font-size:36px;font-weight:300;line-height:44px;letter-spacing:-.02em;color:var(--ink)}
+.b-num{font-family:var(--f-num);font-size:20px;font-weight:300;line-height:26px;color:var(--ink)}
+.b-cur{font-size:12px;font-weight:400;color:var(--ink)}
 .b-box{padding:10px 12px;border-radius:8px;background:rgba(217,217,217,.16)}
 .b-rows{display:grid;gap:10px}
 .cond-edit{font-weight:500}
@@ -1002,7 +1002,7 @@ button.focus-strip{display:block;color:inherit}
 .focus-strip .fs-txt .t14{font-size:16px;font-weight:500;line-height:22px}
 .na-head{justify-content:flex-start}
 .na-cnt{margin-left:auto;font-size:10px;color:#999}
-.na-title{font-size:16px;line-height:22px;font-weight:500;color:#000}
+.na-title{font-size:16px;line-height:22px;font-weight:500;color:var(--ink)}
 .na-desc{margin-top:4px;font-size:12px;line-height:18px;font-weight:300;color:#757575}
 .na-body{margin-top:12px}
 
@@ -1037,6 +1037,25 @@ button.focus-strip{display:block;color:inherit}
 .sm-row:last-child{border-bottom:0}
 .sm-t{display:block;font-size:14px;font-weight:400;line-height:20px}
 .sm-d{display:block;font-size:12px;font-weight:300;line-height:18px;color:#757575}
+
+/* ===== 앱 전체 글자 규칙 =====
+   큰 숫자 300 · 중간 숫자 20/300 · 탭·섹션 제목 18/500 · 카드 제목 16/500 · 목록 14/400 · 본문 12/300 · 설명 12/300 #757575 · 라벨 10/400 #999 · 칩·태그·버튼 500
+   색: 검정 #181818(--ink) · 설명 #757575(--g6) · 라벨 #999(--g4) · 링크 #3269FF */
+.t18{font-weight:500;line-height:26px}
+.t16{font-weight:500}
+.t14{font-weight:400}
+.t12{font-weight:300}
+.t10{font-weight:400}
+.t10.mute{color:var(--g4)}
+.ph-sub,.sec-d{font-size:12px;font-weight:300;line-height:18px}
+.sec-d{color:var(--mute)}
+.n24,.n20{font-weight:300}
+.btn,.chip,.tag,.pchip,.utabs button.on{font-weight:500}
+.btn .t12,.btn .t14,.chip .t12,.tag .t10{font-weight:inherit}
+.dotnum{font-weight:300}
+.crumb b,.lr-prog b,.crumb button{font-weight:500}
+.lr-now .bite-q{font-size:16px;line-height:22px}
+.h-hero .h-sb{font-weight:300;color:var(--g6)}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
