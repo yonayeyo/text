@@ -1012,12 +1012,12 @@ button.focus-strip{display:block;color:inherit}
 
 /* 리퀴드 글래스(플랫): 가장자리 9px에서만 굴절 · 색 번짐 최소 · 고르게 흐린 면 · 얇은 테두리 빛.
    선택한 탭에는 안쪽 알약이 미끄러져 와서 켜진다(인스타그램 하단 탭처럼) */
-.tabbar{background:rgba(22,22,22,.8);-webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:url(#liquidGlass) blur(10px) saturate(160%);
+.tabbar{background:rgba(22,22,22,.66);-webkit-backdrop-filter:blur(10px) saturate(170%);backdrop-filter:url(#liquidGlass) blur(4px) saturate(170%);
   box-shadow:inset 0 0 0 .5px rgba(255,255,255,.28),0 8px 24px rgba(0,0,0,.18)}
 .tabbar::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.22)}
 .tabbar::after{content:"";position:absolute;top:6px;bottom:6px;left:calc(8px + var(--ti, 0) * (100% - 16px) / 5);width:calc((100% - 16px) / 5);border-radius:999px;pointer-events:none;
   background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.22);transition:left .42s cubic-bezier(.3,1.25,.4,1)}
-.tabbar.light{background:rgba(250,250,250,.84);-webkit-backdrop-filter:blur(14px) saturate(180%);backdrop-filter:url(#liquidGlass) blur(10px) saturate(180%);
+.tabbar.light{background:rgba(250,250,250,.56);-webkit-backdrop-filter:blur(10px) saturate(180%);backdrop-filter:url(#liquidGlass) blur(4px) saturate(180%);
   box-shadow:inset 0 0 0 .5px rgba(0,0,0,.10),0 8px 24px rgba(0,0,0,.10)}
 .tabbar.light::before{box-shadow:inset 0 1px 0 #fff}
 .tabbar.light::after{background:rgba(0,0,0,.06);box-shadow:inset 0 0 0 .5px rgba(0,0,0,.06)}
@@ -1060,9 +1060,9 @@ button.focus-strip{display:block;color:inherit}
         <feDisplacementMap in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G"/></filter>
         <filter id="liquidGlass" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" x="0" y="0" width="358" height="64" color-interpolation-filters="sRGB">
           <feImage id="lgMap" x="0" y="0" width="358" height="64" preserveAspectRatio="none" result="map"/>
-          <feDisplacementMap in="SourceGraphic" in2="map" scale="22" xChannelSelector="R" yChannelSelector="G" result="dr"/>
-          <feDisplacementMap in="SourceGraphic" in2="map" scale="22.4" xChannelSelector="R" yChannelSelector="G" result="dg"/>
-          <feDisplacementMap in="SourceGraphic" in2="map" scale="22.8" xChannelSelector="R" yChannelSelector="G" result="db"/>
+          <feDisplacementMap in="SourceGraphic" in2="map" scale="30" xChannelSelector="R" yChannelSelector="G" result="dr"/>
+          <feDisplacementMap in="SourceGraphic" in2="map" scale="31.6" xChannelSelector="R" yChannelSelector="G" result="dg"/>
+          <feDisplacementMap in="SourceGraphic" in2="map" scale="33.2" xChannelSelector="R" yChannelSelector="G" result="db"/>
           <feColorMatrix in="dr" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="r"/>
           <feColorMatrix in="dg" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="g"/>
           <feColorMatrix in="db" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="b"/>
@@ -3533,7 +3533,7 @@ function liquidMap() {
   const tb = document.getElementById('tabbar'), f = document.getElementById('liquidGlass'), im = document.getElementById('lgMap');
   if (!tb || !f || !im) return; const w = Math.round(tb.offsetWidth), h = Math.round(tb.offsetHeight); if (!w || !h) return;
   if (liquidMap.k === w + 'x' + h) return; liquidMap.k = w + 'x' + h;
-  const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d'), d = x.createImageData(w, h), r = h / 2, band = 9;
+  const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d'), d = x.createImageData(w, h), r = h / 2, band = 14;
   for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
     const px = i + .5, py = j + .5, cx = Math.min(Math.max(px, r), w - r), vx = px - cx, vy = py - r, len = Math.hypot(vx, vy) || 1, dist = r - len;
     let dx = 0, dy = 0;
