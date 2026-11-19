@@ -1191,6 +1191,15 @@ button.focus-strip{display:block;color:inherit}
 
 /* 정산 알림: 화면을 밀어내지 않고 머리말 아래에 겹쳐 뜬다 (유리라서 뒤가 비침) */
 .urgent{position:absolute;left:var(--m);right:var(--m);width:auto;z-index:6;margin:0!important;height:48px!important}
+
+/* 열화상 그래픽 · 표본 라벨 */
+.aura-wrap{position:relative;height:300px;margin:8px -8px 0;display:grid;place-items:center}
+.aura-wrap canvas{width:300px;height:300px;filter:blur(10px) saturate(1.1)}
+.spec{font-family:var(--f-mono);font-size:9px;line-height:13px;letter-spacing:.1em;color:var(--g6)}
+.aura-wrap .spec{position:absolute}.aura-wrap .tl{left:8px;top:8px;padding:2px 6px;background:#F1F5D8;color:#181818}.aura-wrap .br{right:8px;bottom:8px}
+.ring-wrap{position:relative;width:240px;height:240px;margin:12px auto 0}
+.ring-wrap canvas{width:240px;height:240px;filter:blur(6px)}
+.ring-c{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:4px}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -1541,7 +1550,9 @@ function vIntro() {
   return `<div style="position:relative;min-height:690px;display:flex;flex-direction:column">
     <div style="margin-top:24px"><span class="logo" role="img" aria-label="moafi" style="width:136px"></span></div>
     <div class="t12 mute">금융 상태 진단</div>
-    <div style="margin-top:120px">
+    <div class="aura-wrap"><canvas class="thermo" data-kind="aura" width="300" height="300" aria-hidden="true"></canvas>
+      <span class="spec tl">SPECIMEN 01<br>5 AREAS / UNRESOLVED</span><span class="spec br">20 Q · 5 MIN</span></div>
+    <div style="margin-top:8px">
       <div class="row g8" style="align-items:baseline"><span class="n56">20</span><span class="t16">문항 · 약 5분</span></div>
       <p class="t18 mt16">돈을 얼마나 아는지보다,<br>지금 어떻게 관리하고 있는지 알아봐요</p>
       <p class="t12 mute mt8">5개 영역의 관심도와 실천 수준을 보고 시작할 영역을 추천해 드려요. 정답을 맞히는 시험이 아니에요.</p>
@@ -1951,6 +1962,39 @@ function recapShow(el, i) {
   if (i < RECAP.length - 1) recapT = setTimeout(() => el.isConnected && recapShow(el, i + 1), 4800);
 }
 function recapClose() { clearTimeout(recapT); const el = document.querySelector('.story'); if (!el) return; el.classList.remove('in'); setTimeout(() => { el.remove(); render(); }, 260); }
+
+/* ===== 열화상 그래픽: 블롭의 '열'을 모아 팔레트로 색칠 (투명 → 연한 블루 → 블루 → 바이올렛 → 핑크 → 밝은 크림) ===== */
+const THERMO = [[0, [255, 255, 255, 0]], [.18, [223, 230, 255, 150]], [.36, [50, 105, 255, 230]], [.56, [122, 89, 255, 255]], [.76, [255, 70, 169, 255]], [1, [255, 236, 190, 255]]];
+function thermoCol(h) { for (let i = 1; i < THERMO.length; i++) if (h <= THERMO[i][0]) { const [a, ca] = THERMO[i - 1], [b, cb] = THERMO[i], t = (h - a) / (b - a); return ca.map((v, k) => v + (cb[k] - v) * t); } return THERMO[THERMO.length - 1][1]; }
+function thermoDraw(cv, t) {
+  const W = cv.width, H = cv.height, kind = cv.dataset.kind, p = +cv.dataset.p || 0;
+  const off = thermoDraw.off || (thermoDraw.off = document.createElement('canvas')); off.width = W; off.height = H;
+  const o = off.getContext('2d'); o.clearRect(0, 0, W, H); o.globalCompositeOperation = 'lighter';
+  const blob = (x, y, r, w) => { const g = o.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(255,255,255,${w})`); g.addColorStop(1, 'rgba(255,255,255,0)'); o.fillStyle = g; o.beginPath(); o.arc(x, y, r, 0, 7); o.fill(); };
+  const cx = W / 2, cy = H / 2;
+  if (kind === 'aura') {
+    for (let i = 0; i < 9; i++) { const a = i / 9 * 6.283 + t * .00025 * (i % 2 ? 1 : -1), rr = 40 + 28 * Math.sin(t * .0004 + i);
+      blob(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr, 70 + 18 * Math.sin(t * .0006 + i * 2), .38); }
+    blob(cx, cy, 60, .35);
+  } else {
+    // 채운 구간은 처음엔 미지근(블루)하다가 지금 위치에 가까울수록 뜨거워진다. 남은 구간은 옅은 흔적만
+    const n = 28, R = W * .36, on = Math.round(n * p);
+    for (let i = 0; i < n; i++) { const a = -Math.PI / 2 + i / n * 6.283, k = i / Math.max(1, on - 1);
+      if (i < on) blob(cx + Math.cos(a) * R, cy + Math.sin(a) * R, 30 + 3 * Math.sin(t * .002 + i), .22 + .3 * k * k);
+      else blob(cx + Math.cos(a) * R, cy + Math.sin(a) * R, 20, .06); }
+  }
+  const src = o.getImageData(0, 0, W, H).data, c = cv.getContext('2d'), img = c.createImageData(W, H), d = img.data;
+  for (let k = 0; k < src.length; k += 4) { const h = Math.min(1, src[k + 3] / 255 * 1.15), col = thermoCol(h), n = (Math.random() - .5) * 26;
+    d[k] = col[0] + n; d[k + 1] = col[1] + n; d[k + 2] = col[2] + n; d[k + 3] = col[3]; }
+  c.putImageData(img, 0, 0);
+}
+let thermoRaf = 0;
+function thermoLoop() {
+  cancelAnimationFrame(thermoRaf); const cvs = [...document.querySelectorAll('canvas.thermo')]; if (!cvs.length) return;
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const f = t => { cvs.forEach(cv => cv.isConnected && thermoDraw(cv, t)); if (!still && cvs.some(cv => cv.isConnected)) thermoRaf = requestAnimationFrame(f); };
+  thermoRaf = requestAnimationFrame(f);
+}
 let tmPlayT = 0;
 function tmPlay() {
   clearInterval(tmPlayT); let i = 0; tmUpdate(0);
@@ -2985,9 +3029,9 @@ function vGoal() {
   <div class="row g8 mt16" style="overflow-x:auto;scrollbar-width:none">${S.goals.map(x => `<button class="chip ${x.id === g.id ? 'on' : ''}" data-act="goalSel" data-v="${x.id}">${x.n}</button>`).join('')}<button class="btn sm ghost" style="flex:none" data-act="sheet" data-sheet="goalAdd" aria-label="새 목표 만들기">${ic('plus', 14)}새 목표</button></div>
   <div class="card c-aura mt16">
     <div class="row between"><span class="t14">${g.n}</span><span class="tag ink">${g.due}까지</span></div>
-    <div class="row g8 mt24" style="align-items:baseline"><span class="n56" style="font-size:48px">${pct(saved / g.target)}</span></div>
+    <div class="ring-wrap"><canvas class="thermo" data-kind="ring" data-p="${Math.min(1, saved / g.target).toFixed(3)}" width="240" height="240" aria-hidden="true"></canvas>
+      <div class="ring-c"><span class="n56" style="font-size:44px">${pct(saved / g.target)}</span><span class="spec">${S.goals.findIndex(x => x.id === g.id) + 1 < 10 ? '0' : ''}${S.goals.findIndex(x => x.id === g.id) + 1} · ${g.due}</span></div></div>
     <div class="row between mt12 t12"><span class="num">${W(saved)}</span><span class="mute num">/ ${W(g.target)}</span></div>
-    <div class="glowbar mt12"><i style="width:${saved / g.target * 100}%"></i></div>
     <div class="row between mt16 t12 mute"><span>월 ${indep ? '350,000' : g.id === 'emer' ? '100,000' : won(Math.ceil((g.target - g.saved) / 5 / 1000) * 1000)}원 자동이체${g.id === 'emer' ? ' · 생활비 3개월 기준' : ''}</span><span>남은 ${W(g.target - saved)}</span></div>
   </div>
   ${indep ? `
@@ -3448,7 +3492,7 @@ function render(keepScroll = true) {
   if (tr && S.naIdx) { const x = S.naIdx * (tr.firstElementChild.offsetWidth + 12);
     if (S.naSlide) { S.naSlide = false; setTimeout(() => tr.scrollTo({ left:x, behavior:'smooth' }), 350); } else tr.scrollLeft = x; }
   if (key === 'tabhome') fanDraw();
-  segGlass();
+  segGlass(); thermoLoop();
   { const u = view.querySelector('.urgent'), sh = view.querySelector('.shead'); if (u && sh) u.style.top = (sh.offsetTop + sh.offsetHeight + 10) + 'px'; }
   if (homeEnter) { popOut(); tuckSoon(); fanIntro(); }
   // 홈으로 돌아오면 항상 처음 위치(맨 위)에서 시작: 남아 있는 관성 스크롤까지 멈추고 다시 맞춘다
