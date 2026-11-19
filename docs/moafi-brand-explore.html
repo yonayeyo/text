@@ -94,12 +94,46 @@ section{margin-top:72px}
 .lg-row > div{height:96px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--line);white-space:nowrap}
 .lg-row small{display:block;text-align:center;margin-top:6px;font-size:11px;color:var(--mute)}
 @media (max-width:720px){.lg-row{grid-template-columns:1fr}}
+
+.dir{display:grid;gap:14px}
+.dir .badge{justify-self:start}
+.rib{height:10px;border-radius:999px}
+.ramp{display:flex;border-radius:8px;overflow:hidden;height:28px}.ramp i{flex:1}
+.m3{border-radius:22px;padding:14px;display:grid;gap:10px;font-family:var(--f-kr)}
+.m3 .hd{display:flex;justify-content:space-between;align-items:center;font-size:11px}
+.m3 .hero{border-radius:16px;padding:14px}
+.m3 .t{font-size:12px;font-weight:700}.m3 .s{font-size:10px;opacity:.6}
+.m3 .big{font-family:var(--f-num);font-weight:300;font-size:38px;line-height:1;letter-spacing:-.03em;margin-top:8px}
+.m3 .cd{border-radius:14px;padding:12px}
+.m3 .tm{display:grid;grid-template-columns:1.5fr 1fr 1fr;grid-template-rows:40px 26px;gap:4px;margin-top:8px}
+.m3 .tm i{border-radius:6px}.m3 .tm i:first-child{grid-row:1/3}
+.m3 .bars{display:flex;align-items:flex-end;gap:4px;height:44px;margin-top:8px}.m3 .bars i{flex:1;border-radius:3px}
+.m3 .nav{height:38px;border-radius:999px;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;padding:4px}
+.m3 .nav span{height:30px;border-radius:999px;display:grid;place-items:center;font-size:9px}
+.m3 .chips{display:flex;gap:6px;align-items:center}
+.m3 .chip{height:20px;padding:0 8px;border-radius:999px;display:inline-flex;align-items:center;font-size:9.5px;font-weight:700}
+.rec{box-shadow:0 0 0 2px var(--fg)}
 </style>
 
 <div class="wrap">
   <div class="eyebrow">moafi · brand exploration 01</div>
   <h1>moafi, 어떻게 읽을까</h1>
   <p class="lead">이름에서 읽을 수 있는 뜻 네 가지를 정리하고, 그 뜻을 세 가지 브랜드 방향으로 묶었어요. 색과 로고 후보는 같은 앱 화면 위에 놓아 비교할 수 있게 했어요. 마음에 드는 조합을 골라 주시면 그 방향으로 디자인 시스템을 다듬을게요.</p>
+
+  <section id="trend" style="margin-top:56px">
+    <div class="eyebrow">트렌드 리서치 · 03</div>
+    <h2 style="margin-top:6px">색은 줄이고, 브랜드는 움직임과 글자로</h2>
+    <p class="sec-d">UI뿐 아니라 브랜딩 · 컬러 · 금융 앱 리브랜딩 · 모션 쪽 2026년 흐름을 찾아봤어요. '하늘색 하나는 부족하다'와 '색이 많으면 난잡하다'를 함께 풀 수 있는 공통점이 있었어요.</p>
+    <div class="grid g2">
+      <div class="card"><span class="tag">컬러</span><h3 style="margin-top:10px">따뜻한 흰색 + 한 색의 여러 단계</h3><p class="why" style="margin-top:8px">Pantone 2026 올해의 색은 처음으로 흰색 계열(Cloud Dancer)이에요. 차가운 순백 대신 따뜻한 흰 바탕에, 여러 색 대신 한 색을 밝기만 바꿔 여러 단계로 쓰는 '톤 팔레트'가 늘고 있어요(Material 3 · Spotify).</p></div>
+      <div class="card"><span class="tag">금융 앱</span><h3 style="margin-top:10px">파란색에서 벗어나 색을 줄인다</h3><p class="why" style="margin-top:8px">Cleo는 금융 앱에 흔한 파란색에서 벗어났고, PayPal은 다른 브랜드와 겹치던 노란색을 빼고 팔레트를 단순하게 정리했어요. Kroo도 색을 줄여 화면을 단순하게 만들었어요. '토스와 겹치지 않기'와 같은 방향이에요.</p></div>
+      <div class="card"><span class="tag">브랜딩</span><h3 style="margin-top:10px">대비는 또렷하게, 그라데이션은 브랜드 순간에만</h3><p class="why" style="margin-top:8px">부드러운 파스텔보다 대비가 분명한 팔레트로 옮겨 가고 있어요. 그라데이션은 화면 전체가 아니라 로고 · 시작 화면 · 큰 숫자처럼 브랜드가 드러나는 순간에만 써요.</p></div>
+      <div class="card"><span class="tag">모션 · 글자</span><h3 style="margin-top:10px">브랜드가 움직이는 방식부터 정한다</h3><p class="why" style="margin-top:8px">로고가 움직이는 방식, 숫자가 바뀌는 방식처럼 '움직임'을 브랜드 자산으로 먼저 정하는 흐름이에요. 글자도 장식이 아니라 브랜드의 주인공으로 다뤄요. 큰 숫자가 많은 금융 앱에 잘 맞아요.</p></div>
+    </div>
+    <p class="note">정리: 색 수를 늘리지 않고도 정보를 나누려면 '한 색의 여러 단계'를 쓰고, 브랜드다움은 그라데이션 · 움직임 · 글자로 낸다. 아래 세 방향은 이 원칙을 각각 다르게 풀었어요.</p>
+    <div class="grid g3" id="dirs" style="margin-top:24px"></div>
+    <p class="note" style="margin-top:20px">출처: <a href="https://designshack.net/articles/trends/top-branding-trends/" target="_blank" rel="noopener">Design Shack 2026 branding trends</a> · <a href="https://geeksforgrowth.com/?p=14186" target="_blank" rel="noopener">Motion-first identity</a> · <a href="https://www.gate39media.com/blog/pantone-color-of-the-year-2026-cloud-dancer" target="_blank" rel="noopener">Pantone 2026 Cloud Dancer</a> · <a href="https://www.jukeboxprint.com/blog/color-trends-2026" target="_blank" rel="noopener">Color trends 2026</a> · <a href="https://meetcleo.vercel.app/blog/what-does-the-future-look-like" target="_blank" rel="noopener">Cleo rebrand</a> · <a href="https://www.marketing-interactive.com/paypal-debuts-bold-rebrand-font-logo" target="_blank" rel="noopener">PayPal rebrand</a> · <a href="https://kroo.com/blog/transitioning-from-fintech-to-bank" target="_blank" rel="noopener">Kroo</a></p>
+  </section>
 
   <section id="pick" style="margin-top:56px">
     <div class="eyebrow">고른 조합 · 02</div>
@@ -277,4 +311,41 @@ document.querySelectorAll('.lg-row > div').forEach(d => { d.style.height = 'auto
 const mI = (c, dot) => `<span style="position:relative;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:38px;letter-spacing:-.06em;color:${c};line-height:1;transform:translateY(-2px)">m<span style="position:absolute;right:-8px;bottom:5px;width:7px;height:7px;border-radius:50%;background:${dot}"></span></span>`;
 document.getElementById('lgIcons').innerHTML = [['#25333B', '#FFFFFF', '#3269FF'], ['#3269FF', '#FFFFFF', '#FFDAF3'], ['#FFFFFF', '#25333B', '#FF46A9'], ['#7A59FF', '#FFFFFF', '#D6E7FF']]
   .map(([bg, c, d]) => `<span class="appicon" style="background:${bg};${bg === '#FFFFFF' ? 'border:1px solid #E2E2DF' : ''}">${mI(c, d)}</span>`).join('');
+
+const DIRS = [
+  { k:'D1 · 시그니처 그라데이션', rec:true,
+    one:'UI는 무채색 + 바이올렛 한 색의 단계로 정리하고, 블루 → 바이올렛 → 핑크 그라데이션은 로고 점 · 큰 숫자 · 시작 화면 같은 브랜드 순간에만 써요. 보내 주신 색을 모두 쓰되, 한 화면에 동시에 보이는 색은 2개 이하예요.',
+    grad:'linear-gradient(90deg,#3269FF,#7A59FF 55%,#FF46A9)', ramp:['#F2EFFF','#E4DEFF','#C4B6FF','#9F87FF','#7A59FF','#4F33C9'],
+    bg:'#F7F6F3', ink:'#25333B', hero:'#FFFFFF', heroBorder:true, bigGrad:true, card:'#FFFFFF', tm:['#E4DEFF','#C4B6FF','#7A59FF','#25333B','#9F87FF'], bars:['#E4DEFF','#E4DEFF','#C4B6FF','#C4B6FF','#9F87FF','#7A59FF'], alert:'#FF46A9', link:'#7A59FF', nav:'#25333B',
+    motion:'숫자가 바뀔 때 그라데이션이 한 번 지나가고, 로고 점이 블루 → 핑크로 천천히 흐름', tags:['따뜻한 흰 바탕','바이올렛 단계','그라데이션은 순간에만'] },
+  { k:'D2 · 투톤 (블루 + 바이올렛)',
+    one:'블루는 \'쓰는 돈(지출)\', 바이올렛은 \'모으는 돈(자산 · 목표)\'으로 탭 성격에 따라 나눠요. 각 색은 연한 단계 2개만 함께 써요. 정보 구분이 가장 분명하지만, 한 화면에 두 계열이 같이 나오면 D1보다 복잡해 보여요.',
+    grad:'linear-gradient(90deg,#3269FF 50%,#7A59FF 50%)', ramp:['#D6E7FF','#9DBBFF','#3269FF','#E4DEFF','#B8A6FF','#7A59FF'],
+    bg:'#FAFAFA', ink:'#25333B', hero:'#D6E7FF', card:'#FFFFFF', tm:['#D6E7FF','#E4DEFF','#7A59FF','#25333B','#3269FF'], bars:['#D6E7FF','#D6E7FF','#9DBBFF','#9DBBFF','#3269FF','#3269FF'], alert:'#FF46A9', link:'#3269FF', nav:'#25333B',
+    motion:'지출 화면 진입 시 블루, 자산 화면 진입 시 바이올렛으로 탭바 알약 색이 바뀜', tags:['탭마다 색','지출=블루 · 자산=바이올렛','핑크는 경고'] },
+  { k:'D3 · 잉크 + 네온 포인트',
+    one:'따뜻한 흰색과 짙은 잉크만으로 편집 디자인처럼 단정하게 만들고, 아주 작은 곳(선택 점 · 진행 끝 · 알림)에만 형광 바이올렛을 써요. 가장 세련돼 보이지만 데이터가 많은 화면에서는 회색 단계에 많이 기대야 해요.',
+    grad:'linear-gradient(90deg,#25333B,#25333B)', ramp:['#F7F6F3','#E7E5E0','#C9C7C1','#8B8E90','#4C5A61','#25333B'],
+    bg:'#F7F6F3', ink:'#25333B', hero:'#25333B', heroInk:'#FFFFFF', card:'#FFFFFF', tm:['#E7E5E0','#C9C7C1','#8B8E90','#25333B','#8A5CFF'], bars:['#E7E5E0','#E7E5E0','#C9C7C1','#C9C7C1','#4C5A61','#8A5CFF'], alert:'#FF46A9', link:'#8A5CFF', nav:'#25333B',
+    motion:'숫자가 한 자리씩 굴러가는 키네틱 숫자, 네온 점이 탭 사이를 미끄러짐', tags:['편집 디자인','무채색 중심','네온은 점으로만'] },
+];
+document.getElementById('dirs').innerHTML = DIRS.map(d => `<div class="card dir ${d.rec ? 'rec' : ''}">
+  <span class="tag badge">${d.rec ? '추천 · ' : ''}${d.k}</span>
+  <div class="rib" style="background:${d.grad}"></div>
+  <div class="ramp">${d.ramp.map(c => `<i style="background:${c}"></i>`).join('')}</div>
+  <div class="m3" style="background:${d.bg};color:${d.ink}">
+    <div class="hd"><span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;letter-spacing:-.06em">moafi<span style="display:inline-block;width:4px;height:4px;border-radius:50%;margin-left:2px;background:${d.grad}"></span></span><span class="chip" style="background:${d.alert};color:#fff">2</span></div>
+    <div class="hero" style="background:${d.hero};color:${d.heroInk || d.ink};${d.heroBorder ? 'box-shadow:inset 0 0 0 1px #E8E5DF' : ''}">
+      <div class="t">오늘 쓸 수 있는 금액</div><div class="s">10월 남은 예산 451,600원 / 17일</div>
+      <div class="big" style="${d.bigGrad ? `background:${d.grad};-webkit-background-clip:text;background-clip:text;color:transparent` : ''}">26,500</div>
+    </div>
+    <div class="cd" style="background:${d.card}"><div class="t">자산 구성</div><div class="tm">${d.tm.map(c => `<i style="background:${c}"></i>`).join('')}</div></div>
+    <div class="cd" style="background:${d.card}"><div class="t">주간 지출</div><div class="bars">${d.bars.map((c, i) => `<i style="background:${c};height:${[40, 55, 35, 70, 60, 90][i]}%"></i>`).join('')}</div></div>
+    <div class="chips"><span class="chip" style="background:${d.alert};color:#fff">D-15</span><span style="margin-left:auto;font-size:10px;font-weight:700;color:${d.link}">바로가기</span></div>
+    <div class="nav" style="background:${d.nav}">${['홈','지출','자산','지식','혜택'].map((t, i) => `<span style="color:#fff;${i === 0 ? 'background:rgba(255,255,255,.14);font-weight:700' : 'opacity:.55'}">${t}</span>`).join('')}</div>
+  </div>
+  <div class="kw">${d.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+  <p class="why">${d.one}</p>
+  <p class="why"><b>움직임</b> · ${d.motion}</p>
+</div>`).join('');
 </script>
