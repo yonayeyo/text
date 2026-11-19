@@ -921,30 +921,16 @@ button.focus-strip{display:block;color:inherit}
 .lr-why{margin-top:12px}
 .lr-act{align-items:center}
 .lr-go{display:inline-flex;align-items:center;gap:3px;color:var(--fg,var(--ink));font-weight:500}
-.lr-areas{display:grid}
-.lr-area{border-bottom:1px solid var(--g2)}
-.lr-area:last-child{border-bottom:0}
-.lr-ah{display:grid;grid-template-columns:40px 1fr auto 32px;gap:12px;align-items:center;width:100%;padding:14px 0;text-align:left}
-.lr-ah .th{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:var(--navy);box-shadow:inset 0 0 0 .5px rgba(8,31,64,.08)}
-.lr-ah .th svg{width:20px;height:20px}
 .lr-qs{padding:0 0 12px 52px}
 .lr-q{border-top:1px solid var(--g2)}
 .lr-qh{display:grid;grid-template-columns:1fr 20px;gap:12px;align-items:center;width:100%;padding:12px 0;text-align:left;color:var(--ink)}
 .lr-q .bite-b{margin-top:0;padding:4px 0 16px;border-top:0}
 
-/* 지식 · 영역별 섹션 (A: 가로 카드 / B: 미리보기 2개) */
+/* 지식 · 영역별 섹션: 질문 2개 미리보기 + 더 보기 */
 .lr-secs{display:grid;grid-template-columns:minmax(0,1fr);gap:32px}
 .lr-sh{display:flex;align-items:center;gap:8px}
 .lr-sh .th{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:var(--navy)}
 .lr-sh .num{margin-left:2px}
-.lr-track{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:12px calc(-1 * var(--m)) 0;padding:0 var(--m);scroll-snap-type:x mandatory;scroll-padding:0 var(--m)}
-.lr-track::-webkit-scrollbar{display:none}
-.lr-card{flex:0 0 62%;min-height:128px;display:flex;flex-direction:column;justify-content:space-between;gap:16px;padding:18px;border-radius:20px;background:#F1F1F1;text-align:left;scroll-snap-align:start;box-shadow:inset 0 0 0 1px transparent;transition:box-shadow .2s}
-.lr-card.on{box-shadow:inset 0 0 0 1.5px var(--ink)}
-.lr-cq{line-height:1.45;font-weight:500}
-.lr-cf{align-items:center}
-.lr-open{margin-top:12px;padding:20px}
-.lr-open .bite-b{margin-top:12px}
 .lr-qs.b{padding:0;margin-top:8px}
 .lr-qs.b .lr-q:first-child{border-top:0}
 .lr-more{display:inline-flex;align-items:center;gap:4px;margin-top:4px;height:32px;color:var(--g6)}
@@ -2736,13 +2722,9 @@ function vLearn() {
   const areas = AREAS.map(a => { const list = todo.filter(c => c.a === a.id && c !== now);
     if (!list.length) return '';
     const hd = `<div class="lr-sh"><span class="th a-${a.id}" aria-hidden="true">${ic(AR_IC[a.id], 16)}</span><span class="t16">${a.name}</span><span class="t12 mute num">${list.length}</span></div>`;
-    if (S.lrStyle === 'b') { const more = S.lrMore === a.id, shown = more ? list : list.slice(0, 2);
+    const more = S.lrMore === a.id, shown = more ? list : list.slice(0, 2);
       return `<div class="lr-sec">${hd}<div class="lr-qs b">${shown.map(qRow).join('')}</div>
-        ${list.length > 2 ? `<button class="lr-more t12" data-act="lrMore" data-v="${a.id}">${more ? '접기' : `${list.length - 2}개 더 보기`}${ic(more ? 'minus' : 'plus', 12)}</button>` : ''}</div>`; }
-    const op = list.find(c => c.id === S.lrOpen);
-    return `<div class="lr-sec">${hd}<div class="lr-track">${list.map(c => `<button class="lr-card ${op === c ? 'on' : ''}" data-act="lrOpen" data-v="${c.id}" aria-expanded="${op === c}">
-        <span class="t16 lr-cq">${c.q}</span><span class="row between lr-cf"><span class="t12 mute">${c.k}</span>${ic(op === c ? 'minus' : 'plus', 14)}</span></button>`).join('')}</div>
-      ${op ? `<div class="card c-know lr-open"><div class="bite-k">${ic('spark', 14)}${op.k}</div>${conceptBody(op)}</div>` : ''}</div>`; }).join('');
+        ${list.length > 2 ? `<button class="lr-more t12" data-act="lrMore" data-v="${a.id}">${more ? '접기' : `${list.length - 2}개 더 보기`}${ic(more ? 'minus' : 'plus', 12)}</button>` : ''}</div>`; }).join('');
   return head + `
   <section class="mt16">${nowCard}</section>
   <section class="sec"><div class="lr-secs">${areas}</div></section>${tips ? '' : extraOff('tips')}`;
@@ -3278,7 +3260,6 @@ document.addEventListener('click', e => {
     case 'naGo': { const tr = el.closest('.na-wrap').querySelector('.na-track'); tr.scrollTo({ left:+v * (tr.firstElementChild.offsetWidth + 12), behavior:'smooth' }); break; }
     case 'lrOpen': S.lrOpen = S.lrOpen === v ? null : v; render(); break;
     case 'lrMore': S.lrMore = S.lrMore === v ? null : v; render(); break;
-    case 'lrArea': S.lrArea = S.lrArea === v ? null : v; S.lrOpen = null; render(); break;
     case 'concept': S.conceptId = v; if (el.dataset.go) { S.mode = 'app'; S.sub = null; S.tab = el.dataset.go; S.learnView = 'bite'; render(false); } openSheet('concept'); break;
     case 'conceptOk': { const c = conceptOf(v); c.b ? S.bitesDone.add(c.b) : S.conceptDone.add(v); if (S.lrOpen === v) S.lrOpen = null; closeSheet(); render(); simpleToast(`${c.k} · 알아봤어요`); break; }
     case 'aiOpen': aiDock(true); break;
