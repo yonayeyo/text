@@ -950,7 +950,8 @@ button.focus-strip{display:block;color:inherit}
 .lr-qh .mute{font-weight:400}
 
 /* 혜택 · 조건 수정 (조건 태그 줄 끝) */
-.cond-edit{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 10px;border-radius:999px;font-size:12px;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.cond-line{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px}
+.cond-edit{flex:none;font-size:12px;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 
 
 /* 혜택 · 해당 혜택과 신청 일정을 한 목록으로 */
@@ -1857,7 +1858,7 @@ const PRACTICE = {
   self: { d:'카드를 선택해 바로 실천해보세요<br>하고 나면 체크로 바뀌어요', items:[
     ['월세 지원 준비', () => !!S.rentPrep, PG('benefit', '', '#rentBtn', '‘청년 월세 지원 신청 준비’를 눌러 필요한 서류를 담아 주세요')],
     P_FIXED,
-    ['포인트 전환', () => S.pointsMoved, PG('benefit', '', '[data-act="ptMove"]', '‘현금으로 바꿔 독립 준비 자금에 넣기’를 눌러 주세요')],
+    ['포인트 전환', () => S.pointsMoved, PG('benefit', '', '[data-act="ptMove"]', '‘독립 준비 자금에 넣기’를 눌러 주세요')],
     P_DEDUCT, P_COMPARE('세후 이자 확인'),
     ['환급금 비상금 이체', () => S.benefitMoved, PG('benefit', '', '[data-act="benMove"]', '‘비상금으로 옮기기’를 눌러 주세요')],
     P_ZERO ] },
@@ -2756,7 +2757,12 @@ function vLearn() {
     <div class="sec-h"><div><div class="t18">절약 팁 · 정책 정보</div><div class="sec-d">함께 실천하는 사람들의 팁과 정책 소식</div></div><button class="btn sm ghost" data-act="toast" data-msg="팁 작성 화면은 다음 버전에서 열려요">${ic('plus', 14)}공유</button></div>
     <div class="stack">${TIPS.map((t, i) => `<div class="card c-paper"><div class="row between"><span class="tag ${t.k === '정책 정보' ? 'glow' : 'line'}">${t.k}</span><span class="t10 mute">${t.who}</span></div><p class="t14 mt12">${t.t}</p><button class="chip mt12 ${S.liked.has(i) ? 'on' : ''}" data-act="like" data-v="${i}">도움돼요 ${t.likes + (S.liked.has(i) ? 1 : 0)}</button></div>`).join('')}</div>
   </section>`;
-  return head + `<div id="lrBody">${learnBody()}</div>${tips ? '' : extraOff('tips')}`;
+  return head + `<div id="lrBody">${learnBody()}</div>
+  <section class="sec">
+    <div class="sec-h"><div><div class="t18">추가 예정 영역</div><div class="sec-d">이 영역의 기능이 열리면 알림을 받을 수 있어요</div></div></div>
+    <div class="grid2">${[['credit','대출과 신용','신용점수 · 대출 금리 비교 · 학자금'],['insure','보험과 은퇴','사고·질병 대비 · 연금']].map(([k, n, s]) => `<div class="card c-dash"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(k === 'credit' ? 'card' : 'umbrella', 20)}</span><div class="t14 mt12">${n}</div><div class="t10 mute mt4">${s}</div><button class="chip mt12 ${S.interest.has(k) ? 'on' : ''}" data-act="interest" data-v="${k}">${S.interest.has(k) ? '알림 받는 중' : '열리면 알림'}</button></div>`).join('')}</div>
+  </section>
+  ${tips ? '' : extraOff('tips')}`;
 }
 const AR_IC = { spend:'wallet', save:'coins', credit:'card', insure:'umbrella', tax:'receipt' };
 const lrQRow = (c, done) => { const o = S.lrOpen === c.id;
@@ -2849,18 +2855,12 @@ function vBenefit() {
         : `<button class="bn-go" data-act="toast" data-msg="${b.n} 신청 페이지로 이동해요">바로가기</button>`}</div>
     </div>`;
   return `<header class="top"><div><div class="ph-title">혜택${areaTag('benefit')}</div><div class="ph-sub">세금 공제 · 정부 지원금 · 포인트</div></div>${MENU_BTN()}</header>
-  ${S.condAsked ? `<div class="row g8 mt12" style="flex-wrap:wrap">${condTags().map(c => `<span class="tag line" style="height:28px;padding:0 12px">${c}</span>`).join('')}<button class="cond-edit" data-act="sheet" data-sheet="cond">${ic('sliders', 14)}조건 수정</button></div>` : `<div class="mt16">${condAsk()}</div>`}
+  ${S.condAsked ? `<div class="cond-line"><span class="t12 mute">${condTags().join(' · ')}</span><button class="cond-edit" data-act="sheet" data-sheet="cond">조건 수정</button></div>` : `<div class="mt16">${condAsk()}</div>`}
   <div class="card c-aura mt16">
     <div class="t12 mute">올해 받을 수 있는 혜택 (최대)</div>
     <div class="row g8 mt8" style="align-items:baseline"><span class="n32" style="font-size:40px">${won(sum)}</span><span class="cur t16">₩</span></div>
     <p class="t12 mute mt8">${bens.length}건 중 ${hot ? `${hot}건은 지금 신청해야 해요` : '지금 마감이 가까운 건 없어요'}</p>
   </div>
-  ${S.benefitMoved ? '' : `<div class="card c-sky mt12">
-    <div class="row between"><span class="eng mute">받은 혜택</span><span class="t10 mute">10.10 입금</span></div>
-    <div class="t16 mt8">K-패스 환급 12,300원이 들어왔어요</div>
-    <p class="t12 mute mt8">생활비 통장에 두면 쓰게 되기 쉬워요. 비상금으로 옮기면 목표에 바로 더해져요.</p>
-    <button class="btn sm mt16" data-act="benMove">비상금으로 옮기기</button>
-  </div>`}
   <section class="sec" id="benList">
     <div class="sec-h"><div><div class="t18">해당 혜택 · 신청 일정</div><div class="sec-d">마감이 가까운 순서</div></div></div>
     <div class="card c-paper bn-list">
@@ -2869,6 +2869,12 @@ function vBenefit() {
       <div class="row g16 t10 mute bn-leg"><span class="row g4"><i class="m-yes" style="width:10px;height:10px;border-radius:50%;display:inline-block"></i>충족</span><span class="row g4"><i class="m-chk" style="width:10px;height:10px;border-radius:50%;display:inline-block"></i>확인 필요</span><span class="row g4"><i style="width:10px;height:1.5px;background:var(--g4);display:inline-block"></i>조건 없음</span></div>
     </div>
   </section>
+    ${S.benefitMoved ? '' : `<div class="card c-sky mt16">
+    <div class="row between"><span class="eng mute">받은 혜택</span><span class="t10 mute">10.10 입금</span></div>
+    <div class="t16 mt8">K-패스 환급 12,300원이 들어왔어요</div>
+    <p class="t12 mute mt8">생활비 통장에 두면 쓰게 되기 쉬워요. 비상금으로 옮기면 목표에 바로 더해져요.</p>
+    <button class="btn sm mt16" data-act="benMove">비상금으로 옮기기</button>
+  </div>`}
   <section class="sec" id="cardRatio">
     <div class="sec-h"><div><div class="t18">체크카드 공제율 비교</div><div class="sec-d">연말정산 · 체크·신용카드 사용 비율</div></div></div>
     <div class="card c-sky">
@@ -2885,20 +2891,17 @@ function vBenefit() {
       ${termDef('소득공제: 세금을 매기는 소득 금액을 줄여 주는 것이에요. 기준을 넘긴 금액에 체크카드는 30%, 신용카드는 15%가 적용돼요.<br><button class="lr-go t12 mt8" data-act="conceptGo" data-v="deduct">경제 개념 · 소득공제 더 보기' + ic('arrow', 12) + '</button>')}
       <div class="grid2 mt16"><div class="card c-glass" style="padding:16px"><div class="t10 mute">신용카드 공제율</div><div class="n24 mt8">15%</div></div><div class="card c-glass" style="padding:16px"><div class="t10 mute">체크카드 공제율</div><div class="n24 mt8">30%</div></div></div>
       <p class="t12 mute mt12">남은 기간 월 400,000원을 체크카드로 쓰면 환급이 약 34,000원 늘어나요.</p>
-      ${S.deductOk ? `<div class="row g4 t14 mt16">${ic('check', 16)}확인했어요</div>` : `<button class="btn sm mt16" data-act="deductOk">확인했어요</button>`}
+      ${S.deductOk ? `<div class="row g4 t14 mt16">${ic('check', 16)}결제할 때 체크카드를 먼저 추천해 드릴게요</div>` : `<button class="btn sm mt16" data-act="deductOk">남은 기간 체크카드로 쓰기</button>`}
     </div>
   </section>
   <section class="sec">
     <div class="sec-h"><div class="t18">포인트 현황</div><div class="n24">${won(31200 + 1240)}<span class="cur t12">P</span></div></div>
     <div class="card c-paper">
       <div class="stack8">${[['신용카드 포인트','24,500'],['체크카드 캐시백','6,700'],['moafi 챌린지','1,240']].map(([n, v]) => `<div class="row between t14"><span>${n}</span><span class="num">${v} P</span></div>`).join('')}</div>
-      ${S.pointsMoved ? `<div class="row g8 mt16 t14">${ic('check', 18)} 32,440원을 독립 준비 자금에 넣었어요</div>` : `<button class="btn full mt16" data-act="ptMove">현금으로 바꿔 독립 준비 자금에 넣기</button>`}
+      ${S.pointsMoved ? `<div class="row g8 mt16 t14">${ic('check', 18)} 32,440원을 독립 준비 자금에 넣었어요</div>` : `<button class="btn sm ghost mt16" data-act="ptMove">독립 준비 자금에 넣기</button>`}
     </div>
   </section>
-  <section class="sec">
-    <div class="sec-h"><div><div class="t18">추가 예정 영역</div><div class="sec-d">열리면 알림을 받을 수 있어요</div></div></div>
-    <div class="grid2">${[['credit','대출과 신용','신용점수 · 대출 금리 비교 · 학자금'],['insure','보험과 은퇴','사고·질병 대비 · 연금']].map(([k, n, s]) => `<div class="card c-dash"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(k === 'credit' ? 'card' : 'umbrella', 20)}</span><div class="t14 mt12">${n}</div><div class="t10 mute mt4">${s}</div><button class="chip mt12 ${S.interest.has(k) ? 'on' : ''}" data-act="interest" data-v="${k}">${S.interest.has(k) ? '알림 받는 중' : '열리면 알림'}</button></div>`).join('')}</div>
-  </section>`;
+`;
 }
 
 /* =========================================================
@@ -3407,7 +3410,7 @@ document.addEventListener('click', e => {
     case 'calOpen': S.calOpen = !S.calOpen; render(); break;
     case 'league': S.league = v; render(); break;
     case 'like': S.liked.has(+v) ? S.liked.delete(+v) : S.liked.add(+v); render(); break;
-    case 'deductOk': S.deductOk = true; render(); simpleToast('남은 기간에는 체크카드로 쓰면 공제에 더 유리해요'); break;
+    case 'deductOk': S.deductOk = true; render(); simpleToast('12월까지 결제할 때 체크카드를 먼저 추천해 드릴게요'); break;
     case 'benMove': S.benefitMoved = true; S.emergency += 12300; S.lifeAdd = (S.lifeAdd || 0) - 12300; render(); simpleToast('12,300원을 비상금으로 옮겼어요'); break;
     case 'ptMove': S.pointsMoved = true; goalBump(32440, '포인트 현금 전환'); break;
     case 'topSel': S.topSel = v; render(); break;
