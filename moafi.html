@@ -212,7 +212,8 @@ svg{display:block}
 .chip.on{background:var(--fg);color:var(--inv);box-shadow:none}
 /* 페이지 머리말(지출·플랜·목표·혜택 공통) + 밑줄 탭(화면 폭 전체) + 기간 칩 */
 .ph-title{font-size:18px;font-weight:500;line-height:26px}
-.ph-sub{font-size:12px;font-weight:400;line-height:17px;color:var(--mute)}
+.ph-sub{font-size:12px;font-weight:400;line-height:18px;color:var(--mute)}
+.ph-title{height:26px;display:flex;align-items:center}
 .utabs{display:flex;margin:0 calc(-1 * var(--m)) 0;box-shadow:inset 0 -2px 0 var(--line);position:relative}
 .utabs button{flex:1;height:40px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:7px;font-size:14px;font-weight:400;line-height:17px;color:var(--mute);position:relative}
 .utabs button.on{color:var(--fg);font-weight:600}
@@ -611,7 +612,7 @@ button.ph-tag{color:var(--mute)}
 .top.home-top{padding-bottom:12px}
 /* 세부 탭이 없는 탭(지식 · 혜택)도 홈처럼 머리말 아래 얇은 선 */
 .shead:not(:has(.utabs)){box-shadow:inset 0 -1px 0 #EDEDED}
-.shead:not(:has(.utabs)) > .top{padding-bottom:12px}
+.shead:not(:has(.utabs)):not(:has(.home-top)){padding-bottom:12px}
 .h-hero{position:relative;margin-top:12px;display:grid;gap:0}
 .h-hero .h-lb{font-size:14px;font-weight:500;color:#999;line-height:14px}
 .h-hero .h-sb{font-size:10px;font-weight:400;color:#999;margin-top:5.25px}
