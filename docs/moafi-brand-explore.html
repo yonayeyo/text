@@ -314,10 +314,10 @@ document.getElementById('lgIcons').innerHTML = [['#25333B', '#FFFFFF', '#3269FF'
 
 const DIRS = [
   { k:'D1 · 시그니처 그라데이션', rec:true,
-    one:'UI는 무채색 + 바이올렛 한 색의 단계로 정리하고, 블루 → 바이올렛 → 핑크 그라데이션은 로고 점 · 큰 숫자 · 시작 화면 같은 브랜드 순간에만 써요. 보내 주신 색을 모두 쓰되, 한 화면에 동시에 보이는 색은 2개 이하예요.',
-    grad:'linear-gradient(90deg,#3269FF,#7A59FF 55%,#FF46A9)', ramp:['#F2EFFF','#E4DEFF','#C4B6FF','#9F87FF','#7A59FF','#4F33C9'],
-    bg:'#F7F6F3', ink:'#25333B', hero:'#FFFFFF', heroBorder:true, bigGrad:true, card:'#FFFFFF', tm:['#E4DEFF','#C4B6FF','#7A59FF','#25333B','#9F87FF'], bars:['#E4DEFF','#E4DEFF','#C4B6FF','#C4B6FF','#9F87FF','#7A59FF'], alert:'#FF46A9', link:'#7A59FF', nav:'#25333B',
-    motion:'숫자가 바뀔 때 그라데이션이 한 번 지나가고, 로고 점이 블루 → 핑크로 천천히 흐름', tags:['따뜻한 흰 바탕','바이올렛 단계','그라데이션은 순간에만'] },
+    one:'바탕과 글자는 무채색이고, 데이터는 그라데이션 위의 연한 색(연파랑 → 연보라 → 연핑크)으로 나눠요. 그중 강조할 하나만 원색으로 칠해요. 원색 핑크는 \'초과 · 마감\'처럼 경고의 뜻일 때만 써서, 차트 안에서도 같은 의미를 지켜요.',
+    grad:'linear-gradient(90deg,#3269FF,#7A59FF 55%,#FF46A9)', ramp:['#D6E7FF','#DCE2FF','#E4DEFF','#EFDCFA','#FFDAF3','#3269FF','#7A59FF','#FF46A9'],
+    bg:'#F7F6F3', ink:'#25333B', hero:'#FFFFFF', heroBorder:true, bigGrad:true, card:'#FFFFFF', tm:['#D6E7FF','#E4DEFF','#7A59FF','#FFDAF3','#DCE2FF'], bars:['#D6E7FF','#DCE2FF','#E4DEFF','#EFDCFA','#FFDAF3','#FF46A9'], alert:'#FF46A9', link:'#3269FF', nav:'#25333B',
+    motion:'숫자가 바뀔 때 그라데이션이 한 번 지나가고, 로고 점이 블루 → 핑크로 천천히 흐름', tags:['따뜻한 흰 바탕','데이터는 그라데이션 연한 색','강조 하나만 원색'], note:'예시: 자산 구성은 목표 자금만 원색 바이올렛, 주간 지출은 예산을 넘긴 날만 원색 핑크' },
   { k:'D2 · 투톤 (블루 + 바이올렛)',
     one:'블루는 \'쓰는 돈(지출)\', 바이올렛은 \'모으는 돈(자산 · 목표)\'으로 탭 성격에 따라 나눠요. 각 색은 연한 단계 2개만 함께 써요. 정보 구분이 가장 분명하지만, 한 화면에 두 계열이 같이 나오면 D1보다 복잡해 보여요.',
     grad:'linear-gradient(90deg,#3269FF 50%,#7A59FF 50%)', ramp:['#D6E7FF','#9DBBFF','#3269FF','#E4DEFF','#B8A6FF','#7A59FF'],
@@ -346,6 +346,7 @@ document.getElementById('dirs').innerHTML = DIRS.map(d => `<div class="card dir 
   </div>
   <div class="kw">${d.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
   <p class="why">${d.one}</p>
+  ${d.note ? `<p class="why"><b>예시</b> · ${d.note.replace('예시: ', '')}</p>` : ''}
   <p class="why"><b>움직임</b> · ${d.motion}</p>
 </div>`).join('');
 </script>
