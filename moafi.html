@@ -949,7 +949,6 @@ button.focus-strip{display:block;color:inherit}
 /* 혜택 · 조건 수정 (조건 태그 줄 끝) */
 .cond-edit{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 10px;border-radius:999px;font-size:12px;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 
-.hd-ai svg{width:20px;height:20px}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -1005,6 +1004,7 @@ const IC = {
   gift:'<rect x="4" y="9" width="16" height="11" rx="2"/><path d="M3.5 9h17M12 9v11M12 9c-1.5-3.5-5.5-4-5.5-1.5C6.5 9 9.5 9 12 9Zm0 0c1.5-3.5 5.5-4 5.5-1.5C17.5 9 14.5 9 12 9Z"/>',
   bell:'<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
   menu:'<path d="M5 8h14M5 12h14M5 16h14"/>',
+  aichat:'<path d="M11.54 5.78A7 7 0 0 0 5.27 16.7L4.47 19.43 7.16 18.65A7 7 0 0 0 18.16 12.26"/><circle cx="8.4" cy="12.85" r=".95" fill="currentColor" stroke="none"/><circle cx="13.9" cy="12.85" r=".95" fill="currentColor" stroke="none"/><path d="M16.7 4.2c.4 2.25 1.05 2.9 3.3 3.3-2.25.4-2.9 1.05-3.3 3.3-.4-2.25-1.05-2.9-3.3-3.3 2.25-.4 2.9-1.05 3.3-3.3z" fill="currentColor"/>',
   plus:'<path d="M12 5v14M5 12h14"/>',
   search:'<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/>',
   minus:'<path d="M5 12h14"/>',
@@ -2757,7 +2757,7 @@ function learnBody() {
     return `${cs.length ? `<section class="mt16"><div class="t12 mute">개념 ${cs.length}</div><div class="lr-qs b">${cs.map(c => lrQRow(c, conceptDone(c))).join('')}</div></section>` : ''}
       ${fs.length ? `<section class="mt24"><div class="t12 mute">기능 ${fs.length}</div><div class="lr-qs b">${fs.map(f => `<div class="lr-q"><button class="lr-qh" ${f[3]}><span><span class="t14" style="display:block">${f[0]}</span><span class="t12 mute">${f[1]}</span></span>${ic('arrow', 14)}</button></div>`).join('')}</div></section>` : ''}
       ${cs.length || fs.length ? '' : `<p class="t14 mt24">‘${q}’에 맞는 개념이나 기능이 없어요.</p>`}
-      <button class="lr-askq mt16" data-act="aiAsk" data-v="${qa}">${aiIcon()}<span>AI에게 ‘${q}’ 묻기</span>${ic('arrow', 14)}</button>`;
+      <button class="lr-askq mt16" data-act="aiAsk" data-v="${qa}">${aiIcon(16)}<span>AI에게 ‘${q}’ 묻기</span>${ic('arrow', 14)}</button>`;
   }
   // 처음에는 '지금 볼 개념' 하나와 영역별 미리보기 2개. 영역 순서는 진단 결과(잘 모르는 영역 → 집중할 영역 → 나머지)
   const unk = unkAreas(), fa = focusArea(), pr = a => unk.has(a) ? 0 : a === fa ? 1 : 2;
@@ -2777,7 +2777,7 @@ function learnBody() {
 // 입력할 때는 목록만 다시 그려서 입력창 포커스를 지킨다
 function lrSearch(v) { S.lrQ = v; S.lrOpen = null; const b = document.getElementById('lrBody'); if (b) b.innerHTML = learnBody(); }
 // 그 자리에서 펼친 개념: 생활 예시 → 한 줄 정리 → 이해했어요 · 관련 화면
-const aiIcon = () => '<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.8 2.9c.7 4.6 2.4 7.2 9.3 9.8c-6.9 2.6-8.6 5.2-9.3 9.8c-.7-4.6-2.4-7.2-9.3-9.8c6.9-2.6 8.6-5.2 9.3-9.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M20.2.6c.3 1.6.9 2.3 2.6 3.1c-1.7.8-2.3 1.5-2.6 3.1c-.3-1.6-.9-2.3-2.6-3.1c1.7-.8 2.3-1.5 2.6-3.1z" fill="currentColor"/></svg>';
+const aiIcon = (n = 20) => ic('aichat', n);
 function conceptBody(c, done) {
   return `<div class="bite-b">${c.ex ? c.ex() : ''}<p class="t12 bite-take">${c.take}</p>
     <div class="row between mt16 lr-act">${done ? `<span class="row g4 t12 mute">${ic('check', 14)}알아봤어요</span>` : `<button class="btn sm" data-act="conceptOk" data-v="${c.id}">이해했어요</button>`}${c.go ? `<button class="lr-go t12" ${c.go[1]}>${c.go[0]}${ic('arrow', 12)}</button>` : ''}</div></div>`;
