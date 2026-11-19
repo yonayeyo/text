@@ -1278,6 +1278,9 @@ button.focus-strip{display:block;color:inherit}
 
 .h-hero .h-sb.h-sbr{margin-top:0;white-space:nowrap;text-align:right;font-family:var(--f-num);font-size:11px;font-weight:400;letter-spacing:.08em;color:var(--g4)}
 .h-lbr{align-items:baseline}
+
+.hv-sw{margin-top:12px}
+.hv-sw + .orbit-wrap{margin-top:-10px}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -2662,7 +2665,8 @@ function vHome() {
     </header>
     ${S.settled || S.tuck || S.holdSettle ? '' : `<button class="urgent" data-act="sheet" data-sheet="settle"><span class="u-dot"></span><span class="t14 grow">정산할 더치페이 2건</span><span class="t14 num">36,000원</span><span class="btn sm" style="height:36px">정산</span></button>`}
     <section class="h-hero" aria-label="오늘 쓸 수 있는 금액 ${W(d.daily)}">
-      <div class="h-lbr"><div class="h-lb">오늘 쓸 수 있는 금액</div><span class="h-sb num h-sbr">10월 남은 예산 ${W(d.remain)} / ${d.left}일</span></div>
+      <div class="h-lb">오늘 쓸 수 있는 금액</div>
+      <div class="h-sb num">10월 남은 예산 ${W(d.remain)} / ${d.left}일</div>
       <div class="rw"><span class="dotnum">${won(d.daily)}</span><span class="hl" aria-hidden="true"></span><button class="ib ink" data-act="tab" data-tab="spend" data-sv="budget" aria-label="예산 자세히 보기">${ic('ur', 20)}</button></div>
     </section>
     <div class="hv-sw" role="tablist" aria-label="실천 항목 보기 방식">${[['orbit', '궤도'], ['fan', '카드']].map(([k, l]) => `<button type="button" role="tab" aria-selected="${(S.homeView || 'fan') === k}" class="${(S.homeView || 'fan') === k ? 'on' : ''}" data-act="homeView" data-v="${k}">${l}</button>`).join('')}</div>
