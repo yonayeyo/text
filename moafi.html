@@ -234,7 +234,7 @@ svg{display:block}
 .seg button{flex:1;height:36px;border-radius:999px;font-size:14px;color:var(--mute);padding:0 16px}
 .seg button.on{background:var(--fg);color:var(--inv)}
 .hair{height:1px;background:var(--line);border:0}
-.term{width:18px;height:18px;border-radius:50%;display:inline-grid;place-items:center;font-size:11px;box-shadow:inset 0 0 0 1px var(--mute);color:var(--mute);vertical-align:2px;margin-left:4px;font-family:var(--f-num)}
+.term{width:20px;height:20px;border-radius:50%;display:inline-grid;place-items:center;box-shadow:inset 0 0 0 1px var(--line,var(--g3));color:var(--ink);vertical-align:-4px;margin-left:4px}
 .term-def{display:none;margin-top:8px;padding:12px 16px;border-radius:20px;background:rgba(24,24,24,.05);font-size:12px;line-height:1.55;color:var(--mute)}
 .term-def.open{display:block}
 .c-ink .term-def{background:rgba(252,252,252,.08)}
@@ -949,6 +949,17 @@ button.focus-strip{display:block;color:inherit}
 /* 혜택 · 조건 수정 (조건 태그 줄 끝) */
 .cond-edit{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 10px;border-radius:999px;font-size:12px;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 
+
+/* 혜택 · 해당 혜택과 신청 일정을 한 목록으로 */
+.cond-ask{padding:20px}
+.bn-list{padding:4px 20px}
+.bn-row{padding:16px 0;border-bottom:1px solid var(--g2)}
+.bn-list .bn-row:last-child{border-bottom:0}
+.bn-row.hot .t14:first-child{font-weight:600}
+.bn-when{display:grid;justify-items:end;gap:4px;flex:none}
+.bn-no{display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:12px;padding:14px 20px;border-radius:20px;box-shadow:inset 0 0 0 1px var(--g2);text-align:left}
+.bn-nolist{padding:0 20px}
+.bn-nolist .bn-row:last-of-type{border-bottom:0}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -1054,7 +1065,7 @@ const man = n => `${(n / 10000).toLocaleString('ko-KR', { maximumFractionDigits:
 const pct = n => `${Math.round(n * 100)}%`;
 const rng = seed => () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
 const barcode = (seed, n = 52) => { const r = rng(seed); let s = ''; for (let i = 0; i < n; i++) s += `<i style="width:${[1,1,2,3][r()*4|0]}px;margin-right:${[1,2,2,3][r()*4|0]}px"></i>`; return `<div class="barcode" aria-hidden="true">${s}</div>`; };
-const term = (k, def) => `<button class="term" type="button" data-term aria-label="${k} 뜻 보기">?</button>`;
+const term = (k, def) => `<button class="term" type="button" data-term aria-expanded="false" aria-label="${k || '용어'} 뜻 보기">${ic('plus', 12)}</button>`;
 const termDef = def => `<div class="term-def">${def}</div>`;
 
 /* =========================================================
@@ -1726,7 +1737,7 @@ function vPreview() {
     save:{ t:'자산', sub:'통장 · 목표 · 자동 설정', k:'통합 자산', v:ACCOUNTS.reduce((t, x) => t + x.a, 0), d:`독립 준비 자금 ${pct(d.goal)} · 비상금 ${W(S.emergency)}`,
       rows:[['통장','자산 구성 · 비상금 · 목표 자금 인출','bank'],['목표','독립 준비 자금까지 남은 단계','goal'],['자동 설정','월급날 선저축 · 고정 지출','rule']] },
     tax:{ t:'혜택', sub:'세금 공제 · 정부 지원금 · 포인트', k:'올해 받을 수 있는 혜택 (최대)', v:3123600, d:'4건 중 1건은 지금 신청해야 해요',
-      rows:[['해당 혜택','나이·소득·주거 조건으로 찾아요',''],['신청 일정','마감이 가까운 순서',''],['포인트 현황','카드·통신사 포인트 모아 보기','']] },
+      rows:[['해당 혜택 · 신청 일정','내 조건에 맞는 혜택을 마감 순서로',''],['체크카드 공제율 비교','연말정산 · 체크·신용카드 사용 비율',''],['포인트 현황','카드·통신사 포인트 모아 보기','']] },
   }[a];
   const subAttr = k => !k ? '' : a === 'spend' ? `data-sv="${k}"` : `data-pv="${k}"`;
   return `<header class="top"><div><div class="ph-title">${P.t}${areaTag(S.tab)}</div><div class="ph-sub">${P.sub}</div></div>${MENU_BTN()}</header>
@@ -2794,24 +2805,37 @@ function learnActive() {
    BENEFIT (세금과 혜택)
    ========================================================= */
 const COND_OPT = { home:['월세', '전세', '자가 · 가족과 거주'], job:['직장인', '프리랜서 · 외주', '아르바이트', '소득 없음'] };
-const condTags = () => ['만 27세', '연소득 2,640만 원', S.cond.home === '자가 · 가족과 거주' ? '가족과 거주' : `무주택 · ${S.cond.home}`, S.cond.job];
+const INCOME = { '직장인':'연소득 2,640만 원', '프리랜서 · 외주':'연소득 1,800만 원', '아르바이트':'연소득 960만 원', '소득 없음':'소득 없음' };
+const condTags = () => ['만 27세', INCOME[S.cond.job], S.cond.home === '자가 · 가족과 거주' ? '가족과 거주' : `무주택 · ${S.cond.home}`, S.cond.job];
+const WORK = ['직장인', '프리랜서 · 외주', '아르바이트'];
+// 혜택 하나 = 이름 · 금액 · 신청 시기(정렬 순서) · 필요한 것 · 해당 조건(ok)과 해당하지 않을 때의 이유
+const BENEFITS = () => [
+  { id:'rent', n:'청년 월세 지원', amt:'월 200,000원 · 12개월', y:2400000, o:1, when:'10.30 마감', dd:'D-15', hot:true, note:'임대차계약서 · 주민등록등본 필요', ok:S.cond.home === '월세', why:'월세로 사는 무주택 청년 대상이에요' },
+  { id:'youth', n:'청년도약계좌 정부기여금', amt:'월 최대 33,000원', y:396000, o:2, when:'11.03 – 11.14', dd:'가입 신청', note:'정부기여금은 매달 넣는 금액에 따라 붙어요', ok:WORK.includes(S.cond.job), why:'소득이 있는 청년 대상이에요' },
+  { id:'card', n:'연말정산 카드 소득공제', amt:'예상 환급 약 180,000원', y:180000, o:3, when:'01.15', dd:'간소화 서비스', note:'카드 사용액 · 월세 공제 자료를 자동으로 모아요', ok:S.cond.job === '직장인', why:'연말정산을 하는 직장인 대상이에요. 프리랜서는 5월 종합소득세 신고 때 정리해요' },
+  { id:'eitc', n:'근로장려금', amt:'최대 1,650,000원', y:1650000, o:4, when:'05.01 – 05.31', dd:'정기 신청', note:'지난해 소득 기준으로 신청해요', ok:['프리랜서 · 외주', '아르바이트'].includes(S.cond.job), why:'1인 가구 연소득 2,200만 원 미만 대상이에요' },
+  { id:'jeonse', n:'청년 전세자금 대출 이자 지원', amt:'대출 이자 연 최대 1.5%p', y:600000, o:5, when:'상시', dd:'상시 신청', note:'전세 계약서 · 소득 증빙 필요', ok:S.cond.home === '전세', why:'전세로 사는 무주택 청년 대상이에요' },
+  { id:'kpass', n:'K-패스 교통비 환급', amt:'월 약 12,300원 (청년 30%)', y:147600, o:6, when:'매달', dd:'받는 중', note:'한 달 15번 넘게 탄 대중교통 요금의 일부를 돌려받아요', ok:true, why:'' },
+];
+const condAsk = () => `<div class="card c-paper cond-ask">
+    <div class="t16">혜택을 찾기 전에 두 가지만 확인할게요</div><p class="t12 mute mt4">해당하지 않는 혜택은 아래로 접어 둘게요</p>
+    ${[['home', '사는 곳'], ['job', '소득 형태']].map(([k, t]) => `<div class="t12 mute mt16">${t}</div><div class="row g8 mt8" style="flex-wrap:wrap">${COND_OPT[k].map(o => `<button class="chip ${S.cond[k] === o ? 'on' : ''}" data-act="cond" data-k="${k}" data-v="${o}" aria-pressed="${S.cond[k] === o}">${o}</button>`).join('')}</div>`).join('')}
+    <button class="btn full mt16" data-act="condDone">이 조건으로 보기</button></div>`;
 function vBenefit() {
-  const bens = [
-    ...(S.cond.home === '월세' ? [{ n:'청년 월세 지원', amt:'월 200,000원 · 12개월', y:2400000, c:['y','y','y','c'], tag:'D-15', hot:true }] : []),
-    ...(S.cond.home === '전세' ? [{ n:'청년 전세자금 대출 이자 지원', amt:'대출 이자 연 최대 1.5%p', y:600000, c:['y','y','y','c'], tag:'상시' }] : []),
-    { n:'청년도약계좌 정부기여금', amt:'월 최대 33,000원', y:396000, c:['y','y','n','y'], tag:'가입 가능' },
-    { n:'연말정산 카드 소득공제', amt:'예상 환급 약 180,000원', y:180000, c:['n','y','n','y'], tag:'진행 중' },
-    { n:'K-패스 교통비 환급', amt:'월 약 12,300원 (청년 30%)', y:147600, c:['y','n','n','y'], tag:'받는 중' },
-  ];
-  const sum = bens.reduce((s, b) => s + b.y, 0);
-  const cell = v => `<span class="c"><i class="${v === 'y' ? 'm-yes' : v === 'c' ? 'm-chk' : 'm-na'}"></i></span>`;
+  const all = BENEFITS(), bens = all.filter(b => b.ok).sort((x, y) => x.o - y.o), no = all.filter(b => !b.ok);
+  const sum = bens.reduce((s, b) => s + b.y, 0), hot = bens.filter(b => b.hot).length;
   const T = 8000000, X = v => v / T * 100;
+  const row = b => `<div class="bn-row ${b.hot ? 'hot' : ''}">
+      <div class="row between" style="align-items:flex-start;gap:12px"><span class="t14">${b.n}</span><span class="bn-when"><span class="t12 num">${b.when}</span><span class="tag ${b.hot ? 'ink' : 'line'}">${b.dd}</span></span></div>
+      <div class="t12 mute mt4">${b.amt} · ${b.note}</div>
+      ${b.id === 'rent' ? (S.rentPrep ? `<div class="row g8 mt12 t14">${ic('check', 18)} 신청 서류 3개를 준비 목록에 담았어요</div>` : `<button class="btn sm mt12" id="rentBtn" data-act="rentPrep">신청 준비</button>`) : ''}
+    </div>`;
   return `<header class="top"><div><div class="ph-title">혜택${areaTag('benefit')}</div><div class="ph-sub">세금 공제 · 정부 지원금 · 포인트</div></div>${MENU_BTN()}</header>
-  <div class="row g8 mt12" style="flex-wrap:wrap">${condTags().map(c => `<span class="tag line" style="height:28px;padding:0 12px">${c}</span>`).join('')}<button class="cond-edit" data-act="sheet" data-sheet="cond">${ic('sliders', 14)}조건 수정</button></div>
+  ${S.condAsked ? `<div class="row g8 mt12" style="flex-wrap:wrap">${condTags().map(c => `<span class="tag line" style="height:28px;padding:0 12px">${c}</span>`).join('')}<button class="cond-edit" data-act="sheet" data-sheet="cond">${ic('sliders', 14)}조건 수정</button></div>` : `<div class="mt16">${condAsk()}</div>`}
   <div class="card c-aura mt16">
     <div class="t12 mute">올해 받을 수 있는 혜택 (최대)</div>
     <div class="row g8 mt8" style="align-items:baseline"><span class="n32" style="font-size:40px">${won(sum)}</span><span class="cur t16">₩</span></div>
-    <p class="t12 mute mt8">${bens.length}건 중 ${bens.filter(b => b.hot).length ? `${bens.filter(b => b.hot).length}건은 지금 신청해야 해요` : `지금 마감이 가까운 건 없어요`}</p>
+    <p class="t12 mute mt8">${bens.length}건 중 ${hot ? `${hot}건은 지금 신청해야 해요` : '지금 마감이 가까운 건 없어요'}</p>
   </div>
   ${S.benefitMoved ? '' : `<div class="card c-sky mt12">
     <div class="row between"><span class="eng mute">받은 혜택</span><span class="t10 mute">10.10 입금</span></div>
@@ -2819,16 +2843,11 @@ function vBenefit() {
     <p class="t12 mute mt8">생활비 통장에 두면 쓰게 되기 쉬워요. 비상금으로 옮기면 목표에 바로 더해져요.</p>
     <button class="btn sm mt16" data-act="benMove">비상금으로 옮기기</button>
   </div>`}
-  <section class="sec">
-    <div class="sec-h"><div><div class="t18">해당 혜택</div><div class="sec-d">조건 매트릭스</div></div></div>
-    <div class="card c-paper">
-      <div class="matrix t10 mute"><span></span>${['나이','소득','주거','기타'].map(h => `<span class="c">${h}</span>`).join('')}</div>
-      <hr class="hair mt8">
-      <div class="stack mt12" style="gap:16px">${bens.map(b => `<div><div class="matrix"><span class="t14" style="color:var(--ink)">${b.n}</span>${b.c.map(cell).join('')}</div><div class="row between mt4"><span class="t12 mute">${b.amt}</span><span class="tag ${b.hot ? 'ink' : 'line'}">${b.tag}</span></div></div>`).join('')}</div>
-      <hr class="hair mt16">
-      <div class="row g16 t10 mute mt12"><span class="row g4"><i class="m-yes" style="width:10px;height:10px;border-radius:50%;display:inline-block"></i>충족</span><span class="row g4"><i class="m-chk" style="width:10px;height:10px;border-radius:50%;display:inline-block"></i>확인 필요</span><span class="row g4"><i style="width:10px;height:1.5px;background:var(--g4);display:inline-block"></i>조건 없음</span></div>
-      ${S.cond.home !== '월세' ? '' : S.rentPrep ? `<div class="row g8 mt16 t14">${ic('check', 18)} 신청 서류 3개를 준비 목록에 담았어요</div>` : `<button class="btn full mt16" id="rentBtn" data-act="rentPrep">청년 월세 지원 신청 준비</button>`}
-    </div>
+  <section class="sec" id="benList">
+    <div class="sec-h"><div><div class="t18">해당 혜택 · 신청 일정</div><div class="sec-d">마감이 가까운 순서</div></div></div>
+    <div class="card c-paper bn-list">${bens.map(row).join('')}</div>
+    ${no.length ? `<button class="bn-no" data-act="benNo" aria-expanded="${!!S.benNo}"><span class="t14">해당하지 않는 혜택 ${no.length}개</span>${ic(S.benNo ? 'minus' : 'plus', 16)}</button>
+    ${S.benNo ? `<div class="bn-nolist">${no.map(b => `<div class="bn-row"><div class="row between"><span class="t14 mute">${b.n}</span><span class="t12 mute">${b.amt}</span></div><div class="t12 mute mt4">${b.why}</div></div>`).join('')}<p class="t10 mute mt8">조건이 바뀌면 ‘조건 수정’에서 다시 확인할 수 있어요</p></div>` : ''}` : ''}
   </section>
   <section class="sec" id="cardRatio">
     <div class="sec-h"><div><div class="t18">체크카드 공제율 비교</div><div class="sec-d">연말정산 · 체크·신용카드 사용 비율</div></div></div>
@@ -2843,18 +2862,10 @@ function vBenefit() {
         <span class="t10 mute" style="position:absolute;right:0;top:62px">체크 2,300,000</span>
       </div>
       <p class="t12 mt16">총급여의 25%(6,600,000원)를 넘긴 500,000원부터 공제돼요.${term()}</p>
-      ${termDef('소득공제: 세금을 매기는 소득 금액을 줄여 주는 것이에요. 기준을 넘긴 금액에 체크카드는 30%, 신용카드는 15%가 적용돼요.')}
+      ${termDef('소득공제: 세금을 매기는 소득 금액을 줄여 주는 것이에요. 기준을 넘긴 금액에 체크카드는 30%, 신용카드는 15%가 적용돼요.<br><button class="lr-go t12 mt8" data-act="conceptGo" data-v="deduct">경제 개념 · 소득공제 더 보기' + ic('arrow', 12) + '</button>')}
       <div class="grid2 mt16"><div class="card c-glass" style="padding:16px"><div class="t10 mute">신용카드 공제율</div><div class="n24 mt8">15%</div></div><div class="card c-glass" style="padding:16px"><div class="t10 mute">체크카드 공제율</div><div class="n24 mt8">30%</div></div></div>
       <p class="t12 mute mt12">남은 기간 월 400,000원을 체크카드로 쓰면 환급이 약 34,000원 늘어나요.</p>
       ${S.deductOk ? `<div class="row g4 t14 mt16">${ic('check', 16)}확인했어요</div>` : `<button class="btn sm mt16" data-act="deductOk">확인했어요</button>`}
-    </div>
-  </section>
-  <section class="sec">
-    <div class="sec-h"><div class="t18">신청 일정</div></div>
-    <div class="tl">
-      <div class="it hot"><div class="row between"><span class="t14">청년 월세 지원 2차 접수 마감</span><span class="t12 num">10.30</span></div><div class="t12 mute">D-15 · 임대차계약서·주민등록등본 필요</div></div>
-      <div class="it"><div class="row between"><span class="t14">청년도약계좌 11월 가입 신청</span><span class="t12 num">11.03 – 11.14</span></div><div class="t12 mute">정부기여금은 매달 납입액에 따라 붙어요</div></div>
-      <div class="it"><div class="row between"><span class="t14">연말정산 간소화 서비스</span><span class="t12 num">01.15</span></div><div class="t12 mute">카드 사용액·월세 공제 자료 자동 수집</div></div>
     </div>
   </section>
   <section class="sec">
@@ -3270,7 +3281,7 @@ function goalBump(amt, label) {
 /* ---------- events ---------- */
 document.addEventListener('click', e => {
   const tb = e.target.closest('[data-term]');
-  if (tb) { const host = tb.closest('.card') || tb.parentElement; const def = host.querySelector('.term-def'); def && def.classList.toggle('open'); return; }
+  if (tb) { const host = tb.closest('.card') || tb.parentElement; const def = host.querySelector('.term-def'); if (def) { const o = def.classList.toggle('open'); tb.setAttribute('aria-expanded', o); tb.innerHTML = ic(o ? 'minus' : 'plus', 12); } return; }
   const el = e.target.closest('[data-act]'); if (!el) { if (e.target.id === 'layer') closeSheet('바깥 탭'); return; }
   log('탭 ' + tapDetail(el) + (S.mode === 'onboard' && el.dataset.act === 'ans' ? ` (Q${S.q + 1})` : ''));
   const a = el.dataset.act, v = el.dataset.v;
@@ -3315,6 +3326,10 @@ document.addEventListener('click', e => {
     case 'naGo': { const tr = el.closest('.na-wrap').querySelector('.na-track'); tr.scrollTo({ left:+v * (tr.firstElementChild.offsetWidth + 12), behavior:'smooth' }); break; }
     case 'lrOpen': S.lrOpen = S.lrOpen === v ? null : v; render(); refreshSheet(); break;
     case 'cond': S.cond[el.dataset.k] = v; render(); refreshSheet(); break;
+    case 'condDone': S.condAsked = true; render(); simpleToast('조건에 맞는 혜택만 위에 모았어요'); break;
+    case 'benNo': S.benNo = !S.benNo; render(); break;
+    case 'conceptGo': { const c = conceptOf(v); closeSheet(); S.from = { tab:S.tab }; S.mode = 'app'; S.sub = null; S.tab = 'learn'; S.learnView = 'bite'; S.lrQ = ''; S.lrOpen = v; S.lrMore = c.a; render(false);
+      setTimeout(() => { const q = view.querySelector('.lr-q.on') || view.querySelector('#lrNow'); if (q) view.scrollTop += q.getBoundingClientRect().top - view.getBoundingClientRect().top - 200; }, 360); break; }
     case 'lrMore': S.lrMore = S.lrMore === v ? null : v; render(); break;
     case 'concept': S.conceptId = v; if (el.dataset.go) { S.mode = 'app'; S.sub = null; S.tab = el.dataset.go; S.learnView = 'bite'; render(false); } openSheet('concept'); break;
     case 'conceptOk': { const c = conceptOf(v); c.b ? S.bitesDone.add(c.b) : S.conceptDone.add(v); if (S.lrOpen === v) S.lrOpen = null; closeSheet(); render(); simpleToast(`${c.k} · 알아봤어요`); break; }
