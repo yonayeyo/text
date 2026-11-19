@@ -1269,6 +1269,8 @@ button.focus-strip{display:block;color:inherit}
 .ld.l3,.ld.l4{color:#fff}.ld.l3 i,.ld.l4 i{color:rgba(255,255,255,.85)}
 
 .utabs{position:sticky;z-index:4}
+
+.flip-ghost{filter:saturate(.5);position:absolute;z-index:40;pointer-events:none;background-size:cover;background-position:center;box-shadow:0 10px 24px rgba(15,26,36,.16);display:grid;place-items:center;font-size:14px;color:#0F1A24;border:.5px solid rgba(0,0,0,.08)}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -2083,6 +2085,37 @@ function thermoLoop() {
   cvs.forEach(cv => thermoDraw(cv, 0));
   const f = t => { cvs.forEach(cv => cv.isConnected && live(cv) && thermoDraw(cv, t)); if (!still && cvs.some(cv => cv.isConnected)) thermoRaf = requestAnimationFrame(f); };
   thermoRaf = requestAnimationFrame(f);
+}
+
+/* 궤도 ↔ 카드 보기 전환: 같은 카드가 제자리에서 새 자리로 날아가 재배열된다 */
+function homeCards() {
+  const fan = view.querySelectorAll('#fanStage .fc'), orb = view.querySelectorAll('.orbit .pc');
+  if (fan.length) return [...fan].map(c => ({ el:c, k:c.classList.contains('fc-new') ? 'new' : +c.dataset.k }));
+  return [...orb].map((c, i) => ({ el:c, k:c.classList.contains('new') ? 'new' : i }));
+}
+function viewSwap(v) {
+  const sc = document.querySelector('.screen'), sr = sc.getBoundingClientRect(), still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const old = new Map(homeCards().map(({ el, k }) => { const r = el.getBoundingClientRect(), cs = getComputedStyle(el);
+    return [k, { r, bg:cs.backgroundImage, bc:cs.backgroundColor, br:cs.borderRadius, op:+cs.opacity, txt:el.classList.contains('new') || el.classList.contains('fc-new') ? '새 항목' : '' }]; }));
+  S.homeView = v; render();
+  if (still) { if (v === 'fan') fanDraw(); return; }
+  if (v === 'fan') { S.fanPos = 0; fanDraw(); }
+  const now = homeCards(), ghosts = [];
+  now.forEach(({ el, k }, i) => { const o = old.get(k); if (!o) return;
+    const r = el.getBoundingClientRect(); if (r.width < 4 || o.r.width < 4) return;
+    const g = document.createElement('div'); g.className = 'flip-ghost';
+    Object.assign(g.style, { left:o.r.left - sr.left + 'px', top:o.r.top - sr.top + 'px', width:o.r.width + 'px', height:o.r.height + 'px', backgroundImage:o.bg, backgroundColor:o.bc, borderRadius:o.br });
+    if (o.txt) g.textContent = o.txt;
+    sc.appendChild(g); el.style.opacity = '0'; ghosts.push(g);
+    const tilt = (i % 2 ? 1 : -1) * (4 + i % 3 * 2);
+    g.animate([
+      { left:o.r.left - sr.left + 'px', top:o.r.top - sr.top + 'px', width:o.r.width + 'px', height:o.r.height + 'px', transform:'rotate(0deg)', opacity:o.op || 1 },
+      { transform:`rotate(${tilt}deg) scale(1.04)`, offset:.45 },
+      { left:r.left - sr.left + 'px', top:r.top - sr.top + 'px', width:r.width + 'px', height:r.height + 'px', transform:'rotate(0deg)', opacity:1 }
+    ], { duration:620 + i * 45, delay:i * 28, easing:'cubic-bezier(.22,1,.36,1)', fill:'forwards' })
+      .onfinish = () => { el.style.opacity = ''; g.remove(); };
+  });
+  setTimeout(() => { ghosts.forEach(g => g.remove()); view.querySelectorAll('#fanStage .fc,.orbit .pc').forEach(c => c.style.opacity = c.style.opacity === '0' ? '' : c.style.opacity); }, 1400);
 }
 let tmPlayT = 0;
 function tmPlay() {
@@ -3754,7 +3787,7 @@ document.addEventListener('click', e => {
     case 'extraOn': S.extras.add(v); if (v === 'tips') S.learnView = 'tips'; render(false); simpleToast(`‘${EXTRAS[v][0]}’을 켰어요 · 메뉴에서 끌 수 있어요`); break;
     case 'extraToggle': S.extras.has(v) ? S.extras.delete(v) : S.extras.add(v); if (!S.extras.has('tips')) S.learnView = 'bite'; refreshSheet(); render(); break;
     case 'deckClose': deckT.forEach(clearTimeout); deckT = []; deckSet(false); break;
-    case 'homeView': if ((S.homeView || 'fan') !== v) { S.homeView = v; render(); if (v === 'fan') fanIntro(); } break;
+    case 'homeView': if ((S.homeView || 'fan') !== v) viewSwap(v); break;
     case 'todayMore': S.todayMore = !S.todayMore; render(); break;
     case 'tab':
       if (S.mode === 'app' && !S.sub) S.from = el.classList.contains('tab') || S.tab === el.dataset.tab ? null : (S.from && S.from.tab === el.dataset.tab ? null : { tab:S.from ? S.from.tab : S.tab });
