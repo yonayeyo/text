@@ -1,0 +1,201 @@
+<title>moafi 브랜드 탐색</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Gothic+A1:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* 레이아웃: 문서형 한 단(최대 1040px) — 해석 → 키워드 방향 3 → 색 방향 4(앱 미리보기) → 로고 4(밝음/어두움/앱 아이콘) */
+:root{
+  --bg:#F5F5F3; --surface:#FFFFFF; --fg:#17181B; --mute:#6E7076; --line:#E2E2DF; --soft:#EDEDEA;
+  --f-kr:"Gothic A1","Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;
+  --f-num:"Urbanist","Gothic A1",system-ui,sans-serif;
+  --f-disp:"Bricolage Grotesque","Urbanist",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#121315;--surface:#1B1C1F;--fg:#ECECEA;--mute:#9A9CA2;--line:#2C2D31;--soft:#24252A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121315;--surface:#1B1C1F;--fg:#ECECEA;--mute:#9A9CA2;--line:#2C2D31;--soft:#24252A;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-kr);font-size:15px;line-height:1.6;word-break:keep-all}
+.wrap{max-width:1040px;margin:0 auto;padding-block:48px 96px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-family:var(--f-disp);font-size:clamp(34px,6vw,56px);line-height:1.05;letter-spacing:-.02em;margin:0;font-weight:700}
+h2{font-size:22px;line-height:1.35;margin:0;font-weight:700;text-wrap:balance}
+h3{font-size:17px;margin:0;font-weight:700}
+p{margin:0}
+.lead{margin-top:16px;max-width:62ch;color:var(--mute);font-size:16px}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+section{margin-top:72px}
+.sec-d{margin-top:6px;color:var(--mute);max-width:62ch}
+.grid{display:grid;gap:16px;margin-top:24px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:720px){.g2{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;min-width:0}
+.tag{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:var(--soft);font-size:12px;font-weight:500}
+.kw{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.dl{display:grid;grid-template-columns:72px 1fr;gap:6px 12px;margin-top:16px;font-size:14px}
+.dl dt{color:var(--mute)} .dl dd{margin:0}
+.read{display:grid;gap:10px;margin-top:20px}
+.read .card{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:start}
+.read b{font-family:var(--f-disp);font-size:22px;letter-spacing:-.01em}
+.read b span{color:var(--mute);font-weight:400}
+.tagline{margin-top:14px;font-size:20px;font-weight:700;line-height:1.4}
+/* 색 방향 카드 */
+.pal{display:grid;gap:16px}
+.sw{display:flex;border-radius:10px;overflow:hidden;height:44px;border:1px solid var(--line)}
+.sw i{flex:1}
+.swl{display:flex;justify-content:space-between;gap:4px;margin-top:6px;font-family:var(--f-mono);font-size:10px;color:var(--mute)}
+.swl span{flex:1}
+.mock{border-radius:22px;padding:16px;display:grid;gap:12px;font-family:var(--f-kr)}
+.mock .mh{display:flex;justify-content:space-between;align-items:center;font-size:11px}
+.mock .lbl{font-size:13px;font-weight:700}
+.mock .sub{font-size:10px;opacity:.6}
+.mock .big{font-family:var(--f-num);font-weight:300;font-size:40px;line-height:1;letter-spacing:-.03em}
+.mock .tm{display:grid;grid-template-columns:1.6fr 1fr 1fr;grid-template-rows:44px 30px;gap:4px}
+.mock .tm i{border-radius:6px;display:block}
+.mock .tm i:first-child{grid-row:1/3}
+.mock .row{display:flex;gap:6px;align-items:center}
+.mock .chip{height:22px;padding:0 9px;border-radius:999px;display:inline-flex;align-items:center;font-size:10px;font-weight:700}
+.mock .nav{height:40px;border-radius:999px;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;padding:4px}
+.mock .nav span{height:32px;border-radius:999px;display:grid;place-items:center;font-size:9px}
+.why{font-size:14px;color:var(--mute)}
+.why b{color:var(--fg)}
+/* 로고 */
+.logo-stage{display:grid;grid-template-columns:1fr;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.logo-stage > div{height:120px;display:grid;place-items:center;padding:12px;white-space:nowrap}
+.icons{display:flex;gap:12px;margin-top:14px;align-items:center}
+.appicon{width:64px;height:64px;border-radius:15px;display:grid;place-items:center;flex:none}
+.appicon.sm{width:40px;height:40px;border-radius:10px}
+.note{margin-top:14px;font-size:14px;color:var(--mute)}
+.next{margin-top:72px;padding:28px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.next ol{margin:12px 0 0;padding-left:20px;display:grid;gap:6px}
+@media (max-width:560px){.read .card{grid-template-columns:1fr}.logo-stage > div{height:100px}}
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">moafi · brand exploration 01</div>
+  <h1>moafi, 어떻게 읽을까</h1>
+  <p class="lead">이름에서 읽을 수 있는 뜻 네 가지를 정리하고, 그 뜻을 세 가지 브랜드 방향으로 묶었어요. 색과 로고 후보는 같은 앱 화면 위에 놓아 비교할 수 있게 했어요. 마음에 드는 조합을 골라 주시면 그 방향으로 디자인 시스템을 다듬을게요.</p>
+
+  <section>
+    <h2>이름 해석</h2>
+    <p class="sec-d">이름을 쪼개 보면 나오는 뜻이에요. 한 가지만 고를 필요는 없고, 앞의 두 가지는 함께 쓸 수 있어요.</p>
+    <div class="read">
+      <div class="card"><b>moa<span>·</span>fi</b><div><h3>모아 + finance</h3><p class="why">가장 곧바로 읽히는 뜻이에요. '모으다'는 이 앱의 핵심 행동(선저축, 목표, 비상금)과 그대로 맞아요. 한국어와 영어가 섞인 이름이라 국내 청년에게 바로 읽혀요.</p></div></div>
+      <div class="card"><b>moa<span>·</span>pie</b><div><h3>모아서 내 몫(파이)을 키운다</h3><p class="why">'fi'를 '파이'로 읽으면 자산 구성 트리맵, 예산 비율 같은 '나눠서 보는' 화면과 이어져요. 큰 돈보다 내 몫이 어떻게 나뉘어 있는지를 보는 앱이라는 뜻이 돼요.</p></div></div>
+      <div class="card"><b>lo<span>·</span>fi</b><div><h3>힘 빼고 켜 두는 금융</h3><p class="why">lo-fi 음악처럼 부담 없이 곁에 켜 두는 느낌이에요. 사용성 테스트에서 나온 '기능이 많아 부담스럽다', '숙제 같다'는 의견에 대한 답이 될 수 있어요.</p></div></div>
+      <div class="card"><b>my<span>·</span>own<span>·</span>fi</b><div><h3>내 상황에 맞춘 금융</h3><p class="why">진단 결과로 순서를 정하고, 조건에 맞는 혜택만 보여 주는 구조와 이어져요. 다만 이름에서 직접 읽히지는 않아서 보조 메시지로 쓰는 게 좋아요.</p></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>브랜드 방향 3가지</h2>
+    <p class="sec-d">위 해석을 묶어 만든 방향이에요. 방향마다 키워드, 성격, 말투, 한 줄 소개가 달라요.</p>
+    <div class="grid g3">
+      <div class="card">
+        <span class="tag">A · 차곡차곡</span>
+        <p class="tagline">오늘 아낀 만큼, 내일이 쌓여요</p>
+        <div class="kw"><span class="tag">모으다</span><span class="tag">꾸준함</span><span class="tag">믿음</span></div>
+        <dl class="dl"><dt>뿌리</dt><dd>모아 + finance</dd><dt>성격</dt><dd>담백하고 성실한 선배</dd><dt>말투</dt><dd>짧고 정확하게. 숫자로 말한다</dd><dt>잘 맞는 화면</dt><dd>목표 · 선저축 · 1년 흐름</dd></dl>
+      </div>
+      <div class="card">
+        <span class="tag">B · 내 몫</span>
+        <p class="tagline">내 돈이 어디에 얼마나, 한눈에</p>
+        <div class="kw"><span class="tag">한눈에</span><span class="tag">균형</span><span class="tag">내 몫</span></div>
+        <dl class="dl"><dt>뿌리</dt><dd>모아 + 파이</dd><dt>성격</dt><dd>정리를 잘하는 친구</dd><dt>말투</dt><dd>비율과 비교로 보여 준다</dd><dt>잘 맞는 화면</dt><dd>자산 구성 · 예산 · 분석</dd></dl>
+      </div>
+      <div class="card">
+        <span class="tag">C · 가볍게</span>
+        <p class="tagline">금융은 켜 두기만 해도 돼요</p>
+        <div class="kw"><span class="tag">가볍게</span><span class="tag">곁에</span><span class="tag">루틴</span></div>
+        <dl class="dl"><dt>뿌리</dt><dd>lo-fi</dd><dt>성격</dt><dd>재촉하지 않는 조력자</dd><dt>말투</dt><dd>부드럽지만 꾸미지 않는다</dd><dt>잘 맞는 화면</dt><dd>홈 카드 · 경제 개념 · 알림</dd></dl>
+      </div>
+    </div>
+    <p class="note">지금까지 정한 말투 원칙('토스체처럼 꾸미지 않기, 깔끔한 단어')은 세 방향 모두에 그대로 적용돼요. 차이는 무엇을 앞에 세우느냐예요.</p>
+  </section>
+
+  <section>
+    <h2>색 방향 4가지</h2>
+    <p class="sec-d">각 방향을 같은 홈 화면 조각(오늘 쓸 수 있는 금액 · 자산 구성 · 칩 · 탭바)에 입혀 봤어요. 앱 화면의 90%는 무채색이고, 브랜드 색은 강조와 데이터에만 쓰는 전제예요.</p>
+    <div class="grid g2" id="pals"></div>
+  </section>
+
+  <section>
+    <h2>로고 후보 4가지</h2>
+    <p class="sec-d">워드마크(글자 로고)와 앱 아이콘을 함께 봐요. 왼쪽은 밝은 바탕, 오른쪽은 어두운 바탕이에요. 색은 위 '색 방향'에서 고르시는 쪽으로 다시 입힐 수 있어요.</p>
+    <div class="grid g2" id="logos"></div>
+  </section>
+
+  <div class="next">
+    <h3>골라 주시면 되는 것</h3>
+    <ol>
+      <li>브랜드 방향: A 차곡차곡 · B 내 몫 · C 가볍게 (섞어도 돼요)</li>
+      <li>색 방향: 1 · 2 · 3 · 4 중 하나, 또는 '1의 바탕 + 3의 강조색'처럼 조합</li>
+      <li>로고: 1 · 2 · 3 · 4 중 하나, 또는 마음에 드는 요소</li>
+    </ol>
+    <p class="note">고르신 조합으로 브랜드 요약 한 장과 디자인 토큰(색 · 글자 · 간격 · 모서리)을 만들고, 앱에 적용해서 보여 드릴게요.</p>
+  </div>
+</div>
+
+<script>
+const PALS = [
+  { n:'1 · 미스트 네이비', warn:'#FF6B57', d:'지금 앱 색을 다듬은 버전이에요. 차분하고 믿을 수 있는 인상이라 A(차곡차곡)와 잘 맞아요. 경고색만 따뜻한 산호로 바꿔 지금의 핫핑크보다 덜 자극적이게 했어요.',
+    c:[['#17181C','잉크'],['#F4F5F7','바탕'],['#C9D8F7','미스트'],['#1E3A6E','네이비'],['#FF6B57','경고']],
+    bg:'#F4F5F7', ink:'#17181C', card:'#FFFFFF', hero:'linear-gradient(135deg,#E3EBFB,#C9D8F7)', tm:['#C9D8F7','#1E3A6E','#DADDE3'], chip:['#17181C','#FFFFFF'], nav:['#17181C','rgba(255,255,255,.14)','#FFFFFF'] },
+  { n:'2 · 모스 & 브라스', warn:'#E2553F', d:'짙은 이끼색과 놋쇠색으로 동전 · 저금통 같은 \'모으는 돈\'의 느낌을 냈어요. 금융 앱에서 흔하지 않은 조합이라 기억에 남아요. A(차곡차곡)와 잘 맞아요.',
+    c:[['#1B2A22','모스'],['#F3F4F0','바탕'],['#DCE6DA','세이지'],['#B8913A','브라스'],['#E2553F','경고']],
+    bg:'#F3F4F0', ink:'#1B2A22', card:'#FFFFFF', hero:'linear-gradient(135deg,#ECF1EA,#DCE6DA)', tm:['#DCE6DA','#1B2A22','#E9DDBF'], chip:['#1B2A22','#FFFFFF'], nav:['#1B2A22','rgba(255,255,255,.14)','#F3E7C6'] },
+  { n:'3 · 탠저린 슬레이트', warn:'#E5484D', d:'차가운 회색 위에 귤색 하나로 힘을 줬어요. 밝고 가벼워서 C(가볍게)와 잘 맞아요. 귤색은 버튼 · 선택에만 쓰고, 데이터는 슬레이트 계열로 나눠요.',
+    c:[['#22262E','슬레이트'],['#F5F5F4','바탕'],['#FFE2D1','피치'],['#FF7A3D','탠저린'],['#E5484D','경고']],
+    bg:'#F5F5F4', ink:'#22262E', card:'#FFFFFF', hero:'linear-gradient(135deg,#FFF0E6,#FFE2D1)', tm:['#FFB389','#22262E','#DADCDF'], chip:['#FF7A3D','#FFFFFF'], nav:['#22262E','rgba(255,255,255,.14)','#FFFFFF'] },
+  { n:'4 · 모노 + 코발트', warn:'#F04438', d:'검정 · 흰색만으로 정리하고 코발트 한 가지만 신호로 써요. 가장 단정하고 숫자가 잘 보여서 B(내 몫)와 잘 맞아요. 대신 브랜드 개성은 로고와 사진이 맡아야 해요.',
+    c:[['#111111','블랙'],['#F6F6F6','바탕'],['#E6E6E6','그레이'],['#2B4EF0','코발트'],['#F04438','경고']],
+    bg:'#F6F6F6', ink:'#111111', card:'#FFFFFF', hero:'#FFFFFF', tm:['#2B4EF0','#111111','#E6E6E6'], chip:['#111111','#FFFFFF'], nav:['#111111','rgba(255,255,255,.16)','#FFFFFF'] },
+];
+document.getElementById('pals').innerHTML = PALS.map(p => `<div class="card pal">
+  <h3>${p.n}</h3>
+  <div><div class="sw">${p.c.map(([h]) => `<i style="background:${h}"></i>`).join('')}</div>
+  <div class="swl">${p.c.map(([h, l]) => `<span>${l}<br>${h}</span>`).join('')}</div></div>
+  <div class="mock" style="background:${p.bg};color:${p.ink}">
+    <div class="mh"><span>10월 15일 목요일</span><span class="chip" style="background:${p.chip[0]};color:${p.chip[1]}">카드</span></div>
+    <div style="border-radius:16px;padding:14px;background:${p.hero}">
+      <div class="lbl">오늘 쓸 수 있는 금액</div><div class="sub">10월 남은 예산 451,600원 / 17일</div>
+      <div class="big" style="margin-top:8px">26,500</div>
+    </div>
+    <div style="border-radius:16px;padding:12px;background:${p.card}">
+      <div class="lbl" style="font-size:12px">자산 구성</div>
+      <div class="tm" style="margin-top:8px"><i style="background:${p.tm[0]}"></i><i style="background:${p.tm[1]}"></i><i style="background:${p.tm[2]}"></i><i style="background:${p.tm[2]};opacity:.6"></i><i style="background:${p.tm[0]};opacity:.5"></i></div>
+    </div>
+    <div class="row"><span class="chip" style="background:${p.warn};color:#fff">D-15</span><span class="chip" style="background:${p.card};color:${p.ink};box-shadow:inset 0 0 0 1px ${p.ink}33">가입가능</span><span style="font-size:10px;color:${p.c[3][0]};font-weight:700;margin-left:auto">바로가기</span></div>
+    <div class="nav" style="background:${p.nav[0]}">${['홈','지출','자산','지식','혜택'].map((t, i) => `<span style="color:${p.nav[2]};${i === 0 ? `background:${p.nav[1]};font-weight:700` : 'opacity:.6'}">${t}</span>`).join('')}</div>
+  </div>
+  <p class="why">${p.d}</p>
+</div>`).join('');
+
+// 로고: 워드마크는 Urbanist / Bricolage, 기호는 SVG로 직접 그림
+const word = (ff, wt, ls, col, extra = '') => `<span style="font-family:${ff};font-weight:${wt};letter-spacing:${ls};font-size:44px;line-height:1;color:${col};${extra}">moafi</span>`;
+const L = [
+  { n:'1 · 동전 o', d:'둥근 글자 사이 \'o\'를 꽉 찬 원(동전)으로 바꿨어요. 모으는 대상이 한눈에 보이고, 앱 아이콘에서는 동전 하나만 남겨도 알아볼 수 있어요. A(차곡차곡)와 잘 맞아요.',
+    mark:(c, bg) => `<span style="display:inline-flex;align-items:baseline;font-family:Urbanist,sans-serif;font-weight:600;font-size:46px;letter-spacing:-.02em;color:${c}">m<svg width="30" height="30" viewBox="0 0 30 30" style="margin:0 1px;transform:translateY(2px)"><circle cx="15" cy="15" r="13" fill="${c}"/><circle cx="15" cy="15" r="7.5" fill="none" stroke="${bg}" stroke-width="2"/></svg>afi</span>`,
+    icon:(c, bg) => `<svg width="38" height="38" viewBox="0 0 30 30"><circle cx="15" cy="15" r="13" fill="${c}"/><circle cx="15" cy="15" r="7.5" fill="none" stroke="${bg}" stroke-width="2.2"/></svg>` },
+  { n:'2 · 쌓이는 막대', d:'\'i\'의 점 대신 높이가 다른 막대 세 개를 세웠어요. 자산 화면의 1년 흐름 막대와 이어지고, \'조금씩 쌓인다\'는 뜻이 돼요. A · B 모두와 맞아요.',
+    mark:(c) => `<span style="display:inline-flex;align-items:flex-end;gap:2px;font-family:Urbanist,sans-serif;font-weight:500;font-size:46px;letter-spacing:-.03em;color:${c};line-height:1">moaf<svg width="22" height="40" viewBox="0 0 22 40" style="margin-left:2px"><rect x="0" y="24" width="5" height="16" rx="2.5" fill="${c}"/><rect x="8.5" y="15" width="5" height="25" rx="2.5" fill="${c}"/><rect x="17" y="4" width="5" height="36" rx="2.5" fill="${c}"/></svg></span>`,
+    icon:(c) => `<svg width="34" height="34" viewBox="0 0 22 40"><rect x="0" y="24" width="5" height="16" rx="2.5" fill="${c}"/><rect x="8.5" y="15" width="5" height="25" rx="2.5" fill="${c}"/><rect x="17" y="4" width="5" height="36" rx="2.5" fill="${c}"/></svg>` },
+  { n:'3 · 내 몫 조각', d:'원에서 한 조각이 살짝 빠져나온 기호예요. \'모아 + 파이\' 해석을 그대로 보여 줘요. 기호가 단순해서 앱 아이콘 · 알림 아이콘으로 쓰기 좋아요. B(내 몫)와 잘 맞아요.',
+    mark:(c, bg, a) => `<span style="display:inline-flex;align-items:center;gap:10px"><svg width="40" height="40" viewBox="0 0 40 40"><path d="M20 20V4a16 16 0 1 0 16 16z" fill="${c}"/><path d="M23 17V2.3A17 17 0 0 1 37.7 17z" fill="${a}"/></svg><span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:42px;letter-spacing:-.03em;color:${c}">moafi</span></span>`,
+    icon:(c, bg, a) => `<svg width="38" height="38" viewBox="0 0 40 40"><path d="M20 20V4a16 16 0 1 0 16 16z" fill="${c}"/><path d="M23 17V2.3A17 17 0 0 1 37.7 17z" fill="${a}"/></svg>` },
+  { n:'4 · 소문자 워드마크', d:'기호 없이 글자만 다듬었어요. 글자 사이를 바짝 좁혀 하나의 덩어리로 보이게 하고, 끝에 마침표 같은 점을 찍어 \'이걸로 됐다\'는 단정한 느낌을 줬어요. 가장 담백하고 C(가볍게)와 잘 맞아요. 앱 아이콘은 \'m\' 한 글자예요.',
+    mark:(c) => `<span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:50px;letter-spacing:-.06em;color:${c};line-height:1">moafi<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${c};margin-left:3px"></span></span>`,
+    icon:(c) => `<span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:38px;letter-spacing:-.06em;color:${c};line-height:1;transform:translateY(-2px)">m</span>` },
+];
+const ACC = ['#1E3A6E', '#B8913A', '#FF7A3D', '#2B4EF0'];
+document.getElementById('logos').innerHTML = L.map((l, k) => `<div class="card">
+  <h3>${l.n}</h3>
+  <div class="logo-stage" style="margin-top:14px"><div style="background:#FFFFFF">${l.mark('#17181C', '#FFFFFF', ACC[k])}</div><div style="background:#17181C">${l.mark('#FFFFFF', '#17181C', ACC[k])}</div></div>
+  <div class="icons">
+    <span class="appicon" style="background:#17181C">${l.icon('#FFFFFF', '#17181C', ACC[k])}</span>
+    <span class="appicon" style="background:${ACC[k]}">${l.icon('#FFFFFF', ACC[k], '#17181C')}</span>
+    <span class="appicon" style="background:#FFFFFF;border:1px solid #E2E2DF">${l.icon('#17181C', '#FFFFFF', ACC[k])}</span>
+    <span class="appicon sm" style="background:#17181C">${l.icon('#FFFFFF', '#17181C', ACC[k])}</span>
+  </div>
+  <p class="note">${l.d}</p>
+</div>`).join('');
+</script>
