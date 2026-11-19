@@ -1267,6 +1267,8 @@ button.focus-strip{display:block;color:inherit}
 
 .screen:not(.dark){background:#FAFAFA}
 .ld.l3,.ld.l4{color:#fff}.ld.l3 i,.ld.l4 i{color:rgba(255,255,255,.85)}
+
+.utabs{position:sticky;z-index:4}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -3583,6 +3585,8 @@ function render(keepScroll = true) {
     if (S.naSlide) { S.naSlide = false; setTimeout(() => tr.scrollTo({ left:x, behavior:'smooth' }), 350); } else tr.scrollLeft = x; }
   if (key === 'tabhome') fanDraw();
   segGlass(); thermoLoop();
+  // 세부 탭: 머리말 바로 아래에 붙어 고정 (내용은 유리 아래로 지나간다)
+  { const sh = view.querySelector('.shead'), u = view.querySelector('.utabs'); if (sh && u) { const vt = parseFloat(getComputedStyle(view).paddingTop) || 0; u.style.top = (sh.offsetHeight - vt + 8) + 'px'; } }
   { const u = view.querySelector('.urgent'), sh = view.querySelector('.shead'); if (u && sh) u.style.top = (sh.offsetTop + sh.offsetHeight + 10) + 'px'; }
   if (homeEnter) { popOut(); tuckSoon(); fanIntro(); }
   // 홈으로 돌아오면 항상 처음 위치(맨 위)에서 시작: 남아 있는 관성 스크롤까지 멈추고 다시 맞춘다
