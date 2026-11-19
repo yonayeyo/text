@@ -902,6 +902,19 @@ button.focus-strip{display:block;color:inherit}
 .tm-cur{position:absolute;top:2px;transform:translateX(-50%);font-size:11px;font-weight:600;color:var(--ink);white-space:nowrap;transition:left .3s cubic-bezier(.22,1,.36,1)}
 .tm-cur.is-now{display:none}
 .tm-meta .tm-lb{margin-top:4px}
+
+/* 지식 · 위계 정리: 제목 하나 + 진행 한 줄, 목록은 질문 → 개념 이름 */
+.lr-prog{display:inline-flex;align-items:center;gap:3px;margin-top:2px;text-align:left}
+.lr-prog b{font-weight:600;color:var(--ink)}
+.lr-fixed{padding:4px 0 8px}
+.lr-list{display:block;gap:0;margin-top:8px;padding-left:0}
+.lr-row{display:grid;grid-template-columns:40px 1fr 32px;gap:14px;align-items:center;padding:16px 0;border-bottom:1px solid var(--g2)}
+.lr-row:last-child{border-bottom:0}
+.lr-row .th,.lr-row.on .th{width:40px;height:40px;margin:0;border-radius:50%;filter:none;transition:none}
+.lr-row .th svg,.lr-row.on .th svg{width:20px;height:20px}
+.lr-row .tx,.lr-row.on .tx{display:grid;gap:4px;margin:0;transition:none}
+.lr-row .nm{font-size:16px;font-weight:500;line-height:23px;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lr-row .ds{font-size:12px;line-height:17px;color:var(--g6);white-space:normal}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -2668,22 +2681,21 @@ function vGoal() {
    ========================================================= */
 function vLearn() {
   const tips = S.extras.has('tips'), lv = tips ? S.learnView : 'bite';
-  const head = `<header class="top"><div><div class="ph-title">지식</div><div class="ph-sub">${tips ? '경제 개념 · 팁과 소식' : '1분이면 읽는 금융 개념'}</div></div></header>
+  const known = conceptKnown();
+  const head = `<header class="top"><div><div class="ph-title">지식</div><button class="ph-sub lr-prog" data-act="sheet" data-sheet="bites" aria-label="알아본 개념 ${known}개 보기">5개 영역 · ${CONCEPT_TOTAL}개 중 <b>${known}개</b> 알아봄${ic('arrow', 12)}</button></div></header>
   ${tips ? '' : '<!--'}<div class="utabs" role="tablist">${[['bite','경제 개념'],['tips','팁과 소식']].map(([k, n]) => `<button class="${lv === k ? 'on' : ''}" data-act="lv" data-v="${k}" role="tab" aria-selected="${lv === k}">${n}</button>`).join('')}</div>${tips ? '' : '-->'}`;
   if (lv === 'tips') return head + `
   <section style="margin-top:16px">
     <div class="sec-h"><div><div class="t18">절약 팁 · 정책 정보</div><div class="sec-d">함께 실천하는 사람들의 팁과 정책 소식</div></div><button class="btn sm ghost" data-act="toast" data-msg="팁 작성 화면은 다음 버전에서 열려요">${ic('plus', 14)}공유</button></div>
     <div class="stack">${TIPS.map((t, i) => `<div class="card c-paper"><div class="row between"><span class="tag ${t.k === '정책 정보' ? 'glow' : 'line'}">${t.k}</span><span class="t10 mute">${t.who}</span></div><p class="t14 mt12">${t.t}</p><button class="chip mt12 ${S.liked.has(i) ? 'on' : ''}" data-act="like" data-v="${i}">도움돼요 ${t.likes + (S.liked.has(i) ? 1 : 0)}</button></div>`).join('')}</div>
   </section>`;
-  const known = conceptKnown(), area = S.learnArea || 'all';
+  const area = S.learnArea || 'all';
   const list = CONCEPTS.map(c => conceptOf(c.id)).filter(c => !conceptDone(c) && (area === 'all' || c.a === area));
   return head + `
   <div class="lr-fixed">
-  <div class="sec-h lr-h"><div><div class="t18">새로운 개념</div><div class="sec-d">5개 영역 · ${CONCEPT_TOTAL}개 중 ${known}개 알아봤어요</div></div>
-    <button class="lr-known" data-act="sheet" data-sheet="bites" aria-label="알아본 개념 ${known}개 보기"><span class="lr-cnt"><span class="n24">${known}</span><span class="t12 mute">/${CONCEPT_TOTAL}</span></span><span class="row g4 t10 mute">알아본 개념${ic('arrow', 12)}</span></button></div>
   <div class="lr-chips" role="tablist">${[['all', '전체'], ...AREAS.map(a => [a.id, a.name])].map(([k, n]) => `<button class="chip pchip ${area === k ? 'on' : ''}" data-act="learnArea" data-v="${k}" role="tab" aria-selected="${area === k}">${n}</button>`).join('')}</div></div>
-  <div class="lr-list" id="lrList">${list.length ? list.map((c, i) => `<button class="lr-row ${i ? '' : 'on'}" data-act="concept" data-v="${c.id}"><span class="th a-${c.a}" aria-hidden="true">${ic(c.i || 'spark', 28)}</span>
-      <span class="tx"><span class="ca">${areaName(c.a)}</span><span class="nm">${c.k}</span><span class="ds">${c.q.replace(/<br>/g, ' ')}</span></span></button>`).join('')
+  <div class="lr-list" id="lrList">${list.length ? list.map(c => `<button class="lr-row" data-act="concept" data-v="${c.id}" aria-label="${c.k} 열기"><span class="th a-${c.a}" aria-hidden="true">${ic(c.i || 'spark', 20)}</span>
+      <span class="tx"><span class="nm">${c.q.replace(/<br>/g, ' ')}</span><span class="ds">${c.k}${area === 'all' ? ` · ${areaName(c.a)}` : ''}</span></span><span class="bite-tg" aria-hidden="true">${ic('plus', 16)}</span></button>`).join('')
     : '<p class="t14 mute">이 영역의 개념은 모두 알아봤어요.</p>'}</div>${tips ? '' : extraOff('tips')}`;
 }
 // 경제 개념 목록: 스크롤할 때 목록에서 가장 위에 보이는 개념을 크게(둥근 사각형) 보여 준다
@@ -2902,7 +2914,7 @@ const SCREEN_NAME = k => ({ ob0:'진단 시작', ob1:'자기평가', ob2:'진단
 const TABS = [ ['home','홈','tHome'], ['spend','지출','tWallet'], ['plan','자산','tStack'], ['learn','지식','tNotes'], ['benefit','혜택','tGift'] ];
 const screen = document.getElementById('screen'), view = document.getElementById('view');
 let learnRaf = 0;
-view.addEventListener('scroll', () => { cancelAnimationFrame(learnRaf); learnRaf = requestAnimationFrame(learnActive); }, { passive:true });
+
 let lastKey = '';
 // 세부 탭(지출·계획·목표): 본문을 좌우로 밀어 넘기고, 탭 밑줄도 같이 따라 움직인다
 const SUBS = { spend:['spendView', ['list','analysis','budget']], plan:['planView', ['bank','goal','rule']], get learn() { return ['learnView', S.extras.has('tips') ? ['bite','tips'] : ['bite']]; } };
@@ -3033,7 +3045,7 @@ function render(keepScroll = true) {
   // 홈으로 돌아오면 항상 처음 위치(맨 위)에서 시작: 남아 있는 관성 스크롤까지 멈추고 다시 맞춘다
   if (key === 'tabhome' && key !== lastKey) { view.style.overflowY = 'hidden'; view.scrollTop = 0; requestAnimationFrame(() => { view.style.overflowY = ''; view.scrollTop = 0; }); }
   // 알기 › 경제 개념: 목록이 개념마다 탁탁 걸리도록 스크롤 스냅 (고정 영역 아래 16px에 맞춤)
-  const snap = S.mode === 'app' && !S.sub && S.tab === 'learn' && S.learnView === 'bite';
+  const snap = false;
   view.classList.toggle('snap', snap);
   if (snap) { const sh = view.querySelector('.shead'); view.style.setProperty('--snapTop', ((sh ? sh.getBoundingClientRect().bottom : 0) - view.getBoundingClientRect().top + 16) + 'px'); learnActive(); }
   if (S.mode === 'app' && !S.sub && S.linked && !isPreview()) S.seen.add(S.tab + '-' + ({ spend:S.spendView, plan:S.planView, learn:S.learnView }[S.tab] || ''));
