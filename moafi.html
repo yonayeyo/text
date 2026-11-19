@@ -952,12 +952,20 @@ button.focus-strip{display:block;color:inherit}
 
 /* 혜택 · 해당 혜택과 신청 일정을 한 목록으로 */
 .cond-ask{padding:20px}
-.bn-list{padding:16px 20px}
-.bn-list > .matrix{padding-bottom:8px;border-bottom:1px solid var(--g2)}
-.bn-row{padding:16px 0;border-bottom:1px solid var(--g2)}
-.bn-n{color:var(--ink);font-weight:500}
-.bn-l2{margin-top:6px;align-items:center}
-.bn-l3{margin-top:2px}
+.bn-list{padding:16px 20px 14px}
+/* 한 행: [혜택 이름 | 조건 4칸] 같은 그리드 · 아래로 금액 → 상태 태그 + 일정 */
+.bn-g{display:grid;grid-template-columns:minmax(0,1fr) repeat(4,28px);column-gap:4px;align-items:center}
+.bn-g .c{display:grid;place-items:center}
+.bn-g .c i{width:10px;height:10px;border-radius:50%}
+.bn-g .c i.m-na{width:8px!important}
+.bn-head{padding-bottom:10px;border-bottom:1px solid var(--g2)}
+.bn-row{padding:18px 0;border-bottom:1px solid var(--g2)}
+.bn-n{font-size:16px;font-weight:500;line-height:24px;color:var(--ink)}
+.bn-amt{margin-top:2px;font-size:14px;line-height:20px;color:var(--ink)}
+.bn-meta{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;line-height:18px;color:var(--g6)}
+.bn-meta > span:last-child{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bn-meta .tag{flex:none;height:22px;padding:0 8px;font-size:11px}
+.bn-btn{margin-top:16px}
 .bn-leg{padding-top:12px}
 </style>
 <div class="stage">
@@ -2810,7 +2818,7 @@ const WORK = ['직장인', '프리랜서 · 외주', '아르바이트'];
 // 혜택 하나 = 이름 · 금액 · 신청 시기(정렬 순서) · 필요한 것 · 해당 조건(ok)과 해당하지 않을 때의 이유
 const BENEFITS = () => [
   { id:'rent', n:'청년 월세 지원', amt:'월 200,000원 · 12개월', y:2400000, o:1, when:'10.30 마감', c:['y','y','y','c'], dd:'D-15', hot:true, note:'임대차계약서 · 등본 필요', ok:S.cond.home === '월세', why:'월세로 사는 무주택 청년 대상이에요' },
-  { id:'youth', n:'청년도약계좌 정부기여금', amt:'월 최대 33,000원', y:396000, o:2, when:'11.03 – 11.14 가입 신청', c:['y','y','n','y'], dd:'가입 가능', note:'넣는 금액에 따라 기여금 지급', ok:WORK.includes(S.cond.job), why:'소득이 있는 청년 대상이에요' },
+  { id:'youth', n:'청년도약계좌 정부기여금', amt:'월 최대 33,000원', y:396000, o:2, when:'11.03 – 11.14', c:['y','y','n','y'], dd:'가입 가능', note:'기여금 매달 지급', ok:WORK.includes(S.cond.job), why:'소득이 있는 청년 대상이에요' },
   { id:'card', n:'연말정산 카드 소득공제', amt:'예상 환급 약 180,000원', y:180000, o:3, when:'01.15 간소화 서비스', c:['n','y','n','y'], dd:'진행 중', note:'공제 자료 자동 수집', ok:S.cond.job === '직장인', why:'연말정산을 하는 직장인 대상이에요. 프리랜서는 5월 종합소득세 신고 때 정리해요' },
   { id:'eitc', n:'근로장려금', amt:'최대 1,650,000원', y:1650000, o:4, when:'05.01 – 05.31 신청', c:['n','y','n','c'], dd:'5월 신청', note:'지난해 소득 기준', ok:['프리랜서 · 외주', '아르바이트'].includes(S.cond.job), why:'1인 가구 연소득 2,200만 원 미만 대상이에요' },
   { id:'jeonse', n:'청년 전세자금 대출 이자 지원', amt:'대출 이자 연 최대 1.5%p', y:600000, o:5, when:'상시 신청', c:['y','y','y','c'], dd:'상시', note:'전세 계약서 · 소득 증빙 필요', ok:S.cond.home === '전세', why:'전세로 사는 무주택 청년 대상이에요' },
@@ -2826,10 +2834,10 @@ function vBenefit() {
   const T = 8000000, X = v => v / T * 100;
   const cell = v => `<span class="c"><i class="${v === 'y' ? 'm-yes' : v === 'c' ? 'm-chk' : 'm-na'}"></i></span>`;
   const row = b => `<div class="bn-row">
-      <div class="matrix"><span class="t14 bn-n">${b.n}</span>${b.c.map(cell).join('')}</div>
-      <div class="row between bn-l2"><span class="t12">${b.amt}</span><span class="tag ${b.hot ? 'ink' : 'line'}">${b.dd}</span></div>
-      <div class="t12 mute bn-l3">${b.when} · ${b.note}</div>
-      ${b.id === 'rent' ? (S.rentPrep ? `<div class="row g8 mt12 t14">${ic('check', 18)} 신청 서류 3개를 준비 목록에 담았어요</div>` : `<button class="btn sm mt12" id="rentBtn" data-act="rentPrep">신청 준비</button>`) : ''}
+      <div class="bn-g"><span class="bn-n">${b.n}</span>${b.c.map(cell).join('')}</div>
+      <div class="bn-amt">${b.amt}</div>
+      <div class="bn-meta"><span class="tag ${b.hot ? 'ink' : 'line'}">${b.dd}</span><span>${b.when} · ${b.note}</span></div>
+      ${b.id === 'rent' ? (S.rentPrep ? `<div class="row g8 bn-btn t14">${ic('check', 18)} 신청 서류 3개를 준비 목록에 담았어요</div>` : `<button class="btn full bn-btn" id="rentBtn" data-act="rentPrep">청년 월세 지원 신청 준비</button>`) : ''}
     </div>`;
   return `<header class="top"><div><div class="ph-title">혜택${areaTag('benefit')}</div><div class="ph-sub">세금 공제 · 정부 지원금 · 포인트</div></div>${MENU_BTN()}</header>
   ${S.condAsked ? `<div class="row g8 mt12" style="flex-wrap:wrap">${condTags().map(c => `<span class="tag line" style="height:28px;padding:0 12px">${c}</span>`).join('')}<button class="cond-edit" data-act="sheet" data-sheet="cond">${ic('sliders', 14)}조건 수정</button></div>` : `<div class="mt16">${condAsk()}</div>`}
@@ -2847,7 +2855,7 @@ function vBenefit() {
   <section class="sec" id="benList">
     <div class="sec-h"><div><div class="t18">해당 혜택 · 신청 일정</div><div class="sec-d">마감이 가까운 순서</div></div></div>
     <div class="card c-paper bn-list">
-      <div class="matrix t10 mute"><span></span>${['나이','소득','주거','기타'].map(h => `<span class="c">${h}</span>`).join('')}</div>
+      <div class="bn-g bn-head t10 mute"><span>혜택</span>${['나이','소득','주거','기타'].map(h => `<span class="c">${h}</span>`).join('')}</div>
       ${bens.map(row).join('')}
       <div class="row g16 t10 mute bn-leg"><span class="row g4"><i class="m-yes" style="width:10px;height:10px;border-radius:50%;display:inline-block"></i>충족</span><span class="row g4"><i class="m-chk" style="width:10px;height:10px;border-radius:50%;display:inline-block"></i>확인 필요</span><span class="row g4"><i style="width:10px;height:1.5px;background:var(--g4);display:inline-block"></i>조건 없음</span></div>
     </div>
