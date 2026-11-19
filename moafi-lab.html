@@ -1170,7 +1170,6 @@ button.focus-strip{display:block;color:inherit}
 .tabbar.light ~ * .utabs{}
 
 /* 세부 탭: 알약은 미끄러지지 않고 제자리에서 바뀜. 하단 탭바가 라이트면 세부 탭도 라이트 유리 */
-.utabs::after{transition:none}
 .screen.nav-light .utabs{background:rgba(250,250,250,.56);-webkit-backdrop-filter:blur(10px) saturate(180%);backdrop-filter:url(#liquidGlassSeg) blur(4px) saturate(180%);
   box-shadow:inset 0 0 0 .5px rgba(0,0,0,.10),inset 0 1px 0 #fff,0 6px 18px rgba(0,0,0,.08)}
 .screen.nav-light .utabs button{color:rgba(24,24,24,.5)}
@@ -3315,7 +3314,7 @@ let learnRaf = 0;
 let lastKey = '';
 // 세부 탭(지출·계획·목표): 본문을 좌우로 밀어 넘기고, 탭 밑줄도 같이 따라 움직인다
 const SUBS = { spend:['spendView', ['list','analysis','budget']], plan:['planView', ['bank','goal','rule']], get learn() { return ['learnView', S.extras.has('tips') ? ['bite','tips'] : ['bite']]; } };
-const subPanes = () => [...view.children].filter(c => !c.classList.contains('shead'));
+const subPanes = () => [...view.children].filter(c => !c.classList.contains('shead') && !c.classList.contains('utabs'));
 const setPanes = (els, x, t) => els.forEach(e => { e.style.transition = t ? `transform ${t}` : 'none'; e.style.transform = x ? `translateX(${x}px)` : ''; });
 let swipe = null, swiped = false;
 function goSub(ni, dir, from, d = 0) {
