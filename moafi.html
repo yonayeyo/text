@@ -952,22 +952,26 @@ button.focus-strip{display:block;color:inherit}
 
 /* 혜택 · 해당 혜택과 신청 일정을 한 목록으로 */
 .cond-ask{padding:20px}
-.bn-list{padding:16px 20px 14px}
-/* 한 행: [혜택 이름 | 조건 4칸] 같은 그리드 · 아래로 금액 → 상태 태그 + 일정 */
-.bn-g{display:grid;grid-template-columns:minmax(0,1fr) repeat(4,28px);column-gap:4px;align-items:center}
+.bn-list.card{padding:17px 20px;border-radius:13px;background:#fff;box-shadow:none;outline:.5px solid rgba(0,0,0,.2);outline-offset:-.5px}
+/* 한 행: [혜택 이름 | 조건 4칸(34px)] · 금액 · 회색 상자(상태 태그 · 일정 · 바로가기) */
+.bn-g{display:grid;grid-template-columns:minmax(0,1fr) repeat(4,34px);align-items:center;margin-right:-8px}
 .bn-g .c{display:grid;place-items:center}
 .bn-g .c i{width:10px;height:10px;border-radius:50%}
-.bn-g .c i.m-na{width:8px!important}
-.bn-head{padding-bottom:10px;border-bottom:1px solid var(--g2)}
-.bn-row{padding:20px 0 0}
-.bn-n{font-size:17px;font-weight:500;line-height:24px;color:var(--ink)}
-.bn-amt{margin-top:2px;font-size:14px;line-height:20px;color:var(--ink)}
-.bn-meta{display:flex;align-items:center;gap:6px;margin-top:12px;padding:10px 12px;border-radius:12px;background:#F5F5F5;font-size:11px;letter-spacing:-.01em;line-height:18px;color:var(--g6)}
+.bn-g .c i.m-chk{box-shadow:inset 0 0 0 1px #000}
+.bn-g .c i.m-yes{background:#000}
+.bn-g .c i.m-na{width:8px!important;height:1px!important}
+.bn-head{font-size:10px;line-height:12px;color:#999}
+.bn-row{padding-top:18px}
+.bn-row + .bn-row{padding-top:21px}
+.bn-n{font-size:16px;font-weight:500;line-height:20px;color:#000}
+.bn-amt{margin-top:3px;font-size:12px;font-weight:300;line-height:16px;color:#000}
+.bn-meta{display:flex;align-items:center;gap:5px;height:34px;margin-top:5px;padding:0 10px 0 11px;border-radius:8px;background:rgba(217,217,217,.16);font-size:10px;line-height:14px;color:#757575}
 .bn-mt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bn-meta .tag{flex:none;height:22px;padding:0 8px;font-size:11px}
-.bn-go{flex:none;margin-left:2px;font-size:12px;font-weight:500;color:#2F6BFF}
-.bn-go.done{display:inline-flex;align-items:center;gap:2px;color:var(--g6)}
-.bn-leg{margin-top:24px;padding-top:14px;border-top:1px solid var(--g2)}
+.bn-meta .tag{flex:none;height:17px;padding:0 7.5px;border-radius:39px;font-size:10px;line-height:1;background:#fff;color:#000;box-shadow:inset 0 0 0 .5px #595959}
+.bn-meta .tag.ink{background:#000;color:#fff}
+.bn-go{flex:none;font-size:10px;font-weight:400;color:#3269FF}
+.bn-go.done{display:inline-flex;align-items:center;gap:2px;color:#757575}
+.bn-leg{margin-top:24px}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -2819,8 +2823,8 @@ const WORK = ['직장인', '프리랜서 · 외주', '아르바이트'];
 // 혜택 하나 = 이름 · 금액 · 신청 시기(정렬 순서) · 필요한 것 · 해당 조건(ok)과 해당하지 않을 때의 이유
 const BENEFITS = () => [
   { id:'rent', n:'청년 월세 지원', amt:'월 200,000원 · 12개월', y:2400000, o:1, when:'10.30 마감', c:['y','y','y','c'], dd:'D-15', hot:true, note:'임대차계약서 · 등본 필요', ok:S.cond.home === '월세', why:'월세로 사는 무주택 청년 대상이에요' },
-  { id:'youth', n:'청년도약계좌 정부기여금', amt:'월 최대 33,000원', y:396000, o:2, when:'11.03 – 11.14', c:['y','y','n','y'], dd:'가입 가능', note:'기여금 매달 지급', ok:WORK.includes(S.cond.job), why:'소득이 있는 청년 대상이에요' },
-  { id:'card', n:'연말정산 카드 소득공제', amt:'예상 환급 약 180,000원', y:180000, o:3, when:'01.15', c:['n','y','n','y'], dd:'진행 중', note:'간소화 서비스로 자료 수집', ok:S.cond.job === '직장인', why:'연말정산을 하는 직장인 대상이에요. 프리랜서는 5월 종합소득세 신고 때 정리해요' },
+  { id:'youth', n:'청년도약계좌 정부기여금', amt:'월 최대 33,000원', y:396000, o:2, when:'11.03 – 11.14', c:['y','y','n','y'], dd:'가입가능', note:'기여금 매달 지급', ok:WORK.includes(S.cond.job), why:'소득이 있는 청년 대상이에요' },
+  { id:'card', n:'연말정산 카드 소득공제', amt:'예상 환급 약 180,000원', y:180000, o:3, when:'01.15 간소화 서비스', c:['n','y','n','y'], dd:'진행 중', note:'공제 자료 자동 수집', ok:S.cond.job === '직장인', why:'연말정산을 하는 직장인 대상이에요. 프리랜서는 5월 종합소득세 신고 때 정리해요' },
   { id:'eitc', n:'근로장려금', amt:'최대 1,650,000원', y:1650000, o:4, when:'05.01 – 05.31 신청', c:['n','y','n','c'], dd:'5월 신청', note:'지난해 소득 기준', ok:['프리랜서 · 외주', '아르바이트'].includes(S.cond.job), why:'1인 가구 연소득 2,200만 원 미만 대상이에요' },
   { id:'jeonse', n:'청년 전세자금 대출 이자 지원', amt:'대출 이자 연 최대 1.5%p', y:600000, o:5, when:'상시 신청', c:['y','y','y','c'], dd:'상시', note:'전세 계약서 · 소득 증빙 필요', ok:S.cond.home === '전세', why:'전세로 사는 무주택 청년 대상이에요' },
   { id:'kpass', n:'K-패스 교통비 환급', amt:'월 약 12,300원 (청년 30%)', y:147600, o:6, when:'매달 환급', c:['y','n','n','y'], dd:'받는 중', note:'월 15회 이상 이용 시', ok:true, why:'' },
