@@ -934,6 +934,17 @@ button.focus-strip{display:block;color:inherit}
 .lr-qs.b{padding:0;margin-top:8px}
 .lr-qs.b .lr-q:first-child{border-top:0}
 .lr-more{display:inline-flex;align-items:center;gap:4px;margin-top:4px;height:32px;color:var(--g6)}
+
+/* 지식 · 검색창 + AI에게 묻기 */
+.lr-search{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:16px}
+.lr-in{display:flex;align-items:center;gap:8px;height:44px;padding:0 14px;border-radius:999px;background:var(--g2);color:var(--g6)}
+.lr-in input{flex:1;min-width:0;border:0;background:none;font:inherit;font-size:14px;color:var(--ink);outline:none}
+.lr-in input::-webkit-search-cancel-button{opacity:.5}
+.lr-in:focus-within{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.lr-ai{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 16px;border-radius:999px;background:var(--ink);color:var(--paper);font-size:13px;font-weight:500;white-space:nowrap}
+.lr-askq{display:grid;grid-template-columns:16px 1fr 14px;gap:8px;align-items:center;width:100%;padding:14px 16px;border-radius:16px;background:var(--g2);text-align:left;font-size:14px}
+.lr-tag{height:20px;padding:0 8px;font-size:10px;margin-left:4px}
+.lr-qh .mute{font-weight:400}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -990,6 +1001,7 @@ const IC = {
   bell:'<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
   menu:'<path d="M5 8h14M5 12h14M5 16h14"/>',
   plus:'<path d="M12 5v14M5 12h14"/>',
+  search:'<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/>',
   minus:'<path d="M5 12h14"/>',
   arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
   ur:'<path d="M7 17 17 7M9 7h8v8"/>',
@@ -2702,37 +2714,65 @@ function vLearn() {
   const tips = S.extras.has('tips'), lv = tips ? S.learnView : 'bite';
   const known = conceptKnown();
   const head = `<header class="top"><div><div class="ph-title">지식</div><button class="ph-sub lr-prog" data-act="sheet" data-sheet="bites" aria-label="알아본 개념 ${known}개 보기">5개 영역 · ${CONCEPT_TOTAL}개 중 <b>${known}개</b> 알아봄${ic('arrow', 12)}</button></div></header>
+  ${lv === 'tips' ? '' : `<div class="lr-search"><label class="lr-in">${ic('search', 18)}<input id="lrQ" type="search" placeholder="개념이나 기능 검색" value="${(S.lrQ || '').replace(/"/g, '&quot;')}" autocomplete="off" aria-label="개념이나 기능 검색" oninput="lrSearch(this.value)"></label>
+    <button class="lr-ai" data-act="aiAsk" data-v="" aria-label="AI에게 묻기">${aiIcon()}AI에게 묻기</button></div>`}
   ${tips ? '' : '<!--'}<div class="utabs" role="tablist">${[['bite','경제 개념'],['tips','팁과 소식']].map(([k, n]) => `<button class="${lv === k ? 'on' : ''}" data-act="lv" data-v="${k}" role="tab" aria-selected="${lv === k}">${n}</button>`).join('')}</div>${tips ? '' : '-->'}`;
   if (lv === 'tips') return head + `
   <section style="margin-top:16px">
     <div class="sec-h"><div><div class="t18">절약 팁 · 정책 정보</div><div class="sec-d">함께 실천하는 사람들의 팁과 정책 소식</div></div><button class="btn sm ghost" data-act="toast" data-msg="팁 작성 화면은 다음 버전에서 열려요">${ic('plus', 14)}공유</button></div>
     <div class="stack">${TIPS.map((t, i) => `<div class="card c-paper"><div class="row between"><span class="tag ${t.k === '정책 정보' ? 'glow' : 'line'}">${t.k}</span><span class="t10 mute">${t.who}</span></div><p class="t14 mt12">${t.t}</p><button class="chip mt12 ${S.liked.has(i) ? 'on' : ''}" data-act="like" data-v="${i}">도움돼요 ${t.likes + (S.liked.has(i) ? 1 : 0)}</button></div>`).join('')}</div>
   </section>`;
-  // 처음에는 '지금 볼 개념' 하나와 다섯 영역만. 영역을 펼쳐야 그 안의 개념이 보이고, 개념도 그 자리에서 펼친다
-  const unk = unkAreas(), fa = focusArea(), pr = c => unk.has(c.a) ? 0 : c.a === fa ? 1 : 2;
-  const todo = CONCEPTS.map(c => conceptOf(c.id)).filter(c => !conceptDone(c));
-  const now = [...todo].sort((x, y) => pr(x) - pr(y))[0];
+  return head + `<div id="lrBody">${learnBody()}</div>${tips ? '' : extraOff('tips')}`;
+}
+const AR_IC = { spend:'wallet', save:'coins', credit:'card', insure:'umbrella', tax:'receipt' };
+const lrQRow = (c, done) => { const o = S.lrOpen === c.id;
+  return `<div class="lr-q ${o ? 'on' : ''}"><button class="lr-qh" data-act="lrOpen" data-v="${c.id}" aria-expanded="${o}"><span class="t14">${c.q.replace(/<br>/g, ' ')}</span>${ic(o ? 'minus' : 'plus', 14)}</button>${o ? conceptBody(c, done) : ''}</div>`; };
+// 검색할 수 있는 기능 (이름 · 설명 · 찾는 말)
+const LR_FEAT = [
+  ['가계부', '날짜별 결제 내역 · 챌린지', '지출 내역 달력 무지출 챌린지', 'data-act="tab" data-tab="spend" data-sv="list"'],
+  ['분석 · 영수증', '많이 쓴 곳 · 전월 대비 · 영수증', '분석 영수증 소액 반복', 'data-act="tab" data-tab="spend" data-sv="analysis"'],
+  ['예산', '이번 달 예산 · 11월 예산 만들기', '예산 절약 제안 카테고리', 'data-act="tab" data-tab="spend" data-sv="budget"'],
+  ['정산하기', '더치페이 · 대리 결제 정리', '더치페이 정산 친구', 'data-act="sheet" data-sheet="settle"'],
+  ['통장 · 자산 구성', '계좌별 잔액 · 1년 흐름', '통장 계좌 자산 잔액 트리맵', 'data-act="tab" data-tab="plan" data-pv="bank"'],
+  ['목표', '독립 준비 자금 · 비상금', '목표 비상금 독립 저축', 'data-act="tab" data-tab="plan" data-pv="goal"'],
+  ['자동 설정', '월급날 선저축 · 고정 지출', '자동이체 선저축 고정 지출 월급', 'data-act="tab" data-tab="plan" data-pv="rule"'],
+  ['적금 비교', '세후 이자로 상품 비교', '적금 이자 세금 금리', 'data-act="sheet" data-sheet="compare"'],
+  ['혜택', '세금 공제 · 정부 지원금 · 포인트', '혜택 공제 지원금 월세 포인트 연말정산', 'data-act="tab" data-tab="benefit"'],
+  ['내 진단 결과', '유형 · 영역별 결과', '진단 유형 결과', 'data-act="diag"'],
+];
+function learnBody() {
+  const q = (S.lrQ || '').trim(), all = CONCEPTS.map(c => conceptOf(c.id));
+  if (q) {
+    const has = t => String(t || '').replace(/<br>/g, ' ').toLowerCase().includes(q.toLowerCase());
+    const cs = all.filter(c => has(c.k) || has(c.q) || has(c.take)), fs = LR_FEAT.filter(f => has(f[0]) || has(f[1]) || has(f[2]));
+    const qa = q.replace(/"/g, '&quot;');
+    return `${cs.length ? `<section class="mt16"><div class="t12 mute">개념 ${cs.length}</div><div class="lr-qs b">${cs.map(c => lrQRow(c, conceptDone(c))).join('')}</div></section>` : ''}
+      ${fs.length ? `<section class="mt24"><div class="t12 mute">기능 ${fs.length}</div><div class="lr-qs b">${fs.map(f => `<div class="lr-q"><button class="lr-qh" ${f[3]}><span><span class="t14" style="display:block">${f[0]}</span><span class="t12 mute">${f[1]}</span></span>${ic('arrow', 14)}</button></div>`).join('')}</div></section>` : ''}
+      ${cs.length || fs.length ? '' : `<p class="t14 mt24">‘${q}’에 맞는 개념이나 기능이 없어요.</p>`}
+      <button class="lr-askq mt16" data-act="aiAsk" data-v="${qa}">${aiIcon()}<span>AI에게 ‘${q}’ 묻기</span>${ic('arrow', 14)}</button>`;
+  }
+  // 처음에는 '지금 볼 개념' 하나와 영역별 미리보기 2개. 영역 순서는 진단 결과(잘 모르는 영역 → 집중할 영역 → 나머지)
+  const unk = unkAreas(), fa = focusArea(), pr = a => unk.has(a) ? 0 : a === fa ? 1 : 2;
+  const todo = all.filter(c => !conceptDone(c)), now = [...todo].sort((x, y) => pr(x.a) - pr(y.a))[0], P = PERSONA[S.persona];
   const nowCard = now ? `<div class="card bite c-know lr-now" id="lrNow">
       <button class="bite-h" data-act="lrOpen" data-v="${now.id}" aria-expanded="${S.lrOpen === now.id}"><span class="bite-k">${ic('spark', 14)}지금 볼 개념 · ${now.k}</span><span class="t20 bite-q">${now.q}</span><span class="bite-tg">${ic(S.lrOpen === now.id ? 'minus' : 'plus', 16)}</span></button>
-      ${S.lrOpen === now.id ? conceptBody(now) : `<p class="t12 mute lr-why">${unk.has(now.a) ? '진단에서 ‘잘 모르겠어요’를 고른 영역이에요' : now.a === fa ? '지금 집중할 영역과 이어지는 개념이에요' : areaName(now.a)}</p>`}
+      ${S.lrOpen === now.id ? conceptBody(now) : `<p class="t12 mute lr-why">${unk.has(now.a) ? `진단에서 ‘잘 모르겠어요’를 고른 ${areaName(now.a)} 개념이에요` : now.a === fa ? `${P.name}이라 지금 집중할 ${areaName(now.a)} 개념이에요` : areaName(now.a)}</p>`}
     </div>` : '<p class="t14 mute mt16">준비된 개념을 모두 알아봤어요.</p>';
-  const AR_IC = { spend:'wallet', save:'coins', credit:'card', insure:'umbrella', tax:'receipt' };
-  const qRow = c => { const o = S.lrOpen === c.id;
-    return `<div class="lr-q ${o ? 'on' : ''}"><button class="lr-qh" data-act="lrOpen" data-v="${c.id}" aria-expanded="${o}"><span class="t14">${c.q.replace(/<br>/g, ' ')}</span>${ic(o ? 'minus' : 'plus', 14)}</button>${o ? conceptBody(c) : ''}</div>`; };
-  const areas = AREAS.map(a => { const list = todo.filter(c => c.a === a.id && c !== now);
+  const areas = [...AREAS].sort((x, y) => pr(x.id) - pr(y.id)).map(a => { const list = todo.filter(c => c.a === a.id && c !== now);
     if (!list.length) return '';
-    const hd = `<div class="lr-sh"><span class="th a-${a.id}" aria-hidden="true">${ic(AR_IC[a.id], 16)}</span><span class="t16">${a.name}</span><span class="t12 mute num">${list.length}</span></div>`;
+    const hd = `<div class="lr-sh"><span class="th a-${a.id}" aria-hidden="true">${ic(AR_IC[a.id], 16)}</span><span class="t16">${a.name}</span><span class="t12 mute num">${list.length}</span>${unk.has(a.id) ? '<span class="tag line lr-tag">잘 모르는 영역</span>' : ''}</div>`;
     const more = S.lrMore === a.id, shown = more ? list : list.slice(0, 2);
-      return `<div class="lr-sec">${hd}<div class="lr-qs b">${shown.map(qRow).join('')}</div>
-        ${list.length > 2 ? `<button class="lr-more t12" data-act="lrMore" data-v="${a.id}">${more ? '접기' : `${list.length - 2}개 더 보기`}${ic(more ? 'minus' : 'plus', 12)}</button>` : ''}</div>`; }).join('');
-  return head + `
-  <section class="mt16">${nowCard}</section>
-  <section class="sec"><div class="lr-secs">${areas}</div></section>${tips ? '' : extraOff('tips')}`;
+    return `<div class="lr-sec">${hd}<div class="lr-qs b">${shown.map(c => lrQRow(c)).join('')}</div>
+      ${list.length > 2 ? `<button class="lr-more t12" data-act="lrMore" data-v="${a.id}">${more ? '접기' : `${list.length - 2}개 더 보기`}${ic(more ? 'minus' : 'plus', 12)}</button>` : ''}</div>`; }).join('');
+  return `<section class="mt16">${nowCard}</section><section class="sec"><div class="lr-secs">${areas}</div></section>`;
 }
+// 입력할 때는 목록만 다시 그려서 입력창 포커스를 지킨다
+function lrSearch(v) { S.lrQ = v; S.lrOpen = null; const b = document.getElementById('lrBody'); if (b) b.innerHTML = learnBody(); }
 // 그 자리에서 펼친 개념: 생활 예시 → 한 줄 정리 → 이해했어요 · 관련 화면
-function conceptBody(c) {
+const aiIcon = () => '<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.8 2.9c.7 4.6 2.4 7.2 9.3 9.8c-6.9 2.6-8.6 5.2-9.3 9.8c-.7-4.6-2.4-7.2-9.3-9.8c6.9-2.6 8.6-5.2 9.3-9.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M20.2.6c.3 1.6.9 2.3 2.6 3.1c-1.7.8-2.3 1.5-2.6 3.1c-.3-1.6-.9-2.3-2.6-3.1c1.7-.8 2.3-1.5 2.6-3.1z" fill="currentColor"/></svg>';
+function conceptBody(c, done) {
   return `<div class="bite-b">${c.ex ? c.ex() : ''}<p class="t12 bite-take">${c.take}</p>
-    <div class="row between mt16 lr-act"><button class="btn sm" data-act="conceptOk" data-v="${c.id}">이해했어요</button>${c.go ? `<button class="lr-go t12" ${c.go[1]}>${c.go[0]}${ic('arrow', 12)}</button>` : ''}</div></div>`;
+    <div class="row between mt16 lr-act">${done ? `<span class="row g4 t12 mute">${ic('check', 14)}알아봤어요</span>` : `<button class="btn sm" data-act="conceptOk" data-v="${c.id}">이해했어요</button>`}${c.go ? `<button class="lr-go t12" ${c.go[1]}>${c.go[0]}${ic('arrow', 12)}</button>` : ''}</div></div>`;
 }
 // 경제 개념 목록: 스크롤할 때 목록에서 가장 위에 보이는 개념을 크게(둥근 사각형) 보여 준다
 function learnActive() {
@@ -2912,8 +2952,9 @@ function sheetHTML(name) {
         <div class="bite-b">${c.ex ? c.ex() : ''}<p class="t12 bite-take">${c.take}</p></div></div>
         <div class="stack8 mt16">${done ? '' : `<button class="btn full light" style="box-shadow:inset 0 0 0 1px var(--g3)" data-act="conceptOk" data-v="${c.id}">이해했어요</button>`}
         ${c.go ? `<button class="btn full" ${c.go[1]}>${c.go[0]}${ic('arrow', 18)}</button>` : ''}</div>`; }
-    case 'bites': return head('경제 개념', '필요한 순간에 하나씩 보여 드린 개념이에요') + `<div class="stack mt24">${Object.keys(BITES).map(id => bite(id, { force:true, noGo:true })).join('')}</div>`;
-    case 'menu': return head('메뉴') + `<div class="stack8 mt24"><button class="card c-paper setrow" style="text-align:left" data-act="diag"><span class="ib ink">${ic('spark', 20)}</span><span><span class="t14" style="display:block">내 진단 결과</span><span class="t12 mute">${PERSONA[S.persona].name} · 2026.10.15 진단</span></span>${ic('arrow', 18)}</button>${[['link','연동 계좌·카드 관리','6개 계좌 · 카드 2 · 간편결제 1'],['bell','알림 설정','예산 초과 위험 · 정산 · 입금'],['sliders','기본 설정 바꾸기·해제','선저축 · 비상금 · 예산 · 고정 지출'],['refresh','재진단','마지막 2026.06.12']].map(([i, t, s]) => `<button class="card c-paper setrow" style="text-align:left" data-act="${i === 'refresh' ? 'rediag' : i === 'sliders' ? 'tab' : 'toast'}" data-tab="plan" data-msg="${t} 화면은 데모에서 생략했어요"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(i, 20)}</span><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${s}</span></span>${ic('arrow', 18)}</button>`).join('')}</div>
+    case 'bites': { const done = CONCEPTS.map(c => conceptOf(c.id)).filter(conceptDone);
+      return head('알아본 개념', `${CONCEPT_TOTAL}개 중 ${conceptKnown()}개 · 다시 펼쳐 볼 수 있어요`) + `<div class="lr-secs mt24">${AREAS.map(a => { const l = done.filter(c => c.a === a.id); return l.length ? `<div class="lr-sec"><div class="lr-sh"><span class="th a-${a.id}" aria-hidden="true">${ic(AR_IC[a.id], 16)}</span><span class="t16">${a.name}</span><span class="t12 mute num">${l.length}</span></div><div class="lr-qs b">${l.map(c => lrQRow(c, true)).join('')}</div></div>` : ''; }).join('')}</div>`; }
+    case 'menu': return head('메뉴') + `<div class="stack8 mt24"><button class="card c-paper setrow" style="text-align:left" data-act="aiAsk" data-v=""><span class="ib ink">${aiIcon()}</span><span><span class="t14" style="display:block">AI에게 묻기</span><span class="t12 mute">내 예산·목표 기준으로 답해요</span></span>${ic('arrow', 18)}</button><button class="card c-paper setrow" style="text-align:left" data-act="diag"><span class="ib ink">${ic('spark', 20)}</span><span><span class="t14" style="display:block">내 진단 결과</span><span class="t12 mute">${PERSONA[S.persona].name} · 2026.10.15 진단</span></span>${ic('arrow', 18)}</button>${[['link','연동 계좌·카드 관리','6개 계좌 · 카드 2 · 간편결제 1'],['bell','알림 설정','예산 초과 위험 · 정산 · 입금'],['sliders','기본 설정 바꾸기·해제','선저축 · 비상금 · 예산 · 고정 지출'],['refresh','재진단','마지막 2026.06.12']].map(([i, t, s]) => `<button class="card c-paper setrow" style="text-align:left" data-act="${i === 'refresh' ? 'rediag' : i === 'sliders' ? 'tab' : 'toast'}" data-tab="plan" data-msg="${t} 화면은 데모에서 생략했어요"><span class="ib" style="box-shadow:inset 0 0 0 1px var(--g3)">${ic(i, 20)}</span><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${s}</span></span>${ic('arrow', 18)}</button>`).join('')}</div>
       <div class="t12 mute mt24">추가 기능 · 필요할 때만 켜세요</div>
       <div class="card c-paper mt8" style="padding:4px 20px">${Object.entries(EXTRAS).map(([k, [t, d]]) => `<div class="kr" style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px 0"><span><span class="t14" style="display:block">${t}</span><span class="t12 mute">${d}</span></span><button class="switch ${S.extras.has(k) ? 'on' : ''}" data-act="extraToggle" data-v="${k}" role="switch" aria-checked="${S.extras.has(k)}" aria-label="${t}"></button></div>`).join('')}</div>
       <div class="eng mute mt24">테스트 진행자용</div>
@@ -2928,7 +2969,7 @@ function sheetHTML(name) {
       <button class="btn ghost full mt24" data-act="mod" data-v="reset">처음부터 다시 (진단부터)</button>`;
     case 'log': return head('탭 기록', `${LOG.length}건 · 이 기기에만 저장돼요`) + `<pre class="log mt24" id="logBox">${logText()}</pre>
       <div class="row g8 mt16"><button class="btn ghost" style="flex:3;padding:0 12px" data-act="logClear">기록 지우기</button><button class="btn" style="flex:7" data-act="logCopy">복사</button></div>`;
-    case 'ai': return head('AI 조언', '연동된 자산·예산·목표 데이터 기준') + `<div class="stack mt24" style="display:grid">
+    case 'ai': return head('AI에게 묻기', '연동된 자산·예산·목표 데이터 기준으로 답해요') + `<div class="stack mt24" style="display:grid">
       ${S.chat.map(c => c.q ? `<div class="ai-q">${c.q}</div>` : `<div class="ai-a c-sky">${c.a}<div class="t10 mute mt8">근거 · ${c.src}</div></div>`).join('')}
       <div class="row g8" style="flex-wrap:wrap">${['오늘 얼마 더 써도 돼?','외주비 어떻게 나눌까?','적금 깨도 될까?'].map(q => `<button class="chip" data-act="aiAsk" data-v="${q}">${q}</button>`).join('')}</div></div>
       <form class="ai-in" id="aiSheetForm"><input id="aiSheetInput" placeholder="이어서 물어보세요" autocomplete="off" aria-label="AI에게 이어서 묻기"><button type="submit" class="ib ink" aria-label="보내기">${ic('send', 20)}</button></form>`;
@@ -3094,7 +3135,7 @@ function render(keepScroll = true) {
   if (!tb.children.length) tb.innerHTML = TABS.map(([k, n, i]) => `<button class="tab" data-act="tab" data-tab="${k}" aria-label="${n}">${ic(i, 22)}<span>${n}</span></button>`).join('');
   [...tb.children].forEach(b => { const on = b.dataset.tab === S.tab; b.classList.toggle('on', on); on ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current'); });
   const dock = document.getElementById('aiDock');
-  dock.hidden = !(S.mode === 'app' && !S.sub && S.tab === 'learn');
+  dock.hidden = true;
   if (dock.hidden) aiDock(false);
   view.style.paddingBottom = S.mode === 'onboard' || S.sub ? (S.ob === 3 || S.sub ? '0' : '24px') : '0';
   if (S.mode === 'app' && !S.sub) { const h = document.createElement('div'); h.className = 'ht-end'; h.style.height = (dock.hidden ? 140 : 200) + 'px'; h.style.marginTop = '24px'; view.append(h); const gap = view.clientHeight - (h.getBoundingClientRect().bottom - view.getBoundingClientRect().top + view.scrollTop); if (gap > 0) h.style.marginTop = (24 + gap) + 'px';
@@ -3258,7 +3299,7 @@ document.addEventListener('click', e => {
       break; }
     case 'rentPrep': S.rentPrep = true; render(); simpleToast('청년 월세 지원 신청 서류 3개를 준비 목록에 담았어요'); break;
     case 'naGo': { const tr = el.closest('.na-wrap').querySelector('.na-track'); tr.scrollTo({ left:+v * (tr.firstElementChild.offsetWidth + 12), behavior:'smooth' }); break; }
-    case 'lrOpen': S.lrOpen = S.lrOpen === v ? null : v; render(); break;
+    case 'lrOpen': S.lrOpen = S.lrOpen === v ? null : v; render(); refreshSheet(); break;
     case 'lrMore': S.lrMore = S.lrMore === v ? null : v; render(); break;
     case 'concept': S.conceptId = v; if (el.dataset.go) { S.mode = 'app'; S.sub = null; S.tab = el.dataset.go; S.learnView = 'bite'; render(false); } openSheet('concept'); break;
     case 'conceptOk': { const c = conceptOf(v); c.b ? S.bitesDone.add(c.b) : S.conceptDone.add(v); if (S.lrOpen === v) S.lrOpen = null; closeSheet(); render(); simpleToast(`${c.k} · 알아봤어요`); break; }
@@ -3339,7 +3380,7 @@ document.addEventListener('click', e => {
     case 'logClear': LOG = []; try { localStorage.removeItem(LOG_KEY); } catch (err) {} refreshSheet(); break;
     case 'flow': S.flowSel = S.flowSel === v ? null : v; render(); break;
     case 'interest': S.interest.has(v) ? S.interest.delete(v) : S.interest.add(v); render(); break;
-    case 'aiAsk': ask(v); break;
+    case 'aiAsk': closeSheet(); v ? ask(v) : openSheet('ai'); break;
   }
 });
 function ask(q, keep) { if (!q.trim()) return; const r = aiAnswer(q); S.chat.push({ q }, r); if (S.chat.length > 20) S.chat = S.chat.slice(-20); openSheet('ai'); const sh = document.getElementById('sheet'); sh.scrollTop = sh.scrollHeight; if (keep) document.getElementById('aiSheetInput').focus({ preventScroll:true }); }
