@@ -1060,8 +1060,8 @@ button.focus-strip{display:block;color:inherit}
 /* 자산 구성 카드: 금액 왼쪽 정렬 · 재생 버튼과 12칸 막대 · '지금' · 고른 달을 한 묶음으로 */
 .tm-sum{display:grid;gap:2px}
 .tm-tl{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;margin-top:14px}
-.tm-playb{width:28px;height:28px;margin-top:12px;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 1px var(--g3);color:var(--ink)}
-.tm-playb svg{fill:currentColor;stroke:none;margin-left:2px}
+.tm-playb{width:28px;height:28px;margin-top:6px;display:grid;place-items:center;color:var(--ink)}
+.tm-playb svg{fill:currentColor;stroke:currentColor;stroke-width:1.5;stroke-linejoin:round}
 .tm-trk{min-width:0}
 .tm-tl .tm-scrub{margin-top:14px;gap:3px}
 .tm-tl .tm-scrub button{height:12px}
@@ -1804,7 +1804,7 @@ function accountsTree() {
   const tiles = ACCOUNTS.map((a, k) => { const b = B[k], on = sel === a;
     return `<button class="tm-t" data-act="acctSel" data-v="${a.k}" aria-pressed="${on}" aria-label="${useOf(a)} ${W(tmVal(a, i))} 자세히" style="left:${b.x / Wd * 100}%;top:${b.y / Ht * 100}%;width:${b.w / Wd * 100}%;height:${b.h / Ht * 100}%;opacity:${sel && !on ? .4 : 1}">${tmTile(a, b, i, total)}</button>`; }).join('');
   return `<div class="tm-box mt12" id="tmBox" style="aspect-ratio:${Wd}/${Ht}" role="img" aria-label="자산 구성 트리맵">${tiles}</div>
-    <div class="tm-tl"><button type="button" class="tm-playb" data-act="tmPlay" aria-label="1년 흐름 재생">${ic('play', 14)}</button>
+    <div class="tm-tl"><button type="button" class="tm-playb" data-act="tmPlay" aria-label="1년 흐름 재생">${ic('play', 22)}</button>
       <div class="tm-trk"><div class="tm-scrub" role="group" aria-label="월별 자산 구성">${TM_MONTHS.map((m, j) => `<button type="button" class="${j === i ? 'on' : ''}${j === last ? ' now' : ''}" data-act="tmIdx" data-v="${j}" aria-pressed="${j === i}" aria-label="20${m.replace('.', '년 ')}월${j === last ? ' · 지금' : ''}"><i></i>${j === last ? '<b>지금</b>' : ''}</button>`).join('')}</div>
       <div class="tm-meta" id="tmMeta">${tmMeta(i)}</div></div></div>
     ${sel ? `<div class="row g12" id="tmSel" style="padding:12px;margin:16px -8px 0;border-radius:999px;background:var(--g2)">${tmSelHTML(sel, i)}</div>` : ''}`;
