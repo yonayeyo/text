@@ -2399,7 +2399,7 @@ function fanCaption(i) {
   const cap = view.querySelector('#fanCap'), x = S.fanXs[i], n = S.fanXs.length; if (!cap) return;
   cap.classList.add('swap'); clearTimeout(fanCaption.t);
   fanCaption.t = setTimeout(() => { const c2 = view.querySelector('#fanCap'); if (!c2) return;
-    c2.innerHTML = `<span class="fc-no">${x.isNew ? '새 항목' : `${pad2(i + 1)} / ${pad2(S.fanN)}`}</span>${x.isNew ? `<span class="fc-t">${x.t}</span>` : ''}<span class="fc-ds">${x.done ? '완료했어요' : x.m[1]}</span>
+    c2.innerHTML = `<span class="fc-no">${x.isNew ? '새 항목' : `${pad2(i + 1)} / ${pad2(S.fanN)}`}</span><span class="fc-t">${x.t}</span><span class="fc-ds">${x.done ? '완료했어요' : x.m[1]}</span>
       <button type="button" class="fc-go" hidden ${x.act}>${x.done ? '다시 보기' : '시작하기'}<i>${ic('arrow', 14)}</i></button>`;
     c2.classList.remove('swap'); }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 120);
 }
