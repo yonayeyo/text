@@ -1168,6 +1168,19 @@ button.focus-strip{display:block;color:inherit}
 .utabs button.on{color:#fff;font-weight:500}
 .utabs::after{background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.22);transition:left .42s cubic-bezier(.3,1.25,.4,1)}
 .tabbar.light ~ * .utabs{}
+
+/* 세부 탭: 알약은 미끄러지지 않고 제자리에서 바뀜. 하단 탭바가 라이트면 세부 탭도 라이트 유리 */
+.utabs::after{transition:none}
+.screen.nav-light .utabs{background:rgba(250,250,250,.56);-webkit-backdrop-filter:blur(10px) saturate(180%);backdrop-filter:url(#liquidGlassSeg) blur(4px) saturate(180%);
+  box-shadow:inset 0 0 0 .5px rgba(0,0,0,.10),inset 0 1px 0 #fff,0 6px 18px rgba(0,0,0,.08)}
+.screen.nav-light .utabs button{color:rgba(24,24,24,.5)}
+.screen.nav-light .utabs button.on{color:#181818}
+.screen.nav-light .utabs::after{background:rgba(0,0,0,.06);box-shadow:inset 0 0 0 .5px rgba(0,0,0,.06)}
+/* 앨범 · 포토카드 크레딧 타이포: 작은 고정폭 글자로 발행 정보만 (기능 아님) */
+.h-lbr{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.h-meta{font-family:var(--f-mono);font-size:10px;letter-spacing:.08em;color:var(--g4)}
+.pc-serial{position:absolute;left:12px;bottom:10px;z-index:2;font-family:var(--f-mono);font-size:7px;line-height:10px;letter-spacing:.1em;color:#fff;mix-blend-mode:difference;opacity:.85}
+.fc{box-shadow:inset 0 0 0 .5px rgba(255,255,255,.45),0 10px 24px rgba(0,0,0,.12)}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -2239,7 +2252,7 @@ function practiceFan() {
   return `<section class="fan-sec" aria-label="오늘 할 일 ${n}개 중 ${doneN}개 완료">
     <div class="fan-stage" id="fanStage" tabindex="0" role="listbox" aria-label="오늘 할 일 카드">
       ${xs.map((x, k) => x.isNew ? `<button type="button" class="fc fc-new" data-k="${k}" role="option" aria-label="새 실천 항목 추가"><span class="fn-i">${ic('plus', 22)}</span><b>새 항목</b></button>`
-        : `<button type="button" class="fc im${k % 7} ${x.done ? 'done' : ''}" data-k="${k}" role="option" aria-label="${pad2(k + 1)} ${x.t}${x.done ? ' · 완료' : ''}"><span class="holo" aria-hidden="true"></span><span class="ix">${pad2(k + 1)}</span>${x.done ? `<span class="ck"><span class="ck-i">${ic('check', 22)}</span><b>완료</b></span>` : ''}</button>`).join('')}
+        : `<button type="button" class="fc im${k % 7} ${x.done ? 'done' : ''}" data-k="${k}" role="option" aria-label="${pad2(k + 1)} ${x.t}${x.done ? ' · 완료' : ''}"><span class="holo" aria-hidden="true"></span><span class="ix">${pad2(k + 1)}</span><span class="pc-serial" aria-hidden="true">MOAFI&nbsp;&nbsp;PC-${pad2(k + 1)}/${pad2(n)}<br>2026 OCT · VOL.10</span>${x.done ? `<span class="ck"><span class="ck-i">${ic('check', 22)}</span><b>완료</b></span>` : ''}</button>`).join('')}
     </div>
     <div class="fan-cap" id="fanCap"></div>
   </section>`;
@@ -2463,14 +2476,13 @@ function vHome() {
   return `<header class="top home-top">
       <div class="hm-hd"><span class="t12" style="color:var(--g4)">Hello, 지혜</span><span class="t14">10월 ${S.day}일 ${'일월화수목금토'[(S.day + 3) % 7]}요일</span></div>
       <div class="row g8">
-        <button class="ib rc-ring ${S.recapSeen ? 'seen' : ''}" data-act="recap" aria-label="10월 리캡 보기"><span>10월</span></button>
         <button class="ib glass" data-act="sheet" data-sheet="noti" aria-label="알림 3건">${ic('bell', 20)}<span class="dot"></span></button>
         ${AI_BTN()}<button class="ib glass" data-act="sheet" data-sheet="menu" aria-label="메뉴">${ic('menu', 20)}</button>
       </div>
     </header>
     ${S.settled || S.tuck || S.holdSettle ? '' : `<button class="urgent" data-act="sheet" data-sheet="settle"><span class="u-dot"></span><span class="t14 grow">정산할 더치페이 2건</span><span class="t14 num">36,000원</span><span class="btn sm" style="height:36px">정산</span></button>`}
     <section class="h-hero" aria-label="오늘 쓸 수 있는 금액 ${W(d.daily)}">
-      <div class="h-lb">오늘 쓸 수 있는 금액</div>
+      <div class="h-lbr"><div class="h-lb">오늘 쓸 수 있는 금액</div><span class="h-meta">VOL.10 · 26.10.${String(S.day).padStart(2, '0')}</span></div>
       <div class="h-sb num">10월 남은 예산 ${W(d.remain)} / ${d.left}일</div>
       <div class="rw"><span class="dotnum">${won(d.daily)}</span><span class="hl" aria-hidden="true"></span><button class="ib ink" data-act="tab" data-tab="spend" data-sv="budget" aria-label="예산 자세히 보기">${ic('ur', 20)}</button></div>
     </section>
@@ -3771,7 +3783,7 @@ new ResizeObserver(liquidMap).observe(document.getElementById('tabbar'));
 // 탭바 테마 비교: 화면 상태는 그대로 두고 탭바 모양만 바꾼다
 document.getElementById('navTheme').addEventListener('click', e => {
   const b = e.target.closest('[data-navtheme]'); if (!b) return; e.stopPropagation();
-  S.navTheme = b.dataset.navtheme; document.getElementById('tabbar').classList.toggle('light', S.navTheme === 'light'); renderPanel();
+  S.navTheme = b.dataset.navtheme; document.getElementById('tabbar').classList.toggle('light', S.navTheme === 'light'); document.querySelector('.screen').classList.toggle('nav-light', S.navTheme === 'light'); renderPanel();
 });
 document.querySelector('.panel').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return; closeSheet(); S.sub = null; S.from = null;
