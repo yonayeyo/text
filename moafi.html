@@ -1802,9 +1802,9 @@ function tmUpdate(i) {
   if (sel && d) d.innerHTML = tmSelHTML(sel, i);
 }
 function tmSelHTML(sel, i) {
-  const v = tmVal(sel, i), y0 = tmVal(sel, 0), last = TM_MONTHS.length - 1;
+  // 상자를 누르면 어느 달을 보든 같은 정보: 용도 + 실제 계좌. 금액은 상자 안에 이미 있다
   return `<span class="ib" style="background:var(--paper)">${ic(ACC_IC[sel.k] || 'wallet', 20)}</span>
-    <div><div class="t14">${useOf(sel)} · ${W(v)}</div><div class="t12 mute">${i === last ? `1년 전 ${W(y0)} · ${v >= y0 ? '+' : '−'}${won(Math.abs(v - y0))}원` : sel.raw}</div></div>`;
+    <div><div class="t14">${useOf(sel)}</div><div class="t12 mute">${sel.raw}</div></div>`;
 }
 let tmPlayT = 0;
 function tmPlay() {
