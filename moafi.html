@@ -1069,6 +1069,17 @@ button.focus-strip{display:block;color:inherit}
 .tm-tl .tm-meta{padding-top:16px}
 .tm-tl .tm-cur{top:1px;font-size:10px;font-weight:400;color:var(--g4)}
 .tm-back{position:absolute;right:0;top:0;display:inline-flex;align-items:center;gap:2px;font-size:10px;font-weight:500;color:var(--ink)}
+
+/* 자산 타임라인: 날짜는 막대 위 한 줄, '지금으로'는 막대 아래 오른쪽 */
+.tm-tl{grid-template-columns:22px 1fr;gap:6px}
+.tm-playb{width:22px}
+.tm-tl .tm-meta{position:relative;height:14px;padding-top:0}
+.tm-tl .tm-cur{top:0;line-height:14px;font-size:10px;font-weight:400;color:var(--g6)}
+.tm-tl .tm-cur.now{font-weight:500;color:var(--ink)}
+.tm-tl .tm-scrub{margin-top:2px}
+.tm-tl .tm-back{top:auto;bottom:-32px;right:0}
+.tm-trk{position:relative}
+.tm-trk:has(.tm-back){padding-bottom:20px}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -1767,7 +1778,7 @@ function tmTile(a, b, i, total) {
 // 월 선택 막대 아래: 고른 달 이름이 그 칸 밑을 따라다니고, 지금이 아니면 '지금으로' 버튼
 function tmMeta(i) {
   const last = TM_MONTHS.length - 1, x = (i + .5) / TM_MONTHS.length * 100;
-  return `<span class="tm-cur num" style="left:${x}%">${i === last ? '1년 흐름' : TM_MONTHS[i]}</span>${i === last ? '' : `<button type="button" class="tm-back" data-act="tmIdx" data-v="${last}">지금으로${ic('arrow', 12)}</button>`}`;
+  return `<span class="tm-cur num${i === last ? ' now' : ''}" style="left:${Math.min(94, Math.max(6, x))}%">${i === last ? '지금' : TM_MONTHS[i]}</span>${i === last ? '' : `<button type="button" class="tm-back" data-act="tmIdx" data-v="${last}">지금으로${ic('arrow', 12)}</button>`}`;
 }
 const tmTotal = i => ACCOUNTS.reduce((t, a) => t + tmVal(a, i), 0);
 function tmDelta(i) {
@@ -1805,8 +1816,7 @@ function accountsTree() {
     return `<button class="tm-t" data-act="acctSel" data-v="${a.k}" aria-pressed="${on}" aria-label="${useOf(a)} ${W(tmVal(a, i))} 자세히" style="left:${b.x / Wd * 100}%;top:${b.y / Ht * 100}%;width:${b.w / Wd * 100}%;height:${b.h / Ht * 100}%;opacity:${sel && !on ? .4 : 1}">${tmTile(a, b, i, total)}</button>`; }).join('');
   return `<div class="tm-box mt12" id="tmBox" style="aspect-ratio:${Wd}/${Ht}" role="img" aria-label="자산 구성 트리맵">${tiles}</div>
     <div class="tm-tl"><button type="button" class="tm-playb" data-act="tmPlay" aria-label="1년 흐름 재생">${ic('play', 22)}</button>
-      <div class="tm-trk"><div class="tm-scrub" role="group" aria-label="월별 자산 구성">${TM_MONTHS.map((m, j) => `<button type="button" class="${j === i ? 'on' : ''}${j === last ? ' now' : ''}" data-act="tmIdx" data-v="${j}" aria-pressed="${j === i}" aria-label="20${m.replace('.', '년 ')}월${j === last ? ' · 지금' : ''}"><i></i>${j === last ? '<b>지금</b>' : ''}</button>`).join('')}</div>
-      <div class="tm-meta" id="tmMeta">${tmMeta(i)}</div></div></div>
+      <div class="tm-trk"><div class="tm-meta" id="tmMeta">${tmMeta(i)}</div><div class="tm-scrub" role="group" aria-label="월별 자산 구성">${TM_MONTHS.map((m, j) => `<button type="button" class="${j === i ? 'on' : ''}${j === last ? ' now' : ''}" data-act="tmIdx" data-v="${j}" aria-pressed="${j === i}" aria-label="20${m.replace('.', '년 ')}월${j === last ? ' · 지금' : ''}"><i></i></button>`).join('')}</div></div></div>
     ${sel ? `<div class="row g12" id="tmSel" style="padding:12px;margin:16px -8px 0;border-radius:999px;background:var(--g2)">${tmSelHTML(sel, i)}</div>` : ''}`;
 }
 function accountsCard(home) {
