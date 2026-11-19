@@ -1159,6 +1159,15 @@ button.focus-strip{display:block;color:inherit}
   background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.06),inset 0 0 0 .5px rgba(0,0,0,.04)}
 .shead .utabs{margin-bottom:10px}
 @media (prefers-reduced-motion:reduce){.fc .holo{animation:none}.st-bars i.on b{animation:none;width:100%}}
+
+/* 세부 탭: 하단 탭바와 같은 리퀴드 글래스(어두운 유리 + 안쪽 알약), 머리말 아래 제자리에 */
+.utabs{margin:14px 0 0;padding:4px;border-radius:999px;background:rgba(12,12,12,.78);
+  -webkit-backdrop-filter:blur(10px) saturate(170%);backdrop-filter:url(#liquidGlassSeg) blur(4px) saturate(170%);
+  box-shadow:inset 0 0 0 .5px rgba(255,255,255,.28),inset 0 1px 0 rgba(255,255,255,.22),0 6px 18px rgba(0,0,0,.14)}
+.utabs button{height:34px;color:rgba(255,255,255,.6);font-size:13px;font-weight:400}
+.utabs button.on{color:#fff;font-weight:500}
+.utabs::after{background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.22);transition:left .42s cubic-bezier(.3,1.25,.4,1)}
+.tabbar.light ~ * .utabs{}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -3400,7 +3409,7 @@ function render(keepScroll = true) {
   else if (isPreview()) view.innerHTML = vPreview();
   else view.innerHTML = { home:vHome, spend:vSpend, plan:vPlan, learn:vLearn, benefit:vBenefit }[S.tab]();
   if (S.mode === 'app' && !S.sub) { const h = view.querySelector(':scope > header.top');
-    if (h) { const w = document.createElement('div'); w.className = 'shead'; h.before(w); if (S.from && S.from.tab !== S.tab) w.insertAdjacentHTML('beforeend', crumbHTML()); w.append(h); let t = w.nextElementSibling; while (t && (t.classList.contains('utabs') || t.classList.contains('lr-fixed'))) { const nx = t.nextElementSibling; w.append(t); t = nx; } }
+    if (h) { const w = document.createElement('div'); w.className = 'shead'; h.before(w); if (S.from && S.from.tab !== S.tab) w.insertAdjacentHTML('beforeend', crumbHTML()); w.append(h); let t = w.nextElementSibling; while (t && (t.classList.contains('lr-fixed'))) { const nx = t.nextElementSibling; w.append(t); t = nx; } }
     const ut = view.querySelector('.utabs'); if (ut) { ut.style.setProperty('--n', ut.children.length); ut.style.setProperty('--i', [...ut.children].findIndex(b => b.classList.contains('on'))); } }
   view.scrollTop = st;
   // 홈 '오늘 쓸 수 있는 금액'이 바뀌었으면(정산·결제 등) 이전 값에서 새 값까지 숫자를 굴리고 증감을 잠깐 보여 준다
@@ -3417,6 +3426,7 @@ function render(keepScroll = true) {
   if (tr && S.naIdx) { const x = S.naIdx * (tr.firstElementChild.offsetWidth + 12);
     if (S.naSlide) { S.naSlide = false; setTimeout(() => tr.scrollTo({ left:x, behavior:'smooth' }), 350); } else tr.scrollLeft = x; }
   if (key === 'tabhome') fanDraw();
+  segGlass();
   if (homeEnter) { popOut(); tuckSoon(); fanIntro(); }
   // 홈으로 돌아오면 항상 처음 위치(맨 위)에서 시작: 남아 있는 관성 스크롤까지 멈추고 다시 맞춘다
   if (key === 'tabhome' && key !== lastKey) { view.style.overflowY = 'hidden'; view.scrollTop = 0; requestAnimationFrame(() => { view.style.overflowY = ''; view.scrollTop = 0; }); }
@@ -3722,6 +3732,25 @@ function renderPanel() {
   document.getElementById('navPersona').innerHTML = Object.entries(PERSONA).map(([k, p]) => `<button type="button" class="${S.persona === k ? 'on' : ''}" data-persona="${k}">${p.name}</button>`).join('');
   document.getElementById('navTheme').innerHTML = [['dark', '다크 · 검은 유리'], ['light', '라이트 · 밝은 유리']].map(([k, n]) => `<button type="button" class="${(S.navTheme || 'dark') === k ? 'on' : ''}" data-navtheme="${k}">${n}</button>`).join('');
   document.getElementById('navScen').innerHTML = [ ['pay','결제 발생 → 실시간 피드백'], ['income','외주비 입금 → 배분'], ['settle','더치페이 정산'], ['withdraw','저축 인출 확인'], ['ai','AI 조언 묻기'] ].map(([k, n]) => `<button type="button" data-scen="${k}">${n}</button>`).join('');
+}
+function glassMap(w, h, band) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d'), d = x.createImageData(w, h), r = h / 2;
+  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
+    const px = i + .5, py = j + .5, cx = Math.min(Math.max(px, r), w - r), vx = px - cx, vy = py - r, len = Math.hypot(vx, vy) || 1, dist = r - len;
+    let dx = 0, dy = 0; if (dist >= 0 && dist < band) { const t = Math.pow(1 - dist / band, 1.6); dx = -vx / len * t; dy = -vy / len * t; }
+    const o = (j * w + i) * 4; d.data[o] = 128 + dx * 127; d.data[o + 1] = 128 + dy * 127; d.data[o + 2] = 128; d.data[o + 3] = 255;
+  }
+  x.putImageData(d, 0, 0); return c.toDataURL();
+}
+function segGlass() {
+  const u = view.querySelector('.utabs'); if (!u) return;
+  let f = document.getElementById('liquidGlassSeg');
+  if (!f) { const base = document.getElementById('liquidGlass'); if (!base) return; f = base.cloneNode(true); f.id = 'liquidGlassSeg'; f.querySelector('feImage').id = 'lgMapSeg'; base.parentNode.appendChild(f); }
+  const w = Math.round(u.offsetWidth), h = Math.round(u.offsetHeight); if (!w || !h || segGlass.k === w + 'x' + h) return; segGlass.k = w + 'x' + h;
+  const url = glassMap(w, h, 10), im = f.querySelector('feImage');
+  im.setAttribute('href', url); im.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', url);
+  ['width', 'height'].forEach((k, n) => { f.setAttribute(k, n ? h : w); im.setAttribute(k, n ? h : w); });
+  f.querySelectorAll('feDisplacementMap').forEach((m, k) => m.setAttribute('scale', [20, 21, 22][k] || 20));
 }
 function liquidMap() {
   const tb = document.getElementById('tabbar'), f = document.getElementById('liquidGlass'), im = document.getElementById('lgMap');
