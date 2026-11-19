@@ -1237,6 +1237,23 @@ button.focus-strip{display:block;color:inherit}
 .proj-card .pc-bar{height:8px;top:21px;border-radius:999px;background:linear-gradient(90deg,#CDD6FF,#9DAEFF 60%,#9C86FF)}
 .proj-card .pc-axis.over .pc-bar{background:linear-gradient(90deg,#CDD6FF,#C08BFF 60%,#F59AD0)}
 .proj-card .pc-bud,.proj-card .pc-lab{color:var(--g6)}
+
+/* 홈 실천 카드 · 궤도 카드: 같은 메시 그라데이션 7종 + 입자, 카드 위에 항목 이름 */
+.fc.im0,.pc.mg0{background:radial-gradient(70% 60% at 25% 20%,#FF9ACB,transparent 70%),radial-gradient(80% 70% at 85% 80%,#8FA4FF,transparent 70%),#E4DEFF!important}
+.fc.im1,.pc.mg1{background:radial-gradient(90% 60% at 50% 110%,#7A59FF,transparent 70%),radial-gradient(70% 60% at 20% 10%,#E8EDFF,transparent 70%),#BCC8FF!important}
+.fc.im2,.pc.mg2{background:radial-gradient(70% 60% at 85% 15%,#FFD9B8,transparent 70%),radial-gradient(80% 70% at 15% 85%,#B3A0FF,transparent 70%),#F0E8FF!important}
+.fc.im3,.pc.mg3{background:linear-gradient(90deg,#C3CFFF 0%,#FF9ACB 42%,#FFE2C4 58%,#B4C2FF 100%)!important}
+.fc.im4,.pc.mg4{background:radial-gradient(circle at 50% 55%,#9C7BFF 0,#B9A6FF 32%,transparent 62%),#DCE3FF!important}
+.fc.im5,.pc.mg5{background:radial-gradient(70% 55% at 15% 25%,#5C82FF,transparent 70%),radial-gradient(70% 60% at 80% 85%,#FFB3D9,transparent 70%),#E6EAFF!important}
+.fc.im6,.pc.mg6{background:linear-gradient(180deg,#F3F3F1 55%,#C8B6FF 80%,#FF9ACB 100%)!important}
+.fc canvas.thermo{display:none}
+.fc::before,.pc.mg::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:1;opacity:.35;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.fc-tt{position:absolute;left:12px;right:12px;bottom:34px;z-index:2;font-size:15px;line-height:20px;font-weight:500;letter-spacing:-.02em;color:#181818;text-align:left;word-break:keep-all}
+.fc.done .fc-tt{color:#fff}
+.fc-new .fc-tt{display:none}
+.pc.mg{color:#181818;box-shadow:0 6px 16px rgba(60,60,120,.12);overflow:hidden}
+.pc.mg > *{position:relative;z-index:2}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -2243,7 +2260,7 @@ function orbit() {
   return `<div class="orbit-wrap"><section class="orbit" aria-label="오늘의 실천 항목 ${items.length}개 중 ${n}개 완료">
     ${[[20,315,10],[274,180,10],[240,473,4],[352,275,4],[305,577,10]].map(([x, y, r]) => `<span class="deco" style="left:${(x + OX).toFixed(1)}px;top:${y - OY}px;width:${r}px;height:${r}px" aria-hidden="true"></span>`).join('')}
     ${items.map(([t, done, act], k) => { const [x, y, r] = ORBIT[k];
-      return `<button class="pc ${done ? 'done' : `todo sk-${ORBIT_SKIN[k]}`}${wig.has(t) ? ' wiggle' : ''}" style="${pos(x, y, r)}" ${act} aria-label="${t}${done ? ' · 완료' : ''}">${done ? `<span class="pk" aria-hidden="true">${ic('check', 10)}</span>` : ''}${t}</button>`; }).join('')}
+      return `<button class="pc ${done ? 'done' : `todo mg mg${k % 7}`}${wig.has(t) ? ' wiggle' : ''}" style="${pos(x, y, r)}" ${act} aria-label="${t}${done ? ' · 완료' : ''}">${done ? `<span class="pk" aria-hidden="true">${ic('check', 10)}</span>` : ''}${t}</button>`; }).join('')}
     <button class="pc new" style="${pos(...ORBIT_NEW)}" ${NEW_ACT()} aria-label="새 실천 항목 추가">새 항목</button>
     <div class="oc"><div class="ow" aria-label="moafi">moafi</div><div class="ot">오늘의 실천 항목</div><div class="od">${P.d}</div></div>
   </section></div>`;
@@ -2363,7 +2380,7 @@ function practiceFan() {
   return `<section class="fan-sec" aria-label="오늘 할 일 ${n}개 중 ${doneN}개 완료">
     <div class="fan-stage" id="fanStage" tabindex="0" role="listbox" aria-label="오늘 할 일 카드">
       ${xs.map((x, k) => x.isNew ? `<button type="button" class="fc fc-new" data-k="${k}" role="option" aria-label="새 실천 항목 추가"><span class="fn-i">${ic('plus', 22)}</span><b>새 항목</b></button>`
-        : `<button type="button" class="fc im${k % 7} ${x.done ? 'done' : ''}" data-k="${k}" role="option" aria-label="${pad2(k + 1)} ${x.t}${x.done ? ' · 완료' : ''}"><canvas class="thermo" data-kind="card" data-s="${k}" width="225" height="309" aria-hidden="true"></canvas><span class="ix">${pad2(k + 1)}</span><span class="pc-serial" aria-hidden="true">MOAFI&nbsp;&nbsp;PC-${pad2(k + 1)}/${pad2(n)}<br>2026 OCT · VOL.10</span>${x.done ? `<span class="ck"><span class="ck-i">${ic('check', 22)}</span><b>완료</b></span>` : ''}</button>`).join('')}
+        : `<button type="button" class="fc im${k % 7} ${x.done ? 'done' : ''}" data-k="${k}" role="option" aria-label="${pad2(k + 1)} ${x.t}${x.done ? ' · 완료' : ''}"><span class="fc-tt" aria-hidden="true">${x.t}</span><span class="ix">${pad2(k + 1)}</span><span class="pc-serial" aria-hidden="true">MOAFI&nbsp;&nbsp;PC-${pad2(k + 1)}/${pad2(n)}<br>2026 OCT · VOL.10</span>${x.done ? `<span class="ck"><span class="ck-i">${ic('check', 22)}</span><b>완료</b></span>` : ''}</button>`).join('')}
     </div>
     <div class="fan-cap" id="fanCap"></div>
   </section>`;
@@ -2382,7 +2399,7 @@ function fanCaption(i) {
   const cap = view.querySelector('#fanCap'), x = S.fanXs[i], n = S.fanXs.length; if (!cap) return;
   cap.classList.add('swap'); clearTimeout(fanCaption.t);
   fanCaption.t = setTimeout(() => { const c2 = view.querySelector('#fanCap'); if (!c2) return;
-    c2.innerHTML = `<span class="fc-no">${x.isNew ? '새 항목' : `${pad2(i + 1)} / ${pad2(S.fanN)}`}</span><span class="fc-t">${x.t}</span><span class="fc-ds">${x.done ? '완료했어요' : x.m[1]}</span>
+    c2.innerHTML = `<span class="fc-no">${x.isNew ? '새 항목' : `${pad2(i + 1)} / ${pad2(S.fanN)}`}</span>${x.isNew ? `<span class="fc-t">${x.t}</span>` : ''}<span class="fc-ds">${x.done ? '완료했어요' : x.m[1]}</span>
       <button type="button" class="fc-go" hidden ${x.act}>${x.done ? '다시 보기' : '시작하기'}<i>${ic('arrow', 14)}</i></button>`;
     c2.classList.remove('swap'); }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 120);
 }
