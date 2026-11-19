@@ -1215,17 +1215,28 @@ button.focus-strip{display:block;color:inherit}
 
 /* ===== 도표 통일: 모든 데이터 도형 = 같은 열 단계(가운데가 뜨겁고 가장자리로 식는 면) + 입자 =====
    th0 회색(중립) · th1 차가움 · th2 블루 · th3 바이올렛 · th4 가장 뜨거움(강조 · 초과) */
-.ld.l1,.lg.l1{background:radial-gradient(120% 120% at 50% 60%,#C9D3FF,#ECEFFF)}
-.ld.l2,.lg.l2{background:radial-gradient(120% 120% at 50% 60%,#5E7DFF,#9AABFF 55%,#D3DBFF)}
-.ld.l3,.lg.l3{background:radial-gradient(120% 120% at 50% 60%,#8F5BFF,#6B7BFF 55%,#B9C2FF)}
-.ld.l4,.lg.l4{background:radial-gradient(120% 120% at 50% 62%,#FFE3C2,#FF46A9 30%,#9B5BFF 72%,#7A8EFF);box-shadow:none}
-.ld.l2,.ld.l3,.ld.l4{color:#fff}.ld.l2 i,.ld.l3 i,.ld.l4 i{color:rgba(255,255,255,.8)}
+.ld.l1,.lg.l1{background:radial-gradient(140% 140% at 50% 50%,#D6DDFF,#EEF0FF)}
+.ld.l2,.lg.l2{background:radial-gradient(140% 140% at 50% 50%,#9DAEFF,#CDD6FF)}
+.ld.l3,.lg.l3{background:radial-gradient(140% 140% at 50% 50%,#9C86FF,#B9C2FF)}
+.ld.l4,.lg.l4{background:radial-gradient(140% 140% at 50% 50%,#F59AD0,#C08BFF 55%,#B7C2FF);box-shadow:none}
+.ld.l3,.ld.l4{color:#fff}.ld.l3 i,.ld.l4 i{color:rgba(255,255,255,.85)}
 .tm-in,.ld.l1,.ld.l2,.ld.l3,.ld.l4,.lg{position:relative}
 .tm-in::after,.ld.l1::after,.ld.l2::after,.ld.l3::after,.ld.l4::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:.18;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 .glowbar i,.bb-track i.hi,.sb-track i{background:linear-gradient(90deg,#9AABFF,#5E7DFF 50%,#8F5BFF)}
 /* 캔버스 그래픽은 조금 덜 흐리게 → 평면 도표와 경계의 부드러움을 맞춘다 */
 .fc canvas.thermo{filter:blur(3px)}.ring-wrap canvas{filter:blur(4px)}.aura-wrap canvas{filter:blur(7px)}.type-aura canvas{filter:blur(6px)}
+
+/* 월말 예상 지출: 다른 카드와 같은 흰 바탕 · 얇은 테두리, 막대는 열 단계 */
+.card.c-ink.proj-card{background:#fff;color:var(--ink);--fg:var(--ink);--mute:var(--g6);outline:.5px solid rgba(0,0,0,.14);outline-offset:-.5px;box-shadow:none}
+.card.c-ink.proj-card::before{display:none}
+.proj-card .pc-desc{color:var(--g6)}
+.proj-card .pc-label{background:var(--g2);color:var(--ink)}
+.proj-card .pc-track{background:var(--g3)}
+.proj-card .pc-tick{background:var(--ink)}
+.proj-card .pc-bar{height:8px;top:21px;border-radius:999px;background:linear-gradient(90deg,#CDD6FF,#9DAEFF 60%,#9C86FF)}
+.proj-card .pc-axis.over .pc-bar{background:linear-gradient(90deg,#CDD6FF,#C08BFF 60%,#F59AD0)}
+.proj-card .pc-bud,.proj-card .pc-lab{color:var(--g6)}
 </style>
 <div class="stage">
   <aside class="panel" aria-label="프로토타입 탐색">
@@ -1257,11 +1268,11 @@ button.focus-strip{display:block;color:inherit}
         <input id="aiInput" placeholder="내 예산·목표 기준으로 물어보세요" autocomplete="off">
         <button type="submit" class="ib ink" aria-label="보내기"></button>
       </form>
-      <svg width="0" height="0" style="position:absolute" aria-hidden="true"><radialGradient id="th1" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#C9D3FF"/><stop offset="1" stop-color="#ECEFFF"/></radialGradient>
-        <radialGradient id="th2" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#5E7DFF"/><stop offset=".55" stop-color="#9AABFF"/><stop offset="1" stop-color="#D3DBFF"/></radialGradient>
-        <radialGradient id="th3" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#8F5BFF"/><stop offset=".55" stop-color="#6B7BFF"/><stop offset="1" stop-color="#B9C2FF"/></radialGradient>
-        <radialGradient id="th4" cx=".5" cy=".55" r=".62"><stop offset="0" stop-color="#FFE3C2"/><stop offset=".3" stop-color="#FF46A9"/><stop offset=".72" stop-color="#9B5BFF"/><stop offset="1" stop-color="#7A8EFF"/></radialGradient>
-        <radialGradient id="th0" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#E2E2E0"/><stop offset="1" stop-color="#F2F2F0"/></radialGradient><filter id="glassRefract" x="0" y="0" width="100%" height="100%">
+      <svg width="0" height="0" style="position:absolute" aria-hidden="true"><radialGradient id="th1" cx=".5" cy=".5" r=".9"><stop offset="0" stop-color="#D6DDFF"/><stop offset="1" stop-color="#EEF0FF"/></radialGradient>
+        <radialGradient id="th2" cx=".5" cy=".5" r=".9"><stop offset="0" stop-color="#9DAEFF"/><stop offset="1" stop-color="#CDD6FF"/></radialGradient>
+        <radialGradient id="th3" cx=".5" cy=".5" r=".9"><stop offset="0" stop-color="#9C86FF"/><stop offset="1" stop-color="#B9C2FF"/></radialGradient>
+        <radialGradient id="th4" cx=".5" cy=".5" r=".9"><stop offset="0" stop-color="#F59AD0"/><stop offset=".55" stop-color="#C08BFF"/><stop offset="1" stop-color="#B7C2FF"/></radialGradient>
+        <radialGradient id="th0" cx=".5" cy=".5" r=".9"><stop offset="0" stop-color="#E6E6E4"/><stop offset="1" stop-color="#F2F2F0"/></radialGradient><filter id="glassRefract" x="0" y="0" width="100%" height="100%">
         <feTurbulence type="fractalNoise" baseFrequency="0.012 0.03" numOctaves="2" seed="7" result="n"/>
         <feDisplacementMap in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G"/></filter>
         <filter id="liquidGlass" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" x="0" y="0" width="358" height="64" color-interpolation-filters="sRGB">
@@ -1876,7 +1887,7 @@ function sankey() {
     ${links}${nodes}</svg>`;
 }
 // 용도별 통장: 통합 자산 총액과, 그 안에서 각 통장이 차지하는 비율(한 줄 막대) + 잔액 목록
-const ACC_FILL = { save:'radial-gradient(120% 120% at 50% 60%,#5E7DFF,#9AABFF 55%,#D3DBFF)', goal:'radial-gradient(120% 120% at 50% 62%,#FFE3C2,#FF46A9 30%,#9B5BFF 72%,#7A8EFF)', inv:'radial-gradient(120% 120% at 50% 60%,#C9D3FF,#ECEFFF)', life:'radial-gradient(120% 120% at 50% 60%,#8F5BFF,#6B7BFF 55%,#B9C2FF)', emer:'radial-gradient(120% 120% at 50% 60%,#E2E2E0,#F2F2F0)', evt:'repeating-linear-gradient(-45deg,#181818 0 1.5px,#FCFCFC 1.5px 4.5px)' };
+const ACC_FILL = { save:'radial-gradient(140% 140% at 50% 50%,#9DAEFF,#CDD6FF)', goal:'radial-gradient(140% 140% at 50% 50%,#F59AD0,#C08BFF 55%,#B7C2FF)', inv:'radial-gradient(140% 140% at 50% 50%,#D6DDFF,#EEF0FF)', life:'radial-gradient(140% 140% at 50% 50%,#9C86FF,#B9C2FF)', emer:'radial-gradient(140% 140% at 50% 50%,#E6E6E4,#F2F2F0)', evt:'repeating-linear-gradient(-45deg,#181818 0 1.5px,#FCFCFC 1.5px 4.5px)' };
 function accountsBlock() {
   const total = ACCOUNTS.reduce((t, a) => t + a.a, 0);
   return `<div class="row g4 mt12" style="height:28px;border-radius:999px;overflow:hidden" role="img" aria-label="통합 자산 ${won(total)}원 중 ${ACCOUNTS.map(a => `${useOf(a)} ${pct(a.a / total)}`).join(', ')}">
@@ -1902,7 +1913,7 @@ function squarify(vals, Wd, Ht) {
   return out;
 }
 // 저축 › 통장: 통합 자산 트리맵. 크기 = 잔액, 색 = 용도(홈의 막대와 같은 색)
-const ACC_INK = { life:'#FCFCFC', goal:'#FCFCFC', save:'#FCFCFC' };
+const ACC_INK = { life:'#FCFCFC', goal:'#FCFCFC' };
 const ACC_IC = { save:'coin', inv:'ur', goal:'flag', life:'wallet', emer:'shield', evt:'gift' };
 
 // 계좌별 월말 잔액 (2025.11 → 2026.10). 마지막 달은 지금 잔액을 그대로 쓴다
@@ -2677,7 +2688,7 @@ function topSpend() {
   const Y0 = Math.min(...B.map(b => b[1]), ...top.map((i, k) => P[k][1] - r(i) - 7)), Y1 = Math.max(...top.map((i, k) => P[k][1] + r(i) + 7));
   const vb = `${(X0 - 4).toFixed(1)} ${(Y0 - 4).toFixed(1)} ${(X1 - X0 + 8).toFixed(1)} ${(Y1 - Y0 + 8).toFixed(1)}`;
   return `<div class="card c-paper">
-    <div class="row between"><span class="t18">카테고리별 지출</span><span class="t10 mute num">${m ? '9.1 – 9.30' : '10.5 – 10.11'}</span></div>
+    <div class="row between"><span class="t18">${m ? '9월' : '지난주'} 어디에 썼나</span><span class="t10 mute num">${m ? '9.1 – 9.30' : '10.5 – 10.11'}</span></div>
     <div class="row between mt8"><div class="row g4" role="tablist" aria-label="보기 방식">${[['circle','금액순'],['chg',m ? '전월 대비' : '전주 대비']].map(([k, l]) => `<button class="chip pchip ${S.topView === k ? 'on' : ''}" role="tab" aria-selected="${S.topView === k}" data-act="topView" data-v="${k}">${l}</button>`).join('')}</div>
       <span class="t10 mute">${chg ? '증감 금액' : `상위 4개 · 전체의 ${pct(share)}`}</span></div>
     ${chg ? `<div class="mt16">${diverging()}</div><div class="row g16 t10 mute mt8"><span class="row g4"><i style="width:16px;height:8px;border-radius:4px;background:#FF46A9;display:inline-block"></i>늘었어요</span><span class="row g4"><i style="width:16px;height:8px;border-radius:4px;background:#3269FF;display:inline-block"></i>줄었어요</span></div>` : `<svg viewBox="${vb}" width="100%" class="mt8" role="img" aria-label="상위 지출: ${top.map(i => `${i.c} ${won(i.a)}원`).join(', ')}">
@@ -2827,7 +2838,7 @@ function catPetals() {
     return `M${x0} ${y0}A${r2} ${r2} 0 0 1 ${x1} ${y1}L${x2} ${y2}A${r1} ${r1} 0 0 0 ${x3} ${y3}Z`; };
   const petals = cats.map((k, i) => {
     const a0 = i / n * 2 * Math.PI, a1 = (i + 1) / n * 2 * Math.PI, am = (a0 + a1) / 2;
-    const p = sp[k] / S.cat[k], fast = p > pace, fc = !fast ? 'url(#th2)' : p / pace <= 1.3 ? 'url(#th3)' : 'url(#th4)', rf = Math.sqrt(R0 * R0 + Math.min(1, p) * (R * R - R0 * R0));
+    const p = sp[k] / S.cat[k], fast = p > pace, fc = !fast ? 'url(#pfA)' : p / pace <= 1.3 ? 'url(#pfB)' : 'url(#pfC)', rf = Math.sqrt(R0 * R0 + Math.min(1, p) * (R * R - R0 * R0));
     const outer = sector(R0 + IN, R - IN, a0, a1), inner = rf - IN > R0 + IN + 2 ? sector(R0 + IN, rf - IN, a0, a1) : '';
     // 라벨은 같은 반지름(바깥 쪽 78%)에 검정 글자로
     // 채움의 바깥 모서리에 글자가 걸치면 채움 안쪽으로 옮긴다
@@ -2839,7 +2850,10 @@ function catPetals() {
       <text x="${lx}" y="${+ly + 12}" text-anchor="middle" font-size="10" font-weight="500" fill="${sc}">${k}</text></g>`;
   }).join('');
   const s1 = sel && S.cat[sel] != null ? sel : null;
-  return `<svg viewBox="0 0 320 320" width="100%" role="img" aria-label="카테고리별 예산 사용률">
+  return `<svg viewBox="0 0 320 320" width="100%" role="img" aria-label="카테고리별 예산 사용률"><defs>
+      <radialGradient id="pfA" gradientUnits="userSpaceOnUse" cx="160" cy="160" r="160"><stop offset=".1" stop-color="#E4E9FF"/><stop offset=".6" stop-color="#B9C6FF"/><stop offset="1" stop-color="#A3B3FF"/></radialGradient>
+      <radialGradient id="pfB" gradientUnits="userSpaceOnUse" cx="160" cy="160" r="160"><stop offset=".1" stop-color="#D9DFFF"/><stop offset=".6" stop-color="#A99BFF"/><stop offset="1" stop-color="#9C86FF"/></radialGradient>
+      <radialGradient id="pfC" gradientUnits="userSpaceOnUse" cx="160" cy="160" r="160"><stop offset=".1" stop-color="#E2DBFF"/><stop offset=".55" stop-color="#D59BEA"/><stop offset="1" stop-color="#F59AD0"/></radialGradient></defs>
     
     ${petals}</svg>
     <div class="row between t12 mt16" style="min-height:18px">${s1 ? `<span>${s1}</span><span class="num">${won(sp[s1])} <span class="mute">/ ${won(S.cat[s1])}원</span></span>`
@@ -2895,7 +2909,7 @@ function vPlan(pvOver, noHead) {
     return head + `<div class="mt16">${projCard()}</div>` + (S.persona === 'habit' ? '' : planLead()) + `
   ${easy && !S.planMore ? `<button class="btn ghost full mt24" data-act="planMore">카테고리별 예산 · 다음 달 예산 자세히 보기</button>` : `
   <section class="sec">
-    <div class="sec-h"><div><div class="t18">카테고리별 예산</div><div class="sec-d">10.01 – 10.${String(S.day).padStart(2, '0')} · 쓴 돈 기준</div></div></div>
+    <div class="sec-h"><div><div class="t18">카테고리별 예산 사용률</div><div class="sec-d">10월 예산 대비 · 금액은 분석에서 봐요</div></div></div>
     <div class="card c-paper">${catPetals()}</div>
   </section>
   <section class="sec" id="cutPlan">
