@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@200;300;400&family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600&family=IBM+Plex+Mono:wght@400;500&family=Nanum+Gothic+Coding:wght@400;700&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /*
-  LAYOUT GUIDE — 393 × 852 (iPhone 15/16)
+  LAYOUT GUIDE — 402 × 874 (iPhone 17 Pro)
   · 4 columns · margin 20 · gutter 12 · content width 353
   · spacing scale (4pt): 4 / 8 / 12 / 16 / 24 / 32 / 40
       – inside a group 8 · between cards 12 · card padding 24 · between sections 40
@@ -60,13 +60,13 @@ svg{display:block}
 .panel .pl button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .panel .spec{font-family:var(--f-mono);font-size:11px;color:var(--g6);line-height:1.7}
 
-.device{width:413px;height:872px;padding:10px;border-radius:64px;background:#0B0E12;box-shadow:0 0 0 2px #373A3E inset,0 30px 60px -20px rgba(0,0,0,.35);flex:none}
+.device{width:422px;height:894px;padding:10px;border-radius:64px;background:#0B0E12;box-shadow:0 0 0 2px #373A3E inset,0 30px 60px -20px rgba(0,0,0,.35);flex:none}
 .screen{position:relative;width:100%;height:100%;border-radius:54px;overflow:hidden;background:var(--bg);isolation:isolate}
 @media (max-width:760px){
   .stage{flex-direction:column;align-items:center;padding:0 0 48px;gap:32px}
-  .device{width:100%;max-width:413px;height:852px;padding:0;border-radius:0;box-shadow:none;background:none}
+  .device{width:100%;max-width:422px;height:874px;padding:0;border-radius:0;box-shadow:none;background:none}
   .screen{border-radius:0}
-  .panel{position:static;width:auto;max-width:393px;padding:0 16px}
+  .panel{position:static;width:auto;max-width:402px;padding:0 16px}
 }
 .log{font-family:var(--f-mono);font-size:11px;line-height:1.6;max-height:280px;overflow:auto;padding:12px 16px;border-radius:20px;background:var(--g2);-webkit-user-select:text;user-select:text;white-space:pre-wrap}
 
@@ -1110,6 +1110,7 @@ button.focus-strip{display:block;color:inherit}
 .grain{position:absolute;inset:0;z-index:15;pointer-events:none;opacity:.06;mix-blend-mode:multiply;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 .screen.dark .grain{mix-blend-mode:screen;opacity:.08}
+.screen:not(.dark) .grain{display:none}  /* 밝은 화면 배경은 정확히 #FAFAFA */
 .proj-card,.dark-band,.st-slide{position:relative}
 .proj-card::before,.st-slide::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:.14;mix-blend-mode:screen;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
